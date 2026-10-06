@@ -13,6 +13,7 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters, sensitive_variables
 from django.views.generic import ListView, View
 
+from core.mixins import usuario_tiene_cargo
 from utils.customer_img import discard_new_profile_image
 
 from .forms import (
@@ -83,6 +84,11 @@ class UserListView(LoginRequiredMixin, ListView):
     template_name = "pages/UsuarioApp/usuarios_lista.html"
     context_object_name = "users"
     paginate_by = 9
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated and not usuario_tiene_cargo(request.user):
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         show_inactive = self.request.GET.get("inactive") == "1"

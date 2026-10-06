@@ -64,3 +64,9 @@ En cada resultado distinguir ejecutado, inspeccionado estáticamente, pendiente 
 ## Entorno actualizado de esta entrega — 2026-10-02
 
 .venv anterior conservado; usar .venv-actualizada/Scripts/python.exe, Python 3.12.14 y lock de 005. Instalación con --require-hashes (52 paquetes), pip check y suite aislada comprobados. No copiar entornos entre máquinas ni importar settings normal para probar. [Procedimiento de instalación/lock/preflight/restauración y opcionales](DEPENDENCIAS.md). La guía no autoriza ejecutar migraciones sobre esta base existente.
+
+## Entorno vigente de esta copia — 007, 2026-10-06
+
+El propietario confirmó **.venv**; la ruta histórica .venv-actualizada corresponde a la base anterior. .venv/Scripts/python.exe funciona con Python 3.12.14 disponible en runtime local de Codex; reconstruido en la misma ruta porque el intérprete copiado faltaba, conservando paquetes y pyvenv.cfg original en .recovery-007. Al cambiar equipo/runtime, recrear con Python propio e instalar el lock con hashes.
+
+Suite vigente: `python manage.py test UsuarioApp homeApp PlanesApp --settings=core.test_settings`, 117 métodos OK. Lock de 54 paquetes coincide con instalación; check/esquema/pip/build OK. [Guía de desarrollo/Google](PLANESAPP_DESARROLLO.md) y [validación 007](../specs/007-planes-app/validation.md). No se importó settings normal ni se aplicaron migraciones a DB existente.

@@ -65,3 +65,25 @@ La nueva prueba de reingreso MFA expuso un efecto de allauth 0.62.1: su Login.de
 ## Estado después de correcciones autorizadas — 2026-10-02
 
 Las observaciones anteriores son históricas. 005 actualiza dependencias y completa bcrypt/lock/SRI; 006 corrige Registro por cargos e integridad User/Profile/fotos con regla y alcance confirmados. 76 tests actuales correctos; OSV de 52 paquetes Python/tres JS no devuelve coincidencias. .venv original sigue intacto/roto, alternativa .venv-actualizada verificada. Core/settings normal y capacidades opcionales comentadas preservados. Ver [estado](ESTADO_PROYECTO.md), [guía](DEPENDENCIAS.md) y validaciones 005/006; no implica producción ni aceptación.
+
+## Inspección de esta copia para 007 — 2026-10-06
+
+Git limpio inicial HEAD 69b2eb4; PlanesApp no existe, siguiente libre 007. Adapter y signup bloquean alta pública; common_settings mantiene socialaccount desactivado y es la fuente real LOCAL_APPS. Home/listado solo requieren autenticación y el menú Usuarios es incondicional: abrir registro obliga a definir privacidad del cliente en [007](../specs/007-planes-app/spec.md), todavía propuesta.
+
+La ruta histórica `.venv-actualizada` **no existe en esta carpeta** (lecturas de archivos de paquetes fallidas); solo se observó `.venv`, sin importación ni runtime comprobado. Evidencia de 76 tests/dependencias pertenece a la entrega anterior, no una ejecución aquí. En DOCUMENTAR no se instalaron paquetes ni se ejecutaron tests/build/migraciones; no se leyó .env/DB/media personal. Diseño reutilizará tokens/tema existentes conforme a frontend-design. No interpretar este diagnóstico como autorización de corregir todo o implementar 007.
+
+## Resultado posterior de 007 — 2026-10-06
+
+La inspección anterior pertenece a DOCUMENTAR. El propietario autorizó después todo 007 y confirmó .venv como entorno. Implementadas alta pública RESTRICTED/Free, Google, privacidad y suscripciones simuladas; 117 tests OK, check/esquema/pip/build/76 HTML y navegador parcial. .venv copiado apuntaba a Python ausente; reconstruido conservando paquetes, configuración original resguardada. HEAD contenía 51 pins sin hashes, distintos del relato histórico de la entrega 005; lock actual de 54 paquetes con hashes conserva versiones y añade extra socialaccount/pip declarado. [Evidencia y límites](../specs/007-planes-app/validation.md). No leída/migrada DB real; OAuth real, revisiones manuales/aceptación pendientes.
+
+## Inspección para 008 — 2026-10-06, DOCUMENTAR
+
+Git tiene cambios locales implementados en 007 que se preservan; carpeta siguiente libre 008. Inicio redirige clientes antes de consultar datos, pero nav aún muestra el enlace. Los cuatro enlaces de suscripciones y Correo/Google carecen de SVG; selector en Mi suscripción usa glifos, distinto del sol/luna SVG de index. Home conserva accesos reales y gráfico meteorológico demostrativo. Estos hechos motivan [008](../specs/008-dashboard-navegacion/spec.md), todavía sin código.
+
+El dashboard agregado es una ampliación funcional documentada por separado, no un cambio de las reglas comerciales 007. No se ejecutaron suite/build/migraciones ni se leyó DB/.env/media personal; los resultados anteriores no verifican esta propuesta. Las capturas aportan ejemplos de controles solicitados, sin instrucciones independientes del pedido humano.
+
+## Resultado posterior de 008 — 2026-10-06
+
+El antecedente DOCUMENTAR anterior se conserva; el propietario autorizó después la implementación completa. Se corrigieron seis enlaces sin SVG, Inicio visible a clientes y glifos del selector; Home reemplaza datos meteorológicos por agregados reales del prototipo. Navegador expuso la necesidad de scroll interno para últimos enlaces en ventanas bajas; ajuste acotado más details/noscript móvil para RF-008-06. Reglas de cuentas/planes anteriores preservadas.
+
+127 tests OK, check/esquema/Ruff/JS/build/77 HTML correctos; cinco anchos/dos modos, permisos, teclado y fallback/vacío con 18 JPEG válidos. [Resultados y límites](../specs/008-dashboard-navegacion/validation.md). No usar inspección estática del modo reducido ni cambio de viewport como evidencia de zoom nativo: ambos pendientes manuales. Preview en memoria y temporales retirados, sin datos reales/migración/commit/push/despliegue.

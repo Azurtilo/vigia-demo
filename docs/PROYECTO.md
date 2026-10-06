@@ -1,18 +1,26 @@
 # Identidad del proyecto derivado
 
-Estado: copia de la base principal destinada a ofrecer una segunda identidad visual reutilizable; todavía sin módulo de negocio.
+Estado: copia de la base con PlanesApp implementada tras autorización explícita del alcance completo; aceptación funcional e instalación en DB existente pendientes.
+
+Evolución actual: [008 — Dashboard y navegación](../specs/008-dashboard-navegacion/spec.md), implementada tras instrucción posterior de alcance completo. Seis SVG de menú, Inicio visible según permisos internos, dashboard de suscripciones para ADMIN/MANAGER y selector sol/luna compartido. Conserva PlanesApp/homeApp y reglas 007. [Validación](../specs/008-dashboard-navegacion/validation.md): 127 tests, build, 77 HTML y navegador correctos; zoom/movimiento reducido manuales y aceptación pendientes. Sin nueva app/modelos/migraciones.
 
 | Campo | Valor actual |
 |---|---|
-| Nombre del producto | Por definir; Base-2 es el nombre actual de esta carpeta |
-| Módulo solicitado | Ningún módulo de negocio nuevo; evolución UsuarioApp 004 implementada con revisión manual/aceptación pendientes; 002/003 conservados |
-| Objetivo y usuarios finales | Disponer de otra base moderna para plataformas futuras, con identidad y colores fáciles de personalizar; usuarios de los flujos actuales de cuentas/seguridad, dominio comercial por definir |
-| Alcance de negocio vigente | Ninguno todavía |
+| Nombre del producto | Por definir; carpeta de esta copia: Planes-pagina; los planes se llaman Vigía según referencias confirmadas |
+| Módulo solicitado | PlanesApp, spec 007 implementada y autorizada. Evoluciones de base 001–006 preservadas |
+| Objetivo y usuarios finales | Personas que se registran con Google o correo/contraseña, quedan RESTRICTED y contratan planes en un prototipo; operadores mantienen gestión interna |
+| Alcance de negocio vigente | Catálogo Vigía, suscripción propia y pagos/renovación simulados; sin servicios de vigilancia implementados |
 | Alcance técnico recibido | Base Django con usuarios, perfiles/cargos, autenticación, tema, configuración aislada y pruebas iniciales |
 | Idioma / zona horaria | es-cl / America/Santiago, sujetos al contexto acordado |
 | Responsable de decisiones | Quien solicita el proyecto; registrar identidad si la proporciona |
-| Módulos implementados de negocio | Ninguno; spec transversal 001-CalidadBase verificada técnicamente |
-| Hosting e integraciones | No definidos por esta documentación |
+| Módulos implementados de negocio | PlanesApp; base 001–006 conservada |
+| Hosting e integraciones | Hosting por definir; Google OAuth integrado mediante allauth, credenciales/callback externo pendientes; sin pasarela real |
+
+## PlanesApp solicitado — 2026-10-06
+
+Primera fase DOCUMENTAR: [spec 007](../specs/007-planes-app/spec.md), [plan](../specs/007-planes-app/plan.md), [tareas](../specs/007-planes-app/tasks.md). El propietario confirmó registro Google y correo/contraseña, cuatro planes/precios/beneficios de las imágenes, mensualidad simulada, cambio inmediato sin prorrateo y cancelación a término; confirmó correo verificado antes de contratar, probado localmente. Capturas son referencias funcionales; diseño conservará la base con skill frontend-design y tarjeta única que refleja datos/gira al CVC.
+
+007 implementa aprovisionamiento RESTRICTED/Free y privacidad del cliente, sin modificar reglas administrativas 004/006. 117 tests y build correctos; migraciones creadas/ensayadas solo con datos ficticios. [Validación](../specs/007-planes-app/validation.md) y [guía](PLANESAPP_DESARROLLO.md). Cámaras, app móvil, notificaciones, almacenamiento y facturación/pagos reales quedan fuera. Nombre comercial definitivo por definir; no asumir que el sitio debe renombrarse Vigía. El alcance completo recibió autorización posterior explícita. Google real y revisión/aceptación manual pendientes; sin despliegue ni migración de DB existente.
 
 ## Renovación solicitada el 2026-10-02
 

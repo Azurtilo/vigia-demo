@@ -14,13 +14,15 @@ DEFAULT_DJANGO_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.humanize",
 ]
-LOCAL_APPS = ["homeApp", "UsuarioApp"]
+LOCAL_APPS = ["homeApp", "UsuarioApp", "PlanesApp"]
 THIRD_APPS = [
     "tailwind",
     "theme",
     "allauth",
     "allauth.account",
     "allauth.mfa",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
     "crispy_forms",
     "crispy_tailwind",
     # Capacidades opcionales: cada proyecto decide si las activa y configura.
@@ -85,8 +87,8 @@ MFA_FORMS = {
 }
 # Preserva TOTP/recuperación de la base anterior; no habilita passkeys/WebAuthn.
 MFA_SUPPORTED_TYPES = ["totp", "recovery_codes"]
-# Registro público cerrado y correo opcional: conserva la activación TOTP que
-# permitía allauth 0.62.1. Cada producto debe decidir su verificación de correo.
+# Conserva TOTP heredado. PlanesApp exige correo verificado en sus operaciones;
+# no se impone ese requisito nuevo al login/MFA de operadores existentes.
 MFA_ALLOW_UNVERIFIED_EMAIL = True
 MFA_RECOVERY_CODE_COUNT = 10
 MFA_TOTP_PERIOD = 30
@@ -118,9 +120,23 @@ LOGIN_URL = "account_login"
 ACCOUNT_LOGIN_METHODS = {"username", "email"}
 ACCOUNT_SIGNUP_FIELDS = ["username*", "email*", "password1*", "password2*"]
 ACCOUNT_UNIQUE_EMAIL = True
-ACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_EMAIL_VERIFICATION = "optional"
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
 ACCOUNT_LOGOUT_ON_GET = False
 ACCOUNT_LOGOUT_REDIRECT_URL = "/accounts/login/"
-ACCOUNT_ADAPTER = "UsuarioApp.adapters.NoSignupAccountAdapter"
+ACCOUNT_ADAPTER = "UsuarioApp.adapters.PublicAccountAdapter"
+ACCOUNT_FORMS = {"signup": "UsuarioApp.signup_forms.PublicSignupForm"}
+SOCIALACCOUNT_ADAPTER = "UsuarioApp.adapters.PublicSocialAccountAdapter"
+SOCIALACCOUNT_EMAIL_AUTHENTICATION = False
+SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = False
+SOCIALACCOUNT_LOGIN_ON_GET = False
+SOCIALACCOUNT_STORE_TOKENS = False
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "SCOPE": ["profile", "email"],
+        "AUTH_PARAMS": {"access_type": "online"},
+        "OAUTH_PKCE_ENABLED": True,
+    }
+}
+GOOGLE_OAUTH_ENABLED = False
 SESSION_COOKIE_AGE = 1800

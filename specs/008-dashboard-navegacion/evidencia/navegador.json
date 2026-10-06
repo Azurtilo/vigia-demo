@@ -1,0 +1,156 @@
+{
+  "date": "2026-10-06",
+  "environment": "SQLite en memoria, core.test_settings, datos ficticios",
+  "checks": [
+    {
+      "chart": true,
+      "mode": "dark",
+      "page": "dashboard",
+      "rows": 4,
+      "scrollWidth": 345,
+      "width": 360
+    },
+    {
+      "chart": true,
+      "mode": "dark",
+      "page": "dashboard",
+      "rows": 4,
+      "scrollWidth": 375,
+      "width": 390
+    },
+    {
+      "chart": true,
+      "mode": "dark",
+      "page": "dashboard",
+      "rows": 4,
+      "scrollWidth": 753,
+      "width": 768
+    },
+    {
+      "chart": true,
+      "mode": "dark",
+      "page": "dashboard",
+      "rows": 4,
+      "scrollWidth": 1009,
+      "width": 1024
+    },
+    {
+      "chart": true,
+      "mode": "dark",
+      "page": "dashboard",
+      "rows": 4,
+      "scrollWidth": 1425,
+      "width": 1440
+    },
+    {
+      "chart": true,
+      "mode": "light",
+      "page": "dashboard",
+      "rows": 4,
+      "scrollWidth": 345,
+      "width": 360
+    },
+    {
+      "chart": true,
+      "mode": "light",
+      "page": "dashboard",
+      "rows": 4,
+      "scrollWidth": 375,
+      "width": 390
+    },
+    {
+      "chart": true,
+      "mode": "light",
+      "page": "dashboard",
+      "rows": 4,
+      "scrollWidth": 753,
+      "width": 768
+    },
+    {
+      "chart": true,
+      "mode": "light",
+      "page": "dashboard",
+      "rows": 4,
+      "scrollWidth": 1009,
+      "width": 1024
+    },
+    {
+      "chart": true,
+      "mode": "light",
+      "page": "dashboard",
+      "rows": 4,
+      "scrollWidth": 1425,
+      "width": 1440
+    },
+    {
+      "page": "manager",
+      "heading": "Resumen de suscripciones"
+    },
+    {
+      "homeLinks": 0,
+      "mode": "light",
+      "nav": [
+        "Mi suscripción",
+        "Planes",
+        "Métodos de prueba",
+        "Historial",
+        "Perfil",
+        "Correo y verificación",
+        "Cuenta de Google",
+        "Autenticación 2FA",
+        "Contraseña",
+        "Cerrar sesión"
+      ],
+      "page": "cliente",
+      "svg": "<svg aria-hidden=\"true\" focusable=\"false\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20.8 13.1A9 9 0 0 1 10.9 3.2 9 9 0 1 0 20.8 13.1Z\"></path></svg>"
+    },
+    {
+      "homeLinks": 0,
+      "mode": "dark",
+      "page": "cliente",
+      "svg": true
+    },
+    {
+      "closed": true,
+      "focus": "Abrir menú",
+      "page": "menu-cliente"
+    },
+    {
+      "chartHidden": true,
+      "fallback": true,
+      "page": "cdn-off",
+      "planRows": 4
+    },
+    {
+      "hasNativeMenu": true,
+      "page": "sin-recursos-js",
+      "plans": 4,
+      "scripts": 0
+    },
+    {
+      "mode": "dark",
+      "page": "modo-sin-scripts",
+      "scripts": 0
+    },
+    {
+      "buttonHidden": true,
+      "open": false,
+      "page": "menu-native"
+    },
+    {
+      "hasChart": false,
+      "message": "Aún no hay suscripciones de cuentas activas. Aparecerán aquí cuando se registren.",
+      "metrics": [
+        "0",
+        "0",
+        "0"
+      ],
+      "page": "vacio",
+      "volume": "$0 CLP"
+    }
+  ],
+  "limitations": [
+    "No emulación nativa de zoom 200% ni prefers-reduced-motion disponible; revisión manual pendiente.",
+    "Sin scripts: preview retira scripts y activa marcado noscript; no cambia preferencia global JavaScript del navegador."
+  ]
+}

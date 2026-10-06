@@ -1,9 +1,9 @@
 # Entradas revisadas el 2026-10-02, Python 3.12; ver docs/DEPENDENCIAS.md.
-# Generar requirements.txt con pip-tools aislado, hashes y sin extras activos nuevos.
+# Generar requirements.txt con pip-tools aislado y hashes; 007 añade socialaccount.
 
 # AplicaciÃ³n y autenticaciÃ³n (MFA TOTP/recuperaciÃ³n, sin WebAuthn activo)
 Django==5.2.17
-django-allauth[mfa]==65.19.7
+django-allauth[mfa,socialaccount]==65.19.7
 django-crispy-forms==2.7
 crispy-tailwind==1.0.3
 django-environ==0.14.0

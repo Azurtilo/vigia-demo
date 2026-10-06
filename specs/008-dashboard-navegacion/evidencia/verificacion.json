@@ -1,0 +1,166 @@
+{
+  "templates_loaded": 77,
+  "template_errors": [],
+  "valid_screenshots": 18,
+  "screenshots": [
+    {
+      "name": "cliente-claro-1440.jpg",
+      "size": [
+        1425,
+        1054
+      ],
+      "format": "JPEG"
+    },
+    {
+      "name": "cliente-oscuro-1440.jpg",
+      "size": [
+        1425,
+        1054
+      ],
+      "format": "JPEG"
+    },
+    {
+      "name": "dashboard-claro-1024.jpg",
+      "size": [
+        1009,
+        2135
+      ],
+      "format": "JPEG"
+    },
+    {
+      "name": "dashboard-claro-1440.jpg",
+      "size": [
+        1425,
+        1804
+      ],
+      "format": "JPEG"
+    },
+    {
+      "name": "dashboard-claro-360.jpg",
+      "size": [
+        345,
+        2958
+      ],
+      "format": "JPEG"
+    },
+    {
+      "name": "dashboard-claro-390.jpg",
+      "size": [
+        375,
+        2831
+      ],
+      "format": "JPEG"
+    },
+    {
+      "name": "dashboard-claro-768.jpg",
+      "size": [
+        753,
+        2172
+      ],
+      "format": "JPEG"
+    },
+    {
+      "name": "dashboard-final.jpg",
+      "size": [
+        1425,
+        990
+      ],
+      "format": "JPEG"
+    },
+    {
+      "name": "dashboard-oscuro-1024.jpg",
+      "size": [
+        1009,
+        2135
+      ],
+      "format": "JPEG"
+    },
+    {
+      "name": "dashboard-oscuro-1440.jpg",
+      "size": [
+        1425,
+        1804
+      ],
+      "format": "JPEG"
+    },
+    {
+      "name": "dashboard-oscuro-360.jpg",
+      "size": [
+        345,
+        2958
+      ],
+      "format": "JPEG"
+    },
+    {
+      "name": "dashboard-oscuro-390.jpg",
+      "size": [
+        375,
+        2831
+      ],
+      "format": "JPEG"
+    },
+    {
+      "name": "dashboard-oscuro-768.jpg",
+      "size": [
+        753,
+        2172
+      ],
+      "format": "JPEG"
+    },
+    {
+      "name": "dashboard-sin-cdn-390.jpg",
+      "size": [
+        375,
+        2670
+      ],
+      "format": "JPEG"
+    },
+    {
+      "name": "dashboard-sin-js-390.jpg",
+      "size": [
+        375,
+        2687
+      ],
+      "format": "JPEG"
+    },
+    {
+      "name": "dashboard-vacio-1440.jpg",
+      "size": [
+        1425,
+        1641
+      ],
+      "format": "JPEG"
+    },
+    {
+      "name": "menu-admin-390.jpg",
+      "size": [
+        390,
+        844
+      ],
+      "format": "JPEG"
+    },
+    {
+      "name": "menu-cliente-390.jpg",
+      "size": [
+        390,
+        844
+      ],
+      "format": "JPEG"
+    }
+  ],
+  "suite": {
+    "tests": 127,
+    "seconds": 12.153,
+    "result": "OK"
+  },
+  "targeted_home_after_final_templates": {
+    "tests": 15,
+    "seconds": 0.261,
+    "result": "OK"
+  },
+  "check": "OK",
+  "schema": "No changes detected",
+  "tailwind": "4.3.0 OK",
+  "ruff": "OK",
+  "js_syntax": "node --check OK"
+}

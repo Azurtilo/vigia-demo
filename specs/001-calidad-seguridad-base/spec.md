@@ -102,3 +102,7 @@ No hay decisiones críticas ausentes para documentar. Las elecciones técnicas d
 ## Sustitución acotada por spec 006 — 2026-10-02
 
 Los RF y decisiones originales se conservan como historial. La política de Registro que admitía root sin cargo y excluía Position.pk=1 quedó sustituida únicamente en esa acción por RF-006-01/02, confirmados/autorizados posteriormente: cargo obligatorio; ADMIN registra inferiores, MANAGER RESTRICTED, solo root con ADMIN registra ADMIN. Core.mixins conserva su helper para otras acciones; menú/Registro comparten ahora cargos_asignables. 006 corrige atomicidad/fotos sin reescribir la evidencia histórica de 001. Dependencias actuales corresponden a 005.
+
+## Evolución autorizada por spec 007 — 2026-10-06
+
+En este derivado, el propietario solicita registro público local/Google con altas RESTRICTED y verificación antes de contratar. [007-PlanesApp](../007-planes-app/spec.md) propone sustituir RF-001-02 (cierre público) y ampliar privacidad de Home/listado y correo de RF-001-07. **Implementado tras autorización posterior del alcance completo**: esta spec y su evidencia de cierre se conservan como historial. [Validación 007](../007-planes-app/validation.md). Políticas de Registro/gestión 004/006 no se sustituyen; los tests del cierre/lectura se adaptaron trazablemente en 007 y la suite completa pasó.

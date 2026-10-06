@@ -11,6 +11,20 @@ ENV_FILE = BASE_DIR / ".env"
 environ.Env.read_env(ENV_FILE)
 
 SECRET_KEY = env("SECRET_KEY")
+GOOGLE_OAUTH_ENABLED = bool(
+    env("GOOGLE_CLIENT_ID", default="") and env("GOOGLE_CLIENT_SECRET", default="")
+)
+if GOOGLE_OAUTH_ENABLED:
+    SOCIALACCOUNT_PROVIDERS = {
+        "google": {
+            **SOCIALACCOUNT_PROVIDERS["google"],
+            "APP": {
+                "client_id": env("GOOGLE_CLIENT_ID"),
+                "secret": env("GOOGLE_CLIENT_SECRET"),
+                "key": "",
+            },
+        }
+    }
 DEBUG = env.bool("DEBUG", default=False)
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])

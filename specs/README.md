@@ -1,6 +1,6 @@
 # Especificaciones por módulo o cambio
 
-Esta base no trae un módulo de negocio predefinido. **NuevaAPP es un ejemplo de nombre**, no una tarea pendiente. No se crean ahora apps, modelos ni una spec funcional ficticia.
+La base original no trae un módulo de negocio predefinido; esta copia añade PlanesApp solicitado en 007. **NuevaAPP es un ejemplo de nombre**, no una tarea pendiente ni una app a crear automáticamente.
 
 ## Índice
 
@@ -12,8 +12,11 @@ Esta base no trae un módulo de negocio predefinido. **NuevaAPP es un ejemplo de
 | 004 | UsuarioApp: restablecimiento administrativo y jerarquía de cuentas | [004-administracion-usuarios](./004-administracion-usuarios/spec.md) | Implementado; 57 tests OK; T-004-07 envío válido por UI y T-004-08 revisión pendientes | Sí; alcance completo autorizado y ejecutado por instrucción posterior el 2026-10-02; sin migraciones nuevas/reales |
 | 005 | Actualización segura de dependencias Python/JavaScript | [005-actualizacion-dependencias](./005-actualizacion-dependencias/spec.md) | Implementada/verificada: lock de 52 paquetes, SRI, migraciones ficticias; aceptación pendiente | Sí; correcciones autorizadas posteriormente el 2026-10-02 |
 | 006 | Permisos e integridad de Registro/Perfil | [006-integridad-registro](./006-integridad-registro/spec.md) | Implementada/verificada: cargos y atomicidad/fotos; aceptación pendiente | Sí; regla y alcance confirmados por instrucciones posteriores |
+| 007 | PlanesApp: registro público local/Google y suscripciones simuladas | [007-planes-app](./007-planes-app/spec.md) | Implementada; 117 tests OK, visual con límites, OAuth real/aceptación pendientes | **Sí; alcance completo autorizado posteriormente el 2026-10-06, sin migración real** |
 
-Siguiente número sugerido: 007. Comprobar el siguiente libre en cada uso. Una app puede tener varias specs de evolución; una spec transversal puede afectar varias apps.
+| 008 | Dashboard de suscripciones y navegación coherente | [008-dashboard-navegacion](./008-dashboard-navegacion/spec.md) | Implementada; 127 tests OK, navegador y aceptación con pendientes manuales | Sí; alcance completo autorizado posteriormente el 2026-10-06 |
+
+Siguiente número sugerido: 009. Comprobar el siguiente libre en cada uso. Una app puede tener varias specs de evolución; una spec transversal puede afectar varias apps.
 
 Auditoría independiente y cierre de correcciones: [VALIDACION_PREPRODUCCION.md](../docs/VALIDACION_PREPRODUCCION.md), 2026-10-02. La auditoría inicial detectó bloqueadores; la implementación posterior autorizada de 005/006 los corrigió en el alcance verificado. Conserva pendientes operativos y de revisión manual; no equivale a aceptación ni autorización para producción.
 

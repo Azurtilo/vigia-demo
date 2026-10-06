@@ -2,9 +2,13 @@ from datetime import timedelta
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
+from django.shortcuts import redirect
 from django.utils import timezone
 from django.views.generic import ListView
 
+from core.mixins import usuario_tiene_cargo
+from PlanesApp.dashboard import subscription_dashboard
 from UsuarioApp.models import Profile
 
 User = get_user_model()
@@ -16,6 +20,14 @@ class HomeView(LoginRequiredMixin, ListView):
     context_object_name = "usuarios_recientes"
 
     ACTIVIDAD_MINUTOS = 10
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            if not request.user.is_active:
+                raise PermissionDenied
+            if not usuario_tiene_cargo(request.user):
+                return redirect("PlanesApp:mi_suscripcion")
+        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         return (
@@ -44,6 +56,7 @@ class HomeView(LoginRequiredMixin, ListView):
         )
 
         context.update(
+            dashboard=subscription_dashboard(ahora),
             active_users=active_users,
             usuarios_con_actividad=len(active_users),
             actividad_minutos=self.ACTIVIDAD_MINUTOS,

@@ -95,3 +95,25 @@ El contrato de Registro de 001 queda sustituido por 006. UserRegistrationMixin y
 Alta/edición User/Profile usan atomic; Profile.save prepara fotos nuevas en memoria, escribe storage y DB, compensa fallos y elimina anterior con on_commit. Cambios sin foto no la procesan. No cambió esquema. Se probó almacenamiento local; limpieza fallida exige mantenimiento del producto.
 
 005 actualiza Django/allauth y rutas/settings MFA equivalentes; extra MFA instalado con TOTP/recuperación explícitos, sin WebAuthn/socialaccount. Lock con hashes y preflight de actualización allauth de solo lectura. Ver [DEPENDENCIAS.md](DEPENDENCIAS.md) y validaciones 005/006 para comandos/limitaciones. Opcionales axes/concurrentlogins siguen comentados, settings normal intacto.
+
+## Extensión implementada 007 — PlanesApp
+
+Namespace PlanesApp bajo /planes/, LOCAL_APPS en core/common_settings.py y socialaccount/Google registrados. Plan/PlanBenefit, Subscription única por User, métodos ficticios y SimulatedOperation con snapshots/idempotencia; 0001 esquema y 0002 seed/cargo, ensayadas sin DB real. [Código](../PlanesApp/services.py), [plan](../specs/007-planes-app/plan.md), [validación](../specs/007-planes-app/validation.md).
+
+UsuarioApp incorpora servicio de alta/adapters y SignupForm transaccional para User/Profile RESTRICTED/Free/EmailAddress. Google conserva cargos al reingresar; email coincidente no autentica/fusiona y exige conexión desde sesión existente. Credenciales APP por entorno; sin tokens persistidos, POST/CSRF/PKCE. Verificación optional mantiene login/MFA internos; ClientMixin/servicios requieren EmailAddress verificado para métodos/compra/renovación.
+
+Home redirige clientes antes de consultar usuarios; UserListView exige helper ADMIN/MANAGER/root. Objetos cliente siempre filtrados por titular, incluso root. Registro/gestión 004/006 conservados. Servicios ejecutan operaciones atómicas con precios del servidor, propuestas firmadas/versiones, bloqueos y nonce único. Tarjetas de lista cerrada, solo máscara/fixture persistidos. Vencimiento se calcula al leer; renovación mediante POST sin scheduler.
+
+Templates integrados en layouts/tokens/menú actuales; CSS/JS de app y @source explícita. Tarjeta única gira al CVC, foco/errores y fallback del formulario sin scripts. [Guía para instalar/configurar](PLANESAPP_DESARROLLO.md). Migración de DB existente/OAuth real/aceptación pendientes; no inferir despliegue por suite verde.
+
+## Evolución propuesta 008 — todavía sin implementar
+
+[Plan 008](../specs/008-dashboard-navegacion/plan.md): ampliar Home existente con agregados lectores de suscripciones, planes y operaciones simuladas. Servicio propuesto PlanesApp/dashboard.py, sin app/modelos/rutas/migraciones nuevas; guard general ADMIN/MANAGER/root activo antes de consultas. Resumen global agregado no concede acceso a métodos/historial ajenos. Población, estados efectivos y volumen mensual especificados; GET no crea filas ni procesa vencimientos por escritura.
+
+Menú compartido propuesto con seis SVG y flag vigente para Inicio; componente de selector visual propuesto para index/Mi suscripción con mismos SVG y POST/CSRF actuales. Gráfico de planes con alternativa HTML sustituiría series meteorológicas. Tokens/layouts y permisos 004/006 permanecen. Es propuesta documental: autorización posterior y pruebas de 008 pendientes.
+
+## Ejecución posterior 008 — implementada
+
+La sección propuesta anterior conserva el antecedente documental. Tras autorización explícita, Home invoca [PlanesApp/dashboard.py](../PlanesApp/dashboard.py) después de su guard vigente: cuatro consultas ORM, counts/agrupación por plan efectivo y suma de snapshots monetarios aprobados desde el inicio del mes local. No cambios de esquema ni escrituras de negocio durante GET; el middleware de actividad anterior conserva su contrato.
+
+[Componente visual_mode](../templates/components/visual_mode.html) usado en Home/Mi suscripción; nav.html usa el flag interno para Inicio y seis SVG decorativos. Index proporciona datos con json_script y cantidades HTML, grafico_home.js consume estos datos y degrada si no hay ECharts. Base extendida contiene details/noscript con el mismo menú para móvil; CSS permite desplazamiento del sidebar y conserva tokens. Pruebas nuevas agrupadas en [test_dashboard.py](../homeApp/test_dashboard.py). [Evidencia y límites](../specs/008-dashboard-navegacion/validation.md): 127 tests, 77 HTML y navegador; aceptación manual pendiente.

@@ -1,0 +1,133 @@
+{
+  "catalogo": {
+    "claro": [
+      {
+        "columns": "313px",
+        "scroll": 345,
+        "width": 345
+      },
+      {
+        "columns": "343px",
+        "scroll": 375,
+        "width": 375
+      },
+      {
+        "columns": "338.5px 338.5px",
+        "scroll": 753,
+        "width": 753
+      },
+      {
+        "columns": "346.5px 346.5px",
+        "scroll": 1009,
+        "width": 1009
+      },
+      {
+        "columns": "267.25px 267.25px 267.25px 267.25px",
+        "scroll": 1425,
+        "width": 1425
+      }
+    ],
+    "oscuro": [
+      {
+        "columns": "313px",
+        "scroll": 345,
+        "width": 345
+      },
+      {
+        "columns": "343px",
+        "scroll": 375,
+        "width": 375
+      },
+      {
+        "columns": "338.5px 338.5px",
+        "scroll": 753,
+        "width": 753
+      },
+      {
+        "columns": "346.5px 346.5px",
+        "scroll": 1009,
+        "width": 1009
+      },
+      {
+        "columns": "267.25px 267.25px 267.25px 267.25px",
+        "scroll": 1425,
+        "width": 1425
+      }
+    ]
+  },
+  "metodos": {
+    "claro": [
+      {
+        "scroll": 345,
+        "width": 345
+      },
+      {
+        "scroll": 375,
+        "width": 375
+      },
+      {
+        "scroll": 753,
+        "width": 753
+      },
+      {
+        "scroll": 1009,
+        "width": 1009
+      },
+      {
+        "scroll": 1425,
+        "width": 1425
+      }
+    ],
+    "oscuro": [
+      {
+        "cardBottom": 99.5,
+        "cardWidth": 267,
+        "scroll": 345,
+        "textBottom": 81.5,
+        "width": 345
+      },
+      {
+        "cardBottom": 108.8125,
+        "cardWidth": 297,
+        "scroll": 375,
+        "textBottom": 90.8125,
+        "width": 375
+      },
+      {
+        "cardBottom": -22.6875,
+        "cardWidth": 420,
+        "scroll": 753,
+        "textBottom": -45.71875,
+        "width": 753
+      },
+      {
+        "cardBottom": -6.78125,
+        "cardWidth": 420,
+        "scroll": 1009,
+        "textBottom": -34.78125,
+        "width": 1009
+      },
+      {
+        "cardBottom": 450.203125,
+        "cardWidth": 420,
+        "scroll": 1425,
+        "textBottom": 422.203125,
+        "width": 1425
+      }
+    ]
+  },
+  "interacciones": [
+    "Visa guardada con máscara",
+    "Compra Plus aprobada",
+    "Cancelación a término y retiro",
+    "Rechazo Hogar conserva Plus",
+    "CVC foco/reverso y Tab vuelve frente",
+    "Errores sin reflejar número/CVC",
+    "Mastercard guardada con script-src none"
+  ],
+  "limites": [
+    "OAuth real sin credenciales",
+    "Zoom 200% y preferencia reducida no configurables por esta superficie; regla CSS revisada",
+    "Sin lector de pantalla real"
+  ]
+}

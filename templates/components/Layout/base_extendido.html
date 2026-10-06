@@ -16,6 +16,7 @@
       <span class="topbar-label">Tu espacio de trabajo</span>
       {% include 'components/header/header.html' %}
     </header>
+    <noscript><details class="no-script-navigation"><summary>Menú principal</summary>{% include 'components/navbar/nav.html' %}</details></noscript>
     <main class="site-page-main">{% block content_main %}{% endblock %}</main>
   </div>
 </div>

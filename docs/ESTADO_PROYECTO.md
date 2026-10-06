@@ -1,12 +1,40 @@
 # Estado y reanudación
 
-Fecha: 2026-10-05.
+Fecha: 2026-10-06.
+
+## Pedido actual — implementación 008 / Dashboard y navegación
+
+- Instrucción posterior explícita: «implementa specs 8 Dashboard de suscripciones y navegación coherente alcance completo». Tareas técnicas 01–07 terminadas; aceptación del propietario pendiente. No repetir autorización de código.
+- Entregados seis SVG, Inicio por permisos internos, selector visual compartido y dashboard de solo lectura con estados/distribución/volumen mensual simulado, conservando accesos y reglas 007. Sidebar desplazable; menú móvil nativo como fallback noscript. Sin nueva app/modelos/migraciones/dependencias.
+- **127 tests OK (12,153 s)**; 15 Home tras último ajuste, check/esquema/Ruff/JS/77 HTML correctos y Tailwind 4.3.0 compilado. Diez casos nuevos: matriz, cálculo/fechas/cancelación/población/snapshots, cuatro consultas sin crecimiento por usuario y escape de JSON. [Validación y resultados](../specs/008-dashboard-navegacion/validation.md).
+- Navegador: cinco anchos 360–1440 px y dos modos sin desbordamiento; ADMIN/MANAGER, cliente sin Inicio, SVG/selector, menú/Escape/foco, fallback sin CDN/recursos JS y vacío. 18 JPEG verificados. Fallback servido sin scripts/noscript activo en preview aislado; no configuración global del navegador. Zoom 200% y preferencia reducida nativos siguen manuales.
+- Preview en memoria detenido, pestaña temporal cerrada, viewport restaurado y .work-008 retirado. Hashes preservan dependencias/autenticación/servicios 007; cambios anteriores fuera de once archivos del alcance intactos. No DB real, .env/media personal, commit/push ni despliegue.
+- Documentación final: 237 enlaces locales de trece documentos válidos y diff --check sin errores; avisos de conversión LF/CRLF sin alterar significado. Evidencia estructurada en la spec.
+- Siguiente: revisión visual del propietario y comprobaciones manuales indicadas. Pendientes operativos de 007 conservados. Próxima spec sugerida 009, comprobar antes de usar.
+
+## Antecedente documental — DOCUMENTAR 008
+
+- Pedido posterior a 007: SVG en Correo/Google y cuatro enlaces de suscripciones, ocultar Inicio a RESTRICTED, dashboard acorde al producto para ADMIN/MANAGER y mismos SVG sol/luna de Inicio en Mi suscripción. Capturas usadas como referencias de controles, sin instrucciones adicionales.
+- Siguiente número libre 008 comprobado. Entregados en orden [spec](../specs/008-dashboard-navegacion/spec.md), [plan](../specs/008-dashboard-navegacion/plan.md) y [tareas](../specs/008-dashboard-navegacion/tasks.md), todas pendientes. Propuesta: agregados de suscripciones registradas, períodos/planes y volumen mensual simulado; conserva últimos accesos y permisos generales de root.
+- Inspección: Home ya redirige clientes antes de consultas, pero nav muestra Inicio; seis enlaces sin SVG y selector de Mi suscripción con glifos. Index usa gráfico meteorológico de ejemplo. No se corrigió código durante esta fase; cambios locales de 007 preservados.
+- Solo Markdown actualizado. Verificación documental: 165 enlaces locales de diez documentos válidos; hashes de 338 archivos no-Markdown conservados sin adiciones/eliminaciones/cambios; git diff --check sin errores (avisos de conversión LF/CRLF de archivos anteriores). No ejecutados tests/build/migraciones ni importado settings normal; no lectura de .env/DB/media personal. Los 117 tests anteriores siguen perteneciendo a 007.
+- Siguiente: revisión e instrucción posterior explícita para implementar 008, conforme a AGENTS.md. Sin vacío crítico que requiera entrevista; métricas/disposición son propuestas revisables. La autorización completa de 007 ya recibida se conserva.
+
+## Entrega anterior — implementación 007 / PlanesApp
+
+- Autorización posterior explícita: «te doy permsio de implementar todo la specs 007 alcanse completo». Entorno confirmado por el propietario: **.venv**. Documentación inicial spec→plan→tasks ya entregada antes del permiso; su evidencia de 176 enlaces/293 no-Markdown sin cambios correspondía a DOCUMENTAR, no al cierre actual.
+- Implementado registro Google/email RESTRICTED+Free atómico, confirmación previa a contratar, cuatro planes y pagos/renovación simulados, tarjeta en vivo/giro, checkout/cambio/cancelación/revocación, historial y propiedad. Cliente no ve cuentas ajenas; 004/006 y MFA conservados. Sin vigilancia ni pagos reales.
+- **117 métodos Django OK (11,865 s)** en core.test_settings; check/esquema/pip correctos, 76 HTML cargados, Ruff OK y Tailwind standalone 4.3.0 compilado. Último ajuste no-store de catálogo revalidado con su regresión. Ensayo SQLite en memoria: seed 4 planes/19 beneficios, reversión/reaplicación y colisión de cargo sin cambios parciales. [Evidencia](../specs/007-planes-app/evidencia/verificacion.json).
+- Navegador: catálogo/métodos claro/oscuro, 360/390/768/1024/1440 px sin desbordamiento; tarjeta/nombre largo/teclado, máscaras, Plus aprobado, Hogar rechazado conservando Plus, cancelación/retiro, errores y guardado con scripts bloqueados. Capturas correctas en [validación](../specs/007-planes-app/validation.md). Zoom 200% y preferencia reducida en navegador siguen manuales; regla CSS implementada. Preview detenido, pestaña temporal cerrada/viewport restaurado.
+- .venv reconstruido en su ruta conservando paquetes por Python ausente; pyvenv.cfg original en .recovery-007. Lock recibido real: 51 pins sin hashes; regenerado con 54 paquetes/hashes, versiones previas conservadas más oauthlib/PyJWT/pip declarado. No upgrade general ni nueva auditoría de vulnerabilidades. [Entorno y configuración Google](PLANESAPP_DESARROLLO.md).
+- Tareas 01–14 técnicamente completas; 15 parcial por revisión manual visual, 16 parcial por aceptación del propietario. OAuth real no ensayado por ausencia de credenciales; mocks prueban callback/state/PKCE/alta/repetición/colisión/error, no red/consentimiento reales. SQLite no acredita bloqueos de otro motor.
+- Temporales de preview/compilación 007 retirados; .venv y respaldo conservados. No lectura de .env/DB/media personal, migración real, commit/push o despliegue. Siguiente: configurar OAuth propio, autorizar instalación en DB local elegida tras respaldo y completar revisión manual/aceptación. Próxima spec sugerida 008, comprobar. No repetir autorizaciones de implementación ya recibidas.
 
 ## Último ajuste visual — 2026-10-05
 
 Pedido acotado ejecutado: tarjetas internas de Perfil, Registro y cuenta/2FA centradas horizontalmente en el área junto al menú. CSS compartido y versión de caché actualizados; interiores/anchos/espaciado vertical conservados. Navegador con cuenta ficticia: tres tarjetas de 640 px, centrado exacto y sin desbordamiento en escritorio. Build Tailwind 4.3.0 y diff --check correctos; preview detenido y pestaña cerrada. Sin cambios funcionales, datos reales ni migraciones. Pendiente: revisión visual del propietario.
 
-## Pedido actual — correcciones autorizadas, specs 005/006
+## Antecedente — correcciones autorizadas, specs 005/006
 
 Seguimiento del 2026-10-02: requirements.txt encontrado con versiones antiguas y regenerado desde requirements.in con hashes. Las 52 versiones coinciden exactamente con .venv-actualizada y con las ya verificadas; presentes los 52 hashes de artefactos de instalación anteriores, pip check OK. [Evidencia](evidencia/actualizacion-20261002/requisitos-restaurados.json). No usar pip freeze desde otro entorno para actualizar este lock; ver la guía. Sin cambios de runtime/código ni repetición de la suite previa.
 

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import OperationalError
 
 from core.mixins import PermitsPositionMixin, usuario_tiene_cargo
@@ -29,6 +30,7 @@ def permisos_navegacion(request):
     """Expone al menú la misma política que protege el registro interno."""
     puede_gestionar = usuario_tiene_cargo(request.user, PermitsPositionMixin.permisos)
     return {
+        "google_oauth_enabled": settings.GOOGLE_OAUTH_ENABLED,
         "puede_registrar_usuarios": bool(cargos_asignables(request.user)),
         "puede_gestionar_usuarios": puede_gestionar,
     }

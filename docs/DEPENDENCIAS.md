@@ -75,3 +75,11 @@ La spec 006 prepara fotos nuevas antes de escribir, usa transacciones para User/
 La política de cargos nueva corresponde al Registro de UsuarioApp. No redefine permisos intrínsecos del sitio Django admin, ni añade un sistema de auditoría/antiabuso/cifrado MFA. Esas decisiones, hosting, respaldos operativos y aceptación manual siguen perteneciendo a cada producto.
 
 La ruta de fotos nuevas usa users/{user_id}/UUID.ext: evita superar los 100 caracteres del campo con un username válido de 150. No mueve fotografías ni cambia referencias ya guardadas. Diagnóstico y regresión de longitud máxima en validación 006.
+
+## Cambio acotado de esta copia — 007, 2026-10-06
+
+La configuración vigente de este derivado abre registro público y habilita Google/socialaccount con correo optional y gate de operaciones en PlanesApp. Conserva MFA heredado y opcionales comentados. Las descripciones de «registro cerrado/sin socialaccount» anteriores son historia de 005, sustituidas en este producto por 007.
+
+Fuente: django-allauth[mfa,socialaccount]==65.19.7. Se añadieron oauthlib 4.0.0 y PyJWT 2.15.1. HEAD recibido tenía 51 pins sin hashes; lock regenerado con pip-tools 7.6.1/pip 26.2.1 en entorno compilador separado: 54 paquetes con hashes, 51 versiones previas conservadas y pip 26.2.1 ya declarado en requirements.in. .venv instalado coincide exactamente y pip check pasa. No se afirma nueva auditoría OSV de estas adiciones.
+
+Usar **.venv/Scripts/python.exe** en esta copia; se reparó su intérprete ausente sin borrar paquetes. [Guía](PLANESAPP_DESARROLLO.md), [evidencia](../specs/007-planes-app/evidencia/verificacion.json). No migración real ni instalación en producción; configuración Google externa pendiente, sin secretos guardados.

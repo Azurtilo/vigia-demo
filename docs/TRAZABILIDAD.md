@@ -1,6 +1,6 @@
 # Trazabilidad de requisitos y pruebas
 
-No hay requisitos de un módulo de negocio todavía. La spec transversal 001-CalidadBase sí tiene implementación y evidencia funcional.
+El primer módulo de negocio solicitado, PlanesApp (007), está implementado con pruebas de servidor y evidencia visual parcial. La spec transversal 001-CalidadBase y evoluciones 002–006 conservan su evidencia histórica.
 
 Actualizar al crear una spec y después de verificarla:
 
@@ -98,3 +98,51 @@ La [auditoría global](VALIDACION_PREPRODUCCION.md) relaciona RF/RNF de 001–00
 | RF-006-05 | trece métodos integridad, T00604/05 | Suite total 75 (57 recibidos + 6 dependencias + 13 integridad), check/esquema/browser; aceptación manual pendiente |
 
 Detalles reproducibles: [005](../specs/005-actualizacion-dependencias/validation.md), [006](../specs/006-integridad-registro/validation.md). Evidencia de 001–004 conservada como historial; ninguna suma de asociaciones se presenta como porcentaje de cobertura. Sin migraciones reales/producción/commit/push.
+
+## PlanesApp — 007, trazabilidad implementada
+
+[Spec](../specs/007-planes-app/spec.md), [plan](../specs/007-planes-app/plan.md), [tareas](../specs/007-planes-app/tasks.md). Filas implementadas y verificadas según [validation.md](../specs/007-planes-app/validation.md): 117 tests OK y navegador con límites. OAuth real/zoom/preferencia reducida/aceptación pendientes. SignupForm real en UsuarioApp/signup_forms.py, nuevas pruebas en PlanesApp/tests.py. Fecha: 2026-10-06.
+
+| RF | Tareas previstas | Diseño / archivos previstos | Prueba propuesta |
+|---|---|---|---|
+| RF-007-01 | 03/14/16 | UsuarioApp services/adapters/forms y signup | Alta segura/duplicados/rollback/flags/cargo |
+| RF-007-02 | 01/05/14/15/16 | Configuración social/adapters/templates | OAuth mock/cancelación/colisión/conexión; ensayo externo si configurado |
+| RF-007-03 | 04/05/14/16 | Allauth email y permisos de contratación | Confirmación/expiración/reenvío/gate/MFA preservados |
+| RF-007-04 | 02/07/14/15/16 | Plan/beneficios/migraciones/catalogo | Cuatro precios/beneficios/anonimato y plan inactivo |
+| RF-007-05 | 02/03/07/12/14/16 | Subscription/services/resumen | Free/propiedad/estado fechas/GET sin escritura |
+| RF-007-06 | 02/08/14/15/16 | Métodos/forms/simulator/services | Lista cerrada/no PAN-CVC/fecha/default/IDs ajenos |
+| RF-007-07 | 09/15/16 | Componente card.js/CSS de app | Navegador giro/teclado/móvil/reducido/sin JS |
+| RF-007-08 | 10/14/15/16 | Operación/services/checkout/resultado | Precio servidor/CSRF/idempotencia/atomicidad/error |
+| RF-007-09 | 11/14/15/16 | Servicios/cancelación/resumen | Cambio inmediato/Free/sin cargo rol/cancelar/revocar |
+| RF-007-10 | 12/14/15/16 | Fechas/renovación en servicios | Mes corto/bisiesto/DST/rechazo/no doble período |
+| RF-007-11 | 02/10/11/12/13/14/16 | Operaciones/snapshots/historial | Histórico estable/paginación/solo titular |
+| RF-007-12 | 06/07/14/15/16 | Home/UserListView/processor/nav/selector visual | Matriz por cargo y root/URL/HTML/no consulta cuentas cliente |
+| RF-007-13 | 01/02/06/07/09/14/15/16 | Integración/theme/tests/docs | Suite aislada/build/navegador/docs y límites |
+
+Sustituciones autorizadas explícitas: cierre RF-001-02 y tests asociados de 005; acceso lector Home/Usuarios y verificación none conservados antes. Apertura actual verificada en 007; evidencia histórica del cierre permanece identificada como tal. Registro y gestión 004/006 continúan vigentes. Tareas referidas como 03 representan T-007-03, etc.
+
+## 008 — Dashboard y navegación, propuesta documental 2026-10-06
+
+[Spec](../specs/008-dashboard-navegacion/spec.md), [plan](../specs/008-dashboard-navegacion/plan.md), [tareas](../specs/008-dashboard-navegacion/tasks.md). Ningún RF implementado/verificado funcionalmente en esta fase; todas las tareas pendientes de autorización posterior.
+
+| RF | Tareas T-008 | Archivos previstos | Evidencia propuesta |
+|---|---|---|---|
+| RF-008-01 | 01/05/06/07 | nav.html compartido | Seis SVG, labels, escritorio/móvil |
+| RF-008-02 | 01/05/06/07 | nav/processor/Home | Matriz, guard previo, URL y menú coherentes |
+| RF-008-03 | 03/04/05/06/07 | dashboard.py propuesto, Home/index/grafico_home | Datos reales del prototipo, cero, HTML sin JS/CDN |
+| RF-008-04 | 03/04/05/07 | dashboard.py, modelos/services como referencia | Fechas/cancelación/población/snapshots y no escritura GET |
+| RF-008-05 | 02/05/06/07 | visual_mode.html propuesto, index/mi_suscripcion | Mismos SVG, POST/CSRF/preferencia propia y sin JS |
+| RF-008-06 | 02/04/05/06/07 | templates/estilos/JS existentes | Suite aislada/build/cinco anchos/modos/teclado/fallback |
+
+### Ejecución posterior de 008 — 2026-10-06
+
+Las filas de propuesta anteriores conservan el diseño inicial. Alcance completo autorizado posteriormente e implementado; T-008-01–07 técnicas completas, aceptación y zoom/preferencia reducida nativos pendientes. [Validación](../specs/008-dashboard-navegacion/validation.md), [evidencia servidor](../specs/008-dashboard-navegacion/evidencia/verificacion.json) y [navegador](../specs/008-dashboard-navegacion/evidencia/navegador.json).
+
+| RF | Implementación real | Evidencia |
+|---|---|---|
+| 01/02 | nav.html y guard/flag vigentes | Matriz de diez casos y variantes en homeApp/test_dashboard.py; SVG y clientes/operadores en navegador |
+| 03/04 | PlanesApp/dashboard.py, Home/index/grafico_home.js | Clasificación comparada con summary, límites/cancelación/volumen/snapshots, cuatro consultas, JSON escapado y vacío |
+| 05 | components/visual_mode.html en Home/Mi suscripción | Preferencia/POST/CSRF y SVG compartido; cambios de modo en navegador, incluso sin recursos JS |
+| 06 | Estilos/cache/versiones, base extendida details/noscript | 127 tests OK, 77 HTML/build y cinco anchos/dos modos/fallback/teclado; 18 capturas, límites manuales declarados |
+
+Pruebas nuevas en homeApp/test_dashboard.py; dos expectativas antiguas de tests.py actualizadas porque el gráfico demostrativo fue sustituido expresamente en 008. Evidencia 007 no se presenta como validación de estas nuevas reglas.

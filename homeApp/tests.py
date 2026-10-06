@@ -12,7 +12,7 @@ from UsuarioApp.models import UserVisualPreference
 class RegresionInicioTests(TestCase):
     def test_selector_inicial_y_modo_servidor_en_pantallas_compartidas(self):
         user = User.objects.create_user(
-            username="selector_sintetico", password="Prueba-2026-Segura!"
+            username="selector_sintetico", is_superuser=True, password="Prueba-2026-Segura!"
         )
         self.client.force_login(user)
         initial = self.client.get(reverse("Home"))
@@ -44,20 +44,22 @@ class RegresionInicioTests(TestCase):
                     render_to_string(f"{code}.html", request=request),
                 )
 
-    def test_inicio_conserva_grafico_demostrativo(self):
+    def test_inicio_sustituye_demostracion_por_resumen_de_suscripciones(self):
         user = User.objects.create_user(
-            username="inicio", password="Prueba-2026-Segura!"
+            username="inicio", is_superuser=True, password="Prueba-2026-Segura!"
         )
         self.client.force_login(user)
         response = self.client.get(reverse("Home"))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Gráfico de ejemplo")
-        self.assertContains(response, "Datos demostrativos")
+        self.assertContains(response, "Resumen de suscripciones")
+        self.assertContains(response, "Distribución de planes")
+        self.assertContains(response, "dashboard-plan-data")
+        self.assertNotContains(response, "Gráfico de ejemplo")
         self.assertContains(response, "grafico_home.js")
 
     def test_inicio_distingue_actividad_y_accesos_con_datos_sinteticos(self):
         user = User.objects.create_user(
-            username="visor", password="Prueba-2026-Segura!"
+            username="visor", is_superuser=True, password="Prueba-2026-Segura!"
         )
         self.client.force_login(user)
         now = timezone.now()
@@ -72,7 +74,7 @@ class RegresionInicioTests(TestCase):
         self.assertEqual(len(response.context["usuarios_recientes"]), 5)
         self.assertNotContains(response, "inactivo_excluido")
         self.assertContains(response, "no confirma que el usuario siga conectado")
-        self.assertContains(response, "No representan la actividad de la plataforma")
+        self.assertContains(response, "Todos los pagos de esta plataforma son simulados")
 
     def test_errores_renderizan_para_anonimo_y_cuenta_sin_perfil(self):
         factory = RequestFactory()

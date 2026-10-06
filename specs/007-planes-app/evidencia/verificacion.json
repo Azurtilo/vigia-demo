@@ -1,0 +1,46 @@
+{
+  "date": "2026-10-06",
+  "settings": "core.test_settings",
+  "environment": ".venv / Python 3.12.14",
+  "tests": {
+    "command": ".\\.venv\\Scripts\\python.exe manage.py test UsuarioApp homeApp PlanesApp --settings=core.test_settings",
+    "count": 117,
+    "seconds": 11.865,
+    "result": "OK",
+    "final_cache_change": "test_catalogo_seed_exacto_y_anonimo OK (0.024s)"
+  },
+  "check": "0 issues",
+  "schema": "No changes detected",
+  "pip_check": "No broken requirements found",
+  "lock": {
+    "old_count": 51,
+    "current_count": 54,
+    "old_versions_preserved": true,
+    "installed_matches_lock": true,
+    "added": {
+      "oauthlib": "4.0.0",
+      "pyjwt": "2.15.1",
+      "pip": "26.2.1"
+    }
+  },
+  "templates_compiled": 76,
+  "static_discovery": "PlanesApp/card.js y planes.css encontrados",
+  "migration_trial": {
+    "database": "SQLite en memoria",
+    "fresh": "4 planes / 19 beneficios",
+    "reverse_seed": "no-op",
+    "reverse_schema": "tablas propias eliminadas; cargo conservado",
+    "collision": "bloqueada sin alterar cargo ni crear catálogo",
+    "reapply": "OK"
+  },
+  "build": "Tailwind standalone 4.3.0, fuente PlanesApp incluida",
+  "lint": "Ruff OK; N999 exceptuado por nombre PlanesApp solicitado, SIM117 por bloques anidados de pruebas",
+  "limits": [
+    "OAuth real no ensayado",
+    "SQLite no acredita bloqueos de PostgreSQL",
+    "Zoom 200% y preferencia reducida solo pendientes de comprobación manual",
+    "No aceptación del propietario"
+  ],
+  "production_database": "No leída ni migrada",
+  "deployment_commit_push": "No ejecutados"
+}

@@ -30,7 +30,7 @@ from PIL import Image
 
 from core.context_processors import permisos_navegacion, preferencias_visuales
 from core.mixins import usuario_tiene_cargo
-from UsuarioApp.adapters import NoSignupAccountAdapter
+from UsuarioApp.adapters import PublicAccountAdapter
 from UsuarioApp.models import Position, Profile, UserVisualPreference
 from UsuarioApp.views import (
     AdministrativePasswordView,
@@ -208,7 +208,7 @@ class AdministracionUsuariosTests(BaseUsuariosTestCase):
                         if allowed:
                             self.assertContains(listing, marker)
                         else:
-                            self.assertNotContains(listing, marker)
+                            self.assertNotContains(listing, marker, status_code=200 if usuario_tiene_cargo(actor) else 403)
                         get = self.client.get(url)
                         # GET reset verifica destinatario; GET de estado solo verifica actor.
                         expected_get = (
@@ -387,12 +387,12 @@ class AdministracionUsuariosTests(BaseUsuariosTestCase):
         sessions = [Client(), Client()]
         for browser in sessions:
             browser.force_login(self.target)
-            self.assertEqual(browser.get(reverse("Home")).status_code, 200)
+            self.assertEqual(browser.get(reverse("Home"), follow=True).status_code, 200)
         self.assertEqual(self.client.post(self.url, self.payload()).status_code, 302)
         for browser in sessions:
-            self.assertEqual(browser.get(reverse("Home")).status_code, 302)
+            self.assertEqual(browser.get(reverse("Profile")).status_code, 302)
             self.assertNotIn("_auth_user_id", browser.session)
-        self.assertEqual(self.client.get(reverse("Home")).status_code, 200)
+        self.assertEqual(self.client.get(reverse("Home"), follow=True).status_code, 200)
         self.assertEqual(int(self.client.session["_auth_user_id"]), self.admin.pk)
         self.assertFalse(
             sessions[0].login(username=self.target.username, password=PASSWORD)
@@ -479,7 +479,7 @@ class AdministracionUsuariosTests(BaseUsuariosTestCase):
         )
         before = list(Authenticator.objects.filter(user=self.target).values())
         self.assertEqual(self.client.post(self.url, self.payload()).status_code, 302)
-        browser.get(reverse("Home"))
+        browser.get(reverse("Home"), follow=True)
         result = browser.post(
             reverse("account_login"),
             {"login": self.target.username, "password": NEW_PASSWORD},
@@ -596,55 +596,30 @@ class ConfiguracionAisladaTests(TestCase):
 
 
 class RegistroPublicoTests(BaseUsuariosTestCase):
-    def test_adapter_configurado_cierra_registro(self):
-        adapter = get_adapter()
-        self.assertIsInstance(adapter, NoSignupAccountAdapter)
-        self.assertFalse(adapter.is_open_for_signup(None))
+    # RF-007-01 sustituye el cierre de RF-001-02 en este derivado.
+    def test_adapter_configurado_abre_solo_a_anonimos(self):
+        from django.contrib.auth.models import AnonymousUser
+        request = RequestFactory().get("/accounts/signup/")
+        request.user = AnonymousUser()
+        self.assertIsInstance(get_adapter(), PublicAccountAdapter)
+        self.assertTrue(get_adapter().is_open_for_signup(request))
+        request.user = self.create_actor("ya_registrado")
+        self.assertFalse(get_adapter().is_open_for_signup(request))
 
-    def test_get_signup_muestra_registro_cerrado_sin_crear_datos(self):
-        counts = (
-            User.objects.count(),
-            Profile.objects.count(),
-            EmailAddress.objects.count(),
-        )
+    def test_get_signup_abierto_no_crea_datos(self):
+        counts = (User.objects.count(), Profile.objects.count(), EmailAddress.objects.count())
         response = self.client.get("/accounts/signup/")
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "account/signup_closed.html")
-        self.assertContains(response, "Registro Cerrado")
-        self.assertEqual(
-            (
-                User.objects.count(),
-                Profile.objects.count(),
-                EmailAddress.objects.count(),
-            ),
-            counts,
-        )
+        self.assertTemplateUsed(response, "account/signup.html")
+        self.assertContains(response, "Crear cuenta")
+        self.assertEqual(counts, (User.objects.count(), Profile.objects.count(), EmailAddress.objects.count()))
 
-    def test_post_signup_no_crea_cuenta(self):
-        counts = (
-            User.objects.count(),
-            Profile.objects.count(),
-            EmailAddress.objects.count(),
-        )
-        response = self.client.post(
-            "/accounts/signup/",
-            {
-                "username": "publico",
-                "email": "publico@example.test",
-                "password1": PASSWORD,
-                "password2": PASSWORD,
-            },
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "account/signup_closed.html")
-        self.assertEqual(
-            (
-                User.objects.count(),
-                Profile.objects.count(),
-                EmailAddress.objects.count(),
-            ),
-            counts,
-        )
+    def test_post_signup_crea_restricted_sin_privilegios(self):
+        response = self.client.post("/accounts/signup/", {"username": "publico", "email": "publico@example.test", "password1": PASSWORD, "password2": PASSWORD, "is_superuser": "1", "position_FK": self.admin_position.pk})
+        self.assertEqual(response.status_code, 302)
+        user = User.objects.get(username="publico")
+        self.assertEqual(user.profile.position_FK.permission_code, "RESTRICTED")
+        self.assertFalse(user.is_superuser or user.is_staff)
+        self.assertFalse(EmailAddress.objects.get(user=user).verified)
 
 
 class PermisosRegistroInternoTests(BaseUsuariosTestCase):
@@ -853,7 +828,7 @@ class NavegacionRegistroTests(BaseUsuariosTestCase):
         for actor, allowed in actors:
             with self.subTest(actor=actor.username):
                 self.client.force_login(actor)
-                response = self.client.get(reverse("Home"))
+                response = self.client.get(reverse("Home"), follow=True)
                 self.assertEqual(response.status_code, 200)
                 if allowed:
                     self.assertContains(response, register_href, html=False)
@@ -900,7 +875,7 @@ class RenovacionUsuariosTests(BaseUsuariosTestCase):
                     self.client.force_login(actor)
                 # Buscar evita que la paginación oculte el objetivo en la matriz.
                 response = self.client.get(reverse("User"), {"search": target.username})
-                if actor and actor.is_active:
+                if actor and usuario_tiene_cargo(actor):
                     self.assertEqual(response.status_code, 200)
                     # El flag global conserva la excepción de root para Registro;
                     # las acciones por destinatario de 004 requieren cargo.
@@ -914,7 +889,7 @@ class RenovacionUsuariosTests(BaseUsuariosTestCase):
                     else:
                         self.assertNotContains(response, opener)
                 else:
-                    self.assertEqual(response.status_code, 302)
+                    self.assertEqual(response.status_code, 403 if actor and actor.is_active else 302)
                 for route, starting_active in (
                     ("UserDeactivate", True),
                     ("UserActivate", False),
@@ -962,7 +937,7 @@ class RenovacionUsuariosTests(BaseUsuariosTestCase):
         self.assertTrue(target.is_active)
 
     def test_filtro_inactivo_y_busqueda_se_conservan_al_paginar(self):
-        actor = self.create_actor("filtros", position=self.restricted_position)
+        actor = self.create_actor("filtros", position=self.admin_position)
         self.client.force_login(actor)
         for index in range(12):
             User.objects.create_user(
@@ -1028,8 +1003,8 @@ class RenovacionUsuariosTests(BaseUsuariosTestCase):
             "mfa_index",
         ):
             with self.subTest(route=route):
-                response = self.client.get(reverse(route))
-                self.assertEqual(response.status_code, 200)
+                response = self.client.get(reverse(route), follow=True)
+                self.assertEqual(response.status_code, 403 if route == "User" else 200)
         self.assertTrue(Profile.objects.filter(user_FK=actor).exists())
 
     def test_texto_de_usuario_y_mensajes_no_inyectan_html(self):
@@ -1060,7 +1035,7 @@ class RenovacionUsuariosTests(BaseUsuariosTestCase):
 
 class RenovacionCuentaTests(BaseUsuariosTestCase):
     def test_login_conserva_destino_y_logout_get_no_cierra_sesion(self):
-        actor = self.create_actor("flujo_login", position=self.restricted_position)
+        actor = self.create_actor("flujo_login", position=self.admin_position)
         response = self.client.post(
             reverse("account_login"),
             {"login": actor.username, "password": PASSWORD, "next": reverse("User")},
@@ -1156,7 +1131,7 @@ class RenovacionCuentaTests(BaseUsuariosTestCase):
         authenticated = self.client.post(reverse("mfa_authenticate"), {"code": code})
         self.assertEqual(authenticated.status_code, 302)
         self.assertIn("_auth_user_id", self.client.session)
-        self.assertContains(self.client.get(reverse("Home")), 'data-mode="dark"')
+        self.assertContains(self.client.get(reverse("Home"), follow=True), 'data-mode="dark"')
         deactivated = self.client.post(reverse("mfa_deactivate_totp"))
         self.assertEqual(deactivated.status_code, 302)
         self.assertFalse(
@@ -1186,13 +1161,13 @@ class ModoVisualTests(BaseUsuariosTestCase):
             with self.subTest(actor=actor.username):
                 self.client.force_login(actor)
                 self.assertRedirects(
-                    self.client.post(self.url, {"mode": "dark"}), reverse("Home")
+                    self.client.post(self.url, {"mode": "dark"}), reverse("Home"), fetch_redirect_response=False
                 )
                 self.assertEqual(
                     UserVisualPreference.objects.get(user=actor).mode, "dark"
                 )
                 self.assertContains(
-                    self.client.get(reverse("Home")), 'aria-label="Activar modo claro"'
+                    self.client.get(reverse("Home"), follow=True), 'aria-label="Activar modo claro"'
                 )
 
     def test_anonimo_vuelve_a_inicio_despues_de_login_y_no_escribe(self):
@@ -1241,7 +1216,7 @@ class ModoVisualTests(BaseUsuariosTestCase):
         browser.force_login(self.actor)
         self.assertEqual(browser.post(self.url, {"mode": "dark"}).status_code, 403)
         self.assertFalse(UserVisualPreference.objects.exists())
-        browser.get(reverse("Home"))
+        browser.get(reverse("Home"), follow=True)
         token = browser.cookies["csrftoken"].value
         self.assertEqual(
             browser.post(
@@ -1300,20 +1275,20 @@ class ModoVisualTests(BaseUsuariosTestCase):
                 ).status_code,
                 302,
             )
-            self.assertContains(browser.get(reverse("Home")), 'data-mode="dark"')
+            self.assertContains(browser.get(reverse("Home"), follow=True), 'data-mode="dark"')
         self.client.post(self.url, {"mode": "light"})
-        self.assertContains(self.client.get(reverse("Home")), 'data-mode="light"')
+        self.assertContains(self.client.get(reverse("Home"), follow=True), 'data-mode="light"')
 
     def test_cuentas_del_mismo_navegador_no_heredan_modo(self):
         other = self.create_actor("modo_segundo", with_profile=False)
         self.client.post(self.url, {"mode": "dark"})
         self.client.logout()
         self.client.force_login(other)
-        self.assertContains(self.client.get(reverse("Home")), 'data-mode="light"')
+        self.assertContains(self.client.get(reverse("Home"), follow=True), 'data-mode="light"')
         self.assertFalse(UserVisualPreference.objects.filter(user=other).exists())
         self.client.logout()
         self.client.force_login(self.actor)
-        self.assertContains(self.client.get(reverse("Home")), 'data-mode="dark"')
+        self.assertContains(self.client.get(reverse("Home"), follow=True), 'data-mode="dark"')
 
     def test_guardado_no_crea_perfil_ni_procesa_fotos(self):
         actor = self.create_actor("modo_con_foto", position=self.restricted_position)
@@ -1386,7 +1361,7 @@ class ModoVisualTests(BaseUsuariosTestCase):
         )
         request.user = self.actor
         self.assertEqual(preferencias_visuales(request)["modo_visual"], "light")
-        self.client.get(reverse("Home"))
+        self.client.get(reverse("Home"), follow=True)
         self.client.get(reverse("User"))
         self.assertFalse(UserVisualPreference.objects.exists())
         self.assertFalse(Profile.objects.filter(user_FK=self.actor).exists())

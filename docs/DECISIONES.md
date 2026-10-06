@@ -72,3 +72,42 @@ No modificar silenciosamente el requisito para hacerlo coincidir con un bug.
 | D-025 | User/Profile transaccionales y fotos preparadas antes, compensación y borrado posterior al commit | Alcance RF-006-03/04 aprobado con 006; probado en storage local. Sin migraciones. Fallo de limpieza posterior conserva referencia válida y registra error, mantenimiento manual documentado |
 
 No reemplaza decisiones de otros proyectos ni configura hosting/correo/cifrado/auditoría por inferencia. Todo probado con datos ficticios y cambios sin commit/push. Aceptación del propietario pendiente.
+
+## PlanesApp — DOCUMENTAR 007, 2026-10-06
+
+| ID | Decisión / propuesta | Fuente, estado y efecto |
+|---|---|---|
+| D-026 | Nueva app solicitada PlanesApp; registro público con Google y correo/contraseña, altas automáticamente RESTRICTED | Pedido y respuesta explícita del propietario. Documentado, sin autorización de código. Propone sustituir RF-001-02 solo en este producto, conservando historia y política interna 004/006 |
+| D-027 | Usar Vigía Free/Plus/Pro/Hogar con precios/beneficios de capturas | Respuesta explícita. Capturas no son mandato de diseño ni autorización de servicios de vigilancia. Moneda CLP/Free inicial son precisiones propuestas; marca definitiva por definir |
+| D-028 | Mensualidad simulada, cambio inmediato sin prorrateo y cancelación al finalizar período | Confirmado expresamente. Reinicio de fechas, descenso a Free y demostración de renovación mediante botón son propuestas detalladas en spec/plan, no confirmaciones atribuidas |
+| D-029 | Confirmar correo antes de contratar y probarlo localmente; Google usa correo verificado del proveedor | Confirmado expresamente. Propuesta: allauth verificación optional más gate obligatorio de contratación, para preservar login/MFA internos. Amplía none de D-009 solo para este derivado; mantiene consola/local sin SMTP de producción |
+| D-030 | Mantener diseño actual y usar frontend-design; una tarjeta interactiva de prueba con giro al CVC | Pedido explícito. Plan visual documentado con tokens existentes; pagos locales simulados y lista cerrada, sin PAN/CVC persistidos ni pasarela real. No código/UI creados |
+| D-031 | Proteger Inicio/listado frente a clientes y filtrar todos los objetos por titular; Google coincidente exige conexión explícita | Propuesta técnica para revisar al abrir registro, fundada en código real. Root conserva helper general para lectura interna; 004/006 no cambian. Sin aprobación de implementación ni cambio efectivo de permisos |
+
+Se mantiene D-002: las confirmaciones de requisitos no son la instrucción posterior para implementar. [Spec](../specs/007-planes-app/spec.md), [plan](../specs/007-planes-app/plan.md), [tareas](../specs/007-planes-app/tasks.md). Producción/pagos reales/migraciones reales fuera de autorización.
+
+## Implementación posterior de 007 — 2026-10-06
+
+| ID | Decisión | Fuente y efecto |
+|---|---|---|
+| D-032 | Implementar todo el alcance documentado de 007 y usar .venv en esta copia | Instrucción explícita posterior del propietario. Sustituye el estado «sin código autorizado/propuesta» de D-026–031: precisiones técnicas incluidas, 117 tests y evidencia visual parcial; aceptación/OAuth real pendientes. No autoriza DB real/despliegue |
+
+D-026–031 conservan la fuente/estado inicial de DOCUMENTAR; el estado vigente es D-032 y [validation.md](../specs/007-planes-app/validation.md). RF-001-02 y lectura Home/listado sustituidos solo en este derivado; jerarquía 004/006 intacta. .venv reparado en su ruta y lock regenerado desde fuente; no actualización general de dependencias.
+
+## Dashboard y navegación — DOCUMENTAR 008, 2026-10-06
+
+| ID | Decisión / propuesta | Fuente y estado |
+|---|---|---|
+| D-033 | Seis SVG coherentes con el menú, Inicio oculto a clientes y selector con los mismos sol/luna de Inicio | Pedido explícito posterior a 007. Documentado en 008; no código en esta fase. Root conserva excepción lectora del helper vigente |
+| D-034 | Ampliar Home con agregados de suscripciones y volumen mensual simulado, conservando accesos recientes | Pedido de dashboard para ADMIN/MANAGER; indicadores/población/disposición son propuesta técnica concreta, no confirmación atribuida al propietario. Lectura global agregada, sin acceso a métodos/historial ajenos ni permisos nuevos de escritura |
+| D-035 | Evolución transversal 008 en apps existentes, con spec→plan→tasks antes de código | AGENTS.md/prompts y número libre comprobado. D-032 sigue vigente para 007; implementación posterior de 008 pendiente. Sin modelos/migraciones/dependencias nuevas previstas |
+
+[Spec](../specs/008-dashboard-navegacion/spec.md), [plan](../specs/008-dashboard-navegacion/plan.md), [tareas](../specs/008-dashboard-navegacion/tasks.md). Estas propuestas no sustituyen las reglas comerciales de D-026–032 ni la gestión 004/006.
+
+## Autorización y ejecución posterior de 008 — 2026-10-06
+
+| ID | Decisión | Fuente y efecto |
+|---|---|---|
+| D-036 | Implementar el alcance completo de 008 tras entregar spec/plan/tasks | Instrucción posterior explícita «implementa specs 8 Dashboard de suscripciones y navegación coherente alcance completo». Sustituye solo el estado pendiente/propuesto de D-033–035; no altera 004/006/007 ni autoriza datos reales/despliegue |
+
+D-033–035 conservan la fase inicial; estado vigente: SVG, dashboard lector y selector compartido implementados, 127 tests OK y navegador verificado con límites. Servicio de cuatro consultas, datos sin backfill; fallback nativo noscript y scroll interno del sidebar como ajustes acotados de RF-008-06. [Validación y aceptación pendiente](../specs/008-dashboard-navegacion/validation.md).

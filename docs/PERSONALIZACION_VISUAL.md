@@ -75,6 +75,8 @@ Revisa login, Inicio, Usuarios, Registro, Perfil, Cuenta/MFA y errores; datos v�
 
 ## Modo claro/oscuro por cuenta
 
+Actualización 008: Inicio y Mi suscripción reutilizan [visual_mode.html](../templates/components/visual_mode.html) con idénticos SVG sol/luna, labels/clases y POST/CSRF; el retorno a Home conserva su redirección de clientes. Index ahora muestra agregados de PlanesApp y gráfico de planes con cantidades HTML accesibles. [Validación 008](../specs/008-dashboard-navegacion/validation.md): 127 tests y navegador; colores siguen en tokens.css. El menú compartido incorpora SVG y oculta Inicio según el helper; sidebar desplazable y details/noscript móvil mantienen acceso a enlaces cuando no hay scripts.
+
 Inicio muestra luna para activar oscuro y sol para activar claro, junto al estado actual. Un formulario POST con CSRF guarda solo la cuenta activa de la sesión y vuelve a Inicio; funciona sin ejecución de scripts. Todos los cargos, staff, superusuario y usuarios sin perfil pueden cambiar su propia elección. No modifica cargos, perfiles ni fotos.
 
 `UserVisualPreference` guarda light/dark con relación única y restricción de base. Sin fila, claro; las visitas no crean filas. El processor `preferencias_visuales` entrega el modo al HTML antes del CSS. Anónimos y preautenticación usan claro; logout conserva la elección de cuenta. No se guarda en cookies/localStorage ni se sigue el modo del sistema.

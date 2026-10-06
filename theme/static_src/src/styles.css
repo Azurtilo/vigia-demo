@@ -8,6 +8,7 @@
 @source "../../templates";
 @source "../../../static";
 @source "../../../UsuarioApp";
+@source "../../../PlanesApp";
 @source "../../../homeApp";
 @source "../../../core";
 @source "../../../utils";
