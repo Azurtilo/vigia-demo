@@ -1,0 +1,26 @@
+[
+  {
+    "name": "alpinejs",
+    "version": "3.17.4",
+    "url": "https://cdn.jsdelivr.net/npm/alpinejs@3.17.4/dist/cdn.min.js",
+    "bytes": 55891,
+    "integrity": "sha384-5/joNqFnRyVWzXp99bHot6RHG+EksGp+USSgZwPar7T9SD9PKKER37n/8bXBAZGd",
+    "sha256": "232519394c6c8fdba6f362b1d9da16106db513cdbf899011f00daab4051df31c"
+  },
+  {
+    "name": "dompurify",
+    "version": "3.4.16",
+    "url": "https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.4.16/purify.min.js",
+    "bytes": 28885,
+    "integrity": "sha384-a7SzOxErzJ3ZpQz0zJ32d67dSitNzPcbfybc/ykU9KJhMgZkwqfSxlhhdJRS+XGL",
+    "sha256": "2c90a9b46d6463f26038a29b686e82bc91de01fdac9d5229e7cfe3b360134ea2"
+  },
+  {
+    "name": "echarts",
+    "version": "6.1.0",
+    "url": "https://cdn.jsdelivr.net/npm/echarts@6.1.0/dist/echarts.min.js",
+    "bytes": 1121883,
+    "integrity": "sha384-C2iskrW/uPW46KzOjrvJIQo4YkV8lkD+QS0CrDN18IIPIpT/g2USu8bTP3nvmIAD",
+    "sha256": "b66b25aeb4df84e33199dc21694014d336d222cbd9deb0e5a7c14bd6aa0d0fd0"
+  }
+]

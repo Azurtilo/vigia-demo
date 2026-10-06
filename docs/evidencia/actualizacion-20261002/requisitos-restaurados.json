@@ -1,0 +1,16 @@
+{
+  "verified_at_utc": "2026-10-03T00:18:36.708298+00:00",
+  "reason": "requirements.txt recibido contiene versiones anteriores; restaurado desde requirements.in con las versiones ya verificadas en 005",
+  "python": "3.12.14",
+  "compiler": "pip-tools 7.6.1, pip 26.2.1, entorno temporal aislado",
+  "lock_sha256": "9cf9470c38c9fc21c3fd3d32fa6a0110d988de487eb9af9e04bb21789e5e0522",
+  "received_sha256": "7828323e1778cf5ee8c5479adc2582c43588a93b369cb2ca1cc254e6d6e92cc1",
+  "packages": 52,
+  "exactly_matches_previous_verified_versions": true,
+  "exactly_matches_installed_environment": true,
+  "all_packages_have_sha256_hashes": true,
+  "previously_verified_artifact_hashes_present": 52,
+  "pip_check": "OK",
+  "real_migrations": false,
+  "real_data_used": false
+}

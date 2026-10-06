@@ -1,0 +1,14 @@
+[
+  {
+    "path": "account/migrations/0001_initial.py",
+    "ast_equal": false
+  },
+  {
+    "path": "account/migrations/0002_email_max_length.py",
+    "ast_equal": false
+  },
+  {
+    "path": "mfa/migrations/0002_authenticator_timestamps.py",
+    "ast_equal": false
+  }
+]

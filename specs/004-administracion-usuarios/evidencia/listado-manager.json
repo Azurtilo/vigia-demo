@@ -1,0 +1,27 @@
+[
+  {
+    "deactivate": true,
+    "reset": false,
+    "user": "demo_usuario_con_nombre_largo"
+  },
+  {
+    "deactivate": false,
+    "reset": false,
+    "user": "demo_superusuario_sin_cargo"
+  },
+  {
+    "deactivate": true,
+    "reset": false,
+    "user": "demo_restricted"
+  },
+  {
+    "deactivate": false,
+    "reset": false,
+    "user": "demo_manager"
+  },
+  {
+    "deactivate": false,
+    "reset": false,
+    "user": "demo_admin"
+  }
+]

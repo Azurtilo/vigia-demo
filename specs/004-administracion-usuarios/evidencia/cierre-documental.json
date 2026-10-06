@@ -1,0 +1,18 @@
+{
+  "documents": 13,
+  "local_links": 150,
+  "broken_links": [],
+  "RF": 7,
+  "tasks_completed": 6,
+  "tasks_partial": 2,
+  "new_test_methods": 14,
+  "protected_identical": 14,
+  "source_differences": [
+    "templates/500.html",
+    "templates/pages/UsuarioApp/usuarios_lista.html",
+    "UsuarioApp/forms.py",
+    "UsuarioApp/tests.py",
+    "UsuarioApp/urls.py",
+    "UsuarioApp/views.py"
+  ]
+}

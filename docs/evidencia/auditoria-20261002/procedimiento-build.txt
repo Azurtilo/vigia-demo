@@ -1,0 +1,31 @@
+"""Compila copias de fuentes; nunca sobrescribe el CSS del proyecto."""
+import hashlib, json, os, pathlib, shutil, sys
+root=pathlib.Path(__file__).resolve().parent.parent
+audit=pathlib.Path(__file__).resolve().parent
+build=audit/'build'
+files=json.loads((audit/'baseline.json').read_text(encoding='utf-8-sig'))
+for item in files:
+    rel=pathlib.Path(item['path'])
+    if rel.parts[0] in ('theme','templates','static','UsuarioApp','homeApp','core','utils') or str(rel)=='manage.py':
+        target=build/rel; target.parent.mkdir(parents=True,exist_ok=True); shutil.copyfile(root/rel,target)
+sys.path.insert(0,str(root))
+# @source también escanea SVG; el logo contiene el atributo transform.
+logo=build/'static/img/logo.svg'
+logo.parent.mkdir(parents=True,exist_ok=True)
+shutil.copyfile(root/'static/img/logo.svg',logo)
+os.environ['DJANGO_SETTINGS_MODULE']='core.test_settings'
+import django
+django.setup()
+from django.apps import apps
+from django.core.management import call_command
+apps.get_app_config('theme').path=str(build/'theme')
+call_command('tailwind','build')
+generated=build/'theme/static/css/dist/styles.css'
+assert generated.is_file() and generated.stat().st_size>0
+digest=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+result={'tailwind':'v4.3.0','source':'tracked source copies','destination':str(generated),
+ 'bytes':generated.stat().st_size,'generated_sha256':digest(generated),
+ 'project_sha256':digest(root/'theme/static/css/dist/styles.css'),
+ 'identical':generated.read_bytes()==(root/'theme/static/css/dist/styles.css').read_bytes()}
+(audit/'build.json').write_text(json.dumps(result,indent=2),encoding='utf8')
+print(json.dumps(result,indent=2))

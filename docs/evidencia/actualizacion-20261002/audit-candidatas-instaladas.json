@@ -1,0 +1,448 @@
+{
+  "checked_at_utc": "2026-10-02T20:09:31.491033+00:00",
+  "queries": [
+    {
+      "package": {
+        "name": "argon2-cffi",
+        "ecosystem": "PyPI"
+      },
+      "version": "25.1.0"
+    },
+    {
+      "package": {
+        "name": "argon2-cffi-bindings",
+        "ecosystem": "PyPI"
+      },
+      "version": "26.1.0"
+    },
+    {
+      "package": {
+        "name": "arrow",
+        "ecosystem": "PyPI"
+      },
+      "version": "1.4.0"
+    },
+    {
+      "package": {
+        "name": "asgiref",
+        "ecosystem": "PyPI"
+      },
+      "version": "3.12.1"
+    },
+    {
+      "package": {
+        "name": "bcrypt",
+        "ecosystem": "PyPI"
+      },
+      "version": "5.0.0"
+    },
+    {
+      "package": {
+        "name": "binaryornot",
+        "ecosystem": "PyPI"
+      },
+      "version": "0.6.0"
+    },
+    {
+      "package": {
+        "name": "black",
+        "ecosystem": "PyPI"
+      },
+      "version": "26.5.1"
+    },
+    {
+      "package": {
+        "name": "certifi",
+        "ecosystem": "PyPI"
+      },
+      "version": "2026.7.22"
+    },
+    {
+      "package": {
+        "name": "cffi",
+        "ecosystem": "PyPI"
+      },
+      "version": "2.1.1"
+    },
+    {
+      "package": {
+        "name": "chardet",
+        "ecosystem": "PyPI"
+      },
+      "version": "7.6.0"
+    },
+    {
+      "package": {
+        "name": "charset-normalizer",
+        "ecosystem": "PyPI"
+      },
+      "version": "3.5.2"
+    },
+    {
+      "package": {
+        "name": "click",
+        "ecosystem": "PyPI"
+      },
+      "version": "8.5.0"
+    },
+    {
+      "package": {
+        "name": "colorama",
+        "ecosystem": "PyPI"
+      },
+      "version": "0.4.6"
+    },
+    {
+      "package": {
+        "name": "cookiecutter",
+        "ecosystem": "PyPI"
+      },
+      "version": "2.7.1"
+    },
+    {
+      "package": {
+        "name": "crispy-tailwind",
+        "ecosystem": "PyPI"
+      },
+      "version": "1.0.3"
+    },
+    {
+      "package": {
+        "name": "cryptography",
+        "ecosystem": "PyPI"
+      },
+      "version": "50.0.2"
+    },
+    {
+      "package": {
+        "name": "Django",
+        "ecosystem": "PyPI"
+      },
+      "version": "5.2.17"
+    },
+    {
+      "package": {
+        "name": "django-allauth",
+        "ecosystem": "PyPI"
+      },
+      "version": "65.19.7"
+    },
+    {
+      "package": {
+        "name": "django-axes",
+        "ecosystem": "PyPI"
+      },
+      "version": "8.3.1"
+    },
+    {
+      "package": {
+        "name": "django-crispy-forms",
+        "ecosystem": "PyPI"
+      },
+      "version": "2.7"
+    },
+    {
+      "package": {
+        "name": "django-environ",
+        "ecosystem": "PyPI"
+      },
+      "version": "0.14.0"
+    },
+    {
+      "package": {
+        "name": "django-preventconcurrentlogins",
+        "ecosystem": "PyPI"
+      },
+      "version": "0.8.2"
+    },
+    {
+      "package": {
+        "name": "django-tailwind",
+        "ecosystem": "PyPI"
+      },
+      "version": "4.5.0"
+    },
+    {
+      "package": {
+        "name": "fido2",
+        "ecosystem": "PyPI"
+      },
+      "version": "2.2.1"
+    },
+    {
+      "package": {
+        "name": "idna",
+        "ecosystem": "PyPI"
+      },
+      "version": "3.20"
+    },
+    {
+      "package": {
+        "name": "Jinja2",
+        "ecosystem": "PyPI"
+      },
+      "version": "3.1.6"
+    },
+    {
+      "package": {
+        "name": "markdown-it-py",
+        "ecosystem": "PyPI"
+      },
+      "version": "4.2.0"
+    },
+    {
+      "package": {
+        "name": "MarkupSafe",
+        "ecosystem": "PyPI"
+      },
+      "version": "3.0.3"
+    },
+    {
+      "package": {
+        "name": "mdurl",
+        "ecosystem": "PyPI"
+      },
+      "version": "0.1.2"
+    },
+    {
+      "package": {
+        "name": "mypy_extensions",
+        "ecosystem": "PyPI"
+      },
+      "version": "1.1.0"
+    },
+    {
+      "package": {
+        "name": "packaging",
+        "ecosystem": "PyPI"
+      },
+      "version": "26.3"
+    },
+    {
+      "package": {
+        "name": "pathspec",
+        "ecosystem": "PyPI"
+      },
+      "version": "1.1.1"
+    },
+    {
+      "package": {
+        "name": "pillow",
+        "ecosystem": "PyPI"
+      },
+      "version": "12.3.0"
+    },
+    {
+      "package": {
+        "name": "pip",
+        "ecosystem": "PyPI"
+      },
+      "version": "26.2.1"
+    },
+    {
+      "package": {
+        "name": "platformdirs",
+        "ecosystem": "PyPI"
+      },
+      "version": "4.12.2"
+    },
+    {
+      "package": {
+        "name": "pycparser",
+        "ecosystem": "PyPI"
+      },
+      "version": "3.0"
+    },
+    {
+      "package": {
+        "name": "Pygments",
+        "ecosystem": "PyPI"
+      },
+      "version": "2.21.0"
+    },
+    {
+      "package": {
+        "name": "pytailwindcss",
+        "ecosystem": "PyPI"
+      },
+      "version": "0.3.1"
+    },
+    {
+      "package": {
+        "name": "python-dateutil",
+        "ecosystem": "PyPI"
+      },
+      "version": "2.9.0.post0"
+    },
+    {
+      "package": {
+        "name": "python-slugify",
+        "ecosystem": "PyPI"
+      },
+      "version": "9.1.2"
+    },
+    {
+      "package": {
+        "name": "pytokens",
+        "ecosystem": "PyPI"
+      },
+      "version": "0.4.1"
+    },
+    {
+      "package": {
+        "name": "PyYAML",
+        "ecosystem": "PyPI"
+      },
+      "version": "6.0.3"
+    },
+    {
+      "package": {
+        "name": "qrcode",
+        "ecosystem": "PyPI"
+      },
+      "version": "8.2"
+    },
+    {
+      "package": {
+        "name": "requests",
+        "ecosystem": "PyPI"
+      },
+      "version": "2.34.2"
+    },
+    {
+      "package": {
+        "name": "rich",
+        "ecosystem": "PyPI"
+      },
+      "version": "15.0.0"
+    },
+    {
+      "package": {
+        "name": "ruff",
+        "ecosystem": "PyPI"
+      },
+      "version": "0.16.10"
+    },
+    {
+      "package": {
+        "name": "six",
+        "ecosystem": "PyPI"
+      },
+      "version": "1.17.0"
+    },
+    {
+      "package": {
+        "name": "sqlparse",
+        "ecosystem": "PyPI"
+      },
+      "version": "0.6.0"
+    },
+    {
+      "package": {
+        "name": "text-unidecode",
+        "ecosystem": "PyPI"
+      },
+      "version": "1.3"
+    },
+    {
+      "package": {
+        "name": "types-python-dateutil",
+        "ecosystem": "PyPI"
+      },
+      "version": "2.9.0.20260807"
+    },
+    {
+      "package": {
+        "name": "tzdata",
+        "ecosystem": "PyPI"
+      },
+      "version": "2026.4"
+    },
+    {
+      "package": {
+        "name": "urllib3",
+        "ecosystem": "PyPI"
+      },
+      "version": "2.8.0"
+    },
+    {
+      "package": {
+        "name": "alpinejs",
+        "ecosystem": "npm"
+      },
+      "version": "3.17.4"
+    },
+    {
+      "package": {
+        "name": "dompurify",
+        "ecosystem": "npm"
+      },
+      "version": "3.4.16"
+    },
+    {
+      "package": {
+        "name": "echarts",
+        "ecosystem": "npm"
+      },
+      "version": "6.1.0"
+    }
+  ],
+  "results": [
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {}
+  ],
+  "matches": 0
+}

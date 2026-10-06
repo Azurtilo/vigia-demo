@@ -1,0 +1,11 @@
+{
+  "scenario": "normal",
+  "django": "5.2.17",
+  "preflight": "Grupos duplicados por usuario/correo: 0; verificados: 0; User.email: 0; usuarios con varios principales: 1; MFA no admitidos: 0; grupos MFA duplicados: 0.\nSin colisiones detectadas. No equivale a autorizar migraciones; verificar respaldo y recuperaci\u00f3n.\n",
+  "unique_primary_constraint": true,
+  "upgrade": "OK",
+  "emails_lowercase": true,
+  "chosen_primary": "matches User.email",
+  "hashes_mfa_roles_preference_preserved": true,
+  "legacy_recovery_code_login": "OK"
+}

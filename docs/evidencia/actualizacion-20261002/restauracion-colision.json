@@ -1,0 +1,6 @@
+{
+  "scenario": "colision",
+  "restore": "OK",
+  "django": "5.1.2",
+  "original_email_case_and_multiple_primary_restored": true
+}

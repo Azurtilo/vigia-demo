@@ -1,0 +1,12 @@
+{
+  "darkAfterReload": {
+    "button": "Activar modo claro",
+    "canvasCount": 0,
+    "mode": "dark"
+  },
+  "lightAfterEnter": "light",
+  "policy": "script-src 'none'",
+  "responseHeaderVerified": true,
+  "consoleEntriesCaptured": 0,
+  "verification": "Formulario nativo en navegador, scripts bloqueados por CSP; no se cambió preferencia global del navegador."
+}

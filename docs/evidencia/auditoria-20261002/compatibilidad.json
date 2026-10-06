@@ -1,0 +1,48 @@
+{
+  "django-allauth": {
+    "version": "65.19.7",
+    "requires_python": ">=3.10",
+    "requires_dist": [
+      "Django>=4.2.16",
+      "asgiref>=3.8.1",
+      "pyjwt[crypto]<3,>=2.0; extra == \"headless\"",
+      "PyYAML<7,>=6; extra == \"headless-spec\"",
+      "oauthlib<5,>=4.0.0; extra == \"idp-oidc\"",
+      "pyjwt[crypto]<3,>=2.0; extra == \"idp-oidc\"",
+      "qrcode<9,>=7.0.0; extra == \"mfa\"",
+      "fido2<3,>=1.1.2; extra == \"mfa\"",
+      "python3-openid<4,>=3.0.8; extra == \"openid\"",
+      "python3-saml<2.0.0,>=1.15.0; extra == \"saml\"",
+      "python3-openid<4,>=3.0.8; extra == \"steam\"",
+      "oauthlib<5,>=4.0.0; extra == \"socialaccount\"",
+      "requests<3,>=2.0.0; extra == \"socialaccount\"",
+      "pyjwt[crypto]<3,>=2.0; extra == \"socialaccount\""
+    ]
+  },
+  "bcrypt": {
+    "version": "5.0.0",
+    "requires_python": ">=3.8",
+    "requires_dist": [
+      "pytest!=3.3.0,>=3.2.1; extra == \"tests\"",
+      "mypy; extra == \"typecheck\""
+    ]
+  },
+  "django-crispy-forms": {
+    "version": "2.7",
+    "requires_python": ">=3.10",
+    "requires_dist": [
+      "django>=5.2"
+    ]
+  },
+  "django-tailwind": {
+    "version": "4.5.0",
+    "requires_python": ">=3.11",
+    "requires_dist": [
+      "django>=4.2.20",
+      "pytailwindcss>=0.3.0",
+      "cookiecutter<3,>=2.6.0; extra == \"cookiecutter\"",
+      "honcho<3,>=2.0.0; extra == \"honcho\"",
+      "django-browser-reload<2,>=1.21.0; extra == \"reload\""
+    ]
+  }
+}

@@ -1,0 +1,41 @@
+"""Diagnóstico temporal de metadatos públicos; no modifica dependencias."""
+import concurrent.futures, datetime, json, pathlib, urllib.request
+root = pathlib.Path(__file__).resolve().parent.parent
+out = pathlib.Path(__file__).resolve().parent
+def get(url, body=None):
+    req = urllib.request.Request(url, data=json.dumps(body).encode() if body else None,
+        headers={'User-Agent': 'Base-2 dependency review', 'Content-Type': 'application/json'})
+    with urllib.request.urlopen(req, timeout=40) as r: return json.load(r)
+pins = [tuple(line.split('==')) for line in (root/'requirements.txt').read_text().splitlines() if '==' in line]
+def metadata(pin):
+    name, version = pin
+    try:
+        data = get(f'https://pypi.org/pypi/{name}/json')
+        old = get(f'https://pypi.org/pypi/{name}/{version}/json')
+        result = {'name':name, 'declared':version, 'latest':data['info']['version'],
+          'requires_python':data['info']['requires_python'],
+          'latest_date': min((f['upload_time_iso_8601'] for f in data['urls']), default=None),
+          'requires_dist_declared': old['info']['requires_dist'],
+          'source':f'https://pypi.org/project/{name}/'}
+        if name.lower() == 'django':
+            stable = sorted((v for v in data['releases'] if v.startswith('5.2.') and all(x.isdigit() for x in v.split('.'))), key=lambda v:tuple(map(int,v.split('.'))))
+            result['lts_latest'] = stable[-1]
+        return result
+    except Exception as exc: return {'name':name,'declared':version,'error':str(exc)}
+with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool: inventory=list(pool.map(metadata, pins))
+queries = [{'package':{'name':name,'ecosystem':'PyPI'},'version':version} for name,version in pins]
+queries += [{'package':{'name':name,'ecosystem':'npm'},'version':version} for name,version in [('dompurify','3.1.5'),('echarts','6.0.0')]]
+batch = get('https://api.osv.dev/v1/querybatch', {'queries':queries})
+ids = sorted({v['id'] for r in batch['results'] for v in r.get('vulns',[])})
+def advisory(id):
+    try: return get('https://api.osv.dev/v1/vulns/'+id)
+    except Exception as exc: return {'id':id,'error':str(exc)}
+with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool: advisories=list(pool.map(advisory,ids))
+result={'checked_at_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),
+ 'inventory':inventory,'queries':queries,'results':batch['results'],'advisories':advisories}
+(out/'dependencias.json').write_text(json.dumps(result,indent=2,ensure_ascii=False),encoding='utf-8')
+print('Declared:',len(pins),'metadata errors:',sum('error' in x for x in inventory),'OSV advisories:',len(ids))
+for q,r in zip(queries,batch['results']):
+    if r.get('vulns'): print(q['package']['name'],q['version'],len(r['vulns']),','.join(v['id'] for v in r['vulns']))
+for x in inventory:
+    if x.get('latest') != x['declared']: print(x['name'],x['declared'],'->',x.get('latest'),x.get('lts_latest',''))

@@ -1,0 +1,115 @@
+"""Ensayo aislado entre dos entornos; nunca importa settings.py ni .env."""
+import hashlib
+import json
+import os
+import shutil
+import sys
+from pathlib import Path
+
+root = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(root))
+os.environ["DJANGO_SETTINGS_MODULE"] = "core.test_settings"
+from django.conf import settings
+
+action, scenario = sys.argv[1:]
+assert action in {"seed", "upgrade", "restore"} and scenario in {"normal", "colision"}
+work = root / ".work-005"
+database = work / (scenario + ".sqlite3")
+backup = work / (scenario + "-before.sqlite3")
+assert database.resolve().is_relative_to(work.resolve())
+settings.DATABASES["default"]["NAME"] = str(database)
+assert settings.EMAIL_BACKEND == "django.core.mail.backends.locmem.EmailBackend"
+import django
+
+django.setup()
+from django.core.management import call_command
+from django.db import IntegrityError, connections
+from django.contrib.auth.models import User
+from allauth.account.models import EmailAddress
+from allauth.mfa.models import Authenticator
+from UsuarioApp.models import Profile, Position, UserVisualPreference
+
+output = root / "docs/evidencia/actualizacion-20261002"
+if action == "seed":
+    assert django.get_version() == "5.1.2" and not database.exists()
+    call_command("migrate", verbosity=0)
+    role = Position.objects.create(user_position="Ficticio", permission_code="RESTRICTED")
+    user = User.objects.create_user("migracion_sintetica", "Preferida@Example.Test", "Ficticia-migracion-2026!")
+    Profile.objects.create(user_FK=user, position_FK=role)
+    UserVisualPreference.objects.create(user=user, mode="dark")
+    EmailAddress.objects.create(user=user, email="Preferida@Example.Test", primary=True, verified=False)
+    EmailAddress.objects.create(user=user, email="Otra@Example.Test", primary=True, verified=False)
+    if scenario == "colision":
+        EmailAddress.objects.create(user=user, email="preferida@example.test", primary=False, verified=False)
+    Authenticator.objects.create(user=user, type=Authenticator.Type.TOTP, data={"secret": "JBSWY3DPEHPK3PXP"})
+    from allauth.mfa.recovery_codes import RecoveryCodes
+    recovery = RecoveryCodes.activate(user)
+    before = {"user": list(User.objects.values()), "email": list(EmailAddress.objects.values()),
+              "profile": list(Profile.objects.values()), "preference": list(UserVisualPreference.objects.values()),
+              "mfa": list(Authenticator.objects.values()), "legacy_recovery_code": recovery.generate_codes()[0]}
+    # Solo fixture de memoria/DB ficticia; no publicar hashes/semillas en evidencia.
+    (work / (scenario + "-expected.json")).write_text(json.dumps(before, default=str), encoding="utf-8")
+    connections.close_all()
+    shutil.copy2(database, backup)
+    print(json.dumps({"action": action, "scenario": scenario, "django": django.get_version(),
+                      "users": 1, "email_addresses": len(before["email"]), "mfa": 2,
+                      "backup_sha256": hashlib.sha256(backup.read_bytes()).hexdigest()}))
+elif action == "upgrade":
+    expected = json.loads((work / (scenario + "-expected.json")).read_text(encoding="utf-8"))
+    from django.core.management.base import CommandError
+    from io import StringIO
+    preflight = StringIO()
+    before = database.read_bytes()
+    blocked = False
+    try:
+        call_command("verificar_actualizacion_allauth", stdout=preflight)
+    except CommandError:
+        blocked = True
+    report = {"scenario": scenario, "django": django.get_version(), "preflight": preflight.getvalue()}
+    if blocked:
+        report.update(upgrade="bloqueado antes de migrar", database_unchanged=True)
+        assert database.read_bytes() == before
+    else:
+        call_command("migrate", verbosity=0)
+        user = User.objects.get()
+        assert user.email == "preferida@example.test"
+        primary = EmailAddress.objects.get(user=user, primary=True)
+        assert primary.email == user.email
+        assert EmailAddress.objects.count() == 2 and Authenticator.objects.count() == 2
+        assert user.password == expected["user"][0]["password"]
+        assert list(Authenticator.objects.values("id", "type", "data", "user_id")) == [
+            {key: row[key] for key in ("id", "type", "data", "user_id")} for row in expected["mfa"]]
+        assert UserVisualPreference.objects.get(user=user).mode == "dark"
+        assert Profile.objects.get(user_FK=user).position_FK.permission_code == "RESTRICTED"
+        from django.db import transaction
+        try:
+            with transaction.atomic():
+                EmailAddress.objects.create(user=user, email="tercero@example.test", primary=True)
+        except IntegrityError:
+            report["unique_primary_constraint"] = True
+        else:
+            raise AssertionError("Falta constraint de principal único")
+        report.update(upgrade="OK", emails_lowercase=True, chosen_primary="matches User.email",
+                      hashes_mfa_roles_preference_preserved=True)
+        from django.test import Client
+        from django.urls import reverse
+        browser = Client()
+        response = browser.post(reverse("account_login"), {"login": user.username, "password": "Ficticia-migracion-2026!"})
+        assert response.status_code == 302 and "_auth_user_id" not in browser.session
+        response = browser.post(reverse("mfa_authenticate"), {"code": expected["legacy_recovery_code"]})
+        assert response.status_code == 302 and browser.session["_auth_user_id"] == str(user.pk)
+        report["legacy_recovery_code_login"] = "OK"
+    (output / ("migracion-" + scenario + ".json")).write_text(json.dumps(report, indent=2), encoding="utf-8")
+    print(json.dumps(report))
+else:
+    connections.close_all()
+    shutil.copy2(backup, database)
+    assert hashlib.sha256(database.read_bytes()).digest() == hashlib.sha256(backup.read_bytes()).digest()
+    expected = json.loads((work / (scenario + "-expected.json")).read_text(encoding="utf-8"))
+    assert User.objects.get().email == expected["user"][0]["email"]
+    assert EmailAddress.objects.filter(primary=True).count() == 2
+    assert Authenticator.objects.count() == 2
+    report = {"scenario": scenario, "restore": "OK", "django": django.get_version(),
+              "original_email_case_and_multiple_primary_restored": True}
+    (output / ("restauracion-" + scenario + ".json")).write_text(json.dumps(report, indent=2), encoding="utf-8")
+    print(json.dumps(report))

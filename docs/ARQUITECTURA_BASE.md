@@ -1,0 +1,97 @@
+# Arquitectura de la base recibida
+
+Referencia: core-base.zip, 2026-09-20. Describe lo observado; no certifica funcionalidades no probadas.
+
+## Componentes
+
+| Área                     | Archivos existentes                                                                                                                                                                                 | Responsabilidad                                           |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| Configuración            | [common_settings.py](../core/common_settings.py), [settings.py](../core/settings.py), [test_settings.py](../core/test_settings.py)                                                                  | Base común sin entorno; entrada normal y pruebas aisladas |
+| Rutas raíz               | [urls.py](../core/urls.py)                                                                                                                                                                          | admin, allauth, homeApp y UsuarioApp                      |
+| Permisos por cargo       | [mixins.py](../core/mixins.py)                                                                                                                                                                      | usuario_tiene_cargo y PermitsPositionMixin                |
+| Usuarios/perfiles/cargos | [models.py](../UsuarioApp/models.py), [views.py](../UsuarioApp/views.py), [forms.py](../UsuarioApp/forms.py)                                                                                        | Gestión de cuentas y perfiles                             |
+| Inicio y actividad       | [views.py](../homeApp/views.py), [middleware.py](../homeApp/middleware.py)                                                                                                                          | Cinco accesos recientes y actividad aproximada            |
+| Presentación             | [base.html](../templates/components/Layout/base.html), [base_extendido.html](../templates/components/Layout/base_extendido.html), [base_pages.html](../templates/components/Layout/base_pages.html) | Estructura y bloques compartidos                          |
+| Menú                     | [nav.html](../templates/components/navbar/nav.html), [context_processors.py](../core/context_processors.py)                                                                                         | Enlaces y autorización compartida con el servidor         |
+| Tema                     | [styles.css](../theme/static_src/src/styles.css), [CSS generado](../theme/static/css/dist/styles.css)                                                                                                | Tailwind 4 standalone, fuentes y compilación              |
+| Imágenes de perfil       | [customer_img.py](../utils/customer_img.py)                                                                                                                                                         | Redimensionado y recorte                                  |
+
+## Identidad y permisos reales
+
+Se usa User de Django. Profile lo relaciona mediante user_FK, con acceso inverso user.profile. El cargo se obtiene por profile.position_FK.permission_code; Position ofrece ADMIN, MANAGER y RESTRICTED.
+
+La función usuario_tiene_cargo comprueba autenticación y actividad, luego permite superusuario; para otros usuarios compara el cargo contra la lista recibida. No interpreta is_staff como un cargo.
+
+El context processor `permisos_navegacion` conserva esa función y `PermitsPositionMixin.permisos` para `puede_gestionar_usuarios`. Desde 006, `puede_registrar_usuarios` usa `cargos_asignables` y Registro usa `UserRegistrationMixin`, con cargo requerido incluso al superusuario. El menú y los controles no sustituyen el control de la vista; ambos se prueban con la matriz propia de cada acción.
+
+PermitsPositionMixin usa por defecto ADMIN/MANAGER y su atributo existente se llama permisos. Un anónimo se envía al login; un autenticado sin permiso se redirige a Home. Home, listado de usuarios y perfil usan LoginRequiredMixin, no todos el mixin por cargo.
+
+Un módulo nuevo debe especificar lectura/escritura por acción y decidir cómo conserva la excepción de superusuario. No heredar una tabla de permisos de un negocio distinto. Si requiere objetos privados por propietario, definir también ese filtro: el cargo por sí solo no expresa propiedad del dato.
+
+## Presentación
+
+- base.html: estructura general; bloques head_title, extra_meta, extra_css, javascript, body_class y content.
+- base_extendido.html: estructura privada con navegación; bloque content_main.
+- base_pages.html: extiende la anterior y ofrece content_pages.
+- Para una vista pública evaluar base.html sin navegación interna y definir expresamente datos visibles.
+- Reutilizar componentes y estilos Tailwind. La adaptación móvil y los permisos de una nueva pantalla necesitan comprobarse, no se garantizan por heredar la plantilla.
+
+El gráfico del inicio usa datos de ejemplo. La tabla de accesos consulta usuarios reales; «actividad reciente» es una aproximación temporal, no prueba de conexión abierta.
+
+## Datos y fronteras
+
+- `UsuarioApp.Profile.position_FK.permission_code` es la fuente actual de permisos.
+- <Añadir mas segun se integran mas modulos o funciones>
+
+## Configuración y pruebas
+
+`core/common_settings.py` contiene valores compartidos sin leer `.env`. `core/settings.py` sigue siendo la entrada normal y carga el entorno; `core/test_settings.py` no la importa y define SQLite en memoria, correo/caché locales, hasher rápido y rutas temporales. Las pruebas deben indicar `--settings=core.test_settings`.
+
+Tailwind 4 se compila con el binario standalone administrado por django-tailwind; no usa Node.js, `package.json` ni `tailwind.config.js`. `theme/static_src/src/styles.css` desactiva la detección automática y registra raíces HTML, JavaScript y Python propias mediante `@source`; excluye migraciones, cachés y `staticfiles`. Las clases construidas por concatenación no son detectables de forma segura: escribir nombres completos o usar `@source inline()` de forma finita.
+
+## Extender mediante un módulo
+
+Durante DOCUMENTAR solo proponer:
+
+1. Si corresponde una nueva app Django o ampliar una existente.
+2. Nombre y responsabilidad, modelos/relaciones y contratos de entrada/salida.
+3. Registro en LOCAL_APPS y ruta include cuando sea una nueva app.
+4. Namespace/rutas que eviten colisiones y plantillas/estáticos organizados por módulo.
+5. Permisos, validación, comportamiento ante errores e integración con el menú.
+6. Pruebas, cambios de esquema y estrategia de reversión si aplica.
+
+Solo después de autorizar código se crean esos archivos. No renombrar core, UsuarioApp, homeApp ni tablas compartidas para personalizar la marca del cliente. El nombre comercial se registra en PROYECTO.md y en la interfaz cuando esa tarea esté autorizada.
+
+## Qué no impone la base documental
+
+No exige una política universal de auditoría ni una app por pantalla. Esas son decisiones de cada spec. Tampoco agrega un sistema de servicios, tareas asíncronas, API o nuevo motor de datos sin necesidad.
+
+## Sistema visual implementado — spec 002
+
+La [spec 002](../specs/002-renovacion-visual/spec.md) renueva presentación sobre los layouts, bloques, apps y menú existentes. [tokens.css](../static/css/tokens.css) es la fuente de colores; el puente `@theme inline` conecta utilidades semánticas de Tailwind. El CSS propio, widget de cargo y gráfico consumen ese contrato. Valores de color no requieren recompilar; nuevas clases/fuentes sí. La [guía](PERSONALIZACION_VISUAL.md) describe componentes y caché.
+
+El [script compartido](../static/js/interfaz.js) gestiona diálogos nativos, foco, scroll y desplegable de cuenta; las notificaciones se renderizan una sola vez y tratan contenido como texto. Login usa layout público; cuenta interna/MFA reutiliza navegación privada. CSS y gráfico contemplan movimiento reducido.
+
+No cambió modelos ni rutas. LOCAL_APPS permanece en core/common_settings.py y settings.py lo reutiliza. La skill local referencia la guía sin fijar una paleta para futuros productos. Validación y límites en [validation.md](../specs/002-renovacion-visual/validation.md).
+
+## Modo visual por cuenta — implementado en 003
+
+El [plan 003](../specs/003-modo-visual-usuario/plan.md) se implementó en UsuarioApp con UserVisualPreference uno a uno con el usuario, sin nueva app ni cambios a Profile. `/preferencias/modo-visual/` (VisualModeUpdateView) guarda por POST/CSRF solo la cuenta activa de la sesión, cualquiera sea el cargo; form ChoiceField light/dark y unique/check de base. Processor `preferencias_visuales` registrado en common_settings consulta la fila propia sin crearla; renderiza data-mode antes del CSS. Inicio envía el destino explícito y vuelve por redirect; no requiere scripts/localStorage ni altera permisos de otras vistas.
+
+Tokens contienen pares de marca clara/oscura, variantes semánticas y color-scheme; QR mantiene superficie blanca. El gráfico existente consume los valores al recargar. Valores inválidos/fallo previsto de escritura usan 400/500 contextual; fallo de lectura de esta preferencia usa claro, sin certificar recuperación de toda la DB. [Validación](../specs/003-modo-visual-usuario/validation.md).
+
+Migración 0002 creada y probada/revertida únicamente en SQLite efímero, sin backfill. Aplicar o revertir esquema sobre la base existente requiere autorización propia del entorno/respaldo; rollback pierde preferencias. Código entregado no significa tabla instalada en datos reales.
+
+## Gestión por destinatario — implementada en 004
+
+[Spec 004](../specs/004-administracion-usuarios/spec.md) amplía UsuarioApp con [permissions.py](../UsuarioApp/permissions.py): política por acción/actor/destinatario compartida por vistas y flags de fila. ADMIN gestiona inferiores y MANAGER solo RESTRICTED al activar/desactivar. Incluso superusuario requiere cargo, sin excepción en estas acciones. AccountManagementMixin acotado aplica política con actor vigente; usuario_tiene_cargo/PermitsPositionMixin y el processor global/Registro conservan su contrato.
+
+AdministrativePasswordForm reutiliza SetPasswordForm con reconfirmación del operador, ruta privada UserPasswordReset y plantilla sobre base_pages/content_pages. Escrituras mínimas password/is_active, CSRF, transacciones, validadores/hashing/sesiones Django; no actualiza Profile/MFA/modo visual ni correo. never_cache/campos sensibles y errores previstos con contexto en 500.html. UserActivateView comparte vista de estado con UserDeactivateView. Sin nueva app/modelos/migraciones/SMTP ni importaciones del proyecto de referencia. [Validación](../specs/004-administracion-usuarios/validation.md): 57 tests, 60 plantillas, check/build y navegador parcial; SQLite no certifica bloqueos PostgreSQL.
+
+## Registro e integridad actuales — specs 005/006
+
+El contrato de Registro de 001 queda sustituido por 006. UserRegistrationMixin y cargos_asignables en UsuarioApp/permissions.py protegen Registro y el flag puede_registrar_usuarios; ProfileCreateForm recibe actor y filtra por permission_code. ADMIN solo inferiores, MANAGER RESTRICTED y únicamente root con ADMIN asigna ADMIN; nadie sin cargo obtiene excepción. Se conserva core.mixins y puede_gestionar_usuarios para sus otros consumidores, además de la política independiente 004.
+
+Alta/edición User/Profile usan atomic; Profile.save prepara fotos nuevas en memoria, escribe storage y DB, compensa fallos y elimina anterior con on_commit. Cambios sin foto no la procesan. No cambió esquema. Se probó almacenamiento local; limpieza fallida exige mantenimiento del producto.
+
+005 actualiza Django/allauth y rutas/settings MFA equivalentes; extra MFA instalado con TOTP/recuperación explícitos, sin WebAuthn/socialaccount. Lock con hashes y preflight de actualización allauth de solo lectura. Ver [DEPENDENCIAS.md](DEPENDENCIAS.md) y validaciones 005/006 para comandos/limitaciones. Opcionales axes/concurrentlogins siguen comentados, settings normal intacto.

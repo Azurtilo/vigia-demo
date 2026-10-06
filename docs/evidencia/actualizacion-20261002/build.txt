@@ -1,0 +1,4 @@
+≈ tailwindcss v4.3.0
+
+Done in 90ms
+{"tailwind": "v4.3.0", "bytes": 13829, "generated_sha256": "d0bcaf37bfd2867e3cb1685bca05cdccd6fb35d1ae12e1eda1d58b380f25347a", "project_sha256": "d0bcaf37bfd2867e3cb1685bca05cdccd6fb35d1ae12e1eda1d58b380f25347a", "identical": true}

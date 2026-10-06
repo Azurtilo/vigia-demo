@@ -1,0 +1,14 @@
+interface:
+  display_name: Validación final SDD
+  short_description: Revisa proyectos y bases SDD con inventario de dependencias
+  default_prompt: Usa $validar-produccion-sdd para validar este proyecto o base reutilizable,
+    registrar evidencia e inventario de dependencias y señalar bloqueadores sin desplegar.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

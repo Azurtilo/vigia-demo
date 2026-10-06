@@ -1,0 +1,1094 @@
+{
+  "petroleo/light": [
+    {
+      "texto": "--ink",
+      "fondo": "--page",
+      "ratio": 14.15,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--muted",
+      "fondo": "--page",
+      "ratio": 5.79,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--brand",
+      "fondo": "--page",
+      "ratio": 5.0,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--danger",
+      "fondo": "--page",
+      "ratio": 6.01,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--focus",
+      "fondo": "--page",
+      "ratio": 5.0,
+      "minimo": 3
+    },
+    {
+      "texto": "--control-border",
+      "fondo": "--page",
+      "ratio": 3.44,
+      "minimo": 3
+    },
+    {
+      "texto": "--ink",
+      "fondo": "--surface",
+      "ratio": 15.48,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--muted",
+      "fondo": "--surface",
+      "ratio": 6.33,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--brand",
+      "fondo": "--surface",
+      "ratio": 5.47,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--danger",
+      "fondo": "--surface",
+      "ratio": 6.57,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--focus",
+      "fondo": "--surface",
+      "ratio": 5.47,
+      "minimo": 3
+    },
+    {
+      "texto": "--control-border",
+      "fondo": "--surface",
+      "ratio": 3.77,
+      "minimo": 3
+    },
+    {
+      "texto": "--ink",
+      "fondo": "--surface-muted",
+      "ratio": 13.47,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--muted",
+      "fondo": "--surface-muted",
+      "ratio": 5.51,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--brand",
+      "fondo": "--surface-muted",
+      "ratio": 4.76,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--danger",
+      "fondo": "--surface-muted",
+      "ratio": 5.72,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--focus",
+      "fondo": "--surface-muted",
+      "ratio": 4.76,
+      "minimo": 3
+    },
+    {
+      "texto": "--control-border",
+      "fondo": "--surface-muted",
+      "ratio": 3.28,
+      "minimo": 3
+    },
+    {
+      "texto": "--on-brand",
+      "fondo": "--brand",
+      "ratio": 5.47,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--on-brand",
+      "fondo": "--brand-hover",
+      "ratio": 7.33,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--brand",
+      "fondo": "--brand-soft",
+      "ratio": 4.83,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--success",
+      "fondo": "--success-soft",
+      "ratio": 6.76,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--danger",
+      "fondo": "--danger-soft",
+      "ratio": 5.98,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--warning",
+      "fondo": "--warning-soft",
+      "ratio": 6.5,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--info",
+      "fondo": "--info-soft",
+      "ratio": 8.01,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--on-danger",
+      "fondo": "--danger",
+      "ratio": 6.57,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--on-danger",
+      "fondo": "--danger-hover",
+      "ratio": 8.24,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--chart-1",
+      "fondo": "--surface",
+      "ratio": 5.47,
+      "minimo": 3
+    },
+    {
+      "texto": "--chart-2",
+      "fondo": "--surface",
+      "ratio": 5.2,
+      "minimo": 3
+    },
+    {
+      "texto": "--chart-3",
+      "fondo": "--surface",
+      "ratio": 7.31,
+      "minimo": 3
+    }
+  ],
+  "petroleo/dark": [
+    {
+      "texto": "--ink",
+      "fondo": "--page",
+      "ratio": 15.17,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--muted",
+      "fondo": "--page",
+      "ratio": 9.37,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--brand",
+      "fondo": "--page",
+      "ratio": 11.98,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--danger",
+      "fondo": "--page",
+      "ratio": 9.13,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--focus",
+      "fondo": "--page",
+      "ratio": 11.98,
+      "minimo": 3
+    },
+    {
+      "texto": "--control-border",
+      "fondo": "--page",
+      "ratio": 5.33,
+      "minimo": 3
+    },
+    {
+      "texto": "--ink",
+      "fondo": "--surface",
+      "ratio": 13.25,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--muted",
+      "fondo": "--surface",
+      "ratio": 8.19,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--brand",
+      "fondo": "--surface",
+      "ratio": 10.46,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--danger",
+      "fondo": "--surface",
+      "ratio": 7.97,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--focus",
+      "fondo": "--surface",
+      "ratio": 10.46,
+      "minimo": 3
+    },
+    {
+      "texto": "--control-border",
+      "fondo": "--surface",
+      "ratio": 4.65,
+      "minimo": 3
+    },
+    {
+      "texto": "--ink",
+      "fondo": "--surface-muted",
+      "ratio": 11.47,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--muted",
+      "fondo": "--surface-muted",
+      "ratio": 7.09,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--brand",
+      "fondo": "--surface-muted",
+      "ratio": 9.06,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--danger",
+      "fondo": "--surface-muted",
+      "ratio": 6.9,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--focus",
+      "fondo": "--surface-muted",
+      "ratio": 9.06,
+      "minimo": 3
+    },
+    {
+      "texto": "--control-border",
+      "fondo": "--surface-muted",
+      "ratio": 4.03,
+      "minimo": 3
+    },
+    {
+      "texto": "--on-brand",
+      "fondo": "--brand",
+      "ratio": 11.22,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--on-brand",
+      "fondo": "--brand-hover",
+      "ratio": 11.67,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--brand",
+      "fondo": "--brand-soft",
+      "ratio": 8.44,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--success",
+      "fondo": "--success-soft",
+      "ratio": 9.21,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--danger",
+      "fondo": "--danger-soft",
+      "ratio": 7.28,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--warning",
+      "fondo": "--warning-soft",
+      "ratio": 8.43,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--info",
+      "fondo": "--info-soft",
+      "ratio": 7.06,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--on-danger",
+      "fondo": "--danger",
+      "ratio": 8.8,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--on-danger",
+      "fondo": "--danger-hover",
+      "ratio": 6.38,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--chart-1",
+      "fondo": "--surface",
+      "ratio": 10.46,
+      "minimo": 3
+    },
+    {
+      "texto": "--chart-2",
+      "fondo": "--surface",
+      "ratio": 9.31,
+      "minimo": 3
+    },
+    {
+      "texto": "--chart-3",
+      "fondo": "--surface",
+      "ratio": 9.18,
+      "minimo": 3
+    }
+  ],
+  "ciruela/light": [
+    {
+      "texto": "--ink",
+      "fondo": "--page",
+      "ratio": 14.15,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--muted",
+      "fondo": "--page",
+      "ratio": 5.79,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--brand",
+      "fondo": "--page",
+      "ratio": 6.38,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--danger",
+      "fondo": "--page",
+      "ratio": 6.01,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--focus",
+      "fondo": "--page",
+      "ratio": 6.38,
+      "minimo": 3
+    },
+    {
+      "texto": "--control-border",
+      "fondo": "--page",
+      "ratio": 3.44,
+      "minimo": 3
+    },
+    {
+      "texto": "--ink",
+      "fondo": "--surface",
+      "ratio": 15.48,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--muted",
+      "fondo": "--surface",
+      "ratio": 6.33,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--brand",
+      "fondo": "--surface",
+      "ratio": 6.98,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--danger",
+      "fondo": "--surface",
+      "ratio": 6.57,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--focus",
+      "fondo": "--surface",
+      "ratio": 6.98,
+      "minimo": 3
+    },
+    {
+      "texto": "--control-border",
+      "fondo": "--surface",
+      "ratio": 3.77,
+      "minimo": 3
+    },
+    {
+      "texto": "--ink",
+      "fondo": "--surface-muted",
+      "ratio": 13.47,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--muted",
+      "fondo": "--surface-muted",
+      "ratio": 5.51,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--brand",
+      "fondo": "--surface-muted",
+      "ratio": 6.08,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--danger",
+      "fondo": "--surface-muted",
+      "ratio": 5.72,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--focus",
+      "fondo": "--surface-muted",
+      "ratio": 6.08,
+      "minimo": 3
+    },
+    {
+      "texto": "--control-border",
+      "fondo": "--surface-muted",
+      "ratio": 3.28,
+      "minimo": 3
+    },
+    {
+      "texto": "--on-brand",
+      "fondo": "--brand",
+      "ratio": 6.98,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--on-brand",
+      "fondo": "--brand-hover",
+      "ratio": 9.06,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--brand",
+      "fondo": "--brand-soft",
+      "ratio": 6.02,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--success",
+      "fondo": "--success-soft",
+      "ratio": 6.76,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--danger",
+      "fondo": "--danger-soft",
+      "ratio": 5.98,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--warning",
+      "fondo": "--warning-soft",
+      "ratio": 6.5,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--info",
+      "fondo": "--info-soft",
+      "ratio": 8.01,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--on-danger",
+      "fondo": "--danger",
+      "ratio": 6.57,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--on-danger",
+      "fondo": "--danger-hover",
+      "ratio": 8.24,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--chart-1",
+      "fondo": "--surface",
+      "ratio": 6.98,
+      "minimo": 3
+    },
+    {
+      "texto": "--chart-2",
+      "fondo": "--surface",
+      "ratio": 5.2,
+      "minimo": 3
+    },
+    {
+      "texto": "--chart-3",
+      "fondo": "--surface",
+      "ratio": 7.31,
+      "minimo": 3
+    }
+  ],
+  "ciruela/dark": [
+    {
+      "texto": "--ink",
+      "fondo": "--page",
+      "ratio": 15.17,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--muted",
+      "fondo": "--page",
+      "ratio": 9.37,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--brand",
+      "fondo": "--page",
+      "ratio": 6.7,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--danger",
+      "fondo": "--page",
+      "ratio": 9.13,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--focus",
+      "fondo": "--page",
+      "ratio": 6.7,
+      "minimo": 3
+    },
+    {
+      "texto": "--control-border",
+      "fondo": "--page",
+      "ratio": 5.33,
+      "minimo": 3
+    },
+    {
+      "texto": "--ink",
+      "fondo": "--surface",
+      "ratio": 13.25,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--muted",
+      "fondo": "--surface",
+      "ratio": 8.19,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--brand",
+      "fondo": "--surface",
+      "ratio": 5.86,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--danger",
+      "fondo": "--surface",
+      "ratio": 7.97,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--focus",
+      "fondo": "--surface",
+      "ratio": 5.86,
+      "minimo": 3
+    },
+    {
+      "texto": "--control-border",
+      "fondo": "--surface",
+      "ratio": 4.65,
+      "minimo": 3
+    },
+    {
+      "texto": "--ink",
+      "fondo": "--surface-muted",
+      "ratio": 11.47,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--muted",
+      "fondo": "--surface-muted",
+      "ratio": 7.09,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--brand",
+      "fondo": "--surface-muted",
+      "ratio": 5.07,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--danger",
+      "fondo": "--surface-muted",
+      "ratio": 6.9,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--focus",
+      "fondo": "--surface-muted",
+      "ratio": 5.07,
+      "minimo": 3
+    },
+    {
+      "texto": "--control-border",
+      "fondo": "--surface-muted",
+      "ratio": 4.03,
+      "minimo": 3
+    },
+    {
+      "texto": "--on-brand",
+      "fondo": "--brand",
+      "ratio": 6.28,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--on-brand",
+      "fondo": "--brand-hover",
+      "ratio": 7.12,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--brand",
+      "fondo": "--brand-soft",
+      "ratio": 5.08,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--success",
+      "fondo": "--success-soft",
+      "ratio": 9.21,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--danger",
+      "fondo": "--danger-soft",
+      "ratio": 7.28,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--warning",
+      "fondo": "--warning-soft",
+      "ratio": 8.43,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--info",
+      "fondo": "--info-soft",
+      "ratio": 7.06,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--on-danger",
+      "fondo": "--danger",
+      "ratio": 8.8,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--on-danger",
+      "fondo": "--danger-hover",
+      "ratio": 6.38,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--chart-1",
+      "fondo": "--surface",
+      "ratio": 5.86,
+      "minimo": 3
+    },
+    {
+      "texto": "--chart-2",
+      "fondo": "--surface",
+      "ratio": 9.31,
+      "minimo": 3
+    },
+    {
+      "texto": "--chart-3",
+      "fondo": "--surface",
+      "ratio": 9.18,
+      "minimo": 3
+    }
+  ],
+  "cobre/light": [
+    {
+      "texto": "--ink",
+      "fondo": "--page",
+      "ratio": 14.15,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--muted",
+      "fondo": "--page",
+      "ratio": 5.79,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--brand",
+      "fondo": "--page",
+      "ratio": 6.68,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--danger",
+      "fondo": "--page",
+      "ratio": 6.01,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--focus",
+      "fondo": "--page",
+      "ratio": 6.68,
+      "minimo": 3
+    },
+    {
+      "texto": "--control-border",
+      "fondo": "--page",
+      "ratio": 3.44,
+      "minimo": 3
+    },
+    {
+      "texto": "--ink",
+      "fondo": "--surface",
+      "ratio": 15.48,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--muted",
+      "fondo": "--surface",
+      "ratio": 6.33,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--brand",
+      "fondo": "--surface",
+      "ratio": 7.31,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--danger",
+      "fondo": "--surface",
+      "ratio": 6.57,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--focus",
+      "fondo": "--surface",
+      "ratio": 7.31,
+      "minimo": 3
+    },
+    {
+      "texto": "--control-border",
+      "fondo": "--surface",
+      "ratio": 3.77,
+      "minimo": 3
+    },
+    {
+      "texto": "--ink",
+      "fondo": "--surface-muted",
+      "ratio": 13.47,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--muted",
+      "fondo": "--surface-muted",
+      "ratio": 5.51,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--brand",
+      "fondo": "--surface-muted",
+      "ratio": 6.36,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--danger",
+      "fondo": "--surface-muted",
+      "ratio": 5.72,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--focus",
+      "fondo": "--surface-muted",
+      "ratio": 6.36,
+      "minimo": 3
+    },
+    {
+      "texto": "--control-border",
+      "fondo": "--surface-muted",
+      "ratio": 3.28,
+      "minimo": 3
+    },
+    {
+      "texto": "--on-brand",
+      "fondo": "--brand",
+      "ratio": 7.31,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--on-brand",
+      "fondo": "--brand-hover",
+      "ratio": 9.38,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--brand",
+      "fondo": "--brand-soft",
+      "ratio": 6.33,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--success",
+      "fondo": "--success-soft",
+      "ratio": 6.76,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--danger",
+      "fondo": "--danger-soft",
+      "ratio": 5.98,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--warning",
+      "fondo": "--warning-soft",
+      "ratio": 6.5,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--info",
+      "fondo": "--info-soft",
+      "ratio": 8.01,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--on-danger",
+      "fondo": "--danger",
+      "ratio": 6.57,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--on-danger",
+      "fondo": "--danger-hover",
+      "ratio": 8.24,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--chart-1",
+      "fondo": "--surface",
+      "ratio": 7.31,
+      "minimo": 3
+    },
+    {
+      "texto": "--chart-2",
+      "fondo": "--surface",
+      "ratio": 5.2,
+      "minimo": 3
+    },
+    {
+      "texto": "--chart-3",
+      "fondo": "--surface",
+      "ratio": 7.31,
+      "minimo": 3
+    }
+  ],
+  "cobre/dark": [
+    {
+      "texto": "--ink",
+      "fondo": "--page",
+      "ratio": 15.17,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--muted",
+      "fondo": "--page",
+      "ratio": 9.37,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--brand",
+      "fondo": "--page",
+      "ratio": 10.51,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--danger",
+      "fondo": "--page",
+      "ratio": 9.13,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--focus",
+      "fondo": "--page",
+      "ratio": 10.51,
+      "minimo": 3
+    },
+    {
+      "texto": "--control-border",
+      "fondo": "--page",
+      "ratio": 5.33,
+      "minimo": 3
+    },
+    {
+      "texto": "--ink",
+      "fondo": "--surface",
+      "ratio": 13.25,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--muted",
+      "fondo": "--surface",
+      "ratio": 8.19,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--brand",
+      "fondo": "--surface",
+      "ratio": 9.18,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--danger",
+      "fondo": "--surface",
+      "ratio": 7.97,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--focus",
+      "fondo": "--surface",
+      "ratio": 9.18,
+      "minimo": 3
+    },
+    {
+      "texto": "--control-border",
+      "fondo": "--surface",
+      "ratio": 4.65,
+      "minimo": 3
+    },
+    {
+      "texto": "--ink",
+      "fondo": "--surface-muted",
+      "ratio": 11.47,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--muted",
+      "fondo": "--surface-muted",
+      "ratio": 7.09,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--brand",
+      "fondo": "--surface-muted",
+      "ratio": 7.94,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--danger",
+      "fondo": "--surface-muted",
+      "ratio": 6.9,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--focus",
+      "fondo": "--surface-muted",
+      "ratio": 7.94,
+      "minimo": 3
+    },
+    {
+      "texto": "--control-border",
+      "fondo": "--surface-muted",
+      "ratio": 4.03,
+      "minimo": 3
+    },
+    {
+      "texto": "--on-brand",
+      "fondo": "--brand",
+      "ratio": 9.84,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--on-brand",
+      "fondo": "--brand-hover",
+      "ratio": 10.49,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--brand",
+      "fondo": "--brand-soft",
+      "ratio": 7.6,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--success",
+      "fondo": "--success-soft",
+      "ratio": 9.21,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--danger",
+      "fondo": "--danger-soft",
+      "ratio": 7.28,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--warning",
+      "fondo": "--warning-soft",
+      "ratio": 8.43,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--info",
+      "fondo": "--info-soft",
+      "ratio": 7.06,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--on-danger",
+      "fondo": "--danger",
+      "ratio": 8.8,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--on-danger",
+      "fondo": "--danger-hover",
+      "ratio": 6.38,
+      "minimo": 4.5
+    },
+    {
+      "texto": "--chart-1",
+      "fondo": "--surface",
+      "ratio": 9.18,
+      "minimo": 3
+    },
+    {
+      "texto": "--chart-2",
+      "fondo": "--surface",
+      "ratio": 9.31,
+      "minimo": 3
+    },
+    {
+      "texto": "--chart-3",
+      "fondo": "--surface",
+      "ratio": 9.18,
+      "minimo": 3
+    }
+  ]
+}

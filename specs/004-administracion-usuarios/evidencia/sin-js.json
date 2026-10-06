@@ -1,0 +1,18 @@
+{
+  "focused": "admin_password",
+  "invalid": [
+    {
+      "name": "admin_password",
+      "valid": false
+    },
+    {
+      "name": "new_password1",
+      "valid": false
+    },
+    {
+      "name": "new_password2",
+      "valid": false
+    }
+  ],
+  "url": "/usuarios/3/restablecer-contrasena/"
+}

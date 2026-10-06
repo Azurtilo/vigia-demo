@@ -1,0 +1,9 @@
+{
+  "tailwind": "v4.3.0",
+  "source": "tracked source copies",
+  "destination": "C:\\Users\\Fernando\\Desktop\\Base-2\\.audit-sdd-20261002\\build\\theme\\static\\css\\dist\\styles.css",
+  "bytes": 13829,
+  "generated_sha256": "d0bcaf37bfd2867e3cb1685bca05cdccd6fb35d1ae12e1eda1d58b380f25347a",
+  "project_sha256": "d0bcaf37bfd2867e3cb1685bca05cdccd6fb35d1ae12e1eda1d58b380f25347a",
+  "identical": true
+}

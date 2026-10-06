@@ -1,0 +1,70 @@
+Internal Server Error: /registro/
+Traceback (most recent call last):
+  File "C:\Users\Fernando\Desktop\Base-2\.audit-sdd-20261002\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Fernando\Desktop\Base-2\.audit-sdd-20261002\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Fernando\Desktop\Base-2\.audit-sdd-20261002\venv\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Fernando\Desktop\Base-2\core\mixins.py", line 41, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Fernando\Desktop\Base-2\.audit-sdd-20261002\venv\Lib\site-packages\django\contrib\auth\mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Fernando\Desktop\Base-2\.audit-sdd-20261002\venv\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Fernando\Desktop\Base-2\UsuarioApp\views.py", line 201, in post
+    profile.save()
+  File "C:\Users\Fernando\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\unittest\mock.py", line 1139, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Fernando\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\unittest\mock.py", line 1143, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Fernando\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\unittest\mock.py", line 1198, in _execute_mock_call
+    raise effect
+RuntimeError: Fallo sintetico de perfil
+Fallo sintetico de imagen
+******************************
+{
+  "django": "5.1.2",
+  "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+  "database": ":memory:",
+  "manager_crea_admin": {
+    "status": 302,
+    "admin_position_id": 2,
+    "created_role": "ADMIN",
+    "is_superuser": false,
+    "is_staff": false
+  },
+  "alta_fallo_perfil": {
+    "status": 500,
+    "user_persisted": true,
+    "profile_persisted": false
+  },
+  "perfil_fallo_imagen": {
+    "status": 302,
+    "user_name_persisted": true
+  },
+  "allauth_rate_limits": {
+    "change_password": "5/m/user",
+    "manage_email": "10/m/user",
+    "reset_password": "20/m/ip,5/m/key",
+    "reauthenticate": "10/m/user",
+    "reset_password_from_key": "20/m/ip",
+    "signup": "20/m/ip",
+    "login": "30/m/ip",
+    "request_login_code": "20/m/ip,3/m/key",
+    "login_failed": "10/m/ip,5/300s/key",
+    "confirm_email": "1/180s/key"
+  },
+  "argon2_roundtrip": true,
+  "bcrypt_available": false,
+  "bcrypt_error": "Couldn't load 'BCryptSHA256PasswordHasher' algorithm library: No module named 'bcrypt'",
+  "deploy_simulado": "System check identified some issues:\n\nWARNINGS:\n?: (security.W005) You have not set the SECURE_HSTS_INCLUDE_SUBDOMAINS setting to True. Without this, your site is potentially vulnerable to attack via an insecure connection to a subdomain. Only set this to True if you are certain that all subdomains of your domain should be served exclusively via SSL.\n?: (security.W021) You have not set the SECURE_HSTS_PRELOAD setting to True. Without this, your site cannot be submitted to the browser preload list.\n\nSystem check identified 2 issues (0 silenced).\n"
+}

@@ -1,0 +1,33 @@
+import hashlib
+import json
+import os
+import shutil
+import sys
+from pathlib import Path
+
+root = Path(__file__).resolve().parents[1]
+build = root / ".work-005/build"
+files = json.loads((root / ".recovery-005/baseline.json").read_text(encoding="utf-8-sig"))
+paths = {item["path"] for item in files}
+paths.update(path.relative_to(root).as_posix() for path in (root / "UsuarioApp").rglob("*.py"))
+for name in paths:
+    relative = Path(name)
+    if relative.parts[0] in ("theme", "templates", "static", "UsuarioApp", "homeApp", "core", "utils") or name == "manage.py":
+        target = build / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(root / relative, target)
+sys.path.insert(0, str(root))
+os.environ["DJANGO_SETTINGS_MODULE"] = "core.test_settings"
+import django
+django.setup()
+from django.apps import apps
+from django.core.management import call_command
+apps.get_app_config("theme").path = str(build / "theme")
+call_command("tailwind", "build")
+generated = build / "theme/static/css/dist/styles.css"
+digest = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()
+report = {"tailwind": "v4.3.0", "bytes": generated.stat().st_size,
+          "generated_sha256": digest(generated), "project_sha256": digest(root / "theme/static/css/dist/styles.css"),
+          "identical": generated.read_bytes() == (root / "theme/static/css/dist/styles.css").read_bytes()}
+(root / "docs/evidencia/actualizacion-20261002/build.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+print(json.dumps(report))

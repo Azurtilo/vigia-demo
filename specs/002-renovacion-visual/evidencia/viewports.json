@@ -1,0 +1,32 @@
+[
+  {
+    "canvas": true,
+    "chartWidth": 326,
+    "pageWidth": 360,
+    "width": 360
+  },
+  {
+    "canvas": true,
+    "chartWidth": 356,
+    "pageWidth": 390,
+    "width": 390
+  },
+  {
+    "canvas": true,
+    "chartWidth": 695,
+    "pageWidth": 753,
+    "width": 768
+  },
+  {
+    "canvas": true,
+    "chartWidth": 726,
+    "pageWidth": 1024,
+    "width": 1024
+  },
+  {
+    "canvas": true,
+    "chartWidth": 1142,
+    "pageWidth": 1440,
+    "width": 1440
+  }
+]

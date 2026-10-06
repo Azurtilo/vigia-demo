@@ -1,0 +1,65 @@
+"""Diagnóstico sintético temporal. Nunca carga core.settings ni .env."""
+import contextlib, io, json, os, pathlib, sys
+from unittest.mock import patch
+root = pathlib.Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(root))
+os.environ['DJANGO_SETTINGS_MODULE'] = 'core.test_settings'
+import django
+django.setup()
+from django.conf import settings
+assert settings.DATABASES['default']['NAME'] == ':memory:'
+assert settings.EMAIL_BACKEND == 'django.core.mail.backends.locmem.EmailBackend'
+from django.core.management import call_command
+from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password, check_password
+from django.test import Client, override_settings
+from django.urls import reverse
+from UsuarioApp.models import Position, Profile
+from allauth.account import app_settings
+out = pathlib.Path(__file__).resolve().parent
+call_command('migrate', verbosity=0)
+result={'django':django.get_version(),'python':sys.version,'database':':memory:'}
+Position.objects.create(user_position='ID reservado ficticio',permission_code='RESTRICTED')
+admin = Position.objects.create(user_position='Administrador ficticio',permission_code='ADMIN')
+manager = Position.objects.create(user_position='Manager ficticio',permission_code='MANAGER')
+restricted = Position.objects.create(user_position='Restringido ficticio',permission_code='RESTRICTED')
+actor = User.objects.create_user('gestor_auditoria',password='Solo-Diagnostico-2026!')
+Profile.objects.create(user_FK=actor,position_FK=manager)
+client=Client(); client.force_login(actor)
+payload={'username':'alta_admin_sintetica','email':'alta@example.test','first_name':'Ficticio','last_name':'Auditoria',
+ 'password1':'Ficticia-Nueva-2026!','password2':'Ficticia-Nueva-2026!','position_FK':admin.pk}
+response=client.post(reverse('Register'),payload)
+created=User.objects.filter(username=payload['username']).first()
+result['manager_crea_admin']={'status':response.status_code,'admin_position_id':admin.pk,
+ 'created_role':created.profile.position_FK.permission_code if created else None,
+ 'is_superuser':created.is_superuser if created else None,'is_staff':created.is_staff if created else None}
+payload.update(username='alta_parcial_sintetica',email='parcial@example.test',position_FK=restricted.pk)
+client.raise_request_exception=False
+with patch.object(Profile,'save',side_effect=RuntimeError('Fallo sintetico de perfil')):
+    response=client.post(reverse('Register'),payload)
+created=User.objects.filter(username=payload['username']).first()
+result['alta_fallo_perfil']={'status':response.status_code,'user_persisted':bool(created),
+ 'profile_persisted':Profile.objects.filter(user_FK=created).exists() if created else False}
+payload={'username':'perfil_nuevo_sintetico','email':'perfil@example.test','first_name':'Cambio','last_name':'Ficticio'}
+with patch.object(Profile,'save',side_effect=RuntimeError('Fallo sintetico de imagen')):
+    response=client.post(reverse('Profile'),payload)
+actor.refresh_from_db()
+result['perfil_fallo_imagen']={'status':response.status_code,'user_name_persisted':actor.username==payload['username']}
+result['allauth_rate_limits']=app_settings.RATE_LIMITS
+hashers=['django.contrib.auth.hashers.Argon2PasswordHasher','django.contrib.auth.hashers.PBKDF2PasswordHasher',
+ 'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher','django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+ 'django.contrib.auth.hashers.ScryptPasswordHasher']
+with override_settings(PASSWORD_HASHERS=hashers):
+    hashed=make_password('Ficticia-Hash-2026!')
+    result['argon2_roundtrip']=check_password('Ficticia-Hash-2026!',hashed)
+    try: make_password('Ficticia-Hash-2026!',hasher='bcrypt_sha256'); result['bcrypt_available']=True
+    except ValueError as exc: result['bcrypt_available']=False; result['bcrypt_error']=str(exc)
+stream=io.StringIO()
+with override_settings(SECRET_KEY='sintetica-auditoria-larga-no-real-2026-xxxxxxxxxxxxxxxxxxxxxxxx',
+ DEBUG=False,ALLOWED_HOSTS=['auditoria.example.test'],SECURE_PROXY_SSL_HEADER=('HTTP_X_FORWARDED_PROTO','https'),
+ SECURE_SSL_REDIRECT=True,SESSION_COOKIE_SECURE=True,CSRF_COOKIE_SECURE=True,SECURE_HSTS_SECONDS=3600,
+ SECURE_HSTS_INCLUDE_SUBDOMAINS=False,SECURE_HSTS_PRELOAD=False,PASSWORD_HASHERS=hashers):
+    with contextlib.redirect_stderr(stream): call_command('check',deploy=True,stdout=stream,stderr=stream)
+result['deploy_simulado']=stream.getvalue()
+(out/'diagnostico.json').write_text(json.dumps(result,indent=2,ensure_ascii=False),encoding='utf8')
+print(json.dumps(result,indent=2,ensure_ascii=False))

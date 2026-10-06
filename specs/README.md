@@ -1,0 +1,45 @@
+# Especificaciones por módulo o cambio
+
+Esta base no trae un módulo de negocio predefinido. **NuevaAPP es un ejemplo de nombre**, no una tarea pendiente. No se crean ahora apps, modelos ni una spec funcional ficticia.
+
+## Índice
+
+| Número | Módulo / cambio | Ruta | Estado | Código autorizado |
+|---|---|---|---|---|
+| 001 | CalidadBase: seguridad, pruebas y configuración | [001-calidad-seguridad-base](./001-calidad-seguridad-base/) | Verificado técnicamente; aceptación funcional pendiente | Sí; implementado 2026-09-20 |
+| 002 | Renovación visual de Base-2 | [002-renovacion-visual](./002-renovacion-visual/spec.md) | Implementada; regresión OK, revisión visual parcial y aceptación pendientes | Sí; alcance completo autorizado y ejecutado 2026-10-02 |
+| 003 | Modo claro/oscuro por usuario | [003-modo-visual-usuario](./003-modo-visual-usuario/spec.md) | Implementado; 43 tests OK; T-003-07 visual parcial y T-003-08 revisión del propietario pendientes | Sí; alcance completo autorizado por instrucción posterior el 2026-10-02; migración real excluida |
+| 004 | UsuarioApp: restablecimiento administrativo y jerarquía de cuentas | [004-administracion-usuarios](./004-administracion-usuarios/spec.md) | Implementado; 57 tests OK; T-004-07 envío válido por UI y T-004-08 revisión pendientes | Sí; alcance completo autorizado y ejecutado por instrucción posterior el 2026-10-02; sin migraciones nuevas/reales |
+| 005 | Actualización segura de dependencias Python/JavaScript | [005-actualizacion-dependencias](./005-actualizacion-dependencias/spec.md) | Implementada/verificada: lock de 52 paquetes, SRI, migraciones ficticias; aceptación pendiente | Sí; correcciones autorizadas posteriormente el 2026-10-02 |
+| 006 | Permisos e integridad de Registro/Perfil | [006-integridad-registro](./006-integridad-registro/spec.md) | Implementada/verificada: cargos y atomicidad/fotos; aceptación pendiente | Sí; regla y alcance confirmados por instrucciones posteriores |
+
+Siguiente número sugerido: 007. Comprobar el siguiente libre en cada uso. Una app puede tener varias specs de evolución; una spec transversal puede afectar varias apps.
+
+Auditoría independiente y cierre de correcciones: [VALIDACION_PREPRODUCCION.md](../docs/VALIDACION_PREPRODUCCION.md), 2026-10-02. La auditoría inicial detectó bloqueadores; la implementación posterior autorizada de 005/006 los corrigió en el alcance verificado. Conserva pendientes operativos y de revisión manual; no equivale a aceptación ni autorización para producción.
+
+## Organización
+
+Una solicitud de nuevo módulo crea una carpeta `specs/001-nueva-app/` —ejemplo de ruta, solo después de recibir un pedido concreto— con:
+
+| Archivo | Propósito | Momento |
+|---|---|---|
+| spec.md | Qué debe hacer, reglas, permisos y aceptación | Primero |
+| plan.md | Cómo se propone integrarlo en el código real | Después de la spec |
+| tasks.md | Pasos, dependencias y criterios de terminado | Después del plan |
+| validation.md | Evidencia real y pendientes | Al validar; no simular resultados en DOCUMENTAR |
+
+Plantillas: [spec](./_templates/spec.md), [plan](./_templates/plan.md), [tasks](./_templates/tasks.md), [validation](./_templates/validation.md).
+
+## Estados y permisos de trabajo
+
+Borrador documental → listo para revisión → aprobado para implementar tareas indicadas → en implementación → verificado técnicamente → aceptado por usuario.
+
+La aprobación necesita evidencia del mensaje del usuario; no se deduce de que existan los tres archivos. Si hay decisiones críticas pendientes, se mantiene borrador o listo para revisión con bloqueo explícito.
+
+## Identificadores
+
+Usar IDs estables por spec, por ejemplo RF-001-01 y T-001-01. Relacionarlos con aceptación y pruebas en [TRAZABILIDAD](../docs/TRAZABILIDAD.md). Un criterio no debe limitarse a «funciona bien».
+
+Un cambio pequeño conserva carpeta y RF, actualiza requisitos vigentes y añade una sección fechada de tareas. Una regla sustituida queda registrada en decisiones; no reciclar un ID para otro significado.
+
+Una spec nueva no autoriza automáticamente implementar ni despliega cambios de una spec anterior.

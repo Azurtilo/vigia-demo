@@ -1,0 +1,18 @@
+{
+  "commit": "6bc1bd484b6fd0d2eea9e1c0e6802370c069cc71",
+  "date": "2026-10-02",
+  "protected_files": 114,
+  "changed_sources": [],
+  "documents_checked": 13,
+  "local_links": 128,
+  "missing_links": [],
+  "rf_005": 6,
+  "tasks_pending": 7,
+  "tasks_complete": 0,
+  "preview": "terminated, exec session 35761 exit 1 after interrupt",
+  "browser_tab": "closed",
+  "temporary_environment": "removed after absolute path and reparse checks",
+  "real_data": "not accessed",
+  "source_updates": "none",
+  "acceptance": "not granted"
+}

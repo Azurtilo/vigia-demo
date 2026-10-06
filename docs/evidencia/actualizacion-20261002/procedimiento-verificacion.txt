@@ -1,0 +1,44 @@
+import ast
+import contextlib
+import io
+import json
+import os
+import sys
+from pathlib import Path
+
+root = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(root))
+os.environ["DJANGO_SETTINGS_MODULE"] = "core.test_settings"
+import django
+django.setup()
+from django.conf import settings
+from django.core.management import call_command
+from django.template.loader import get_template
+from django.test import override_settings
+assert settings.DATABASES["default"]["NAME"] == ":memory:"
+assert "core.settings" not in sys.modules
+out = root / "docs/evidencia/actualizacion-20261002"
+result = {"django": django.get_version(), "python": sys.version.split()[0], "settings": "core.test_settings"}
+for command, args in [("check", {}), ("makemigrations", {"check": True, "dry_run": True})]:
+    stream = io.StringIO()
+    call_command(command, stdout=stream, stderr=stream, **args)
+    (out / (command + ".txt")).write_text(stream.getvalue(), encoding="utf-8")
+    result[command] = "OK"
+names = sorted({path.relative_to(folder).as_posix() for folder in [root / "templates", root / "theme/templates"]
+                for path in folder.rglob("*.html")})
+for name in names:
+    get_template(name)
+result["templates"] = len(names)
+stream = io.StringIO()
+with override_settings(SECRET_KEY="sintetica-deploy-no-secreta-2026-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+                       DEBUG=False, ALLOWED_HOSTS=["validacion.example.test"],
+                       SECURE_PROXY_SSL_HEADER=("HTTP_X_FORWARDED_PROTO", "https"),
+                       SECURE_SSL_REDIRECT=True, SESSION_COOKIE_SECURE=True, CSRF_COOKIE_SECURE=True,
+                       SECURE_HSTS_SECONDS=3600, SECURE_HSTS_INCLUDE_SUBDOMAINS=False, SECURE_HSTS_PRELOAD=False):
+    with contextlib.redirect_stderr(stream):
+        call_command("check", deploy=True, stdout=stream, stderr=stream)
+(out / "deploy-simulado.txt").write_text(stream.getvalue(), encoding="utf-8")
+result["deploy_simulated"] = stream.getvalue()
+result["optional_disabled"] = all(name not in settings.INSTALLED_APPS for name in ("axes", "preventconcurrentlogins"))
+(out / "verificacion.json").write_text(json.dumps(result, indent=2), encoding="utf-8")
+print(json.dumps(result, indent=2))

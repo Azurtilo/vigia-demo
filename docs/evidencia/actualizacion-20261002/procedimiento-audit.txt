@@ -1,0 +1,21 @@
+import datetime
+import json
+import urllib.request
+from importlib.metadata import distributions
+from pathlib import Path
+
+root = Path(__file__).resolve().parents[1]
+queries = [{"package": {"name": dist.metadata["Name"], "ecosystem": "PyPI"}, "version": dist.version}
+           for dist in distributions()]
+queries += [{"package": {"name": name, "ecosystem": "npm"}, "version": version}
+            for name, version in [("alpinejs", "3.17.4"), ("dompurify", "3.4.16"), ("echarts", "6.1.0")]]
+request = urllib.request.Request("https://api.osv.dev/v1/querybatch", json.dumps({"queries": queries}).encode(),
+                                 headers={"Content-Type": "application/json"})
+with urllib.request.urlopen(request, timeout=45) as response:
+    result = json.load(response)
+report = {"checked_at_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+          "queries": queries, "results": result["results"],
+          "matches": sum(len(row.get("vulns", [])) for row in result["results"])}
+(root / "docs/evidencia/actualizacion-20261002/audit-candidatas-instaladas.json").write_text(
+    json.dumps(report, indent=2), encoding="utf-8")
+print(json.dumps({"packages_checked": len(queries), "matches": report["matches"]}))

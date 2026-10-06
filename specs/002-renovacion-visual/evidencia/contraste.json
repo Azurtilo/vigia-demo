@@ -1,0 +1,145 @@
+{
+  "petroleo": [
+    {
+      "uso": "blanco sobre marca",
+      "ratio": 5.47,
+      "minimo": 4.5
+    },
+    {
+      "uso": "blanco sobre hover",
+      "ratio": 7.33,
+      "minimo": 4.5
+    },
+    {
+      "uso": "marca sobre selección tenue",
+      "ratio": 4.83,
+      "minimo": 4.5
+    },
+    {
+      "uso": "enlace sobre superficie",
+      "ratio": 5.47,
+      "minimo": 4.5
+    },
+    {
+      "uso": "enlace sobre página",
+      "ratio": 5.0,
+      "minimo": 4.5
+    },
+    {
+      "uso": "foco sobre página",
+      "ratio": 5.0,
+      "minimo": 3
+    }
+  ],
+  "ciruela": [
+    {
+      "uso": "blanco sobre marca",
+      "ratio": 6.98,
+      "minimo": 4.5
+    },
+    {
+      "uso": "blanco sobre hover",
+      "ratio": 9.06,
+      "minimo": 4.5
+    },
+    {
+      "uso": "marca sobre selección tenue",
+      "ratio": 6.02,
+      "minimo": 4.5
+    },
+    {
+      "uso": "enlace sobre superficie",
+      "ratio": 6.98,
+      "minimo": 4.5
+    },
+    {
+      "uso": "enlace sobre página",
+      "ratio": 6.38,
+      "minimo": 4.5
+    },
+    {
+      "uso": "foco sobre página",
+      "ratio": 6.38,
+      "minimo": 3
+    }
+  ],
+  "cobre": [
+    {
+      "uso": "blanco sobre marca",
+      "ratio": 7.31,
+      "minimo": 4.5
+    },
+    {
+      "uso": "blanco sobre hover",
+      "ratio": 9.38,
+      "minimo": 4.5
+    },
+    {
+      "uso": "marca sobre selección tenue",
+      "ratio": 6.33,
+      "minimo": 4.5
+    },
+    {
+      "uso": "enlace sobre superficie",
+      "ratio": 7.31,
+      "minimo": 4.5
+    },
+    {
+      "uso": "enlace sobre página",
+      "ratio": 6.68,
+      "minimo": 4.5
+    },
+    {
+      "uso": "foco sobre página",
+      "ratio": 6.68,
+      "minimo": 3
+    }
+  ],
+  "comunes": [
+    {
+      "uso": "texto sobre página",
+      "ratio": 14.15,
+      "minimo": 4.5
+    },
+    {
+      "uso": "ayuda sobre página",
+      "ratio": 5.79,
+      "minimo": 4.5
+    },
+    {
+      "uso": "límite de control sobre superficie",
+      "ratio": 3.77,
+      "minimo": 3
+    },
+    {
+      "uso": "límite de control sobre página",
+      "ratio": 3.44,
+      "minimo": 3
+    },
+    {
+      "uso": "éxito sobre fondo",
+      "ratio": 6.76,
+      "minimo": 4.5
+    },
+    {
+      "uso": "error sobre fondo",
+      "ratio": 5.98,
+      "minimo": 4.5
+    },
+    {
+      "uso": "aviso sobre fondo",
+      "ratio": 6.5,
+      "minimo": 4.5
+    },
+    {
+      "uso": "información sobre fondo",
+      "ratio": 8.01,
+      "minimo": 4.5
+    },
+    {
+      "uso": "blanco sobre peligro",
+      "ratio": 6.57,
+      "minimo": 4.5
+    }
+  ]
+}

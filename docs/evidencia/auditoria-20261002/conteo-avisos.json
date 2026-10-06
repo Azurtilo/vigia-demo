@@ -1,0 +1,296 @@
+[
+  {
+    "package": "argon2-cffi",
+    "version": "25.1.0",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "argon2-cffi-bindings",
+    "version": "25.1.0",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "arrow",
+    "version": "1.3.0",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "asgiref",
+    "version": "3.8.1",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "binaryornot",
+    "version": "0.4.4",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "black",
+    "version": "24.10.0",
+    "raw_count": 3,
+    "distinct": 2
+  },
+  {
+    "package": "certifi",
+    "version": "2024.8.30",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "cffi",
+    "version": "1.17.1",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "chardet",
+    "version": "5.2.0",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "charset-normalizer",
+    "version": "3.4.0",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "click",
+    "version": "8.1.7",
+    "raw_count": 1,
+    "distinct": 1
+  },
+  {
+    "package": "colorama",
+    "version": "0.4.6",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "cookiecutter",
+    "version": "2.6.0",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "crispy-tailwind",
+    "version": "1.0.3",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "Django",
+    "version": "5.1.2",
+    "raw_count": 38,
+    "distinct": 22
+  },
+  {
+    "package": "django-allauth",
+    "version": "0.62.1",
+    "raw_count": 6,
+    "distinct": 3
+  },
+  {
+    "package": "django-axes",
+    "version": "6.4.0",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "django-crispy-forms",
+    "version": "2.3",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "django-environ",
+    "version": "0.11.2",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "django-preventconcurrentlogins",
+    "version": "0.8.2",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "django-tailwind",
+    "version": "4.5.0",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "idna",
+    "version": "3.10",
+    "raw_count": 2,
+    "distinct": 1
+  },
+  {
+    "package": "Jinja2",
+    "version": "3.1.4",
+    "raw_count": 6,
+    "distinct": 3
+  },
+  {
+    "package": "markdown-it-py",
+    "version": "3.0.0",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "MarkupSafe",
+    "version": "3.0.2",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "mdurl",
+    "version": "0.1.2",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "mypy-extensions",
+    "version": "1.0.0",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "packaging",
+    "version": "24.1",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "pathspec",
+    "version": "0.12.1",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "pillow",
+    "version": "11.3.0",
+    "raw_count": 36,
+    "distinct": 18
+  },
+  {
+    "package": "platformdirs",
+    "version": "4.3.6",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "pycparser",
+    "version": "2.22",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "Pygments",
+    "version": "2.18.0",
+    "raw_count": 2,
+    "distinct": 1
+  },
+  {
+    "package": "pytailwindcss",
+    "version": "0.3.1",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "python-dateutil",
+    "version": "2.9.0.post0",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "python-slugify",
+    "version": "8.0.4",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "PyYAML",
+    "version": "6.0.2",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "qrcode",
+    "version": "8.0",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "requests",
+    "version": "2.32.3",
+    "raw_count": 4,
+    "distinct": 2
+  },
+  {
+    "package": "rich",
+    "version": "13.9.2",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "ruff",
+    "version": "0.16.8",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "six",
+    "version": "1.16.0",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "sqlparse",
+    "version": "0.5.1",
+    "raw_count": 11,
+    "distinct": 6
+  },
+  {
+    "package": "text-unidecode",
+    "version": "1.3",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "types-python-dateutil",
+    "version": "2.9.0.20241003",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "tzdata",
+    "version": "2024.2",
+    "raw_count": 0,
+    "distinct": 0
+  },
+  {
+    "package": "urllib3",
+    "version": "2.2.3",
+    "raw_count": 16,
+    "distinct": 8
+  },
+  {
+    "package": "dompurify",
+    "version": "3.1.5",
+    "raw_count": 20,
+    "distinct": 20
+  },
+  {
+    "package": "echarts",
+    "version": "6.0.0",
+    "raw_count": 1,
+    "distinct": 1
+  }
+]

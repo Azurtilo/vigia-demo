@@ -1,0 +1,458 @@
+[
+  {
+    "path": ".recovery-004/ejecutar.py",
+    "sha256": "EA2978BDB8A12312C6B7002E33F1F2A3CB823BB71CD404A4B1404B55C5B1F694"
+  },
+  {
+    "path": ".recovery-004/preview.py",
+    "sha256": "742C03A6F1CE51F6ED343120899C38DE93BE6C7B4DF73DE8D98DD4FFAE85682F"
+  },
+  {
+    "path": "AGENTS.md",
+    "sha256": "858B58301DA7A1F694B654DBEEB0B6D31DEA1DC9A9294C73331E6EF1588DCAB2"
+  },
+  {
+    "path": "UsuarioApp/__init__.py",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "UsuarioApp/adapters.py",
+    "sha256": "55F4A332FDAF5727242AD40EEB0E7BDDF3A3FCDA2C70EED129B0741083C68C90"
+  },
+  {
+    "path": "UsuarioApp/admin.py",
+    "sha256": "160B6AC070CA90604A570ED60CA1C898BA2AD5B2A9EE5BEA7B76FF24D935CF36"
+  },
+  {
+    "path": "UsuarioApp/apps.py",
+    "sha256": "E45F637173B40C850C8ABA774EBEB82DB363701383F8FD436A8A7FD4C21C51C7"
+  },
+  {
+    "path": "UsuarioApp/choices.py",
+    "sha256": "8FA691C12D21C5ADD361BDF66885BF84E2C7BB581449905465AF3109E310E180"
+  },
+  {
+    "path": "UsuarioApp/forms.py",
+    "sha256": "A231BDDF1E8CEC1B67B18022DEB511CBD383CB76A24EB4D1E06AAF83CA8387EA"
+  },
+  {
+    "path": "UsuarioApp/migrations/0001_initial.py",
+    "sha256": "9BB56282846012F9895D05A2615CEE05656FF1AF783CA97F2E1D329DC62FB9D6"
+  },
+  {
+    "path": "UsuarioApp/migrations/0002_user_visual_preference.py",
+    "sha256": "B6D4D9924715239BA7F53F6705403349C567437F1CF1F38EAA2C86914C6CC428"
+  },
+  {
+    "path": "UsuarioApp/migrations/__init__.py",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "UsuarioApp/models.py",
+    "sha256": "A167A145C851E93C6482D3C96C1243181B1D5178DA83DB9C3BA10A320FC17CDB"
+  },
+  {
+    "path": "UsuarioApp/permissions.py",
+    "sha256": "6A5181077DB52F0C1C7905C1F0B6DB1ACA98A22C98BFBA8F82962A61039E91F0"
+  },
+  {
+    "path": "UsuarioApp/tests.py",
+    "sha256": "06283264AB564D7D2BB15976B16C529B9D87FD9C8EF8D2C0688F579CEBAEFED4"
+  },
+  {
+    "path": "UsuarioApp/urls.py",
+    "sha256": "B4B442CFA581DE6C8B8590F170F7CF3EED14E0D7FBFCECEE9246FB6B102B0A83"
+  },
+  {
+    "path": "UsuarioApp/views.py",
+    "sha256": "EAEDDB90E0BC9591554EC165CA720FC61DEFDE28B4698469F71E46632BEE540E"
+  },
+  {
+    "path": "constitution.md",
+    "sha256": "072FB66B93D177E6971B699C76AF7C714F24FF12E47A118FA30C1BD0EE71C4E4"
+  },
+  {
+    "path": "core/__init__.py",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "core/asgi.py",
+    "sha256": "EC0BC0CAA571FCC0FDD4C8C008E126F21F5AA893477A04C79487EB2C662388D8"
+  },
+  {
+    "path": "core/common_settings.py",
+    "sha256": "E283A03E067ED1B21A098AE81C82B9971C5FC7D77FA90C8AFB2CC117EC2CC816"
+  },
+  {
+    "path": "core/context_processors.py",
+    "sha256": "98D682818BA5B7D9B1D96C25C7E1BE381EB03DE2A2AA8961B956E6CF4765F973"
+  },
+  {
+    "path": "core/mixins.py",
+    "sha256": "33B7DF98FA712342E156EC013254FCBABA1BC1F5FEA4B1974D12D4A58E89727C"
+  },
+  {
+    "path": "core/settings.py",
+    "sha256": "97164F809D8DB629CD1F20C32086F270BC05D28E0B10B381BF4C2A56E51E6BC0"
+  },
+  {
+    "path": "core/test_settings.py",
+    "sha256": "641A74D93576A29976A6C279E3A8844EDDA861D4AECD48E9124B02D8188D69A4"
+  },
+  {
+    "path": "core/urls.py",
+    "sha256": "F02DDC09BEA36517F952B580A9D644EAAB37E76D78263FDF8D6B4F36A0AFE4E7"
+  },
+  {
+    "path": "core/wsgi.py",
+    "sha256": "3C2202CD7D8A4D77AA00A2033E02AE13D50AFF8BD652B9376AD26A9ECF329222"
+  },
+  {
+    "path": "homeApp/__init__.py",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "homeApp/admin.py",
+    "sha256": "C591E7F5BE6EDBFEDB0FA438F059CDD168913E311B13D73D7489B86887B5337E"
+  },
+  {
+    "path": "homeApp/apps.py",
+    "sha256": "6C12D90A14E02C12841825C268B431C8FA62C309DC834AF2C9CAFE0CBA71DA01"
+  },
+  {
+    "path": "homeApp/middleware.py",
+    "sha256": "B465D006ACC4F7C7BE4D8D0A155F59966F111612DA7DF77A08608B33B72963F0"
+  },
+  {
+    "path": "homeApp/models.py",
+    "sha256": "4C3E126F8F39A1374F671E5BEA920E5894CF21816F5D0DAFF29382F90208BB0B"
+  },
+  {
+    "path": "homeApp/tests.py",
+    "sha256": "82771506B9E2A1845A92E3FAB8E8C8D12021D72D3513633E2FF5539EFC11E765"
+  },
+  {
+    "path": "homeApp/urls.py",
+    "sha256": "984D72F6548A45D37E1E92EBCDD44DE3CFEF819E24EC6744F1C35D36E123C91E"
+  },
+  {
+    "path": "homeApp/views.py",
+    "sha256": "A79D5851E6A8427731B1AE5D27BF399CEDDE5859E716802A4ED4F74403A11269"
+  },
+  {
+    "path": "manage.py",
+    "sha256": "A1D57522412BAB5FEB42807A57FAE7E7ABB8318CE2E3B5BC3DD71B945B17542C"
+  },
+  {
+    "path": "requirements.txt",
+    "sha256": "7828323E1778CF5EE8C5479ADC2582C43588A93B369CB2CA1CC254E6D6E92CC1"
+  },
+  {
+    "path": "specs/002-renovacion-visual/verificar_contraste.py",
+    "sha256": "F7BA031D7C68912852176160BA506E535560A4B5261A419F76A0D02ECF51F925"
+  },
+  {
+    "path": "specs/003-modo-visual-usuario/verificar_contraste.py",
+    "sha256": "8D9B6D8273687BBD91FB300315EB72238EBFBDBF5B1C12B725CCC0E696CF4FFE"
+  },
+  {
+    "path": "static/css/mensajes.css",
+    "sha256": "8EB0ADD0D2FD62600EF8D1583E3DFC0C29A0EC0D414845932D6EB6C6336F5ED0"
+  },
+  {
+    "path": "static/css/spiner.css",
+    "sha256": "0076495B4ED8B6D77B45A18EE7C624769420B61B517DE1B4C93D97BE9C9CD320"
+  },
+  {
+    "path": "static/css/styles.css",
+    "sha256": "51EB1F9CCD44C7B1E05FE283713B9AF3E5A9929137DE15B82E3A4AED256FB388"
+  },
+  {
+    "path": "static/css/tokens.css",
+    "sha256": "18E55A76660506ED34761408CC0D761ACF56857015E13C73F00A9621AB22C409"
+  },
+  {
+    "path": "static/js/grafico_home.js",
+    "sha256": "78A5C1F8F0210F1CD8050E53E99DDAED28AB8988B0F0BAF30BA4D4D9B634115F"
+  },
+  {
+    "path": "static/js/interfaz.js",
+    "sha256": "8379563BDC4365A013140516417FB2863506C32EA5244D226699212E4E4B8B01"
+  },
+  {
+    "path": "static/js/mensajes.js",
+    "sha256": "77B0282F3D25BA5EE65BACF6CF09E8803840AFC6164C5C414F969FCC4B46F5B3"
+  },
+  {
+    "path": "static/js/modal.js",
+    "sha256": "654D8E1DD0478316BA1F9342668CAC73A88FF0EE82AB69854C78752BC71580D3"
+  },
+  {
+    "path": "static/js/script.js",
+    "sha256": "7DD872D4884E31B8E7DCD728E739930AA08A752CCB7587E071B3D041342EC5E5"
+  },
+  {
+    "path": "templates/400.html",
+    "sha256": "49AF1C6E2EFD65E6E222694B6423C48DA6FEC01FC7995BDD5EFA04C0045A534F"
+  },
+  {
+    "path": "templates/401.html",
+    "sha256": "6354DDA92ABDA583B02A0A19A07BBA76AF723502D4AC0C5909DF84BA4B8A8E8D"
+  },
+  {
+    "path": "templates/403.html",
+    "sha256": "DA0B35D8AEF698723DF0C18A9D49F9942316C9422F57E3B57EAB30173B0132B3"
+  },
+  {
+    "path": "templates/404.html",
+    "sha256": "D47EAE376DAEC23A4F54A48305E2149014AA80B5A9118E81DD0FF2AE0E4BF4E0"
+  },
+  {
+    "path": "templates/429.html",
+    "sha256": "6C8FAA2DE2CA4A7A058C83F3CB23B22765FC4B2C2CF6638BA69A4D0364C74969"
+  },
+  {
+    "path": "templates/500.html",
+    "sha256": "842BB76B2970265A62F59FF57033C38B10455439410471E8B9EBDAFEC1902FB9"
+  },
+  {
+    "path": "templates/account/Layout/base_account.html",
+    "sha256": "4E7D3C68ED6F2A028717F03B2B791D132303106080247C4EE34CF0459DFCDA1B"
+  },
+  {
+    "path": "templates/account/Layout/base_simple.html",
+    "sha256": "41622009B6B8826D3AC27045F668029ADB4C4199B964147E175EA08C2B288792"
+  },
+  {
+    "path": "templates/account/account_inactive.html",
+    "sha256": "8CCEDC52F97FAB441E97F420D515ECBD0F9F632C7E5A46B6F568D81A11C24278"
+  },
+  {
+    "path": "templates/account/base_reauthenticate.html",
+    "sha256": "2E5A9AA8259C10ACAE06C1AA4A8439A6CB372F8B5932F8AEE40CC26D8E0CB303"
+  },
+  {
+    "path": "templates/account/confirm_login_code.html",
+    "sha256": "94ED4AFA3524FB80D8FD4443577BD6AA0191FB4AFA75AFBF98075FA8F9B8B5DE"
+  },
+  {
+    "path": "templates/account/email.html",
+    "sha256": "F1581E2E856324B9CE7988C54614A18E01C70FE7B1D897853F559D6CE34B66E2"
+  },
+  {
+    "path": "templates/account/email_change.html",
+    "sha256": "AAC8461A14CF0BF28796A689F2D24A3049226DB6A83A2454683615A391E1B41D"
+  },
+  {
+    "path": "templates/account/email_confirm.html",
+    "sha256": "ACBD46F07FC5C0F0983FA73F17BA0ED6713B81BC14BC6B9B6296EF6F51DC1A54"
+  },
+  {
+    "path": "templates/account/login.html",
+    "sha256": "40B304598A8CD2F44534826E619402E78F98A56E98A1AC184E28388E72569609"
+  },
+  {
+    "path": "templates/account/logout.html",
+    "sha256": "62BA195AD437565F7FC33C0426F3A46ED20100470BF98D9845DAB233B267BCF2"
+  },
+  {
+    "path": "templates/account/password_change.html",
+    "sha256": "9F154BEFB1E6B43D30FDC33E222FB73687678EABC87C39978043711B056E091C"
+  },
+  {
+    "path": "templates/account/password_reset.html",
+    "sha256": "25B221812605F8D067D366DCC14C67C13A1E7E5007D7045B53B70B0FBE96578C"
+  },
+  {
+    "path": "templates/account/password_reset_done.html",
+    "sha256": "57B727F8BA1CA6690EED2A27B4931ED5919ECA4EAA453FB2D8F88954A4E6D045"
+  },
+  {
+    "path": "templates/account/password_reset_from_key.html",
+    "sha256": "3532DB7031B2101AECF61F49B7198F0B77CCA2AE08576793245410DBAE45D29D"
+  },
+  {
+    "path": "templates/account/password_reset_from_key_done.html",
+    "sha256": "172F9C93D8AEF64E417B7AE5395D8274D5AE09381A33D6C34C80A6D7C9488328"
+  },
+  {
+    "path": "templates/account/password_set.html",
+    "sha256": "DA9921CC888DFBB4B8FDAA997B1089C089F40369D6CC361B4DC39BE53542BCE3"
+  },
+  {
+    "path": "templates/account/reauthenticate.html",
+    "sha256": "AB8E9AD6E8168EE2EE9A3B5DCEE1050A28BA01971326456F0A436564F65A0CA6"
+  },
+  {
+    "path": "templates/account/request_login_code.html",
+    "sha256": "98A401407E0DEA357961EA6507DDE1F139BA189E90D797ADEBE094981FAE19BC"
+  },
+  {
+    "path": "templates/account/signup.html",
+    "sha256": "21CA0F331313DD592DD65D1DA96ABC7364400D85257611003F3369924086439F"
+  },
+  {
+    "path": "templates/account/signup_closed.html",
+    "sha256": "A1301B4D53D02F1083367747D7730D925AEDAC619E6878C2ECE974D90BFDC5CD"
+  },
+  {
+    "path": "templates/account/snippets/already_logged_in.html",
+    "sha256": "76B19248E958F5C3360D4315166ED0611F85B74BF8D676FF9B87921F25015675"
+  },
+  {
+    "path": "templates/account/snippets/warn_no_email.html",
+    "sha256": "CFC5ADF6B46E544DA0F3207250047DA192834CF33700A691FBE59C4AF330C6D6"
+  },
+  {
+    "path": "templates/account/verification_sent.html",
+    "sha256": "1C5AE37767A5F35BD402B132638631085916E9EF19ED8DFA8B473550E405482B"
+  },
+  {
+    "path": "templates/account/verified_email_required.html",
+    "sha256": "B0AD6785B93F854AC4AD58DFFE16C96E141B78D25632F5A8131997E9D2B4EB7D"
+  },
+  {
+    "path": "templates/components/Layout/base.html",
+    "sha256": "478775D388915A8DD9B3E9A46E22B05B2F137328267F21B643BCDC74E3B83EA4"
+  },
+  {
+    "path": "templates/components/Layout/base_extendido.html",
+    "sha256": "5FCA40522C528A783D0CAA5104E65854C0A58B5DAADAA92F4BB58CC216C78E38"
+  },
+  {
+    "path": "templates/components/Layout/base_pages.html",
+    "sha256": "07E1CBF19646E69FE8652664096375B77D3D626FC9FAFC883374D02BE78607CD"
+  },
+  {
+    "path": "templates/components/btn/ancor_btn.html",
+    "sha256": "071F6FA074FA230EBE0E72ED948993E1EDFD6AF8DDA264DE1DB1BC1FAB31A196"
+  },
+  {
+    "path": "templates/components/btn/button.html",
+    "sha256": "030A67353E59065EAF32144432158AE64AC73781ACF06FB3062454FC38DAB5D3"
+  },
+  {
+    "path": "templates/components/btn/button_size.html",
+    "sha256": "7106D25B38056DFA76D5E36D7676F7FA7B95C48BB9CD5B4411CCC01A738F51ED"
+  },
+  {
+    "path": "templates/components/header/components/buscador.html",
+    "sha256": "0C28DFBFA0BD872E3608CD1B153AFA7285C2819D71E700A7A906CD9798A06C71"
+  },
+  {
+    "path": "templates/components/header/components/profile.html",
+    "sha256": "CF6D5F7F22BC30B37FF9ADA593E429020DB56B9272322BAD273CE07992C18C82"
+  },
+  {
+    "path": "templates/components/header/header.html",
+    "sha256": "A52F561F1F41FEFB6DA78EA66EC8568286E6E9EDC48A46EB6446D6969F49FB3F"
+  },
+  {
+    "path": "templates/components/input_perfil.html",
+    "sha256": "6A6198BC4E956B7D765050D8970413DCCD4BDD4270FF294CF871ED45E52ED4F1"
+  },
+  {
+    "path": "templates/components/mensajes.html",
+    "sha256": "9D7D55E63B32BE79963A9FEF2D32C90AB4B5752E2DB7C4B73562775015215749"
+  },
+  {
+    "path": "templates/components/modal/modal.html",
+    "sha256": "BCE8A98D306581088B59082CA46190431C9A40D408F82360F5B0B5F64533FDCF"
+  },
+  {
+    "path": "templates/components/navbar/nav.html",
+    "sha256": "2E34769DC515687B2990416FFA2CEE64969D932E7A3BD4DFC3C84212FCEC7718"
+  },
+  {
+    "path": "templates/components/navbar/navbar_desktop.html",
+    "sha256": "AE70FE1EA8ED6BA9A5AD3220E58B07858E1AF395C2031078495D8EDE06FA2410"
+  },
+  {
+    "path": "templates/components/navbar/navbar_mobil.html",
+    "sha256": "BC0D0A70E2BC49CFCC65E5714C28FC77B99D91460025E191D80CDBAA0846902D"
+  },
+  {
+    "path": "templates/components/paginador.html",
+    "sha256": "0D81FD1EBD566481B94ADA628E093560E7808DB0C467A7D8BFFB7EDD1C75E06E"
+  },
+  {
+    "path": "templates/components/progress.html",
+    "sha256": "68512292735BE341E4C70682DC7144ADE9756B60DBDA9FF8D80207F3E52A84B7"
+  },
+  {
+    "path": "templates/components/spinner.html",
+    "sha256": "18464FAE664837B02DCF4F4AD1B3A3F8DD1E75563E7B767FA2DAEC30476A59B5"
+  },
+  {
+    "path": "templates/mfa/authenticate.html",
+    "sha256": "89DF9B2A56FC09569B8EEBAB7CA1CEB9D92AB10A2D6FE3BE2BB53A072D89073C"
+  },
+  {
+    "path": "templates/mfa/index.html",
+    "sha256": "E9166D6DDB3E00BB6347B30B38A71A79FA0EBCD2311C5A402C9603634EE8AAB9"
+  },
+  {
+    "path": "templates/mfa/reauthenticate.html",
+    "sha256": "89CCEEAB259366A3CA8670F07082BBD6109EDD528ADEA52C53EE867ED529A059"
+  },
+  {
+    "path": "templates/mfa/recovery_codes/generate.html",
+    "sha256": "82857E5C3BC07FA9ABDA20F959D3FEB769B8230C3DBC510319A94686A5B4DF2C"
+  },
+  {
+    "path": "templates/mfa/recovery_codes/index.html",
+    "sha256": "80CA1DD080921F7DF4A3EDE51F9F241212CD55DFF2534E2BBE26C8AA579200EF"
+  },
+  {
+    "path": "templates/mfa/totp/activate_form.html",
+    "sha256": "0F28278BF0A22370E72EFA4E59B266572E48AEFD3BD9389350C1D90FC2EE6FB1"
+  },
+  {
+    "path": "templates/mfa/totp/deactivate_form.html",
+    "sha256": "D3058D4C6D8ECDEB7D99370BA4DE9D6C85CFF564ABFBDE71DB1C03995D94211C"
+  },
+  {
+    "path": "templates/pages/UsuarioApp/perfil/perfil.html",
+    "sha256": "D3164ECDD9F96C1315AB7A72806A30002605134DD201072D48E705F74C4D1178"
+  },
+  {
+    "path": "templates/pages/UsuarioApp/registro_usuario.html",
+    "sha256": "287380961F0E018CA1637F8F464F63E23BF8A3D2529EA018FD3D62D3A44320D6"
+  },
+  {
+    "path": "templates/pages/UsuarioApp/restablecer_password.html",
+    "sha256": "3AD5A66D3CA4081826A2E669E07260A577C8EAA792306C54FDD9382EB3CA1ED6"
+  },
+  {
+    "path": "templates/pages/UsuarioApp/usuarios_lista.html",
+    "sha256": "35333AFB4D7D774B46C7A8F7E37836C4EF7C42B0801031EAAFDC0252949D494A"
+  },
+  {
+    "path": "templates/pages/index.html",
+    "sha256": "0313689D78287B42E4CEB7FE2BE5E54EDF640C7EF941F33FC9E6D968617ED8F7"
+  },
+  {
+    "path": "theme/__init__.py",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "theme/apps.py",
+    "sha256": "073546883354BADF1E9BF1AEDAB5E0AD730C185DE35727B968FB8683B651CD77"
+  },
+  {
+    "path": "theme/static/css/dist/styles.css",
+    "sha256": "D0BCAF37BFD2867E3CB1685BCA05CDCCD6FB35D1AE12E1EDA1D58B380F25347A"
+  },
+  {
+    "path": "theme/static_src/src/styles.css",
+    "sha256": "0C8B3BE12E49DA622358D9A1EC1DEF266B5793AC41CFEA77724950270704FC86"
+  },
+  {
+    "path": "theme/templates/base.html",
+    "sha256": "93086A778C4D8773310856ACEA6BD792622A3149042E6FF4E142FDC9BE1A0AB2"
+  },
+  {
+    "path": "utils/customer_img.py",
+    "sha256": "0FE74ED1CEEA1B4BFE94F3DFBBC559CB7D3AEAB9A3E976BECB78B54C48E47393"
+  }
+]

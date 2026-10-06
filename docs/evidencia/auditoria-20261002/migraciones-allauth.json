@@ -1,0 +1,54 @@
+{
+  "version": "65.19.7",
+  "sha256_verified": true,
+  "changes": [
+    {
+      "path": "allauth/account/migrations/0001_initial.py",
+      "new": false,
+      "source_sha256": "6f27ff6bdf57521a6561e0c606ee3278d2b6dac7eb068dbe1cdd07cd3f9eb6bf",
+      "effect": "Archivo previo cambiado; comparar semántica antes de upgrade"
+    },
+    {
+      "path": "allauth/account/migrations/0002_email_max_length.py",
+      "new": false,
+      "source_sha256": "c956ab7a3c3660a14b162e9e87dbc57851262ef4d3a895597eebc4eded595fc1",
+      "effect": "Archivo previo cambiado; comparar semántica antes de upgrade"
+    },
+    {
+      "path": "allauth/account/migrations/0006_emailaddress_lower.py",
+      "new": true,
+      "source_sha256": "54adb08cb3fba66b1b2eed10c4a9d7037ae40d778fe5df40628ef3639f4f4fe4",
+      "effect": "Normaliza email de EmailAddress y User; reverse noop"
+    },
+    {
+      "path": "allauth/account/migrations/0007_emailaddress_idx_email.py",
+      "new": true,
+      "source_sha256": "87fad70bfde8ae295155fcaac942a260164bee3a04f33fd00a70bf2351aef951",
+      "effect": "Retira índice superior y altera campo email indexado"
+    },
+    {
+      "path": "allauth/account/migrations/0008_emailaddress_unique_primary_email_fixup.py",
+      "new": true,
+      "source_sha256": "794bf875bdbef9c47e9ccc736cb01711d84657381219f6af6c98a3829e2d6b7f",
+      "effect": "Desmarca principales adicionales; reverse noop"
+    },
+    {
+      "path": "allauth/account/migrations/0009_emailaddress_unique_primary_email.py",
+      "new": true,
+      "source_sha256": "79762cfa7b1e1d7c58be5061a6c032594f7d5e5f8c7288d64146e85cc0bfbd06",
+      "effect": "UniqueConstraint condicional de principal por user"
+    },
+    {
+      "path": "allauth/mfa/migrations/0002_authenticator_timestamps.py",
+      "new": false,
+      "source_sha256": "b6566eb07301e2e4042908f789c19ff1dfefb86393773d656bbaef7bbbed234e",
+      "effect": "Archivo previo cambiado; comparar semántica antes de upgrade"
+    },
+    {
+      "path": "allauth/mfa/migrations/0003_authenticator_type_uniq.py",
+      "new": true,
+      "source_sha256": "88550a456154080cc3ecddcf8a32af3d81733bb6d56325ea67b201ee9f1ea1a2",
+      "effect": "Restricción condicional TOTP/recovery y choices WebAuthn"
+    }
+  ]
+}
