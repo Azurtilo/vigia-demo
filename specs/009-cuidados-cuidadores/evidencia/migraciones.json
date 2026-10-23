@@ -1,0 +1,10 @@
+{
+  "database": ":memory:",
+  "settings": "core.test_settings",
+  "forward": true,
+  "backward_original_custom_catalog": true,
+  "reapply": true,
+  "commercial_snapshots_dates_unchanged": true,
+  "guides": 4,
+  "real_database_touched": false
+}

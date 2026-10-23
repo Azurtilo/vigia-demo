@@ -1,0 +1,49 @@
+{
+  "scope": "Syntax only; not Flutter analyze, native compilation, or UI validation",
+  "results": [
+    {
+      "file": "mobile/lib/care.dart",
+      "syntax_ok": true
+    },
+    {
+      "file": "mobile/lib/main.dart",
+      "syntax_ok": true
+    },
+    {
+      "file": "mobile/lib/phone_pose_web.dart",
+      "syntax_ok": true
+    },
+    {
+      "file": "mobile/lib/phone_pose.dart",
+      "syntax_ok": true
+    },
+    {
+      "file": "mobile/lib/pose_classifier.dart",
+      "syntax_ok": true
+    },
+    {
+      "file": "mobile/lib/api.dart",
+      "syntax_ok": true
+    },
+    {
+      "file": "mobile/lib/phone_pose_native.dart",
+      "syntax_ok": true
+    },
+    {
+      "file": "mobile/test/widget_test.dart",
+      "syntax_ok": true
+    },
+    {
+      "file": "mobile/test/pose_classifier_test.dart",
+      "syntax_ok": true
+    },
+    {
+      "file": "mobile/plugins/vigia_pose/lib/vigia_pose.dart",
+      "syntax_ok": true
+    },
+    {
+      "file": "mobile/plugins/vigia_pose/android/src/main/java/cl/vigia/pose/VigiaPosePlugin.java",
+      "syntax_ok": true
+    }
+  ]
+}

@@ -1,19 +1,21 @@
 # Identidad del proyecto derivado
 
-Estado: copia de la base con PlanesApp implementada tras autorización explícita del alcance completo; aceptación funcional e instalación en DB existente pendientes.
+Evolución actual: **VIGIA para cuidadores**, [009 / CuidadosApp](../specs/009-cuidados-cuidadores/spec.md) implementada tras autorización posterior completa. Pacientes propios para todos los cargos, medicamentos/horarios, guías visuales, registro manual, historial y avisos con la web abierta. Free $0/un paciente, Plus $4.990/tres y Premium $9.990/ilimitados; IA/cámaras futuras. [Validación](../specs/009-cuidados-cuidadores/validation.md): 158 pruebas OK, migraciones ensayadas en memoria y navegador. Revisión manual, aceptación y aplicación de migraciones en DB existente pendientes.
 
-Evolución actual: [008 — Dashboard y navegación](../specs/008-dashboard-navegacion/spec.md), implementada tras instrucción posterior de alcance completo. Seis SVG de menú, Inicio visible según permisos internos, dashboard de suscripciones para ADMIN/MANAGER y selector sol/luna compartido. Conserva PlanesApp/homeApp y reglas 007. [Validación](../specs/008-dashboard-navegacion/validation.md): 127 tests, build, 77 HTML y navegador correctos; zoom/movimiento reducido manuales y aceptación pendientes. Sin nueva app/modelos/migraciones.
+Estado: copia de la base con PlanesApp y CuidadosApp implementadas tras autorización explícita; aceptación funcional e instalación en DB existente pendientes.
+
+Evolución anterior: [008 — Dashboard y navegación](../specs/008-dashboard-navegacion/spec.md), implementada tras instrucción posterior de alcance completo. Seis SVG de menú, Inicio visible según permisos internos, dashboard de suscripciones para ADMIN/MANAGER y selector sol/luna compartido. Conserva PlanesApp/homeApp y reglas 007. [Validación](../specs/008-dashboard-navegacion/validation.md): 127 tests, build, 77 HTML y navegador correctos; zoom/movimiento reducido manuales y aceptación pendientes. Sin nueva app/modelos/migraciones.
 
 | Campo | Valor actual |
 |---|---|
 | Nombre del producto | Por definir; carpeta de esta copia: Planes-pagina; los planes se llaman Vigía según referencias confirmadas |
-| Módulo solicitado | PlanesApp, spec 007 implementada y autorizada. Evoluciones de base 001–006 preservadas |
-| Objetivo y usuarios finales | Personas que se registran con Google o correo/contraseña, quedan RESTRICTED y contratan planes en un prototipo; operadores mantienen gestión interna |
-| Alcance de negocio vigente | Catálogo Vigía, suscripción propia y pagos/renovación simulados; sin servicios de vigilancia implementados |
+| Módulo solicitado | CuidadosApp 009 integrada con PlanesApp 007, implementadas y autorizadas. Evoluciones de base 001–006 preservadas |
+| Objetivo y usuarios finales | Cuidadores que se registran con Google o correo/contraseña, quedan RESTRICTED y contratan planes; pacientes/cuidados propios implementados en 009; operadores mantienen gestión interna |
+| Alcance de negocio vigente | Suscripciones simuladas y cuidados propios: pacientes/medicamentos/agenda/guías/posturas/relojes/historial; sin IA/cámaras operativas |
 | Alcance técnico recibido | Base Django con usuarios, perfiles/cargos, autenticación, tema, configuración aislada y pruebas iniciales |
 | Idioma / zona horaria | es-cl / America/Santiago, sujetos al contexto acordado |
 | Responsable de decisiones | Quien solicita el proyecto; registrar identidad si la proporciona |
-| Módulos implementados de negocio | PlanesApp; base 001–006 conservada |
+| Módulos implementados de negocio | PlanesApp y CuidadosApp; base 001–006 conservada |
 | Hosting e integraciones | Hosting por definir; Google OAuth integrado mediante allauth, credenciales/callback externo pendientes; sin pasarela real |
 
 ## PlanesApp solicitado — 2026-10-06
@@ -53,3 +55,17 @@ Registrar aquí objetivos y contexto general; los detalles funcionales van en sp
 ## Correcciones de validación — 2026-10-02, autorizadas y ejecutadas
 
 005 instala versiones mantenidas, lock/hashes, scripts CDN exactos/SRI y compatibilidad de autenticación; allauth/efectos de datos confirmados, solo ensayados con fixtures. 006 aprobada después de documentación corrige Registro e integridad sin migraciones propias. Regla confirmada: ADMIN solo inferiores, MANAGER RESTRICTED, únicamente root con ADMIN registra ADMIN. Axes/concurrentlogins permanecen instalados/comentados. 76 tests y verificaciones actuales; [detalle](DEPENDENCIAS.md). Aceptación manual/operación de cada futuro producto pendientes, sin tocar datos reales ni producción.
+
+
+## Aplicación móvil solicitada — 2026-10-19
+
+[010 — Aplicación móvil VIGIA](../specs/010-aplicacion-movil/spec.md), [plan](../specs/010-aplicacion-movil/plan.md) y [tareas](../specs/010-aplicacion-movil/tasks.md): solo DOCUMENTAR. Informe aportado propone Flutter/Android, familiar/cuidador, push y Edge. Se propone reutilizar Django/PlanesApp/CuidadosApp, conservando portal y suscripciones simuladas. La arquitectura React/microservicios/NoSQL del informe no coincide con esta base; no se adopta automáticamente. Aclaración humana posterior: iOS y Android, funciones por plan y detección de posición con MediaPipe incluidos. Matriz de funciones nuevas propuesta; colaboración y ubicación/hardware de detección pendientes. Sin nombre técnico confirmado ni código autorizado.
+
+
+## Aplicación móvil — actualización 2026-10-19
+
+Implementación 010 autorizada y demo disponible: Flutter Android/iOS, API Django y nodo local MediaPipe. Ver [guía móvil](MOVIL_DESARROLLO.md) y [validación](../specs/010-aplicacion-movil/validation.md). El estado documental previo es antecedente; siguen pendientes integraciones externas y validación real.
+
+## Evolución solicitada22/10/2026
+
+[011](../specs/011-ecosistema-instalable/spec.md) propone instalación Android/iPhone, reloj con creación/avisos locales, identidad índigo web/app y organización web/mobile/edge. Diseño móvil aceptado por usuario; aceptación no certifica cámara/alarma/dispositivos. Fase documental, no implementada.

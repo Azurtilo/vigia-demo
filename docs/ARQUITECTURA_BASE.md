@@ -6,15 +6,15 @@ Referencia: core-base.zip, 2026-09-20. Describe lo observado; no certifica funci
 
 | Área                     | Archivos existentes                                                                                                                                                                                 | Responsabilidad                                           |
 | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
-| Configuración            | [common_settings.py](../core/common_settings.py), [settings.py](../core/settings.py), [test_settings.py](../core/test_settings.py)                                                                  | Base común sin entorno; entrada normal y pruebas aisladas |
-| Rutas raíz               | [urls.py](../core/urls.py)                                                                                                                                                                          | admin, allauth, homeApp y UsuarioApp                      |
-| Permisos por cargo       | [mixins.py](../core/mixins.py)                                                                                                                                                                      | usuario_tiene_cargo y PermitsPositionMixin                |
-| Usuarios/perfiles/cargos | [models.py](../UsuarioApp/models.py), [views.py](../UsuarioApp/views.py), [forms.py](../UsuarioApp/forms.py)                                                                                        | Gestión de cuentas y perfiles                             |
-| Inicio y actividad       | [views.py](../homeApp/views.py), [middleware.py](../homeApp/middleware.py)                                                                                                                          | Cinco accesos recientes y actividad aproximada            |
-| Presentación             | [base.html](../templates/components/Layout/base.html), [base_extendido.html](../templates/components/Layout/base_extendido.html), [base_pages.html](../templates/components/Layout/base_pages.html) | Estructura y bloques compartidos                          |
-| Menú                     | [nav.html](../templates/components/navbar/nav.html), [context_processors.py](../core/context_processors.py)                                                                                         | Enlaces y autorización compartida con el servidor         |
-| Tema                     | [styles.css](../theme/static_src/src/styles.css), [CSS generado](../theme/static/css/dist/styles.css)                                                                                                | Tailwind 4 standalone, fuentes y compilación              |
-| Imágenes de perfil       | [customer_img.py](../utils/customer_img.py)                                                                                                                                                         | Redimensionado y recorte                                  |
+| Configuración            | [common_settings.py](../web/core/common_settings.py), [settings.py](../web/core/settings.py), [test_settings.py](../web/core/test_settings.py)                                                                  | Base común sin entorno; entrada normal y pruebas aisladas |
+| Rutas raíz               | [urls.py](../web/core/urls.py)                                                                                                                                                                          | admin, allauth, homeApp y UsuarioApp                      |
+| Permisos por cargo       | [mixins.py](../web/core/mixins.py)                                                                                                                                                                      | usuario_tiene_cargo y PermitsPositionMixin                |
+| Usuarios/perfiles/cargos | [models.py](../web/UsuarioApp/models.py), [views.py](../web/UsuarioApp/views.py), [forms.py](../web/UsuarioApp/forms.py)                                                                                        | Gestión de cuentas y perfiles                             |
+| Inicio y actividad       | [views.py](../web/homeApp/views.py), [middleware.py](../web/homeApp/middleware.py)                                                                                                                          | Cinco accesos recientes y actividad aproximada            |
+| Presentación             | [base.html](../web/templates/components/Layout/base.html), [base_extendido.html](../web/templates/components/Layout/base_extendido.html), [base_pages.html](../web/templates/components/Layout/base_pages.html) | Estructura y bloques compartidos                          |
+| Menú                     | [nav.html](../web/templates/components/navbar/nav.html), [context_processors.py](../web/core/context_processors.py)                                                                                         | Enlaces y autorización compartida con el servidor         |
+| Tema                     | [styles.css](../web/theme/static_src/src/styles.css), [CSS generado](../web/theme/static/css/dist/styles.css)                                                                                                | Tailwind 4 standalone, fuentes y compilación              |
+| Imágenes de perfil       | [customer_img.py](../web/utils/customer_img.py)                                                                                                                                                         | Redimensionado y recorte                                  |
 
 ## Identidad y permisos reales
 
@@ -68,9 +68,9 @@ No exige una política universal de auditoría ni una app por pantalla. Esas son
 
 ## Sistema visual implementado — spec 002
 
-La [spec 002](../specs/002-renovacion-visual/spec.md) renueva presentación sobre los layouts, bloques, apps y menú existentes. [tokens.css](../static/css/tokens.css) es la fuente de colores; el puente `@theme inline` conecta utilidades semánticas de Tailwind. El CSS propio, widget de cargo y gráfico consumen ese contrato. Valores de color no requieren recompilar; nuevas clases/fuentes sí. La [guía](PERSONALIZACION_VISUAL.md) describe componentes y caché.
+La [spec 002](../specs/002-renovacion-visual/spec.md) renueva presentación sobre los layouts, bloques, apps y menú existentes. [tokens.css](../web/static/css/tokens.css) es la fuente de colores; el puente `@theme inline` conecta utilidades semánticas de Tailwind. El CSS propio, widget de cargo y gráfico consumen ese contrato. Valores de color no requieren recompilar; nuevas clases/fuentes sí. La [guía](PERSONALIZACION_VISUAL.md) describe componentes y caché.
 
-El [script compartido](../static/js/interfaz.js) gestiona diálogos nativos, foco, scroll y desplegable de cuenta; las notificaciones se renderizan una sola vez y tratan contenido como texto. Login usa layout público; cuenta interna/MFA reutiliza navegación privada. CSS y gráfico contemplan movimiento reducido.
+El [script compartido](../web/static/js/interfaz.js) gestiona diálogos nativos, foco, scroll y desplegable de cuenta; las notificaciones se renderizan una sola vez y tratan contenido como texto. Login usa layout público; cuenta interna/MFA reutiliza navegación privada. CSS y gráfico contemplan movimiento reducido.
 
 No cambió modelos ni rutas. LOCAL_APPS permanece en core/common_settings.py y settings.py lo reutiliza. La skill local referencia la guía sin fijar una paleta para futuros productos. Validación y límites en [validation.md](../specs/002-renovacion-visual/validation.md).
 
@@ -84,7 +84,7 @@ Migración 0002 creada y probada/revertida únicamente en SQLite efímero, sin b
 
 ## Gestión por destinatario — implementada en 004
 
-[Spec 004](../specs/004-administracion-usuarios/spec.md) amplía UsuarioApp con [permissions.py](../UsuarioApp/permissions.py): política por acción/actor/destinatario compartida por vistas y flags de fila. ADMIN gestiona inferiores y MANAGER solo RESTRICTED al activar/desactivar. Incluso superusuario requiere cargo, sin excepción en estas acciones. AccountManagementMixin acotado aplica política con actor vigente; usuario_tiene_cargo/PermitsPositionMixin y el processor global/Registro conservan su contrato.
+[Spec 004](../specs/004-administracion-usuarios/spec.md) amplía UsuarioApp con [permissions.py](../web/UsuarioApp/permissions.py): política por acción/actor/destinatario compartida por vistas y flags de fila. ADMIN gestiona inferiores y MANAGER solo RESTRICTED al activar/desactivar. Incluso superusuario requiere cargo, sin excepción en estas acciones. AccountManagementMixin acotado aplica política con actor vigente; usuario_tiene_cargo/PermitsPositionMixin y el processor global/Registro conservan su contrato.
 
 AdministrativePasswordForm reutiliza SetPasswordForm con reconfirmación del operador, ruta privada UserPasswordReset y plantilla sobre base_pages/content_pages. Escrituras mínimas password/is_active, CSRF, transacciones, validadores/hashing/sesiones Django; no actualiza Profile/MFA/modo visual ni correo. never_cache/campos sensibles y errores previstos con contexto en 500.html. UserActivateView comparte vista de estado con UserDeactivateView. Sin nueva app/modelos/migraciones/SMTP ni importaciones del proyecto de referencia. [Validación](../specs/004-administracion-usuarios/validation.md): 57 tests, 60 plantillas, check/build y navegador parcial; SQLite no certifica bloqueos PostgreSQL.
 
@@ -98,7 +98,7 @@ Alta/edición User/Profile usan atomic; Profile.save prepara fotos nuevas en mem
 
 ## Extensión implementada 007 — PlanesApp
 
-Namespace PlanesApp bajo /planes/, LOCAL_APPS en core/common_settings.py y socialaccount/Google registrados. Plan/PlanBenefit, Subscription única por User, métodos ficticios y SimulatedOperation con snapshots/idempotencia; 0001 esquema y 0002 seed/cargo, ensayadas sin DB real. [Código](../PlanesApp/services.py), [plan](../specs/007-planes-app/plan.md), [validación](../specs/007-planes-app/validation.md).
+Namespace PlanesApp bajo /planes/, LOCAL_APPS en core/common_settings.py y socialaccount/Google registrados. Plan/PlanBenefit, Subscription única por User, métodos ficticios y SimulatedOperation con snapshots/idempotencia; 0001 esquema y 0002 seed/cargo, ensayadas sin DB real. [Código](../web/PlanesApp/services.py), [plan](../specs/007-planes-app/plan.md), [validación](../specs/007-planes-app/validation.md).
 
 UsuarioApp incorpora servicio de alta/adapters y SignupForm transaccional para User/Profile RESTRICTED/Free/EmailAddress. Google conserva cargos al reingresar; email coincidente no autentica/fusiona y exige conexión desde sesión existente. Credenciales APP por entorno; sin tokens persistidos, POST/CSRF/PKCE. Verificación optional mantiene login/MFA internos; ClientMixin/servicios requieren EmailAddress verificado para métodos/compra/renovación.
 
@@ -114,6 +114,43 @@ Menú compartido propuesto con seis SVG y flag vigente para Inicio; componente d
 
 ## Ejecución posterior 008 — implementada
 
-La sección propuesta anterior conserva el antecedente documental. Tras autorización explícita, Home invoca [PlanesApp/dashboard.py](../PlanesApp/dashboard.py) después de su guard vigente: cuatro consultas ORM, counts/agrupación por plan efectivo y suma de snapshots monetarios aprobados desde el inicio del mes local. No cambios de esquema ni escrituras de negocio durante GET; el middleware de actividad anterior conserva su contrato.
+La sección propuesta anterior conserva el antecedente documental. Tras autorización explícita, Home invoca [PlanesApp/dashboard.py](../web/PlanesApp/dashboard.py) después de su guard vigente: cuatro consultas ORM, counts/agrupación por plan efectivo y suma de snapshots monetarios aprobados desde el inicio del mes local. No cambios de esquema ni escrituras de negocio durante GET; el middleware de actividad anterior conserva su contrato.
 
-[Componente visual_mode](../templates/components/visual_mode.html) usado en Home/Mi suscripción; nav.html usa el flag interno para Inicio y seis SVG decorativos. Index proporciona datos con json_script y cantidades HTML, grafico_home.js consume estos datos y degrada si no hay ECharts. Base extendida contiene details/noscript con el mismo menú para móvil; CSS permite desplazamiento del sidebar y conserva tokens. Pruebas nuevas agrupadas en [test_dashboard.py](../homeApp/test_dashboard.py). [Evidencia y límites](../specs/008-dashboard-navegacion/validation.md): 127 tests, 77 HTML y navegador; aceptación manual pendiente.
+[Componente visual_mode](../web/templates/components/visual_mode.html) usado en Home/Mi suscripción; nav.html usa el flag interno para Inicio y seis SVG decorativos. Index proporciona datos con json_script y cantidades HTML, grafico_home.js consume estos datos y degrada si no hay ECharts. Base extendida contiene details/noscript con el mismo menú para móvil; CSS permite desplazamiento del sidebar y conserva tokens. Pruebas nuevas agrupadas en [test_dashboard.py](../web/homeApp/test_dashboard.py). [Evidencia y límites](../specs/008-dashboard-navegacion/validation.md): 127 tests, 77 HTML y navegador; aceptación manual pendiente.
+
+## Antecedente de propuesta 009 — previo a autorización
+
+[Plan 009](../specs/009-cuidados-cuidadores/plan.md): una app de cuidados propia por User, registrada después de autorización en LOCAL_APPS real de core/common_settings.py y core/urls.py. Pacientes, medicamentos/horarios, tareas, guías, eventos con snapshots, reloj persistente y acuses. No reconstruye usuarios/auth/tema. Propiedad sin excepción por cargo o root, distinta del helper global interno que conserva su contrato. Sin admin global de modelos sensibles.
+
+PlanesApp incorporaría capacidad 1/3/null y tres planes activos, conservando snapshots/períodos históricos y code pro para nombre Premium. Cuota y operaciones comerciales comparten bloqueo de User; selección versionada de pacientes al reducir cupo, archivo atómico tras éxito y al final de cancelación. Elegibilidad temporal deriva selección efectiva sin escrituras de negocio en GET; materialización por POST explícito. Cancelación conserva derechos hasta cierre, vencimiento sin elección exige resolverla sin selección automática.
+
+Agenda privada derivada de horarios Santiago, ocurrencias identificables y acciones explícitas; posición manual inicia timer 60/90/120 minutos. Poll privado y acuse POST deduplicado mientras web abierta, servidor gobierna tiempos. Sin Celery/push/cámaras/IA ni acceso a pacientes ajenos para operadores. Home de cliente iría a Cuidados, Home comercial interno se conserva; componentes/layouts/modo visual compartidos. Solo propuesta documental; migraciones/tests/assets/rutas todavía no creados.
+
+
+## Implementación posterior 009 — CuidadosApp
+
+Corrección de selectores 2026-10-06: [override crispy](../web/templates/tailwind/layout/select.html) usa contratos del paquete para attrs/opciones/grupos/múltiples y clases semánticas propias en styles.css. Flecha decorativa pequeña posicionada dentro del campo, independiente de utilidades de site-packages; color del tema y revisión de caché compartidos. [Validación](../specs/009-cuidados-cuidadores/validation.md).
+
+Ajuste visual posterior del 2026-10-06: propiedad CareGuide.illustration selecciona PNG v2/alt solo para las cuatro rutas SVG iniciales; rutas personalizadas conservadas. guide.html compartido en biblioteca/panel/ficha usa revisión de caché independiente de la referencia clínica, carga diferida y HTML educativo existente. Sin campo/migración ni cambio de cuidados. [Evidencia](../specs/009-cuidados-cuidadores/validation.md).
+
+[CuidadosApp/models.py](../web/CuidadosApp/models.py): Patient propio, Medication/MedicationTime, CareTask, CareGuide, CareEvent histórico, PostureTimer, ReminderReceipt y CapacitySelection. Sin Django Admin de modelos sensibles; PROTECT sobre titular/fichas/eventos. [permissions.py](../web/CuidadosApp/permissions.py) exige autenticación/actividad y queries de titular incluso root; no cambia el helper interno.
+
+[capacity.py](../web/CuidadosApp/capacity.py) resuelve cupos/selección por fecha, archive/materialización POST y reducción comercial. [services.py](../web/CuidadosApp/services.py) comparte bloqueo User con PlanesApp, valida tokens/versiones/propiedad y guarda acciones atómicas. [scheduling.py](../web/CuidadosApp/scheduling.py) deriva agenda y avisos sin escribir por GET; claves lógicas únicas, acciones firmadas/versionadas, DST Santiago, schedule_effective_at evita atrasos inventados de edición/reactivación. Correcciones vinculadas conservan historial y alarma.
+
+[CuidadosApp/urls.py](../web/CuidadosApp/urls.py), 21 rutas bajo /cuidados/, registradas en core/urls.py y LOCAL_APPS en common_settings. Home cliente redirige antes de consultas; interno conserva dashboard comercial sin datos clínicos globales. Base autenticada carga care.css/care.js y bandeja de avisos privada; polling 30 s, tiempo servidor/contador monotónico, claim único POST, no storage clínico. Formularios/guías/agenda HTML independientes de scripts.
+
+PlanesApp Plan añade cupo y backup del catálogo; 0003/0004 conservan códigos/FK, Hogar histórico y snapshots comerciales. CuidadosApp 0001 depende de PlanesApp 0004, 0002 guías, 0003 schedule_effective_at. Planes/checkout/cancelación/retiro del último método usan selección propia firmada y archivo tras éxito. @source nuevo y SVG/nav/modo semánticos de la base. [Pruebas](../web/CuidadosApp/tests.py) y [validación](../specs/009-cuidados-cuidadores/validation.md): migraciones solo en memoria, sin dependencias nuevas ni IA/cámaras operativas.
+
+
+## Propuesta 010 — cliente móvil, todavía sin implementar
+
+[Plan 010](../specs/010-aplicacion-movil/plan.md): Flutter iOS/Android separado en mobile/ (directorio previsto), API versionada propuesta en Django y adaptadores dentro de UsuarioApp/CuidadosApp/PlanesApp. Reutilizar servicios, datos, cuentas, cupos y portal; no existe aún esta API móvil por documentarla. Autenticación compatible con allauth/MFA/Google por definir; ninguna nueva dependencia elegida. Detección MediaPipe incluida por pedido humano; nodo local propuesto y clasificación propia pendientes de definición técnica. Capacidades comerciales en servidor según plan; matriz de funciones nuevas y colaboración pendientes. La arquitectura React/NoSQL/microservicios del informe es referencia divergente, no estado implementado ni autorización de migración.
+
+
+## Aplicación móvil — actualización 2026-10-19
+
+010 implementa /_allauth/app/v1/ y /api/v1/ para Flutter en mobile/. API adapta services/forms de CuidadosApp y entitlements de PlanesApp. mobile_models agrega nodo, observación, dispositivo y recibo push mediante migración0004; Edge local en edge/ no sube imágenes. Demo aislada en core.mobile_demo_settings. Ver [contrato](../specs/010-aplicacion-movil/contrato.md) y [guía](MOVIL_DESARROLLO.md).
+
+## Arquitectura propuesta011 — no implementada
+
+Separación web/ (Django + API compartida), mobile/ (Flutter por función) y edge/ (nodo MediaPipe). Docs/specs comunes. No segundo servidor de identidad ni DB duplicada; rutas públicas y app labels preservados. [Plan de traslado y límites](../specs/011-ecosistema-instalable/plan.md).

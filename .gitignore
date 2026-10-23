@@ -150,3 +150,34 @@ media/
 .work-007-lock/
 .work-007/
 .work-008/
+.work-009/
+.work-009-images/
+.work-009-select/
+
+# Entorno y artefactos locales de la app móvil
+.venv-mobile/
+.mobile-demo/
+.work-010/
+# Flutter source overrides the generic Python lib/ exclusion.
+!mobile/lib/
+!mobile/lib/**
+mobile/.dart_tool/
+mobile/build/
+mobile/android/local.properties
+mobile/ios/Flutter/Generated.xcconfig
+mobile/ios/Flutter/flutter_export_environment.sh
+mobile/ios/Pods/
+mobile/ios/.symlinks/
+mobile/ios/Runner/GoogleService-Info.plist
+mobile/android/app/google-services.json
+
+.venv-edge/
+edge/*.task
+
+# Local Flutter native plugin source
+!mobile/plugins/vigia_pose/lib/
+!mobile/plugins/vigia_pose/lib/**
+
+# Local implementation/build logs
+.work-011/
+web/**/__pycache__/

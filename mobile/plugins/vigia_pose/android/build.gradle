@@ -1,0 +1,13 @@
+group = 'cl.vigia.pose'
+version = '1.0'
+apply plugin: 'com.android.library'
+android {
+    namespace 'cl.vigia.pose'
+    compileSdk 36
+    defaultConfig { minSdk 24 }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+dependencies { implementation 'com.google.mediapipe:tasks-vision:1.0.0' }

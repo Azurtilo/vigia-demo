@@ -1,0 +1,17 @@
+name: vigia_pose
+description: Local MediaPipe pose inference for VIGIA. Images never leave the device.
+version: 0.1.0
+publish_to: none
+environment:
+  sdk: ^3.13.5
+dependencies:
+  flutter:
+    sdk: flutter
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: cl.vigia.pose
+        pluginClass: VigiaPosePlugin
+      ios:
+        pluginClass: VigiaPosePlugin

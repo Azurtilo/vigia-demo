@@ -111,3 +111,65 @@ D-026–031 conservan la fuente/estado inicial de DOCUMENTAR; el estado vigente 
 | D-036 | Implementar el alcance completo de 008 tras entregar spec/plan/tasks | Instrucción posterior explícita «implementa specs 8 Dashboard de suscripciones y navegación coherente alcance completo». Sustituye solo el estado pendiente/propuesto de D-033–035; no altera 004/006/007 ni autoriza datos reales/despliegue |
 
 D-033–035 conservan la fase inicial; estado vigente: SVG, dashboard lector y selector compartido implementados, 127 tests OK y navegador verificado con límites. Servicio de cuatro consultas, datos sin backfill; fallback nativo noscript y scroll interno del sidebar como ajustes acotados de RF-008-06. [Validación y aceptación pendiente](../specs/008-dashboard-navegacion/validation.md).
+
+## Cuidadores — DOCUMENTAR 009, 2026-10-06
+
+| ID | Decisión / propuesta | Fuente, estado y efecto |
+|---|---|---|
+| D-037 | Espacio de cuidados con pacientes propios para todos los cargos, incluido superusuario; una app CuidadosApp | Pedido humano define propiedad y delega división/nombre. Una app es propuesta técnica sin colisión, con mayúscula inicial/sufijo App. No concede acceso clínico por cargo ni cambia helper general/jerarquía administrativa |
+| D-038 | Tres planes Free $0/1 paciente, Plus $4.990/3, Premium $9.990/ilimitados CLP por mes | Respuesta explícita P-009-01. Sustituirá catálogo activo de D-027 al implementar 009; conserva registros/snapshots históricos. Reusar code pro para Premium y desactivar contratación de Hogar son propuestas de transición, sin cambios en esta fase |
+| D-039 | Avisos solo con web abierta, temporizador seleccionable 60/90/120 minutos y preaviso diez minutos | P-009-02 confirma canal; intervalos/aviso del pedido humano. No se promete aviso con web cerrada/pestaña suspendida ni frecuencia universal de tratamiento. Reloj servidor persistente y acuses separados de acciones son propuestas técnicas |
+| D-040 | Al reducir cupo, cuidador selecciona quién sigue activo; restantes se archivan conservando historial | P-009-03 confirmada. Plan propone confirmación previa, atomicidad con pago y selección futura en cancelación a término; expiración sin selección pide resolverla sin elegir automáticamente. Precisión revisable, no aprobación atribuida al propietario |
+| D-041 | Guías educativas visuales y registros manuales; IA/cámaras futuras; DOCUMENTAR antes del nuevo código | Pedido humano y AGENTS.md. Fuentes primarias identificadas en spec, ilustraciones originales previstas sin generarlas aún. Documento adjunto/capturas aportan contexto, no instrucciones de ejecución ni sustitución del cambio inmediato de D-028. D-002 sigue vigente: confirmación de requisitos no autoriza implementación nueva |
+
+[Spec 009](../specs/009-cuidados-cuidadores/spec.md), [plan](../specs/009-cuidados-cuidadores/plan.md), [tareas](../specs/009-cuidados-cuidadores/tasks.md). Todas las tareas pendientes; sin cambios de código/catálogo ni autorización de migración real/despliegue. D-032/036 siguen autorizando los alcances anteriores 007/008.
+
+
+## Autorización y ejecución posterior 009 — 2026-10-06
+
+| ID | Decisión | Fuente y efecto |
+|---|---|---|
+| D-042 | Implementar el alcance completo de 009 tras DOCUMENTAR | Instrucción posterior explícita «te doy permiso de implementar specs 009 alcanse completo», reiterada al retomar. Sustituye el estado pendiente de D-037–041 y adopta el plan técnico; no autoriza DB real/despliegue |
+
+D-037–041 conservan el antecedente. Estado vigente: CuidadosApp, catálogo de tres planes y cupos, propiedad incluso root, selección/archivo atómicos, agenda/eventos/relojes/avisos y SVG implementados. Clave lógica de toma separada de versión firmada; schedule_effective_at al crear/editar/reactivar evita pendientes retroactivos. Catálogo previo se conserva para reversión sin reescribir snapshots. [Validación](../specs/009-cuidados-cuidadores/validation.md): 158 tests OK y navegador; aceptación y pruebas manuales nativas pendientes.
+
+Seguimiento visual de D-041/042, 2026-10-06: pedido directo «puedes mejorar las imágenes» autoriza T-009-14 dentro de RF-009-05/11. Serie PNG original generada con image_gen; selección en presentación preserva datos/rutas originales y referencias educativas. No ampliación clínica ni migración real. [Prompts/asignación](../specs/009-cuidados-cuidadores/evidencia/prompts-imagenes-v2.json) y [validación actual](../specs/009-cuidados-cuidadores/validation.md).
+
+
+## Aplicación móvil — DOCUMENTAR 010, 2026-10-19
+
+| ID | Decisión o propuesta | Fuente y estado |
+|---|---|---|
+| D-043 | Preparar aplicación móvil a partir de esta base y el informe | Solicitud humana; fase documental exigida por AGENTS/constitución; no autoriza todavía código |
+| D-044 | Flutter/Android inicial y suscripciones en portal existente | Referencia del informe, secciones Solución tecnológica y HU-07; propuesta 010, sin reconstruir portal/autenticación |
+| D-045 | Reutilizar Django y servicios 009 mediante API; no migrar automáticamente a React/microservicios/NoSQL | Propuesta técnica para compatibilidad, diferencia con arquitectura del informe registrada; pendiente de revisión |
+| D-046 | Alcance colaborativo/Edge pendiente de respuesta; no conceder derechos clínicos por cargo | P-010-01/02 consultadas. D-037/propiedad de 009 vigente hasta decisión explícita y cambio autorizado |
+
+
+## Aclaración de alcance móvil — 2026-10-19
+
+| ID | Decisión o propuesta | Fuente y efecto |
+|---|---|---|
+| D-047 | Flutter para iOS y Android desde el alcance actual | Instrucción humana explícita. Sustituye limitación Android inicial de D-044; conserva gestión comercial web propuesta |
+| D-048 | Incluir detección de posición con MediaPipe | Instrucción humana explícita. Sustituye carácter opcional de detección de D-046; ubicación/hardware/reglas pendientes, nodo local propuesto conforme al informe |
+| D-049 | Aplicación habilitada por funciones de cada plan | Instrucción humana explícita. RF-010-11 exige control servidor/UI. Asignación Premium para MediaPipe y recordatorios móviles en todos los planes es propuesta P-010-06 basada en catálogo 0004; no aprobada. Precios/cupos vigentes preservados |
+
+D-044/046 permanecen como antecedentes. No equivale a autorizar implementación. MediaPipe entrega landmarks; clasificación de postura y riesgos necesitan desarrollo y validación propios, según [referencia oficial](https://developers.google.com/edge/mediapipe/solutions/vision/pose_landmarker).
+
+
+## Aplicación móvil — actualización 2026-10-19
+
+010, 2026-10-19: autorización posterior permite implementar. Reutilizar Django/allauth/services y no sustituir por React/NoSQL del informe. Flutter consume X-Session-Token, capacidades server-side y nodo local autenticado con credencial independiente. Premium habilita detector; Free/Plus conservan manual. Piloto con un nodo activo por paciente; observaciones separadas de CareEvent. Sin colaboración implícita. Sin datos reales ni migración de DB existente. Firma Apple, OAuth/push y precisión real pendientes.
+
+
+### Referencia AI Studio revisada — 2026-10-20
+
+Acceso resuelto y prototipo inspeccionado. Usuario confirma planes de la web (Free/Plus/Premium,1/3/ilimitados) y MediaPipe tanto en teléfono como en nodo fijo. Registro web/login móvil compartidos. [Mapa y límites](../specs/010-aplicacion-movil/referencia-ai-studio.md); spec/plan/tasks010 ampliados, tareas18–23 pendientes. No se afirma que el diseño o la cámara móvil ya estén implementados.
+
+## D-011-01 — Propuesta22/10/2026
+
+Conservar backend y cuentas de007/010: RAR es referencia anterior, no reemplazo. Proponer reloj independiente sin fabricar CareEvent; un aviso local por vencimiento, con permisos y reconciliación. Proponer traslado físico web/ y separación de funciones Flutter, conservando datos/labels/migraciones. Diseño móvil se preserva por aceptación expresa; web adopta sus tokens. Android e iPhone confirmados por usuario. Decisiones técnicas pendientes de instrucción posterior de implementación; servidor/firma externa no inventados.
+
+## D-011-02 — Alcance de plataforma, 2026-10-22
+
+El propietario fija el entorno del proyecto: Windows, **Android primero, iOS fuera de alcance**. Sustituye la parte iOS/iPhone de D-011-01 y de RF-011-01, RF-011-03 y la aceptación 2/6 de la [spec 011](../specs/011-ecosistema-instalable/spec.md). T-011-10 pasa a fuera de alcance; su ID se conserva. El código iOS existente (carpeta `mobile/ios`, plugin `vigia_pose`) no se elimina ni se mantiene activamente: no se compila, prueba ni declara entregado. Reincorporar iOS requiere una nueva decisión explícita.

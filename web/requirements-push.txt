@@ -1,0 +1,2 @@
+# Optional worker; server credentials belong outside the repository.
+firebase-admin>=7,<8

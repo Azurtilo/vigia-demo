@@ -1,0 +1,15 @@
+{% load crispy_forms_filters tailwind_filters l10n %}
+<div class="form-select-wrap">
+  <select class="form-select-control" name="{{ field.html_name }}" {{ field|build_attrs }}>
+    {% for group, options, index in field|optgroups %}
+      {% if group %}<optgroup label="{{ group }}">{% endif %}
+      {% for option in options %}{% include "tailwind/layout/select_option.html" %}{% endfor %}
+      {% if group %}</optgroup>{% endif %}
+    {% endfor %}
+  </select>
+  {% if not field.field.widget.allow_multiple_selected %}
+    <span class="form-select-arrow" aria-hidden="true">
+      <svg class="form-select-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m6 9 6 6 6-6"/></svg>
+    </span>
+  {% endif %}
+</div>

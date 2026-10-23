@@ -1,8 +1,49 @@
 # Estado y reanudación
 
-Fecha: 2026-10-06.
+Fecha: 2026-10-22.
 
-## Pedido actual — implementación 008 / Dashboard y navegación
+## Estado vigente — reconciliación 011 en Windows, 2026-10-22
+
+- **Pedido.** CLAUDE.md, ejecución de suites y reconciliación de estado; sin cambios de código. Nuevo [CLAUDE.md](../CLAUDE.md): remite a AGENTS.md y resume los requisitos del informe (HU-01..07, RT-01..03, RNF). El propietario fija **Windows, Android primero e iOS fuera de alcance**, registrado en [D-011-02](DECISIONES.md), la spec 011 y el índice de specs.
+- **Hecho según el código.** Separación física `web/` (todas las apps Django; `manage.py` raíz delega), `mobile/` y `edge/`. Flutter modularizado en `mobile/lib/{app,core,features/*,notifications,shared}`. El reloj ya admite inicio sin evento, pausa/reanudación e intervalos 60/90/120 en servicio, API y UI. Hay avisos locales (`flutter_local_notifications`) y migración 0006 de coordinación con push (aplicada solo en la demo). Los tokens web usan la paleta índigo. Detalle en [tasks 011](../specs/011-ecosistema-instalable/tasks.md#reconciliación-con-el-código--2026-10-22): T01/02/07/08 hechas; T03/04/06/09 parciales; T05/11 pendientes; T10 fuera de alcance.
+- **Evidencia (Windows).** `.venv` nuevo con lock `--require-hashes`. Django: check y makemigrations --check sin cambios, **173 tests OK**. Edge: **5 tests OK** (sintéticos); smoke sin modelo `.task`. Flutter: al principio no ejecutaba (SDK 3.47.1 frente a pubspec ^3.13.5). Con autorización se fijó el SDK en 3.47.7 / Dart 3.13.5, sin cambiar pubspec: pub get OK, **analyze sin problemas, 13 tests OK** y sin correcciones de código. Los venv `.venv-edge`/`.venv-mobile` del repo son de macOS. El de Edge se creó solo en un temporal fuera del repo.
+- **Requisitos del informe sin implementar.** RT-03 caídas (Edge y README declaran «No detecta caídas»). Separación familiar/cuidador y cuidado delegado (P-010-02 abierta: hoy una cuenta propietaria opera sus pacientes). Push real no configurado (Firebase). RNF de latencia, disponibilidad y precisión sin medir.
+- **No hecho.** Sin DB real, migraciones reales, dependencias del proyecto modificadas, deploy, commit ni push.
+- **Siguiente paso seguro.** Probar el APK en un Android real con un servidor alcanzable (T-011-09). Después, specs nuevas para RT-03 (caídas) y la decisión P-010-02 (familiar/cuidador).
+
+## Pedido más reciente — corregir flechas de selectores
+
+- «corriges eso porfa», captura de postura: T-009-15 RF-009-11/12 completa. Reproducido SVG 240×240 fuera del campo, corregido con override crispy local/CSS semántico a 20×20 dentro del selector y color del tema. Función nativa/attrs/opciones/múltiples conservados; caché del CSS renovada.
+- Navegador 390/1440 claro/oscuro sin overflow; teclado/obligatorio/POST de postura e intervalo comprobados. Contratos de render correctos, Tailwind 86 ms/check/diff OK. Suite final **158 OK, 15,142 s**. Primera suite detectó intermitencia de carrera SQLite (cero altas por bloqueo); aislado 1 OK y repetición total correcta, sin tocar backend. Estabilizar ese ensayo en seguimiento propio; [validación y evidencia](../specs/009-cuidados-cuidadores/validation.md).
+- Sin DB real, migración/dependencias/deploy/commit/push. Preview detenido/pestaña cerrada/viewport restaurado y temporales retirados. Siguiente: revisión visual del propietario; pendientes anteriores de 009/007 conservados. No repetir implementación de imágenes ni entrevista de requisitos.
+
+## Pedido más reciente — mejorar imágenes de guías 009
+
+- Pedido directo «puedes mejorar las imágenes», ajuste visual RF-009-05/11: T-009-14 completa. Cuatro PNG originales más detallados y coherentes con la base, integrados por CareGuide.illustration/componente compartido, alt actualizado y caché versionada. Laterales revisados/asignados según lado anatómico; SVG/rutas de datos/textos clínicos e imágenes personalizadas preservados. Sin nueva spec ni entrevista.
+- Estado anterior decía cuatro SVG: corresponde a la entrega inicial, ahora la presentación usa PNG v2 para esas cuatro guías. Evidencia anterior conservada. **31 tests CuidadosApp OK, 0,915 s** tras ajuste final, Ruff/check/esquema correctos. 390/1440 claro/oscuro: cuatro imágenes cargadas, sin overflow; [validación](../specs/009-cuidados-cuidadores/validation.md), [mediciones](../specs/009-cuidados-cuidadores/evidencia/imagenes-v2-navegador.json), [prompts](../specs/009-cuidados-cuidadores/evidencia/prompts-imagenes-v2.json).
+- Sin migración real/deploy/commit/push. Preview en memoria detenido, pestaña cerrada, viewport restaurado y temporales retirados. Siguiente: revisión visual del propietario; pendientes manuales/operativos anteriores de 009/007 conservados. No queda implementación pendiente de este ajuste.
+
+## Pedido actual — IMPLEMENTAR 009 / CuidadosApp, entrega técnica
+
+- Autorización posterior explícita: «te doy permiso de implementar specs 009 alcanse completo», vigente tras RETOMAR. DOCUMENTAR se entregó primero; plan/tareas con estado previo se reconciliaron con archivos reales. No repetir entrevista/reconstrucción ni pedir autorización de código otra vez.
+- CuidadosApp implementada: pacientes propios para todos los cargos/root, medicamentos/horarios/tareas, cuatro guías SVG, postura con 60/90/120, agenda/eventos/correcciones, reloj persistente/pausa y avisos con web abierta. Catálogo Free $0/1, Plus $4.990/3, Premium $9.990/ilimitados; IA/cámaras futuras. Reducción/fin de cancelación con elección y archivo conservando historial.
+- **158 tests OK, 14,126 s** (31 nuevos de cuidados), core.test_settings y SQLite efímero; check sin problemas/esquema sin cambios, 89 HTML y JS/Ruff correctos, Tailwind standalone 4.3.0 (79 ms). Carrera de dos transacciones observa un solo cupo y crea un paciente; otro escritor recibe error recuperable. Cuatro SIM117 de tests antiguos reproducidos en HEAD y no limpiados fuera del alcance.
+- Ensayo de migraciones/reversión/reaplicación conserva catálogo previo personalizado y snapshots/importes/fechas comerciales. Nuevos archivos PlanesApp 0003/0004 y CuidadosApp 0001/0002/0003 **no aplicados a DB existente**. Sin .env/DB/media personal/dependencias nuevas, deploy/commit/push.
+- Navegador: diez mediciones responsive claro/oscuro 360–1440 sin overflow, 13 JPEG; alta/cupo/horarios/omisión/postura/pausa, preaviso/vencido/recarga/dos pestañas, dos cuidadores/404, Inicio interno y panel propio vacío, cancelación/selección/Free inmediato, guías, teclado Tab, corrección/archivo/reactivación y fallback cero scripts. Reloj de postura queda pausado al reactivar; programación diaria retoma desde ese momento, sin atrasos inventados. Fixtures de medianoche corregidas a Santiago.
+- [Validación completa y límites](../specs/009-cuidados-cuidadores/validation.md), [spec](../specs/009-cuidados-cuidadores/spec.md), [plan](../specs/009-cuidados-cuidadores/plan.md), [tareas](../specs/009-cuidados-cuidadores/tasks.md), [guía de desarrollo](CUIDADOSAPP_DESARROLLO.md). T-009-01–11 completas; T-009-12 parcial por zoom/movimiento reducido/offline/suspensión nativos; T-009-13 documentación entregada, aceptación del propietario pendiente. Backend con bloqueo de filas debe verificarse al elegir entorno productivo.
+- Preview efímero detenido, pestañas temporales cerradas, viewport restaurado y .work-009 retirado tras conservar evidencia. Git con cambios locales de alcance, sin commit/push. Siguiente: revisión manual/aceptación y operación de migración en DB existente con entorno/respaldo/autorización propios; Google real conserva pendiente 007. Ningún trabajo de negocio autorizado queda por implementar. Próxima spec sugerida 010, comprobar antes de crear.
+
+## Antecedente documental — DOCUMENTAR 009 / CuidadosApp
+
+- Pedido humano amplía la demo a cuidadores: pacientes propios, medicamentos, posturas/cuidados con guías e imágenes, registro manual, reloj y avisos. Documento adjunto e imagen tratados como contexto; precios ficticios, dos planes y cambio al próximo período del documento no sustituyen las instrucciones humanas ni las reglas 007.
+- Siguiente libre 009 y ausencia de colisión CuidadosApp comprobados. Entregados en orden [spec](../specs/009-cuidados-cuidadores/spec.md), [plan](../specs/009-cuidados-cuidadores/plan.md) y [tareas](../specs/009-cuidados-cuidadores/tasks.md): doce RF y trece tareas pendientes. Una app propuesta CuidadosApp, nombre delegado con mayúscula inicial/sufijo App.
+- P-009-01/02/03 confirmadas expresamente: Free $0/1, Plus $4.990/3 y Premium $9.990/ilimitados; avisos solo con web abierta; selección del cuidador de pacientes que permanecerán activos al bajar de plan. Archivo conserva datos/historial. IA/cámaras futuras. Todos los cargos, incluido root, ven solamente pacientes propios.
+- Plan integrado con código actual: cuotas/transacciones compartiendo bloqueo de User con pagos; reducción inmediata condicionada al resultado aprobado y selección; cancelación a término con selección futura; consulta de elegibilidad sin escrituras GET. Transición Pro→Premium/Hogar histórico, horarios diarios y resolución de vencimiento sin selección son propuestas técnicas revisables, no respuestas atribuidas al propietario.
+- Solo Markdown; sin creación de app/código/assets/tests ejecutables/migraciones/dependencias. No suite/build, lectura de .env/DB/media personal, commit/push ni despliegue. Los 127 tests de 008 no validan cuidado de pacientes.
+- Verificación documental: diez documentos y 185 enlaces locales válidos; SHA-256 de 362 archivos no Markdown conservados sin cambios/adiciones/eliminaciones. git diff --check sin errores, con avisos LF/CRLF. Estado Git de cierre contiene solo siete Markdown modificados y la carpeta documental 009 nueva; ninguna aceptación funcional asumida.
+- Siguiente: revisión documental e instrucción posterior explícita para implementar 009 según AGENTS.md. Las autorizaciones anteriores de 007/008 siguen vigentes para esos alcances. No quedan preguntas críticas pendientes; próxima spec sugerida 010, comprobar.
+
+## Entrega anterior — implementación 008 / Dashboard y navegación
 
 - Instrucción posterior explícita: «implementa specs 8 Dashboard de suscripciones y navegación coherente alcance completo». Tareas técnicas 01–07 terminadas; aceptación del propietario pendiente. No repetir autorización de código.
 - Entregados seis SVG, Inicio por permisos internos, selector visual compartido y dashboard de solo lectura con estados/distribución/volumen mensual simulado, conservando accesos y reglas 007. Sidebar desplazable; menú móvil nativo como fallback noscript. Sin nueva app/modelos/migraciones/dependencias.
@@ -113,7 +154,7 @@ Antecedente DOCUMENTAR de 003: 13 documentos, 106 enlaces locales válidos, siet
 - Fase autorizada: después de DOCUMENTAR, el propietario revisó spec/plan/tasks y autorizó explícitamente el **alcance completo de 002** el 2026-10-02. No autorizó producción, despliegue, commit ni push.
 - Spec activa: [002-Renovación visual](../specs/002-renovacion-visual/spec.md), [plan](../specs/002-renovacion-visual/plan.md), [tareas](../specs/002-renovacion-visual/tasks.md), [validación](../specs/002-renovacion-visual/validation.md). T-002-01 a 12 y 14 completadas; T-002-13 parcial. Aceptación estética y funcional pendiente.
 - Implementado: espacio claro de gestión, navegación compacta/móvil, login, Inicio/listado/registro/perfil, cuenta/MFA y seis errores; controles, crispy, mensajes, diálogos/foco y carga. Identidad inicial petróleo; ciruela/cobre comprobadas y petróleo restituido.
-- Colores: [tokens.css](../static/css/tokens.css), puente Tailwind y gráfico con estilos computados. [Guía reutilizable](PERSONALIZACION_VISUAL.md) guardada; skill frontend-design referencia el contrato y pasó quick_validate. Cambiar valores no requiere build; gestionar caché según guía.
+- Colores: [tokens.css](../web/static/css/tokens.css), puente Tailwind y gráfico con estilos computados. [Guía reutilizable](PERSONALIZACION_VISUAL.md) guardada; skill frontend-design referencia el contrato y pasó quick_validate. Cambiar valores no requiere build; gestionar caché según guía.
 - Preservado por SHA-256: configuración común/normal/aislada, requirements, modelos, vistas, rutas, helper/mixin, logo/avatar, AGENTS/constitución. Formularios cambian solo atributos visuales; processor/HTML comparten el mismo permiso. No se leyó .env, db.sqlite3 ni media personal.
 - Git: esta copia sigue sin repositorio; no existe diff contra la base principal ni rama actual verificable. Recuperación en `.recovery-002/antes-implementacion.zip` (189 archivos seleccionados) con manifiesto SHA-256; ninguno eliminado en la auditoría posterior. Los 106 archivos de código/recursos iniciales estaban intactos antes de implementar.
 - Evidencia: **27 pruebas Django OK** (15 base y 12 añadidas), check sin problemas, sin cambios de esquema, Tailwind 4.3.0 standalone OK, 59 HTML compiladas, cinco contratos JS y 27 contrastes medidos correctos. Permisos por URL/visibilidad, POST/CSRF, filtros, imagen, login/logout/reset y TOTP completo verificados en servidor aislado.
@@ -159,3 +200,49 @@ Información histórica conservada. Sus pruebas y rama no certifican el estado f
 | Rama/commit               | Solo si existe; no inventar                                 |
 
 No guardar secretos ni copiar datos personales. «Documentación lista» no equivale a «módulo implementado».
+
+
+## Antecedente documental — aplicación móvil, 2026-10-19
+
+- Solicitud: crear la aplicación móvil aprovechando esta carpeta y el informe Word aportado. Orquestador aplicado: 01-especificar → 02-planificar → 03-tareas, solo DOCUMENTAR.
+- Entrega: [spec 010](../specs/010-aplicacion-movil/spec.md), [plan](../specs/010-aplicacion-movil/plan.md), [tareas](../specs/010-aplicacion-movil/tasks.md). Todas las tareas pendientes; sin código/APK, instalación, migración, despliegue, commit o push.
+- Inspección estática: existen PlanesApp/CuidadosApp y propiedad por owner, incluso root; rutas web y servicios transaccionales reutilizables. Git tiene numerosos cambios locales anteriores y archivos 009/CuidadosApp sin seguimiento, preservados. Informe leído como referencia; no son instrucciones de ejecución sus recomendaciones ni evidencia sus afirmaciones de eficacia/cumplimiento.
+- Aclaración posterior 2026-10-19: usuario confirma Flutter iOS/Android, funciones por plan y detección de posición con MediaPipe. RF-010-09 ampliado y RF-010-11/12 añadidos; 15 tareas pendientes. P-010-01 conserva ubicación/hardware/reglas, P-010-02 colaboración; P-010-06 matriz comercial nueva por confirmar. Propuesta Premium para MediaPipe según beneficio futuro del catálogo 0004; no atribuida como decisión comercial aprobada. Autenticación y push pendientes. No código autorizado.
+- Verificación de esta entrega: lectura/extracción del Word, inspección estática y revisión de documentos/enlaces. Sin suites/build ni pruebas Android; resultados históricos no acreditan RF-010. No se leyó .env ni DB real.
+- Siguiente paso: incorporar respuestas en esta misma spec, cerrar contrato/alcance y esperar instrucción posterior explícita de implementación. Aceptación pendiente.
+
+
+### Verificación documental del ajuste 010 — 2026-10-19
+
+Catálogo y modelos inspeccionados: 0004 conserva funciones manuales en todos los planes, cupos 1/3/ilimitados y anuncio Premium de IA/cámaras; PlanBenefit es descriptivo, no sistema de permisos funcionales. Propuesta nueva: capacidades explícitas comprobadas en API/procesamiento/push y Flutter. Referencias oficiales Flutter y MediaPipe consultadas; no versiones/SDK instalados ni detección probada. Actualizados spec/plan/tasks, índice, arquitectura, proyecto, decisiones y trazabilidad; enlaces locales revisados. No suites ni compilaciones por cambios exclusivamente Markdown. Siguiente: resolver matriz y detalles pendientes en esta spec, mantener fase DOCUMENTAR hasta instrucción posterior de implementación.
+
+
+## Estado vigente 010 — implementación autorizada, 2026-10-19
+
+La instrucción posterior «hacelo en base a todo lo que te proporcione…» y «sigue ejecutando» autoriza código/pruebas. Sustituye el estado exclusivamente documental anterior. Flutter para Android/iOS implementado con API Django propia; autenticación allauth headless, capacidades por plan, agenda/pacientes/medicamentos/postura/historial, nodo local MediaPipe calibrable y registro de dispositivos push.
+
+168 tests Django aislados OK; APK Android compilado; 5 pruebas sintéticas Edge y carga real del modelo OK. Ver resultados finales de Flutter/iOS, evidencia visual y limitaciones en [validation 010](../specs/010-aplicacion-movil/validation.md). [Guía para probar](MOVIL_DESARROLLO.md). Demo separada de DB existente, sin datos reales. No despliegue, commit ni push.
+
+Pendientes: cámara/hardware y métricas reales, Google/Firebase/APNs, paridad en teléfonos, colaboración y aceptación funcional. Las detecciones no registran cuidados manuales. La migración nueva no se aplicó a DB existente. Cambios previos preservados.
+
+## Ajuste vigente — 2026-10-20
+
+Usuario exige registro en web y login de la misma cuenta en app; formulario de alta móvil retirado del código, sustituido por enlace al registro web. APK anterior aún no contiene este ajuste. SDK temporal ausente al reanudar; análisis/recompilación pendientes. Referencia AI Studio recibida, inaccesible sin login Google; adaptación visual pendiente de inspección. [Validación y límites](../specs/010-aplicacion-movil/validation.md).
+
+
+### Referencia AI Studio revisada — 2026-10-20
+
+Acceso resuelto y prototipo inspeccionado. Usuario confirma planes de la web (Free/Plus/Premium,1/3/ilimitados) y MediaPipe tanto en teléfono como en nodo fijo. Registro web/login móvil compartidos. [Mapa y límites](../specs/010-aplicacion-movil/referencia-ai-studio.md); spec/plan/tasks010 ampliados, tareas18–23 pendientes. No se afirma que el diseño o la cámara móvil ya estén implementados.
+
+
+### Código adaptado a referencia — 2026-10-20
+
+Autorización posterior recibida; UI de seis secciones, tema índigo y cámara puntual móvil mediante plugin MediaPipe Android/iOS escritos, manteniendo nodo fijo y planes web. API dual/migración0005 y170 tests aislados OK. Compilación, lock actualizado, UI y cámara reales pendientes por SDK ausente/disco lleno. APK antiguo no contiene estos cambios. [Validación detallada](../specs/010-aplicacion-movil/validation.md).
+
+
+## Móvil — 2026-10-21
+SDK restaurado; lock actualizado, análisis limpio y9 pruebas Flutter OK. APK ARM64 debug actualizado con plugin MediaPipe; UI y login demo comprobados en navegador. Migración0005 solo demo. iOS bloqueado por menos de1GB libre y SDK pendiente; cámaras físicas, OAuth/push y firma sin validar. Ver [validación010](../specs/010-aplicacion-movil/validation.md).
+
+## Pedido22/10/2026 — 011 DOCUMENTAR
+
+Usuario aprueba estilo móvil y pide instalar en Android e iPhone, alarmas desde Reloj, web de planes con misma identidad y carpetas/componentes diferenciados. [Spec011](../specs/011-ecosistema-instalable/spec.md), plan y tareas creados solo en Markdown. Inspección confirma reloj vacío cuando no existe PostureTimer, API exige primer evento, sin dependencia de notificaciones locales. RAR comparado selectivamente: cinco archivos de planes/diseño idénticos; rutas antiguas sin API móvil. No sobreescribir carpeta.11GB libres observados, sin nueva compilación. Propuesta web/mobile/edge y avisos locales sin cuidado ficticio. Pendiente instrucción posterior de implementación, servidor remoto y firma/dispositivo iOS; no código/dependencias/migraciones/despliegue ejecutados.

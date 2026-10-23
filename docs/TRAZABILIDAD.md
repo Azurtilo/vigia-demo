@@ -146,3 +146,98 @@ Las filas de propuesta anteriores conservan el diseño inicial. Alcance completo
 | 06 | Estilos/cache/versiones, base extendida details/noscript | 127 tests OK, 77 HTML/build y cinco anchos/dos modos/fallback/teclado; 18 capturas, límites manuales declarados |
 
 Pruebas nuevas en homeApp/test_dashboard.py; dos expectativas antiguas de tests.py actualizadas porque el gráfico demostrativo fue sustituido expresamente en 008. Evidencia 007 no se presenta como validación de estas nuevas reglas.
+
+## 009 — CuidadosApp, antecedente documental 2026-10-06
+
+[Spec](../specs/009-cuidados-cuidadores/spec.md), [plan](../specs/009-cuidados-cuidadores/plan.md), [tareas](../specs/009-cuidados-cuidadores/tasks.md). Doce RF/trece tareas pendientes, ninguna implementación ni evidencia funcional todavía. Los archivos nuevos siguientes son previstos, no existentes. P-009-01/02/03 confirmadas; D-037–041 distinguen requisitos humanos de precisiones técnicas.
+
+| RF | Tareas T-009 | Integración / archivos previstos | Verificación posterior propuesta |
+|---|---|---|---|
+| RF-009-01 | 01/04/06/10/11/13 | CuidadosApp permissions/views/querysets, nav/Home | Titular en todos los cargos/root/sin perfil, IDs anidados/avisos ajenos 404 |
+| RF-009-02 | 03/05/11/13 | PlanesApp models/nueva migración/catálogo/dashboard | Tres precios/cupos; Pro/Hogar histórico, snapshots y sin cobro nuevo |
+| RF-009-03 | 02/04/05/11/13 | CuidadosApp Patient/forms/services | Alta/archivo/reactivación, validación y último cupo concurrente |
+| RF-009-04 | 02/06/11/13 | Medication/MedicationTime/events/agenda | Horarios/dosis ingresada, omitida/realizada y no doble registro |
+| RF-009-05 | 02/07/10/12/13 | CareGuide/templates/static SVG | Fuente/alt/texto/ilustración coherentes, sin análisis IA |
+| RF-009-06 | 02/08/11/12/13 | PositionTimer/CareEvent/services/JS | 60/90/120, recarga/pausa/cambio/generación e instante servidor |
+| RF-009-07 | 02/09/11/12/13 | ReminderReceipt/agenda/POST acuse/JS | Preaviso/vencimiento/dedup pestañas, suspensión/retorno; leer no realiza |
+| RF-009-08 | 02/06/09/10/11/13 | CareTask/events/agenda/templates | Propios, horarios/pendientes y estados manuales |
+| RF-009-09 | 02/06/08/10/11/13 | CareEvent/snapshots/history | Edición conserva histórico, corrección vinculada, sin falso cuidado |
+| RF-009-10 | 03/04/05/11/12/13 | CapacitySelection/quotas y PlanesApp services/checkout | Selección propia, pago fallido/rollback, fin de período/vencimiento |
+| RF-009-11 | 01/07/10/12/13 | CuidadosApp templates, Home/nav/visual_mode/theme @source | Cliente a cuidados, internos preservados, SVG/modos/móvil/teclado/fallback |
+| RF-009-12 | 01–13 | core.test_settings, tests/servicios/docs | Suite aislada/regresión, pertenencia/atomicidad/DST, build y navegador real |
+
+Ninguna prueba de 007/008 acredita estos nuevos RF; serán ampliadas tras autorización. No cambios de fuentes ejecutables ni migraciones en DOCUMENTAR.
+
+
+## 009 — Implementación autorizada y verificada, 2026-10-06
+
+RF-009-11/12 → T-009-15 completa → templates/tailwind/layout/select.html, static/css/styles.css y revisión de CSS en base.html. [Mediciones](../specs/009-cuidados-cuidadores/evidencia/select-navegador.json), [contratos](../specs/009-cuidados-cuidadores/evidencia/select-contratos.json) y [validación](../specs/009-cuidados-cuidadores/validation.md): reproducción 240 px, corrección 20 px, cuatro vistas, teclado/POST/build y regresión completa. Intermitencia previa de carrera SQLite documentada.
+
+Seguimiento visual del mismo día: RF-009-05/11 → T-009-14 completa → CareGuide.illustration, guide.html y cuatro PNG v2. [Validación](../specs/009-cuidados-cuidadores/validation.md) y [mediciones](../specs/009-cuidados-cuidadores/evidencia/imagenes-v2-navegador.json): 31 pruebas del módulo, assets/alt y cuatro vistas 390/1440 claro/oscuro. SVG y evidencia inicial conservados como antecedente; sin migración ni reglas nuevas.
+
+La tabla anterior conserva diseño inicial, no estado vigente. D-042 autoriza alcance completo. T-009-01–11 completas; 12 visual parcial y 13 entrega documental con aceptación pendiente. [Validación](../specs/009-cuidados-cuidadores/validation.md), [servidor](../specs/009-cuidados-cuidadores/evidencia/verificacion.json), [navegador](../specs/009-cuidados-cuidadores/evidencia/navegador.json) y [migraciones](../specs/009-cuidados-cuidadores/evidencia/migraciones.json).
+
+| RF | Archivos reales | Prueba/evidencia efectiva |
+|---|---|---|
+| 01 | CuidadosApp/permissions.py, services.own_patient, views.CareView, nav | ownership_all_roles_root_and_no_profile, anon/inactive/CSRF/private cache; otra cuenta/404 en navegador |
+| 02 | PlanesApp/models.py y migrations/0003–0004, catálogo | legacy_hogar_preserved_and_not_renewable, ensayo catálogo/reversión/snapshots |
+| 03 | Patient/forms/services.save_patient y set_patient_active | límites/validación/versiones/owner, archive/reactivation, simultaneous_last_slot_never_exceeds_capacity |
+| 04 | Medication/MedicationTime, save_daily/record_daily, scheduling.agenda | horarios múltiples/errores/versiones, omission/snapshots/duplicate; edición no reabre dosis, fecha efectiva |
+| 05 | CareGuide, migration/0002, cuatro SVG/guides.html | database_constraints_and_guides_assets, capturas de guías completas y móvil |
+| 06 | PostureTimer/CareEvent, services.record_posture/configure_timer, care.js | intervalos/replay/clock y timer_change_pause_resume_and_stale_generation; recarga/pausa en navegador |
+| 07 | ReminderReceipt, scheduling.reminders/claim_reminder, care.js/base.html | ten_minutes_due_claim_and_new_generation, foreign_reminder_claim; dos pestañas/recarga/preaviso/vencido |
+| 08 | CareTask/agenda, task/event views y templates | tasks_manual_daily_ranges_and_omission, DST/medianoche y filtro inválido 404 |
+| 09 | CareEvent, record_daily/correct_event, history.html | snapshots/correction_preserves_original_and_timer; historial/autor y corrección con formulario sin scripts |
+| 10 | capacity.py, CapacitySelection y PlanesApp execute/forms/views | reducción/pago fallido, cancelación/selection/resume, vencimiento/rollback/último método; flujo Free en navegador |
+| 11 | Home/nav/Layout, CuidadosApp templates/static, theme @source | regresión Home/Planes, cinco anchos/dos modos, keyboard Tab y fallback; Inicio interno conserva agregados |
+| 12 | CuidadosApp/tests.py/core.test_settings y evidencia | 31 tests nuevos/158 totales, ensayo migración/carrera SQLite, check/esquema/89 HTML/JS/Ruff/Tailwind/13 JPEG; límites manuales declarados |
+
+
+## 010 — Aplicación móvil, trazabilidad prevista 2026-10-19
+
+[Spec](../specs/010-aplicacion-movil/spec.md), [plan](../specs/010-aplicacion-movil/plan.md), [tareas](../specs/010-aplicacion-movil/tasks.md). Propuesta, sin implementación ni pruebas ejecutadas.
+
+| RF-010 | Fuente | Tareas T-010 | Evidencia posterior prevista |
+|---|---|---|---|
+| 01 | Cuentas 007 y acceso móvil del informe | 01–04,11–12 | Autenticación/MFA/Google/revocación |
+| 02 | Pacientes 009 y alcance del informe | 01–02,05,07,11–12 | Propiedad/cupos/roles/IDs ajenos |
+| 03 | HU-01/02/03 | 01–02,06–07,11–12 | Agenda/medicación/duplicidad y concurrencia |
+| 04 | HU-04 y guías 009 | 01–02,06–07,11–12 | Reloj, versiones y guía Android |
+| 05 | HU-06 | 01–02,06–07,11–12 | Autor/snapshot/correcciones/privacidad |
+| 06 | HU-07 | 01–02,05,07,11–12 | Plan y portal comercial existente |
+| 07 | HU-05 | 01–02,09,11–12 | Dispositivo real, permisos/logout/privacidad |
+| 08 | Familiar/cuidador del informe; pendiente | 01–02,08,11–12 | Permisos por vínculo y revocación |
+| 09 | RT-01/02/03, RNF-01; etapa pendiente | 01–02,10–12 | Evento real/sintético distinguido, autenticación nodo |
+| 10 | Integridad 009 y cliente móvil propuesto | 01–03,06–07,11–12 | Red perdida/reintentos/conflictos sin doble registro |
+
+
+## Ajuste 010 — iOS/Android, funciones por plan y MediaPipe, 2026-10-19
+
+Sustituye la condición opcional anterior para detección de posición; colaboración sigue pendiente. Toda la evidencia siguiente es prevista, no ejecutada.
+
+| RF | Fuente | Tareas | Validación propuesta |
+|---|---|---|---|
+| RF-010-09 | Aclaración humana MediaPipe, D-048 | T-010-10/14/15/11/12 | Detector real, clasificación/lateralidad/indeterminada, nodo autorizado y capacidad vigente |
+| RF-010-11 | Aclaración humana funciones por plan, D-049 | T-010-01/02/13/15/11/12 | Matriz Free/Plus/Premium, petición API directa, expiración, reducción, cola de avisos e historial |
+| RF-010-12 | Aclaración humana iOS/Android, D-047 | T-010-03/15/11/12 | Evidencia independiente en ambos SO, permisos, sesión y paridad funcional |
+
+RF-010-01–08/10 también requieren comprobarse en ambas plataformas. Matriz propuesta en spec; no modifica por sí sola catálogo, precios, planes históricos ni autorizaciones de código.
+
+
+## Aplicación móvil — actualización 2026-10-19
+
+010 RF01: allauth+api/base y test_mobile; RF02–06/10: api/views y Flutter care, servicios existentes; RF07: devices/worker, entrega externa pendiente; RF08: no implementado; RF09: api/detection+edge, pruebas sintéticas y modelo, cámara pendiente; RF11: entitlements/API/tests; RF12: plataformas generadas, ejecución nativa pendiente. [Evidencia y límites](../specs/010-aplicacion-movil/validation.md).
+
+
+### Referencia AI Studio revisada — 2026-10-20
+
+Acceso resuelto y prototipo inspeccionado. Usuario confirma planes de la web (Free/Plus/Premium,1/3/ilimitados) y MediaPipe tanto en teléfono como en nodo fijo. Registro web/login móvil compartidos. [Mapa y límites](../specs/010-aplicacion-movil/referencia-ai-studio.md); spec/plan/tasks010 ampliados, tareas18–23 pendientes. No se afirma que el diseño o la cámara móvil ya estén implementados.
+
+
+### Código adaptado a referencia — 2026-10-20
+
+Autorización posterior recibida; UI de seis secciones, tema índigo y cámara puntual móvil mediante plugin MediaPipe Android/iOS escritos, manteniendo nodo fijo y planes web. API dual/migración0005 y170 tests aislados OK. Compilación, lock actualizado, UI y cámara reales pendientes por SDK ausente/disco lleno. APK antiguo no contiene estos cambios. [Validación detallada](../specs/010-aplicacion-movil/validation.md).
+
+## Evolución011 — DOCUMENTAR22/10/2026
+
+RF-011-01→T09/10 instalación;02→T01/02 reloj (relacionado RF-010-04/10);03→T03/04 alarmas (RF-010-07);04→T05 integración007/010;05→T06 estilo002/010;06→T07/08 organización. T11 valida conjunto. Todas pendientes, sin evidencia nueva de ejecución. [Spec/aceptación](../specs/011-ecosistema-instalable/spec.md).

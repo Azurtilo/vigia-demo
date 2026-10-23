@@ -4,7 +4,7 @@ Implementación de las specs [002](../specs/002-renovacion-visual/spec.md) y [00
 
 ## Cambiar el color de una plataforma
 
-Edita únicamente [static/css/tokens.css](../static/css/tokens.css). En `:root`, cambia el par `--brand-light`/`--brand-dark` y sus textos `--on-brand-light`/`--on-brand-dark`. `--brand` y `--on-brand` se resuelven según el modo de la cuenta. La paleta inicial usa petróleo; ciruela y cobre también se comprobaron en ambos modos.
+Edita únicamente [static/css/tokens.css](../web/static/css/tokens.css). En `:root`, cambia el par `--brand-light`/`--brand-dark` y sus textos `--on-brand-light`/`--on-brand-dark`. `--brand` y `--on-brand` se resuelven según el modo de la cuenta. La paleta inicial usa petróleo; ciruela y cobre también se comprobaron en ambos modos.
 
 | Identidad | --brand-light | --brand-dark | Texto claro / oscuro |
 |---|---|---|---|
@@ -43,7 +43,7 @@ El hover, selección tenue, foco y primera serie del gráfico derivan de `--bran
 
 Los botones peligrosos usan `--on-danger`, para que cambiar el texto de marca no altere su contraste. Éxito/error/aviso usan texto además de color. Para otra paleta comprueba texto normal ≥ 4,5:1, texto grande ≥ 3:1, límites de controles/foco ≥ 3:1 y navegación activa sobre marca tenue. No es suficiente revisar solo el botón principal.
 
-El [CSS fuente Tailwind](../theme/static_src/src/styles.css) enlaza variables semánticas con `@theme inline`. Utilidades como `bg-brand`, `text-ink`, `text-muted`, `bg-surface`, `border-line` y `bg-danger-soft` se resuelven desde estos tokens. No concatenes `bg-` con un color; utiliza clases completas detectables por el compilador.
+El [CSS fuente Tailwind](../web/theme/static_src/src/styles.css) enlaza variables semánticas con `@theme inline`. Utilidades como `bg-brand`, `text-ink`, `text-muted`, `bg-surface`, `border-line` y `bg-danger-soft` se resuelven desde estos tokens. No concatenes `bg-` con un color; utiliza clases completas detectables por el compilador.
 
 ## Reutilizar componentes
 
@@ -67,7 +67,7 @@ python manage.py makemigrations --check --dry-run --settings=core.test_settings
 python manage.py test UsuarioApp homeApp --settings=core.test_settings
 ```
 
-El argumento `--settings` de tailwind va antes de `build`. El CSS generado es [theme/static/css/dist/styles.css](../theme/static/css/dist/styles.css); no editarlo manualmente. Las fuentes propias se registran con `@source`; conservar exclusiones de migraciones, cachés, dependencias y generados. No hace falta Node.js para compilar la base.
+El argumento `--settings` de tailwind va antes de `build`. El CSS generado es [theme/static/css/dist/styles.css](../web/theme/static/css/dist/styles.css); no editarlo manualmente. Las fuentes propias se registran con `@source`; conservar exclusiones de migraciones, cachés, dependencias y generados. No hace falta Node.js para compilar la base.
 
 Cuando cambies recursos estáticos, actualiza su versión de caché en el layout o usa archivos versionados. Tokens y styles usan `?v=003`; scripts sin cambios conservan `?v=002`. Estas versiones no son selectores de colores.
 
@@ -75,13 +75,13 @@ Revisa login, Inicio, Usuarios, Registro, Perfil, Cuenta/MFA y errores; datos v�
 
 ## Modo claro/oscuro por cuenta
 
-Actualización 008: Inicio y Mi suscripción reutilizan [visual_mode.html](../templates/components/visual_mode.html) con idénticos SVG sol/luna, labels/clases y POST/CSRF; el retorno a Home conserva su redirección de clientes. Index ahora muestra agregados de PlanesApp y gráfico de planes con cantidades HTML accesibles. [Validación 008](../specs/008-dashboard-navegacion/validation.md): 127 tests y navegador; colores siguen en tokens.css. El menú compartido incorpora SVG y oculta Inicio según el helper; sidebar desplazable y details/noscript móvil mantienen acceso a enlaces cuando no hay scripts.
+Actualización 008: Inicio y Mi suscripción reutilizan [visual_mode.html](../web/templates/components/visual_mode.html) con idénticos SVG sol/luna, labels/clases y POST/CSRF; el retorno a Home conserva su redirección de clientes. Index ahora muestra agregados de PlanesApp y gráfico de planes con cantidades HTML accesibles. [Validación 008](../specs/008-dashboard-navegacion/validation.md): 127 tests y navegador; colores siguen en tokens.css. El menú compartido incorpora SVG y oculta Inicio según el helper; sidebar desplazable y details/noscript móvil mantienen acceso a enlaces cuando no hay scripts.
 
 Inicio muestra luna para activar oscuro y sol para activar claro, junto al estado actual. Un formulario POST con CSRF guarda solo la cuenta activa de la sesión y vuelve a Inicio; funciona sin ejecución de scripts. Todos los cargos, staff, superusuario y usuarios sin perfil pueden cambiar su propia elección. No modifica cargos, perfiles ni fotos.
 
 `UserVisualPreference` guarda light/dark con relación única y restricción de base. Sin fila, claro; las visitas no crean filas. El processor `preferencias_visuales` entrega el modo al HTML antes del CSS. Anónimos y preautenticación usan claro; logout conserva la elección de cuenta. No se guarda en cookies/localStorage ni se sigue el modo del sistema.
 
-La migración [0002](../UsuarioApp/migrations/0002_user_visual_preference.py) fue creada y probada/revertida solo en SQLite efímero. **No está aplicada a la base existente**: antes de usar la función allí, acordar entorno y respaldo y autorizar esa aplicación por separado. Revertir elimina elecciones, conserva usuarios/perfiles y requiere coordinar la versión de código. [Validación y límites](../specs/003-modo-visual-usuario/validation.md): 43 tests Django, 180 pares de contraste y navegador; aceptación y revisión visual restante pendientes.
+La migración [0002](../web/UsuarioApp/migrations/0002_user_visual_preference.py) fue creada y probada/revertida solo en SQLite efímero. **No está aplicada a la base existente**: antes de usar la función allí, acordar entorno y respaldo y autorizar esa aplicación por separado. Revertir elimina elecciones, conserva usuarios/perfiles y requiere coordinar la versión de código. [Validación y límites](../specs/003-modo-visual-usuario/validation.md): 43 tests Django, 180 pares de contraste y navegador; aceptación y revisión visual restante pendientes.
 
 ## Recuperación de esta copia
 

@@ -1,0 +1,9 @@
+{% extends 'components/Layout/base_extendido.html' %}
+{% load static %}
+{% block head_title %}{% block care_title %}Mis cuidados{% endblock %}{% endblock %}
+{% block content_main %}<div class="care-workspace">
+{% if capacity.pending %}<div class="care-notice warning" role="status"><strong>Elige tus pacientes activos</strong><p>Tu período terminó y el cupo actual es {{ capacity.limit }}. Conservamos todas las fichas e historiales. Selecciona quién seguirá activo para retomar cuidados y avisos.</p><a class="button" href="{% url 'CuidadosApp:selection' %}">Elegir pacientes</a></div>{% endif %}
+{% block care_content %}{% endblock %}
+<p class="care-footnote">Demo de cuidados con datos ficticios. Los avisos funcionan con la web abierta; al volver de una suspensión se actualizan los pendientes.</p>
+<noscript><p class="care-notice">Sin JavaScript puedes registrar cuidados y consultar la agenda. Actualiza la página para revisar los próximos horarios; el contador y los avisos automáticos no están activos.</p></noscript>
+</div>{% endblock %}

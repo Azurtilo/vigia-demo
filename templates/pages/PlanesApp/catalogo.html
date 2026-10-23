@@ -1,6 +1,0 @@
-{% extends catalog_base %}
-{% load static %}
-{% block head_title %}Planes{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'PlanesApp/planes.css' %}?v=007-final">{% endblock %}
-{% block content %}{% if request.user.is_authenticated %}{{ block.super }}{% else %}<main class="public-plans"><div class="public-plans-nav"><a class="brand-link" href="{% url 'PlanesApp:catalogo' %}"><img src="{% static 'img/logo.svg' %}" alt="" width="36" height="36">Planes</a><a class="button secondary" href="{% url 'account_login' %}">Iniciar sesión</a></div>{% include 'components/PlanesApp/catalogo_contenido.html' %}</main>{% endif %}{% endblock %}
-{% block content_main %}<div class="plans-workspace">{% include 'components/PlanesApp/catalogo_contenido.html' %}</div>{% endblock %}

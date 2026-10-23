@@ -1,0 +1,85 @@
+{
+  "date": "2026-10-06",
+  "task": "T-009-14",
+  "requirements": [
+    "RF-009-05",
+    "RF-009-11"
+  ],
+  "assets": [
+    {
+      "file": "CuidadosApp/static/CuidadosApp/guides/supina-v2.png",
+      "width": 1635,
+      "height": 962,
+      "bytes": 1739392,
+      "sha256": "0e318eccad5d3a69c16b609dd76327d1ba6b31a369a17dc24b69985d60c3a427"
+    },
+    {
+      "file": "CuidadosApp/static/CuidadosApp/guides/lateral-izquierda-v2.png",
+      "width": 1634,
+      "height": 962,
+      "bytes": 1702896,
+      "sha256": "4bec7ad3a496c62647f865492be624415af6a65bb38dba3461b03bb26ec8e783"
+    },
+    {
+      "file": "CuidadosApp/static/CuidadosApp/guides/lateral-derecha-v2.png",
+      "width": 1635,
+      "height": 962,
+      "bytes": 1732774,
+      "sha256": "e6ad9a9d35842bf6a1b3d48eaa197be0b68800a5a742aade41b419be41648447"
+    },
+    {
+      "file": "CuidadosApp/static/CuidadosApp/guides/comodidad-v2.png",
+      "width": 1634,
+      "height": 962,
+      "bytes": 1736126,
+      "sha256": "193420ba5f3ee29b07d6f68fe2ddefd1464ad4a08d208bf31ff402a26ea1b6c7"
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "guias-v2-dark-1440.jpg",
+      "width": 1425,
+      "height": 1735,
+      "bytes": 254198
+    },
+    {
+      "file": "guias-v2-dark-390.jpg",
+      "width": 375,
+      "height": 2952,
+      "bytes": 170007
+    },
+    {
+      "file": "guias-v2-light-390.jpg",
+      "width": 375,
+      "height": 2952,
+      "bytes": 167228
+    },
+    {
+      "file": "guias-v2-light-1440.jpg",
+      "width": 1425,
+      "height": 1735,
+      "bytes": 249235
+    }
+  ],
+  "tests": {
+    "command": ".venv/Scripts/python.exe manage.py test CuidadosApp --settings=core.test_settings",
+    "count": 31,
+    "status": "OK",
+    "seconds": 0.915
+  },
+  "checks": {
+    "ruff_models": "All checks passed",
+    "django_check_test_settings": "No issues",
+    "makemigrations_check_dry_run_test_settings": "No changes detected",
+    "tailwind": "No CSS/classes/fonts changed; previous build retained"
+  },
+  "browser": "imagenes-v2-navegador.json",
+  "prompts": "prompts-imagenes-v2.json",
+  "environment": "loopback preview, SQLite in memory, fictional account/patient, closed after visual QA",
+  "scope": "No existing DB migration, no clinical text/rules change, no deploy/commit/push; owner acceptance pending",
+  "documents": {
+    "files": 8,
+    "links_checked": 187,
+    "missing": []
+  }
+}

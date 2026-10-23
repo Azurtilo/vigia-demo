@@ -6,11 +6,11 @@ Fecha: 2026-10-06. Alcance completo autorizado por instrucción posterior: «imp
 
 Seis SVG de línea en navegación; Inicio condicionado por la política ADMIN/MANAGER/root activo del servidor. Ambos menús comparten nav.html, sin sección principal vacía para clientes. Correo/Google también identifican página activa.
 
-Home incorpora [dashboard.py](../../PlanesApp/dashboard.py) con cuatro consultas independientes del número de usuarios. Cuenta filas de cuentas activas, períodos pagados vigentes/vencidos, cancelaciones pendientes y plan efectivo. La cancelación terminada entra en Free sin guardar cambios. Cuentas antiguas sin fila no se crean durante lectura. Volumen del mes usa snapshots de compras/cambios/renovaciones aprobadas, excluye rechazos/eventos sin cargo y respeta inicio de mes en Santiago. No muestra datos de métodos/historial ajenos.
+Home incorpora [dashboard.py](../../web/PlanesApp/dashboard.py) con cuatro consultas independientes del número de usuarios. Cuenta filas de cuentas activas, períodos pagados vigentes/vencidos, cancelaciones pendientes y plan efectivo. La cancelación terminada entra en Free sin guardar cambios. Cuentas antiguas sin fila no se crean durante lectura. Volumen del mes usa snapshots de compras/cambios/renovaciones aprobadas, excluye rechazos/eventos sin cargo y respeta inicio de mes en Santiago. No muestra datos de métodos/historial ajenos.
 
 Index sustituye meteorología demostrativa por gráfico opcional de distribución de planes y cifras HTML siempre disponibles. Mantiene cinco accesos y actividad aproximada de diez minutos. json_script evita inyección de nombres en JavaScript. No nuevas dependencias ni modelos/migraciones/rutas de producto.
 
-[Selector compartido](../../templates/components/visual_mode.html) extraído de Inicio y usado en Mi suscripción; mismos SVG, estilos, labels y POST/CSRF. Preferencia propia y retorno del servidor conservados. Layout añade details dentro de noscript para menú móvil nativo cuando no hay JavaScript; oculta el botón de diálogo inoperante solo en ese caso. Sidebar de escritorio puede desplazarse para alcanzar los últimos enlaces en ventanas bajas. Colores/fuentes de la base preservados; versión de CSS/JS actualizada.
+[Selector compartido](../../web/templates/components/visual_mode.html) extraído de Inicio y usado en Mi suscripción; mismos SVG, estilos, labels y POST/CSRF. Preferencia propia y retorno del servidor conservados. Layout añade details dentro de noscript para menú móvil nativo cuando no hay JavaScript; oculta el botón de diálogo inoperante solo en ese caso. Sidebar de escritorio puede desplazarse para alcanzar los últimos enlaces en ventanas bajas. Colores/fuentes de la base preservados; versión de CSS/JS actualizada.
 
 ## Verificación ejecutada
 

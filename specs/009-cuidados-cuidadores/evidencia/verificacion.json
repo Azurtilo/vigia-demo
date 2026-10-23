@@ -1,0 +1,156 @@
+{
+  "date": "2026-10-06",
+  "settings": "core.test_settings",
+  "database": ":memory:",
+  "suite": {
+    "command": "manage.py test UsuarioApp homeApp PlanesApp CuidadosApp --settings=core.test_settings",
+    "tests": 158,
+    "seconds": 14.126,
+    "result": "OK"
+  },
+  "templates_loaded": 89,
+  "images": [
+    {
+      "file": "aviso-postura.jpg",
+      "width": 1425,
+      "height": 1357,
+      "bytes": 117613
+    },
+    {
+      "file": "fallback-mobile.jpg",
+      "width": 375,
+      "height": 3097,
+      "bytes": 140161
+    },
+    {
+      "file": "guias-dark.jpg",
+      "width": 1326,
+      "height": 891,
+      "bytes": 110879
+    },
+    {
+      "file": "guias-light-completas.jpg",
+      "width": 1425,
+      "height": 1735,
+      "bytes": 218584
+    },
+    {
+      "file": "historial-correccion.jpg",
+      "width": 375,
+      "height": 1505,
+      "bytes": 76838
+    },
+    {
+      "file": "medicamento-error.jpg",
+      "width": 1425,
+      "height": 1223,
+      "bytes": 88777
+    },
+    {
+      "file": "panel-dark-1440.jpg",
+      "width": 1425,
+      "height": 1357,
+      "bytes": 164843
+    },
+    {
+      "file": "panel-free-dark-1440.jpg",
+      "width": 1425,
+      "height": 891,
+      "bytes": 104810
+    },
+    {
+      "file": "panel-light-1440.jpg",
+      "width": 1425,
+      "height": 1357,
+      "bytes": 163266
+    },
+    {
+      "file": "panel-mobile-dark.jpg",
+      "width": 375,
+      "height": 2206,
+      "bytes": 103692
+    },
+    {
+      "file": "panel-mobile-light.jpg",
+      "width": 375,
+      "height": 2206,
+      "bytes": 102162
+    },
+    {
+      "file": "reactivacion-sin-scripts.jpg",
+      "width": 375,
+      "height": 2075,
+      "bytes": 96808
+    },
+    {
+      "file": "reduccion-pacientes.jpg",
+      "width": 1339,
+      "height": 900,
+      "bytes": 61098
+    }
+  ],
+  "checks": [
+    {
+      "command": [
+        "manage.py",
+        "check",
+        "--settings=core.test_settings"
+      ],
+      "exit": 0,
+      "output": "System check identified no issues (0 silenced).\n"
+    },
+    {
+      "command": [
+        "manage.py",
+        "makemigrations",
+        "--check",
+        "--dry-run",
+        "--settings=core.test_settings"
+      ],
+      "exit": 0,
+      "output": "No changes detected\n"
+    },
+    {
+      "command": [
+        "-m",
+        "ruff",
+        "check",
+        "CuidadosApp",
+        "PlanesApp/models.py",
+        "PlanesApp/forms.py",
+        "PlanesApp/views.py",
+        "PlanesApp/services.py",
+        "homeApp/views.py",
+        "homeApp/test_dashboard.py"
+      ],
+      "exit": 0,
+      "output": "All checks passed!\n"
+    },
+    {
+      "command": [
+        "C:/Users/Fernando/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe",
+        "--check",
+        "CuidadosApp/static/CuidadosApp/care.js"
+      ],
+      "exit": 0,
+      "output": ""
+    }
+  ],
+  "previous_lint_in_planes_tests": {
+    "codes": [
+      "SIM117",
+      "SIM117",
+      "SIM117",
+      "SIM117"
+    ],
+    "not_changed_by_scope": true
+  },
+  "tailwind": {
+    "version": "4.3.0",
+    "build_result": "OK",
+    "elapsed_ms": 79
+  },
+  "no_real_data": true,
+  "no_deploy_commit_push": true,
+  "dependencies_changed": false
+}

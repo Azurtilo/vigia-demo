@@ -1,8 +1,10 @@
 # Base Django reutilizable con SDD
 
-Base personalizada para iniciar plataformas y añadir módulos progresivamente. Conserva usuarios, perfiles/cargos, autenticación allauth, MFA, inicio, navegación y diseño Tailwind/crispy. La spec transversal CalidadBase añadió configuración aislada y pruebas iniciales; esta copia incorpora ahora el módulo de negocio PlanesApp.
+Base personalizada para iniciar plataformas y añadir módulos progresivamente. Conserva usuarios, perfiles/cargos, autenticación allauth, MFA, inicio, navegación y diseño Tailwind/crispy. La spec transversal CalidadBase añadió configuración aislada y pruebas iniciales; esta copia incorpora PlanesApp y CuidadosApp para la demo VIGIA de cuidadores.
 
 Esta copia implementa: [007 — PlanesApp](specs/007-planes-app/spec.md), registro público local/Google con cargo RESTRICTED y contratación de los planes Vigía mediante pagos simulados. [Plan](specs/007-planes-app/plan.md) y [tareas](specs/007-planes-app/tasks.md) documentados primero y alcance completo autorizado posteriormente. Registro público RESTRICTED/Free, correo confirmado, catálogo, métodos con tarjeta interactiva, checkout, cambio/cancelación/renovación e historial propios. **117 tests OK**, check/esquema/build y navegador con datos ficticios. [Validación y pendientes](specs/007-planes-app/validation.md), [guía de pruebas/Google](docs/PLANESAPP_DESARROLLO.md). Usar **.venv**; Google real requiere credenciales, migración de la DB existente y aceptación manual pendientes.
+
+Evolución [009 — CuidadosApp](specs/009-cuidados-cuidadores/spec.md) autorizada e implementada: pacientes propios, medicamentos/horarios, guías visuales, posturas con intervalos 60/90/120, avisos con la web abierta e historial. Planes Free/Plus/Premium con 1/3/ilimitados y selección al reducir cupo. **158 pruebas OK**. [Validación y pendientes](specs/009-cuidados-cuidadores/validation.md), [guía de desarrollo](docs/CUIDADOSAPP_DESARROLLO.md). Migraciones probadas en memoria, sin aplicación a la DB existente; IA/cámaras futuras.
 
 **Para comenzar:** lee [MANUAL_SDD.md](MANUAL_SDD.md). Indica primero el nombre del módulo (por ejemplo `NuevaAPP`) y después tus requisitos. La primera respuesta debe crear especificación, plan y tareas **sin código**.
 
@@ -53,3 +55,8 @@ django-axes y preventconcurrentlogins siguen desactivados aunque estén declarad
 Nombre del módulo y requerimiento → spec → plan → tareas → revisión del usuario → autorización de código → implementación → validación → actualización documental.
 
 Puedes usar un único prompt para coordinar la fase documental o pasar cada fase por separado. El manual explica ambos casos. No es necesario instalar un framework SDD.
+
+
+## Aplicación móvil — actualización 2026-10-19
+
+Aplicación Flutter Android/iOS y demo local disponibles. Ver [instrucciones y cuentas ficticias](docs/MOVIL_DESARROLLO.md) y [evidencia/pendientes](specs/010-aplicacion-movil/validation.md).

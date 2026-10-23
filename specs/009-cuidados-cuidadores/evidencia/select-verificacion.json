@@ -1,0 +1,68 @@
+{
+  "date": "2026-10-06",
+  "task": "T-009-15",
+  "requirements": [
+    "RF-009-11",
+    "RF-009-12"
+  ],
+  "scope": "crispy select local template, semantic shared CSS, resource revision; no backend/package changes",
+  "tests_command": ".venv/Scripts/python.exe manage.py test UsuarioApp homeApp PlanesApp CuidadosApp --settings=core.test_settings",
+  "initial_suite": {
+    "count": 158,
+    "passed": 157,
+    "failed": 1,
+    "seconds": 15.344,
+    "failure": "ConcurrentCapacityTests.test_simultaneous_last_slot_never_exceeds_capacity: 0 created instead of 1"
+  },
+  "isolated_race": {
+    "count": 1,
+    "status": "OK",
+    "seconds": 0.025
+  },
+  "final_suite": {
+    "count": 158,
+    "status": "OK",
+    "seconds": 15.142
+  },
+  "race_followup": "Existing SQLite race test intermittent; both writers may need retry. No business or test logic changed for this UI task.",
+  "checks": {
+    "tailwind": "4.3.0, 86ms, OK",
+    "django_check": "No issues, core.test_settings",
+    "diff_check": "OK, previous LF/CRLF warnings"
+  },
+  "contracts": "select-contratos.json",
+  "browser": "select-navegador.json",
+  "screenshots": [
+    {
+      "file": "select-antes-dark.jpg",
+      "width": 1425,
+      "height": 1334
+    },
+    {
+      "file": "select-despues-dark-1440.jpg",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "select-despues-dark-390.jpg",
+      "width": 375,
+      "height": 915
+    },
+    {
+      "file": "select-despues-light-1440.jpg",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "select-despues-light-390.jpg",
+      "width": 375,
+      "height": 915
+    }
+  ],
+  "cleanup": "Temporary loopback server stopped, tab closed, viewport reset; scratch removed at closure",
+  "documents": {
+    "files": 7,
+    "links": 188,
+    "missing": []
+  }
+}

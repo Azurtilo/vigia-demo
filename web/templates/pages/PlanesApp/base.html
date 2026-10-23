@@ -1,0 +1,5 @@
+{% extends 'components/Layout/base_extendido.html' %}
+{% load static %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'PlanesApp/planes.css' %}?v=011">{% endblock %}
+{% block head_title %}{% block plan_title %}Mi suscripción{% endblock %}{% endblock %}
+{% block content_main %}<div class="plans-workspace">{% block plan_content %}{% endblock %}<p class="simulation-footer">Prototipo de suscripciones. Todos los pagos son simulados.</p></div>{% endblock %}

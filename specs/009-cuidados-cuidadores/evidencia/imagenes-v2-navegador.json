@@ -1,0 +1,141 @@
+{
+  "date": "2026-10-06",
+  "cases": [
+    {
+      "images": [
+        {
+          "alt": "Persona mayor acostada boca arriba en una cama, con almohada de cabeza y apoyo bajo las piernas.",
+          "loaded": true,
+          "src": "/static/CuidadosApp/guides/supina-v2.png?v=20261006",
+          "width": 1635
+        },
+        {
+          "alt": "Persona mayor sobre su lado izquierdo, con almohada de cabeza, apoyo detrás del tronco y entre las rodillas.",
+          "loaded": true,
+          "src": "/static/CuidadosApp/guides/lateral-izquierda-v2.png?v=20261006",
+          "width": 1634
+        },
+        {
+          "alt": "Persona mayor sobre su lado derecho, con almohada de cabeza, apoyo detrás del tronco y entre las rodillas.",
+          "loaded": true,
+          "src": "/static/CuidadosApp/guides/lateral-derecha-v2.png?v=20261006",
+          "width": 1635
+        },
+        {
+          "alt": "Cuidadora conversa con una persona mayor en su cama y prepara una almohada para su comodidad.",
+          "loaded": true,
+          "src": "/static/CuidadosApp/guides/comodidad-v2.png?v=20261006",
+          "width": 1634
+        }
+      ],
+      "scrollWidth": 1440,
+      "width": 1440,
+      "case": "dark-1440",
+      "theme": "dark",
+      "body_class": "bg-page text-ink min-h-dvh",
+      "screenshot": "guias-v2-dark-1440.jpg"
+    },
+    {
+      "images": [
+        {
+          "alt": "Persona mayor acostada boca arriba en una cama, con almohada de cabeza y apoyo bajo las piernas.",
+          "loaded": true,
+          "src": "/static/CuidadosApp/guides/supina-v2.png?v=20261006",
+          "width": 1635
+        },
+        {
+          "alt": "Persona mayor sobre su lado izquierdo, con almohada de cabeza, apoyo detrás del tronco y entre las rodillas.",
+          "loaded": true,
+          "src": "/static/CuidadosApp/guides/lateral-izquierda-v2.png?v=20261006",
+          "width": 1634
+        },
+        {
+          "alt": "Persona mayor sobre su lado derecho, con almohada de cabeza, apoyo detrás del tronco y entre las rodillas.",
+          "loaded": true,
+          "src": "/static/CuidadosApp/guides/lateral-derecha-v2.png?v=20261006",
+          "width": 1635
+        },
+        {
+          "alt": "Cuidadora conversa con una persona mayor en su cama y prepara una almohada para su comodidad.",
+          "loaded": true,
+          "src": "/static/CuidadosApp/guides/comodidad-v2.png?v=20261006",
+          "width": 1634
+        }
+      ],
+      "scrollWidth": 390,
+      "width": 390,
+      "case": "dark-390",
+      "theme": "dark",
+      "body_class": "bg-page text-ink min-h-dvh",
+      "screenshot": "guias-v2-dark-390.jpg"
+    },
+    {
+      "images": [
+        {
+          "alt": "Persona mayor acostada boca arriba en una cama, con almohada de cabeza y apoyo bajo las piernas.",
+          "loaded": true,
+          "src": "/static/CuidadosApp/guides/supina-v2.png?v=20261006",
+          "width": 1635
+        },
+        {
+          "alt": "Persona mayor sobre su lado izquierdo, con almohada de cabeza, apoyo detrás del tronco y entre las rodillas.",
+          "loaded": true,
+          "src": "/static/CuidadosApp/guides/lateral-izquierda-v2.png?v=20261006",
+          "width": 1634
+        },
+        {
+          "alt": "Persona mayor sobre su lado derecho, con almohada de cabeza, apoyo detrás del tronco y entre las rodillas.",
+          "loaded": true,
+          "src": "/static/CuidadosApp/guides/lateral-derecha-v2.png?v=20261006",
+          "width": 1635
+        },
+        {
+          "alt": "Cuidadora conversa con una persona mayor en su cama y prepara una almohada para su comodidad.",
+          "loaded": true,
+          "src": "/static/CuidadosApp/guides/comodidad-v2.png?v=20261006",
+          "width": 1634
+        }
+      ],
+      "scrollWidth": 390,
+      "width": 390,
+      "case": "light-390",
+      "theme": "light",
+      "body_class": "bg-page text-ink min-h-dvh",
+      "screenshot": "guias-v2-light-390.jpg"
+    },
+    {
+      "images": [
+        {
+          "alt": "Persona mayor acostada boca arriba en una cama, con almohada de cabeza y apoyo bajo las piernas.",
+          "loaded": true,
+          "src": "/static/CuidadosApp/guides/supina-v2.png?v=20261006",
+          "width": 1635
+        },
+        {
+          "alt": "Persona mayor sobre su lado izquierdo, con almohada de cabeza, apoyo detrás del tronco y entre las rodillas.",
+          "loaded": true,
+          "src": "/static/CuidadosApp/guides/lateral-izquierda-v2.png?v=20261006",
+          "width": 1634
+        },
+        {
+          "alt": "Persona mayor sobre su lado derecho, con almohada de cabeza, apoyo detrás del tronco y entre las rodillas.",
+          "loaded": true,
+          "src": "/static/CuidadosApp/guides/lateral-derecha-v2.png?v=20261006",
+          "width": 1635
+        },
+        {
+          "alt": "Cuidadora conversa con una persona mayor en su cama y prepara una almohada para su comodidad.",
+          "loaded": true,
+          "src": "/static/CuidadosApp/guides/comodidad-v2.png?v=20261006",
+          "width": 1634
+        }
+      ],
+      "scrollWidth": 1440,
+      "width": 1440,
+      "case": "light-1440",
+      "theme": "light",
+      "body_class": "bg-page text-ink min-h-dvh",
+      "screenshot": "guias-v2-light-1440.jpg"
+    }
+  ]
+}

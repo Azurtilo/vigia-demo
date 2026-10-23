@@ -44,7 +44,7 @@ python manage.py tailwind build
 
 La versión standalone está fijada en `core/common_settings.py` y la compilación genera `theme/static/css/dist/styles.css`. No existen `package.json`, `package-lock.json` ni `tailwind.config.js`. El escaneo se configura en `theme/static_src/src/styles.css` con `@source`; revisar clases completas representativas y exclusiones. El modo standalone no admite dependencias npm ni plugins de terceros: si un proyecto los necesita, debe abrir un cambio de alcance y evaluar el modo npm.
 
-Con configuración aislada, el comando comprobado es `python manage.py tailwind --settings=core.test_settings build` (settings antes de build). Cambiar valores existentes de [tokens.css](../static/css/tokens.css) no exige build; nuevas clases/fuentes sí. Ver [personalización](PERSONALIZACION_VISUAL.md).
+Con configuración aislada, el comando comprobado es `python manage.py tailwind --settings=core.test_settings build` (settings antes de build). Cambiar valores existentes de [tokens.css](../web/static/css/tokens.css) no exige build; nuevas clases/fuentes sí. Ver [personalización](PERSONALIZACION_VISUAL.md).
 
 No hace falta recompilar por añadir Markdown.
 
@@ -70,3 +70,13 @@ En cada resultado distinguir ejecutado, inspeccionado estáticamente, pendiente 
 El propietario confirmó **.venv**; la ruta histórica .venv-actualizada corresponde a la base anterior. .venv/Scripts/python.exe funciona con Python 3.12.14 disponible en runtime local de Codex; reconstruido en la misma ruta porque el intérprete copiado faltaba, conservando paquetes y pyvenv.cfg original en .recovery-007. Al cambiar equipo/runtime, recrear con Python propio e instalar el lock con hashes.
 
 Suite vigente: `python manage.py test UsuarioApp homeApp PlanesApp --settings=core.test_settings`, 117 métodos OK. Lock de 54 paquetes coincide con instalación; check/esquema/pip/build OK. [Guía de desarrollo/Google](PLANESAPP_DESARROLLO.md) y [validación 007](../specs/007-planes-app/validation.md). No se importó settings normal ni se aplicaron migraciones a DB existente.
+
+
+## CuidadosApp 009
+
+Entorno .venv confirmado; no dependencias nuevas. Suite actual: `.venv/Scripts/python.exe manage.py test UsuarioApp homeApp PlanesApp CuidadosApp --settings=core.test_settings`. Check/makemigrations --check/Tailwind también con core.test_settings. 158 tests OK y 89 HTML; [validación](../specs/009-cuidados-cuidadores/validation.md), [guía de uso y migraciones pendientes](CUIDADOSAPP_DESARROLLO.md). Ensayo SQLite efímero de catálogo/reversión y carrera sobre último cupo no equivale a aplicar esquema en DB existente ni a comprobar backend productivo. Preview/helper descartables retirados.
+
+
+## Aplicación móvil — actualización 2026-10-19
+
+010 en macOS usa .venv-mobile (Python3.12, requirements.txt existente), .venv-edge independiente y Flutter3.47.7 temporal en /tmp/vigia-flutter-sdk. Ejecutar manage.py test UsuarioApp homeApp PlanesApp CuidadosApp --settings=core.test_settings. Demo SQLite explícita separada. Ver [guía](MOVIL_DESARROLLO.md).

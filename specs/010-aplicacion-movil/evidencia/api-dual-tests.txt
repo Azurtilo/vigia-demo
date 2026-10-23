@@ -1,0 +1,39 @@
+Creating test database for alias 'default'...
+Bad Request: /api/v1/patients
+Not Found: /api/v1/patients/1/garbage/active
+Not Found: /api/v1/patients/1/daily/garbage
+...Forbidden: /api/v1/patients/1/nodes
+Conflict: /api/v1/edge/observations
+Bad Request: /api/v1/edge/observations
+Forbidden: /api/v1/edge/observations
+Unauthorized: /api/v1/edge/observations
+.Unauthorized: /api/v1/me
+Unauthorized: /_allauth/app/v1/auth/session
+Unauthorized: /api/v1/me
+.Unauthorized: /api/v1/me
+.Bad Request: /api/v1/patients/1/daily/medications
+.Unauthorized: /_allauth/app/v1/auth/login
+Unauthorized: /api/v1/me
+.Bad Request: /api/v1/patients/1/phone-observations
+Forbidden: /api/v1/patients/1/phone-observations
+Forbidden: /api/v1/patients/1/phone-observations
+.Forbidden: /api/v1/patients/1/phone-observations
+Forbidden: /api/v1/patients/1/phone-observations
+Not Found: /api/v1/patients/2/phone-observations
+Bad Request: /api/v1/patients/1/phone-observations
+Bad Request: /api/v1/patients/1/phone-observations
+Bad Request: /api/v1/patients/1/phone-observations
+Conflict: /api/v1/patients/1/phone-observations
+Forbidden: /api/v1/patients/1/phone-observations
+.Bad Request: /api/v1/patients
+Bad Request: /api/v1/patients/1
+.Not Found: /api/v1/patients/2
+Not Found: /api/v1/patients/2/history
+.
+----------------------------------------------------------------------
+Ran 12 tests in 0.166s
+
+OK
+Destroying test database for alias 'default'...
+Found 12 test(s).
+System check identified no issues (0 silenced).

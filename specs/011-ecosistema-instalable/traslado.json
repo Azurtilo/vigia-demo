@@ -1,0 +1,1034 @@
+[
+  {
+    "from": "manage.py",
+    "to": "web/manage.py"
+  },
+  {
+    "from": "core/mixins.py",
+    "to": "web/core/mixins.py"
+  },
+  {
+    "from": "core/asgi.py",
+    "to": "web/core/asgi.py"
+  },
+  {
+    "from": "core/common_settings.py",
+    "to": "web/core/common_settings.py"
+  },
+  {
+    "from": "core/__init__.py",
+    "to": "web/core/__init__.py"
+  },
+  {
+    "from": "core/context_processors.py",
+    "to": "web/core/context_processors.py"
+  },
+  {
+    "from": "core/mobile_demo_settings.py",
+    "to": "web/core/mobile_demo_settings.py"
+  },
+  {
+    "from": "core/settings.py",
+    "to": "web/core/settings.py"
+  },
+  {
+    "from": "core/urls.py",
+    "to": "web/core/urls.py"
+  },
+  {
+    "from": "core/mobile_demo_urls.py",
+    "to": "web/core/mobile_demo_urls.py"
+  },
+  {
+    "from": "core/test_settings.py",
+    "to": "web/core/test_settings.py"
+  },
+  {
+    "from": "core/wsgi.py",
+    "to": "web/core/wsgi.py"
+  },
+  {
+    "from": "UsuarioApp/services.py",
+    "to": "web/UsuarioApp/services.py"
+  },
+  {
+    "from": "UsuarioApp/models.py",
+    "to": "web/UsuarioApp/models.py"
+  },
+  {
+    "from": "UsuarioApp/signup_forms.py",
+    "to": "web/UsuarioApp/signup_forms.py"
+  },
+  {
+    "from": "UsuarioApp/__init__.py",
+    "to": "web/UsuarioApp/__init__.py"
+  },
+  {
+    "from": "UsuarioApp/apps.py",
+    "to": "web/UsuarioApp/apps.py"
+  },
+  {
+    "from": "UsuarioApp/forms.py",
+    "to": "web/UsuarioApp/forms.py"
+  },
+  {
+    "from": "UsuarioApp/tests_integridad.py",
+    "to": "web/UsuarioApp/tests_integridad.py"
+  },
+  {
+    "from": "UsuarioApp/admin.py",
+    "to": "web/UsuarioApp/admin.py"
+  },
+  {
+    "from": "UsuarioApp/permissions.py",
+    "to": "web/UsuarioApp/permissions.py"
+  },
+  {
+    "from": "UsuarioApp/tests_dependencias.py",
+    "to": "web/UsuarioApp/tests_dependencias.py"
+  },
+  {
+    "from": "UsuarioApp/choices.py",
+    "to": "web/UsuarioApp/choices.py"
+  },
+  {
+    "from": "UsuarioApp/tests.py",
+    "to": "web/UsuarioApp/tests.py"
+  },
+  {
+    "from": "UsuarioApp/urls.py",
+    "to": "web/UsuarioApp/urls.py"
+  },
+  {
+    "from": "UsuarioApp/views.py",
+    "to": "web/UsuarioApp/views.py"
+  },
+  {
+    "from": "UsuarioApp/adapters.py",
+    "to": "web/UsuarioApp/adapters.py"
+  },
+  {
+    "from": "UsuarioApp/migrations/0002_user_visual_preference.py",
+    "to": "web/UsuarioApp/migrations/0002_user_visual_preference.py"
+  },
+  {
+    "from": "UsuarioApp/migrations/__init__.py",
+    "to": "web/UsuarioApp/migrations/__init__.py"
+  },
+  {
+    "from": "UsuarioApp/migrations/0001_initial.py",
+    "to": "web/UsuarioApp/migrations/0001_initial.py"
+  },
+  {
+    "from": "UsuarioApp/management/__init__.py",
+    "to": "web/UsuarioApp/management/__init__.py"
+  },
+  {
+    "from": "UsuarioApp/management/commands/__init__.py",
+    "to": "web/UsuarioApp/management/commands/__init__.py"
+  },
+  {
+    "from": "UsuarioApp/management/commands/verificar_actualizacion_allauth.py",
+    "to": "web/UsuarioApp/management/commands/verificar_actualizacion_allauth.py"
+  },
+  {
+    "from": "homeApp/models.py",
+    "to": "web/homeApp/models.py"
+  },
+  {
+    "from": "homeApp/test_dashboard.py",
+    "to": "web/homeApp/test_dashboard.py"
+  },
+  {
+    "from": "homeApp/__init__.py",
+    "to": "web/homeApp/__init__.py"
+  },
+  {
+    "from": "homeApp/apps.py",
+    "to": "web/homeApp/apps.py"
+  },
+  {
+    "from": "homeApp/admin.py",
+    "to": "web/homeApp/admin.py"
+  },
+  {
+    "from": "homeApp/tests.py",
+    "to": "web/homeApp/tests.py"
+  },
+  {
+    "from": "homeApp/urls.py",
+    "to": "web/homeApp/urls.py"
+  },
+  {
+    "from": "homeApp/middleware.py",
+    "to": "web/homeApp/middleware.py"
+  },
+  {
+    "from": "homeApp/views.py",
+    "to": "web/homeApp/views.py"
+  },
+  {
+    "from": "PlanesApp/services.py",
+    "to": "web/PlanesApp/services.py"
+  },
+  {
+    "from": "PlanesApp/models.py",
+    "to": "web/PlanesApp/models.py"
+  },
+  {
+    "from": "PlanesApp/__init__.py",
+    "to": "web/PlanesApp/__init__.py"
+  },
+  {
+    "from": "PlanesApp/apps.py",
+    "to": "web/PlanesApp/apps.py"
+  },
+  {
+    "from": "PlanesApp/entitlements.py",
+    "to": "web/PlanesApp/entitlements.py"
+  },
+  {
+    "from": "PlanesApp/forms.py",
+    "to": "web/PlanesApp/forms.py"
+  },
+  {
+    "from": "PlanesApp/dashboard.py",
+    "to": "web/PlanesApp/dashboard.py"
+  },
+  {
+    "from": "PlanesApp/admin.py",
+    "to": "web/PlanesApp/admin.py"
+  },
+  {
+    "from": "PlanesApp/permissions.py",
+    "to": "web/PlanesApp/permissions.py"
+  },
+  {
+    "from": "PlanesApp/simulator.py",
+    "to": "web/PlanesApp/simulator.py"
+  },
+  {
+    "from": "PlanesApp/tests.py",
+    "to": "web/PlanesApp/tests.py"
+  },
+  {
+    "from": "PlanesApp/urls.py",
+    "to": "web/PlanesApp/urls.py"
+  },
+  {
+    "from": "PlanesApp/views.py",
+    "to": "web/PlanesApp/views.py"
+  },
+  {
+    "from": "PlanesApp/migrations/0003_plan_catalog_before_care_plan_max_active_patients_and_more.py",
+    "to": "web/PlanesApp/migrations/0003_plan_catalog_before_care_plan_max_active_patients_and_more.py"
+  },
+  {
+    "from": "PlanesApp/migrations/__init__.py",
+    "to": "web/PlanesApp/migrations/__init__.py"
+  },
+  {
+    "from": "PlanesApp/migrations/0002_catalogo_inicial.py",
+    "to": "web/PlanesApp/migrations/0002_catalogo_inicial.py"
+  },
+  {
+    "from": "PlanesApp/migrations/0004_catalogo_cuidadores.py",
+    "to": "web/PlanesApp/migrations/0004_catalogo_cuidadores.py"
+  },
+  {
+    "from": "PlanesApp/migrations/0001_initial.py",
+    "to": "web/PlanesApp/migrations/0001_initial.py"
+  },
+  {
+    "from": "PlanesApp/static/PlanesApp/planes.css",
+    "to": "web/PlanesApp/static/PlanesApp/planes.css"
+  },
+  {
+    "from": "PlanesApp/static/PlanesApp/card.js",
+    "to": "web/PlanesApp/static/PlanesApp/card.js"
+  },
+  {
+    "from": "CuidadosApp/mobile_models.py",
+    "to": "web/CuidadosApp/mobile_models.py"
+  },
+  {
+    "from": "CuidadosApp/services.py",
+    "to": "web/CuidadosApp/services.py"
+  },
+  {
+    "from": "CuidadosApp/capacity.py",
+    "to": "web/CuidadosApp/capacity.py"
+  },
+  {
+    "from": "CuidadosApp/models.py",
+    "to": "web/CuidadosApp/models.py"
+  },
+  {
+    "from": "CuidadosApp/__init__.py",
+    "to": "web/CuidadosApp/__init__.py"
+  },
+  {
+    "from": "CuidadosApp/apps.py",
+    "to": "web/CuidadosApp/apps.py"
+  },
+  {
+    "from": "CuidadosApp/forms.py",
+    "to": "web/CuidadosApp/forms.py"
+  },
+  {
+    "from": "CuidadosApp/permissions.py",
+    "to": "web/CuidadosApp/permissions.py"
+  },
+  {
+    "from": "CuidadosApp/scheduling.py",
+    "to": "web/CuidadosApp/scheduling.py"
+  },
+  {
+    "from": "CuidadosApp/tests.py",
+    "to": "web/CuidadosApp/tests.py"
+  },
+  {
+    "from": "CuidadosApp/test_mobile.py",
+    "to": "web/CuidadosApp/test_mobile.py"
+  },
+  {
+    "from": "CuidadosApp/urls.py",
+    "to": "web/CuidadosApp/urls.py"
+  },
+  {
+    "from": "CuidadosApp/views.py",
+    "to": "web/CuidadosApp/views.py"
+  },
+  {
+    "from": "CuidadosApp/migrations/0004_detectionnode_mobiledevice_postureobservation_and_more.py",
+    "to": "web/CuidadosApp/migrations/0004_detectionnode_mobiledevice_postureobservation_and_more.py"
+  },
+  {
+    "from": "CuidadosApp/migrations/0003_caretask_schedule_effective_at_and_more.py",
+    "to": "web/CuidadosApp/migrations/0003_caretask_schedule_effective_at_and_more.py"
+  },
+  {
+    "from": "CuidadosApp/migrations/0002_guias.py",
+    "to": "web/CuidadosApp/migrations/0002_guias.py"
+  },
+  {
+    "from": "CuidadosApp/migrations/__init__.py",
+    "to": "web/CuidadosApp/migrations/__init__.py"
+  },
+  {
+    "from": "CuidadosApp/migrations/0006_mobiledevice_local_posture_reminders.py",
+    "to": "web/CuidadosApp/migrations/0006_mobiledevice_local_posture_reminders.py"
+  },
+  {
+    "from": "CuidadosApp/migrations/0005_postureobservation_phone_patient_and_more.py",
+    "to": "web/CuidadosApp/migrations/0005_postureobservation_phone_patient_and_more.py"
+  },
+  {
+    "from": "CuidadosApp/migrations/0001_initial.py",
+    "to": "web/CuidadosApp/migrations/0001_initial.py"
+  },
+  {
+    "from": "CuidadosApp/api/detection.py",
+    "to": "web/CuidadosApp/api/detection.py"
+  },
+  {
+    "from": "CuidadosApp/api/__init__.py",
+    "to": "web/CuidadosApp/api/__init__.py"
+  },
+  {
+    "from": "CuidadosApp/api/urls.py",
+    "to": "web/CuidadosApp/api/urls.py"
+  },
+  {
+    "from": "CuidadosApp/api/devices.py",
+    "to": "web/CuidadosApp/api/devices.py"
+  },
+  {
+    "from": "CuidadosApp/api/base.py",
+    "to": "web/CuidadosApp/api/base.py"
+  },
+  {
+    "from": "CuidadosApp/api/views.py",
+    "to": "web/CuidadosApp/api/views.py"
+  },
+  {
+    "from": "CuidadosApp/management/commands/send_mobile_reminders.py",
+    "to": "web/CuidadosApp/management/commands/send_mobile_reminders.py"
+  },
+  {
+    "from": "CuidadosApp/management/commands/seed_mobile_demo.py",
+    "to": "web/CuidadosApp/management/commands/seed_mobile_demo.py"
+  },
+  {
+    "from": "CuidadosApp/static/CuidadosApp/care.css",
+    "to": "web/CuidadosApp/static/CuidadosApp/care.css"
+  },
+  {
+    "from": "CuidadosApp/static/CuidadosApp/care.js",
+    "to": "web/CuidadosApp/static/CuidadosApp/care.js"
+  },
+  {
+    "from": "CuidadosApp/static/CuidadosApp/guides/lateral-derecha.svg",
+    "to": "web/CuidadosApp/static/CuidadosApp/guides/lateral-derecha.svg"
+  },
+  {
+    "from": "CuidadosApp/static/CuidadosApp/guides/lateral-izquierda-v2.png",
+    "to": "web/CuidadosApp/static/CuidadosApp/guides/lateral-izquierda-v2.png"
+  },
+  {
+    "from": "CuidadosApp/static/CuidadosApp/guides/comodidad-v2.png",
+    "to": "web/CuidadosApp/static/CuidadosApp/guides/comodidad-v2.png"
+  },
+  {
+    "from": "CuidadosApp/static/CuidadosApp/guides/lateral-derecha-v2.png",
+    "to": "web/CuidadosApp/static/CuidadosApp/guides/lateral-derecha-v2.png"
+  },
+  {
+    "from": "CuidadosApp/static/CuidadosApp/guides/lateral-izquierda.svg",
+    "to": "web/CuidadosApp/static/CuidadosApp/guides/lateral-izquierda.svg"
+  },
+  {
+    "from": "CuidadosApp/static/CuidadosApp/guides/supina-v2.png",
+    "to": "web/CuidadosApp/static/CuidadosApp/guides/supina-v2.png"
+  },
+  {
+    "from": "CuidadosApp/static/CuidadosApp/guides/supina.svg",
+    "to": "web/CuidadosApp/static/CuidadosApp/guides/supina.svg"
+  },
+  {
+    "from": "CuidadosApp/static/CuidadosApp/guides/comodidad.svg",
+    "to": "web/CuidadosApp/static/CuidadosApp/guides/comodidad.svg"
+  },
+  {
+    "from": "theme/__init__.py",
+    "to": "web/theme/__init__.py"
+  },
+  {
+    "from": "theme/apps.py",
+    "to": "web/theme/apps.py"
+  },
+  {
+    "from": "theme/templates/base.html",
+    "to": "web/theme/templates/base.html"
+  },
+  {
+    "from": "theme/static_src/src/styles.css",
+    "to": "web/theme/static_src/src/styles.css"
+  },
+  {
+    "from": "theme/static/css/dist/styles.css",
+    "to": "web/theme/static/css/dist/styles.css"
+  },
+  {
+    "from": "templates/403.html",
+    "to": "web/templates/403.html"
+  },
+  {
+    "from": "templates/429.html",
+    "to": "web/templates/429.html"
+  },
+  {
+    "from": "templates/500.html",
+    "to": "web/templates/500.html"
+  },
+  {
+    "from": "templates/404.html",
+    "to": "web/templates/404.html"
+  },
+  {
+    "from": "templates/401.html",
+    "to": "web/templates/401.html"
+  },
+  {
+    "from": "templates/400.html",
+    "to": "web/templates/400.html"
+  },
+  {
+    "from": "templates/mfa/index.html",
+    "to": "web/templates/mfa/index.html"
+  },
+  {
+    "from": "templates/mfa/reauthenticate.html",
+    "to": "web/templates/mfa/reauthenticate.html"
+  },
+  {
+    "from": "templates/mfa/authenticate.html",
+    "to": "web/templates/mfa/authenticate.html"
+  },
+  {
+    "from": "templates/socialaccount/login_cancelled.html",
+    "to": "web/templates/socialaccount/login_cancelled.html"
+  },
+  {
+    "from": "templates/socialaccount/connections.html",
+    "to": "web/templates/socialaccount/connections.html"
+  },
+  {
+    "from": "templates/socialaccount/signup.html",
+    "to": "web/templates/socialaccount/signup.html"
+  },
+  {
+    "from": "templates/socialaccount/authentication_error.html",
+    "to": "web/templates/socialaccount/authentication_error.html"
+  },
+  {
+    "from": "templates/components/visual_mode.html",
+    "to": "web/templates/components/visual_mode.html"
+  },
+  {
+    "from": "templates/components/progress.html",
+    "to": "web/templates/components/progress.html"
+  },
+  {
+    "from": "templates/components/input_perfil.html",
+    "to": "web/templates/components/input_perfil.html"
+  },
+  {
+    "from": "templates/components/spinner.html",
+    "to": "web/templates/components/spinner.html"
+  },
+  {
+    "from": "templates/components/mensajes.html",
+    "to": "web/templates/components/mensajes.html"
+  },
+  {
+    "from": "templates/components/paginador.html",
+    "to": "web/templates/components/paginador.html"
+  },
+  {
+    "from": "templates/account/password_reset_from_key.html",
+    "to": "web/templates/account/password_reset_from_key.html"
+  },
+  {
+    "from": "templates/account/signup_closed.html",
+    "to": "web/templates/account/signup_closed.html"
+  },
+  {
+    "from": "templates/account/base_reauthenticate.html",
+    "to": "web/templates/account/base_reauthenticate.html"
+  },
+  {
+    "from": "templates/account/request_login_code.html",
+    "to": "web/templates/account/request_login_code.html"
+  },
+  {
+    "from": "templates/account/password_reset_done.html",
+    "to": "web/templates/account/password_reset_done.html"
+  },
+  {
+    "from": "templates/account/email.html",
+    "to": "web/templates/account/email.html"
+  },
+  {
+    "from": "templates/account/verified_email_required.html",
+    "to": "web/templates/account/verified_email_required.html"
+  },
+  {
+    "from": "templates/account/reauthenticate.html",
+    "to": "web/templates/account/reauthenticate.html"
+  },
+  {
+    "from": "templates/account/password_reset_from_key_done.html",
+    "to": "web/templates/account/password_reset_from_key_done.html"
+  },
+  {
+    "from": "templates/account/email_confirm.html",
+    "to": "web/templates/account/email_confirm.html"
+  },
+  {
+    "from": "templates/account/account_inactive.html",
+    "to": "web/templates/account/account_inactive.html"
+  },
+  {
+    "from": "templates/account/password_reset.html",
+    "to": "web/templates/account/password_reset.html"
+  },
+  {
+    "from": "templates/account/login.html",
+    "to": "web/templates/account/login.html"
+  },
+  {
+    "from": "templates/account/email_change.html",
+    "to": "web/templates/account/email_change.html"
+  },
+  {
+    "from": "templates/account/verification_sent.html",
+    "to": "web/templates/account/verification_sent.html"
+  },
+  {
+    "from": "templates/account/logout.html",
+    "to": "web/templates/account/logout.html"
+  },
+  {
+    "from": "templates/account/password_change.html",
+    "to": "web/templates/account/password_change.html"
+  },
+  {
+    "from": "templates/account/password_set.html",
+    "to": "web/templates/account/password_set.html"
+  },
+  {
+    "from": "templates/account/confirm_login_code.html",
+    "to": "web/templates/account/confirm_login_code.html"
+  },
+  {
+    "from": "templates/account/signup.html",
+    "to": "web/templates/account/signup.html"
+  },
+  {
+    "from": "templates/pages/index.html",
+    "to": "web/templates/pages/index.html"
+  },
+  {
+    "from": "templates/mfa/recovery_codes/index.html",
+    "to": "web/templates/mfa/recovery_codes/index.html"
+  },
+  {
+    "from": "templates/mfa/recovery_codes/download.txt",
+    "to": "web/templates/mfa/recovery_codes/download.txt"
+  },
+  {
+    "from": "templates/mfa/recovery_codes/generate.html",
+    "to": "web/templates/mfa/recovery_codes/generate.html"
+  },
+  {
+    "from": "templates/mfa/messages/totp_activated.txt",
+    "to": "web/templates/mfa/messages/totp_activated.txt"
+  },
+  {
+    "from": "templates/mfa/messages/recovery_codes_generated.txt",
+    "to": "web/templates/mfa/messages/recovery_codes_generated.txt"
+  },
+  {
+    "from": "templates/mfa/messages/totp_deactivated.txt",
+    "to": "web/templates/mfa/messages/totp_deactivated.txt"
+  },
+  {
+    "from": "templates/mfa/totp/activate_form.html",
+    "to": "web/templates/mfa/totp/activate_form.html"
+  },
+  {
+    "from": "templates/mfa/totp/deactivate_form.html",
+    "to": "web/templates/mfa/totp/deactivate_form.html"
+  },
+  {
+    "from": "templates/mfa/email/totp_deactivated_message.txt",
+    "to": "web/templates/mfa/email/totp_deactivated_message.txt"
+  },
+  {
+    "from": "templates/mfa/email/recovery_codes_generated_message.txt",
+    "to": "web/templates/mfa/email/recovery_codes_generated_message.txt"
+  },
+  {
+    "from": "templates/mfa/email/totp_activated_subject.txt",
+    "to": "web/templates/mfa/email/totp_activated_subject.txt"
+  },
+  {
+    "from": "templates/mfa/email/totp_deactivated_subject.txt",
+    "to": "web/templates/mfa/email/totp_deactivated_subject.txt"
+  },
+  {
+    "from": "templates/mfa/email/recovery_codes_generated_subject.txt",
+    "to": "web/templates/mfa/email/recovery_codes_generated_subject.txt"
+  },
+  {
+    "from": "templates/mfa/email/totp_activated_message.txt",
+    "to": "web/templates/mfa/email/totp_activated_message.txt"
+  },
+  {
+    "from": "templates/tailwind/layout/select.html",
+    "to": "web/templates/tailwind/layout/select.html"
+  },
+  {
+    "from": "templates/components/navbar/navbar_mobil.html",
+    "to": "web/templates/components/navbar/navbar_mobil.html"
+  },
+  {
+    "from": "templates/components/navbar/navbar_desktop.html",
+    "to": "web/templates/components/navbar/navbar_desktop.html"
+  },
+  {
+    "from": "templates/components/navbar/nav.html",
+    "to": "web/templates/components/navbar/nav.html"
+  },
+  {
+    "from": "templates/components/PlanesApp/tarjeta.html",
+    "to": "web/templates/components/PlanesApp/tarjeta.html"
+  },
+  {
+    "from": "templates/components/PlanesApp/catalogo_contenido.html",
+    "to": "web/templates/components/PlanesApp/catalogo_contenido.html"
+  },
+  {
+    "from": "templates/components/Layout/base.html",
+    "to": "web/templates/components/Layout/base.html"
+  },
+  {
+    "from": "templates/components/Layout/base_pages.html",
+    "to": "web/templates/components/Layout/base_pages.html"
+  },
+  {
+    "from": "templates/components/Layout/base_extendido.html",
+    "to": "web/templates/components/Layout/base_extendido.html"
+  },
+  {
+    "from": "templates/components/btn/button_size.html",
+    "to": "web/templates/components/btn/button_size.html"
+  },
+  {
+    "from": "templates/components/btn/ancor_btn.html",
+    "to": "web/templates/components/btn/ancor_btn.html"
+  },
+  {
+    "from": "templates/components/btn/button.html",
+    "to": "web/templates/components/btn/button.html"
+  },
+  {
+    "from": "templates/components/modal/modal.html",
+    "to": "web/templates/components/modal/modal.html"
+  },
+  {
+    "from": "templates/components/CuidadosApp/guide.html",
+    "to": "web/templates/components/CuidadosApp/guide.html"
+  },
+  {
+    "from": "templates/components/CuidadosApp/selection.html",
+    "to": "web/templates/components/CuidadosApp/selection.html"
+  },
+  {
+    "from": "templates/components/CuidadosApp/agenda.html",
+    "to": "web/templates/components/CuidadosApp/agenda.html"
+  },
+  {
+    "from": "templates/components/CuidadosApp/timer.html",
+    "to": "web/templates/components/CuidadosApp/timer.html"
+  },
+  {
+    "from": "templates/components/header/header.html",
+    "to": "web/templates/components/header/header.html"
+  },
+  {
+    "from": "templates/components/header/components/profile.html",
+    "to": "web/templates/components/header/components/profile.html"
+  },
+  {
+    "from": "templates/components/header/components/buscador.html",
+    "to": "web/templates/components/header/components/buscador.html"
+  },
+  {
+    "from": "templates/account/snippets/warn_no_email.html",
+    "to": "web/templates/account/snippets/warn_no_email.html"
+  },
+  {
+    "from": "templates/account/snippets/already_logged_in.html",
+    "to": "web/templates/account/snippets/already_logged_in.html"
+  },
+  {
+    "from": "templates/account/messages/email_deleted.txt",
+    "to": "web/templates/account/messages/email_deleted.txt"
+  },
+  {
+    "from": "templates/account/messages/password_set.txt",
+    "to": "web/templates/account/messages/password_set.txt"
+  },
+  {
+    "from": "templates/account/messages/password_changed.txt",
+    "to": "web/templates/account/messages/password_changed.txt"
+  },
+  {
+    "from": "templates/account/messages/primary_email_set.txt",
+    "to": "web/templates/account/messages/primary_email_set.txt"
+  },
+  {
+    "from": "templates/account/messages/email_confirmed.txt",
+    "to": "web/templates/account/messages/email_confirmed.txt"
+  },
+  {
+    "from": "templates/account/messages/logged_in.txt",
+    "to": "web/templates/account/messages/logged_in.txt"
+  },
+  {
+    "from": "templates/account/messages/unverified_primary_email.txt",
+    "to": "web/templates/account/messages/unverified_primary_email.txt"
+  },
+  {
+    "from": "templates/account/messages/cannot_delete_primary_email.txt",
+    "to": "web/templates/account/messages/cannot_delete_primary_email.txt"
+  },
+  {
+    "from": "templates/account/messages/email_confirmation_failed.txt",
+    "to": "web/templates/account/messages/email_confirmation_failed.txt"
+  },
+  {
+    "from": "templates/account/messages/email_confirmation_sent.txt",
+    "to": "web/templates/account/messages/email_confirmation_sent.txt"
+  },
+  {
+    "from": "templates/account/messages/logged_out.txt",
+    "to": "web/templates/account/messages/logged_out.txt"
+  },
+  {
+    "from": "templates/account/messages/login_code_sent.txt",
+    "to": "web/templates/account/messages/login_code_sent.txt"
+  },
+  {
+    "from": "templates/account/Layout/base_account.html",
+    "to": "web/templates/account/Layout/base_account.html"
+  },
+  {
+    "from": "templates/account/Layout/base_simple.html",
+    "to": "web/templates/account/Layout/base_simple.html"
+  },
+  {
+    "from": "templates/account/email/account_already_exists_message.txt",
+    "to": "web/templates/account/email/account_already_exists_message.txt"
+  },
+  {
+    "from": "templates/account/email/account_already_exists_subject.txt",
+    "to": "web/templates/account/email/account_already_exists_subject.txt"
+  },
+  {
+    "from": "templates/account/email/email_confirmation_signup_message.txt",
+    "to": "web/templates/account/email/email_confirmation_signup_message.txt"
+  },
+  {
+    "from": "templates/account/email/login_code_subject.txt",
+    "to": "web/templates/account/email/login_code_subject.txt"
+  },
+  {
+    "from": "templates/account/email/email_confirmation_signup_subject.txt",
+    "to": "web/templates/account/email/email_confirmation_signup_subject.txt"
+  },
+  {
+    "from": "templates/account/email/login_code_message.txt",
+    "to": "web/templates/account/email/login_code_message.txt"
+  },
+  {
+    "from": "templates/account/email/password_reset_key_subject.txt",
+    "to": "web/templates/account/email/password_reset_key_subject.txt"
+  },
+  {
+    "from": "templates/account/email/password_reset_key_message.txt",
+    "to": "web/templates/account/email/password_reset_key_message.txt"
+  },
+  {
+    "from": "templates/account/email/email_deleted_message.txt",
+    "to": "web/templates/account/email/email_deleted_message.txt"
+  },
+  {
+    "from": "templates/account/email/email_confirmation_message.txt",
+    "to": "web/templates/account/email/email_confirmation_message.txt"
+  },
+  {
+    "from": "templates/account/email/password_reset_subject.txt",
+    "to": "web/templates/account/email/password_reset_subject.txt"
+  },
+  {
+    "from": "templates/account/email/email_deleted_subject.txt",
+    "to": "web/templates/account/email/email_deleted_subject.txt"
+  },
+  {
+    "from": "templates/account/email/base_notification.txt",
+    "to": "web/templates/account/email/base_notification.txt"
+  },
+  {
+    "from": "templates/account/email/password_reset_message.txt",
+    "to": "web/templates/account/email/password_reset_message.txt"
+  },
+  {
+    "from": "templates/account/email/email_confirmation_subject.txt",
+    "to": "web/templates/account/email/email_confirmation_subject.txt"
+  },
+  {
+    "from": "templates/account/email/password_changed_message.txt",
+    "to": "web/templates/account/email/password_changed_message.txt"
+  },
+  {
+    "from": "templates/account/email/base_message.txt",
+    "to": "web/templates/account/email/base_message.txt"
+  },
+  {
+    "from": "templates/account/email/password_changed_subject.txt",
+    "to": "web/templates/account/email/password_changed_subject.txt"
+  },
+  {
+    "from": "templates/account/email/unknown_account_subject.txt",
+    "to": "web/templates/account/email/unknown_account_subject.txt"
+  },
+  {
+    "from": "templates/account/email/unknown_account_message.txt",
+    "to": "web/templates/account/email/unknown_account_message.txt"
+  },
+  {
+    "from": "templates/account/email/email_changed_subject.txt",
+    "to": "web/templates/account/email/email_changed_subject.txt"
+  },
+  {
+    "from": "templates/account/email/email_confirm_message.txt",
+    "to": "web/templates/account/email/email_confirm_message.txt"
+  },
+  {
+    "from": "templates/account/email/password_set_message.txt",
+    "to": "web/templates/account/email/password_set_message.txt"
+  },
+  {
+    "from": "templates/account/email/email_changed_message.txt",
+    "to": "web/templates/account/email/email_changed_message.txt"
+  },
+  {
+    "from": "templates/account/email/email_confirm_subject.txt",
+    "to": "web/templates/account/email/email_confirm_subject.txt"
+  },
+  {
+    "from": "templates/account/email/password_set_subject.txt",
+    "to": "web/templates/account/email/password_set_subject.txt"
+  },
+  {
+    "from": "templates/pages/UsuarioApp/registro_usuario.html",
+    "to": "web/templates/pages/UsuarioApp/registro_usuario.html"
+  },
+  {
+    "from": "templates/pages/UsuarioApp/restablecer_password.html",
+    "to": "web/templates/pages/UsuarioApp/restablecer_password.html"
+  },
+  {
+    "from": "templates/pages/UsuarioApp/usuarios_lista.html",
+    "to": "web/templates/pages/UsuarioApp/usuarios_lista.html"
+  },
+  {
+    "from": "templates/pages/PlanesApp/verificar.html",
+    "to": "web/templates/pages/PlanesApp/verificar.html"
+  },
+  {
+    "from": "templates/pages/PlanesApp/base.html",
+    "to": "web/templates/pages/PlanesApp/base.html"
+  },
+  {
+    "from": "templates/pages/PlanesApp/resultado.html",
+    "to": "web/templates/pages/PlanesApp/resultado.html"
+  },
+  {
+    "from": "templates/pages/PlanesApp/historial.html",
+    "to": "web/templates/pages/PlanesApp/historial.html"
+  },
+  {
+    "from": "templates/pages/PlanesApp/cancelacion.html",
+    "to": "web/templates/pages/PlanesApp/cancelacion.html"
+  },
+  {
+    "from": "templates/pages/PlanesApp/checkout.html",
+    "to": "web/templates/pages/PlanesApp/checkout.html"
+  },
+  {
+    "from": "templates/pages/PlanesApp/metodos.html",
+    "to": "web/templates/pages/PlanesApp/metodos.html"
+  },
+  {
+    "from": "templates/pages/PlanesApp/catalogo.html",
+    "to": "web/templates/pages/PlanesApp/catalogo.html"
+  },
+  {
+    "from": "templates/pages/PlanesApp/mi_suscripcion.html",
+    "to": "web/templates/pages/PlanesApp/mi_suscripcion.html"
+  },
+  {
+    "from": "templates/pages/PlanesApp/eliminar.html",
+    "to": "web/templates/pages/PlanesApp/eliminar.html"
+  },
+  {
+    "from": "templates/pages/CuidadosApp/form.html",
+    "to": "web/templates/pages/CuidadosApp/form.html"
+  },
+  {
+    "from": "templates/pages/CuidadosApp/base.html",
+    "to": "web/templates/pages/CuidadosApp/base.html"
+  },
+  {
+    "from": "templates/pages/CuidadosApp/agenda.html",
+    "to": "web/templates/pages/CuidadosApp/agenda.html"
+  },
+  {
+    "from": "templates/pages/CuidadosApp/history.html",
+    "to": "web/templates/pages/CuidadosApp/history.html"
+  },
+  {
+    "from": "templates/pages/CuidadosApp/patients.html",
+    "to": "web/templates/pages/CuidadosApp/patients.html"
+  },
+  {
+    "from": "templates/pages/CuidadosApp/guides.html",
+    "to": "web/templates/pages/CuidadosApp/guides.html"
+  },
+  {
+    "from": "templates/pages/CuidadosApp/panel.html",
+    "to": "web/templates/pages/CuidadosApp/panel.html"
+  },
+  {
+    "from": "templates/pages/CuidadosApp/patient.html",
+    "to": "web/templates/pages/CuidadosApp/patient.html"
+  },
+  {
+    "from": "templates/pages/UsuarioApp/perfil/perfil.html",
+    "to": "web/templates/pages/UsuarioApp/perfil/perfil.html"
+  },
+  {
+    "from": "static/css/styles.css",
+    "to": "web/static/css/styles.css"
+  },
+  {
+    "from": "static/css/tokens.css",
+    "to": "web/static/css/tokens.css"
+  },
+  {
+    "from": "static/css/spiner.css",
+    "to": "web/static/css/spiner.css"
+  },
+  {
+    "from": "static/css/mensajes.css",
+    "to": "web/static/css/mensajes.css"
+  },
+  {
+    "from": "static/js/script.js",
+    "to": "web/static/js/script.js"
+  },
+  {
+    "from": "static/js/grafico_home.js",
+    "to": "web/static/js/grafico_home.js"
+  },
+  {
+    "from": "static/js/interfaz.js",
+    "to": "web/static/js/interfaz.js"
+  },
+  {
+    "from": "static/js/mensajes.js",
+    "to": "web/static/js/mensajes.js"
+  },
+  {
+    "from": "static/js/modal.js",
+    "to": "web/static/js/modal.js"
+  },
+  {
+    "from": "static/img/profile.webp",
+    "to": "web/static/img/profile.webp"
+  },
+  {
+    "from": "static/img/logo.svg",
+    "to": "web/static/img/logo.svg"
+  },
+  {
+    "from": "utils/customer_img.py",
+    "to": "web/utils/customer_img.py"
+  },
+  {
+    "from": "requirements.txt",
+    "to": "web/requirements.txt"
+  },
+  {
+    "from": "requirements.in",
+    "to": "web/requirements.in"
+  },
+  {
+    "from": "requirements-push.txt",
+    "to": "web/requirements-push.txt"
+  }
+]

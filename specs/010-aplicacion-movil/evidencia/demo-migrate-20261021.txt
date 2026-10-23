@@ -1,0 +1,4 @@
+Operations to perform:
+  Apply all migrations: CuidadosApp, PlanesApp, UsuarioApp, account, admin, auth, contenttypes, mfa, sessions, socialaccount
+Running migrations:
+  Applying CuidadosApp.0005_postureobservation_phone_patient_and_more... OK

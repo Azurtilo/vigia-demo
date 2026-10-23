@@ -1,0 +1,86 @@
+{
+  "date": "2026-10-06",
+  "settings": "core.test_settings",
+  "database": ":memory:",
+  "viewportChecks": [
+    {
+      "mode": "light",
+      "scrollWidth": 345,
+      "width": 360
+    },
+    {
+      "mode": "light",
+      "scrollWidth": 375,
+      "width": 390
+    },
+    {
+      "mode": "light",
+      "scrollWidth": 753,
+      "width": 768
+    },
+    {
+      "mode": "light",
+      "scrollWidth": 1009,
+      "width": 1024
+    },
+    {
+      "mode": "light",
+      "scrollWidth": 1425,
+      "width": 1440
+    },
+    {
+      "mode": "dark",
+      "scrollWidth": 345,
+      "width": 360
+    },
+    {
+      "mode": "dark",
+      "scrollWidth": 375,
+      "width": 390
+    },
+    {
+      "mode": "dark",
+      "scrollWidth": 753,
+      "width": 768
+    },
+    {
+      "mode": "dark",
+      "scrollWidth": 1009,
+      "width": 1024
+    },
+    {
+      "mode": "dark",
+      "scrollWidth": 1425,
+      "width": 1440
+    }
+  ],
+  "flows": [
+    "postura lateral y 60 minutos; recarga mantiene estado",
+    "pausa permanece tras recarga",
+    "alta del tercer paciente Plus y rechazo del cuarto",
+    "horario duplicado muestra error; múltiples horarios válidos",
+    "omisión requiere motivo y aparece Omitido",
+    "preaviso con servidor a 9 minutos y vencido a -1 minuto",
+    "recarga y segunda pestaña no repiten aviso reclamado",
+    "otra cuenta solo muestra su paciente y ficha ajena devuelve 404",
+    "Inicio administrativo muestra agregados comerciales; cuidados propios vacíos",
+    "cancelación a término con paciente elegido; conserva período",
+    "cambio inmediato a Free archiva dos pacientes no elegidos y conserva fichas",
+    "cuatro guías SVG inspeccionadas; se corrigió superposición en supina",
+    "modo claro/oscuro y panel móvil 390px",
+    "fallback HTML sin scripts/noscript desplegado; postura y corrección guardan por formulario",
+    "teclado Tab del botón Registrar postura alcanza Cancelar",
+    "archivo/reactivación conserva historial y deja reloj pausado"
+  ],
+  "fallback": {
+    "method": "Preview efímero retira scripts y despliega contenido noscript; no cambia preferencias globales del navegador",
+    "scripts": 0
+  },
+  "manualPending": [
+    "zoom nativo 200%",
+    "preferencia nativa de movimiento reducido",
+    "offline y suspensión real del navegador",
+    "concurrencia en backend con bloqueo de filas",
+    "aceptación funcional/visual del propietario"
+  ]
+}

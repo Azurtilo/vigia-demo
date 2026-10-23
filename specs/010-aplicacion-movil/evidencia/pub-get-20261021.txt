@@ -1,0 +1,52 @@
+Downloading Darwin arm64 Dart SDK from Flutter engine deb287481e3ce9468f3434937ced4240a70539ca...
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0  215M    0  4735    0     0  16306      0  3:51:25 --:--:--  3:51:25 16271  0  215M    0  698k    0     0   534k      0  0:06:53  0:00:01  0:06:52  534k  7  215M    7 15.8M    0     0  7231k      0  0:00:30  0:00:02  0:00:28 7230k 17  215M   17 38.5M    0     0  11.8M      0  0:00:18  0:00:03  0:00:15 11.8M 27  215M   27 60.1M    0     0  14.1M      0  0:00:15  0:00:04  0:00:11 14.1M 38  215M   38 82.3M    0     0  15.6M      0  0:00:13  0:00:05  0:00:08 16.6M 48  215M   48  105M    0     0  16.8M      0  0:00:12  0:00:06  0:00:06 21.1M 59  215M   59  127M    0     0  17.5M      0  0:00:12  0:00:07  0:00:05 22.3M 69  215M   69  149M    0     0  17.9M      0  0:00:12  0:00:08  0:00:04 21.8M 79  215M   79  171M    0     0  18.5M      0  0:00:11  0:00:09  0:00:02 22.2M 88  215M   88  190M    0     0  18.5M      0  0:00:11  0:00:10  0:00:01 21.6M 96  215M   96  208M    0     0  18.4M      0  0:00:11  0:00:11 --:--:-- 20.5M100  215M  100  215M    0     0  18.7M      0  0:00:11  0:00:11 --:--:-- 20.7M
+Building flutter tool...
+Resolving dependencies...
+Downloading packages...
+Got dependencies.
+[1/10] Material Fonts                                            1,548ms
+[2/10] Gradle Wrapper                                              282ms
+[3/10] Flutter SDK
+  ├─ [1/5] sky_engine                                            1,312ms
+  ├─ [2/5] flutter_gpu                                             500ms
+  ├─ [3/5] flutter_patched_sdk                                   2,050ms
+  ├─ [4/5] flutter_patched_sdk_product                           2,415ms
+  └─ [5/5] darwin-arm64                                          2,973ms
+[4/10] iOS USB Artifact: libimobiledevice                        1,027ms
+[5/10] iOS USB Artifact: libusbmuxd                                433ms
+[6/10] iOS USB Artifact: libplist                                  671ms
+[7/10] iOS USB Artifact: openssl                                 1,595ms
+[8/10] iOS USB Artifact: libimobiledeviceglue                      508ms
+[9/10] iOS USB Artifact: ios-deploy                                748ms
+[10/10] darwin-arm64/font-subset                                 1,489ms
+Resolving dependencies...
+Downloading packages...
+  _flutterfire_internals 1.3.77 (1.3.78 available)
++ camera 0.12.1
++ camera_android_camerax 0.7.6
++ camera_avfoundation 0.10.3+1 (0.11.1 available)
++ camera_platform_interface 2.15.0
++ camera_web 0.3.5+6
+  code_assets 1.2.1 (2.1.0 available)
++ cross_file 0.3.5+5 (0.4.0 available)
+  cupertino_icons 1.0.9 (2.0.0 available)
+  firebase_core 4.15.0 (5.0.0 available)
+  firebase_core_web 3.12.0 (4.0.0 available)
+  firebase_messaging 16.7.0 (17.0.0 available)
+  firebase_messaging_platform_interface 4.10.0 (4.11.0 available)
+  firebase_messaging_web 4.2.5 (4.3.0 available)
++ flutter_plugin_android_lifecycle 2.0.35
+  hooks 2.0.2 (2.2.0 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  meta 1.18.3 (1.19.0 available)
+  objective_c 9.5.0 (9.6.2 available)
+  record_use 0.6.0 (1.1.1 available)
++ stream_transform 2.1.2
+  test_api 0.7.12 (0.7.15 available)
+  vector_math 2.4.0 (2.4.3 available)
++ vigia_pose 0.1.0 from path plugins/vigia_pose
+Changed 9 dependencies!
+17 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.

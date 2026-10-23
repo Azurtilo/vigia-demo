@@ -1,0 +1,319 @@
+from django.http import Http404, JsonResponse
+from django.shortcuts import get_object_or_404
+from django.templatetags.static import static
+from django.utils import timezone
+
+from CuidadosApp import capacity, forms, scheduling, services
+from CuidadosApp.models import (
+    CareEvent,
+    CareGuide,
+    CareTask,
+    Medication,
+    Patient,
+    PostureTimer,
+)
+from PlanesApp.entitlements import capabilities
+
+from .base import MobileView
+
+
+def patient_data(p):
+    return {
+        key: getattr(p, key)
+        for key in (
+            "id",
+            "name",
+            "birth_date",
+            "notes",
+            "contact_name",
+            "contact_phone",
+            "contact_relation",
+            "active",
+            "version",
+        )
+    }
+
+
+def event_data(e, user):
+    return {
+        "id": e.pk,
+        "kind": e.kind,
+        "status": e.status,
+        "occurred_at": e.occurred_at,
+        "author": e.author.get_full_name() or e.author.username,
+        "note": e.note,
+        "label": e.snapshot.get("label", ""),
+        "dose": e.snapshot.get("dose", ""),
+        "corrected_event_id": e.corrected_event_id,
+        "token": services.action_token(user, e.patient, "correction", e.pk),
+    }
+
+
+def daily_data(obj):
+    data = {
+        key: getattr(obj, key)
+        for key in (
+            "id",
+            "name",
+            "notes",
+            "start_date",
+            "end_date",
+            "active",
+            "version",
+        )
+    }
+    if isinstance(obj, Medication):
+        data.update(
+            dose=obj.dose,
+            hours=", ".join(t.time.strftime("%H:%M") for t in obj.times.all()),
+        )
+    else:
+        data["time"] = obj.time.strftime("%H:%M") if obj.time else ""
+    return data
+
+
+class MeView(MobileView):
+    def get(self, request):
+        return JsonResponse(
+            {
+                "username": request.user.username,
+                "name": request.user.get_full_name() or request.user.username,
+                "capabilities": capabilities(request.user),
+                "server_time": timezone.now(),
+                "timezone": "America/Santiago",
+            }
+        )
+
+
+class CapabilitiesView(MobileView):
+    def get(self, request):
+        return JsonResponse(capabilities(request.user))
+
+
+class PatientsView(MobileView):
+    def get(self, request):
+        state = capacity.capacity_state(request.user)
+        return JsonResponse(
+            {
+                "patients": [
+                    patient_data(p) for p in Patient.objects.filter(owner=request.user)
+                ],
+                "capacity": {
+                    k: state[k] for k in ("limit", "active_ids", "pending", "count")
+                },
+                "fingerprint": capacity.fingerprint(request.user),
+                "subscription_version": capabilities(request.user)["version"],
+            }
+        )
+
+    def post(self, request):
+        form = self.validated(forms.PatientForm(self.data))
+        return JsonResponse(
+            patient_data(services.save_patient(request.user, form.cleaned_data)),
+            status=201,
+        )
+
+
+class PatientView(MobileView):
+    def get(self, request, pk):
+        p = services.own_patient(request.user, pk)
+        timer = PostureTimer.objects.filter(patient=p).first()
+        generation = timer.generation if timer else 0
+        data = patient_data(p)
+        data["tokens"] = {
+            kind: services.action_token(
+                request.user,
+                p,
+                kind,
+                version=generation if kind in ("posture", "timer") else p.version,
+            )
+            for kind in ("archive", "reactivate", "posture", "timer")
+        }
+        data["timer"] = (
+            {
+                "interval": timer.interval,
+                "paused": timer.paused,
+                "next_due_at": timer.next_due_at,
+                "generation": timer.generation,
+            }
+            if timer
+            else None
+        )
+        data["server_time"] = timezone.now()
+        return JsonResponse(data)
+
+    def post(self, request, pk):
+        p = services.own_patient(request.user, pk)
+        form = self.validated(forms.PatientForm(self.data, instance=p))
+        return JsonResponse(
+            patient_data(
+                services.save_patient(
+                    request.user, form.cleaned_data, pk, form.cleaned_data["version"]
+                )
+            )
+        )
+
+
+class ActiveView(MobileView):
+    def post(self, request, pk, action):
+        if action not in ("archive", "reactivate"):
+            raise Http404
+        p = services.set_patient_active(
+            request.user, pk, self.data["token"], action == "reactivate"
+        )
+        p.refresh_from_db()
+        return JsonResponse(patient_data(p))
+
+
+class DailyView(MobileView):
+    def get(self, request, pk, kind):
+        if kind not in ("tasks", "medications"):
+            raise Http404
+        p = services.own_patient(request.user, pk)
+        model = CareTask if kind == "tasks" else Medication
+        return JsonResponse(
+            {"items": [daily_data(obj) for obj in model.objects.filter(patient=p)]}
+        )
+
+    def post(self, request, pk, kind, object_pk=None):
+        if kind not in ("tasks", "medications"):
+            raise Http404
+        p = services.own_patient(request.user, pk)
+        task = kind == "tasks"
+        model = CareTask if task else Medication
+        obj = get_object_or_404(model, pk=object_pk, patient=p) if object_pk else None
+        form = self.validated(
+            (forms.TaskForm if task else forms.MedicationForm)(self.data, instance=obj)
+        )
+        return JsonResponse(
+            daily_data(services.save_daily(request.user, pk, form, object_pk, task)),
+            status=200 if obj else 201,
+        )
+
+
+class AgendaView(MobileView):
+    def get(self, request):
+        pid = request.GET.get("patient")
+        if pid:
+            pid = services.own_patient(request.user, pid).pk
+        items = []
+        for i in scheduling.agenda(request.user, patient_id=pid):
+            items.append(
+                {
+                    "key": i["key"],
+                    "kind": i["kind"],
+                    "patient_id": i["patient"].pk,
+                    "patient": i["patient"].name,
+                    "label": i["label"],
+                    "dose": i["dose"],
+                    "due": i["due"],
+                    "token": i["token"],
+                    "overdue": i["overdue"],
+                    "status": i["event"].status if i["event"] else "pending",
+                }
+            )
+        return JsonResponse({"items": items, "server_time": timezone.now()})
+
+
+class EventView(MobileView):
+    def post(self, request, pk):
+        data = self.validated(forms.EventForm(self.data)).cleaned_data
+        event = services.record_daily(
+            request.user, pk, data["token"], data["status"], data["note"]
+        )
+        return JsonResponse(event_data(event, request.user))
+
+
+class PostureView(MobileView):
+    def post(self, request, pk):
+        d = self.validated(forms.PostureForm(self.data)).cleaned_data
+        e = services.record_posture(
+            request.user, pk, d["token"], d["guide"], d["interval"], d["note"]
+        )
+        return JsonResponse(event_data(e, request.user))
+
+
+class TimerView(MobileView):
+    def post(self, request, pk):
+        d = self.validated(forms.TimerForm(self.data)).cleaned_data
+        services.configure_timer(
+            request.user, pk, d["token"], d["action"], d["interval"]
+        )
+        return JsonResponse({"saved": True})
+
+
+class HistoryView(MobileView):
+    def get(self, request, pk):
+        p = services.own_patient(request.user, pk)
+        page = max(1, int(request.GET.get("page", 1)))
+        rows = list(
+            CareEvent.objects.filter(patient=p).select_related("author")[
+                (page - 1) * 30 : page * 30 + 1
+            ]
+        )
+        return JsonResponse(
+            {
+                "items": [event_data(e, request.user) for e in rows[:30]],
+                "next_page": page + 1 if len(rows) > 30 else None,
+            }
+        )
+
+
+class CorrectionView(MobileView):
+    def post(self, request, pk, event_pk):
+        d = self.validated(forms.CorrectionForm(self.data)).cleaned_data
+        e = services.correct_event(request.user, pk, event_pk, d["token"], d["note"])
+        return JsonResponse(event_data(e, request.user))
+
+
+class GuidesView(MobileView):
+    def get(self, request):
+        return JsonResponse(
+            {
+                "items": [
+                    {
+                        "id": g.pk,
+                        "code": g.code,
+                        "title": g.title,
+                        "category": g.category,
+                        "instructions": g.instructions,
+                        "precautions": g.precautions,
+                        "image": static(g.illustration["image"]),
+                        "image_alt": g.illustration["alt"],
+                        "source_title": g.source_title,
+                        "source_url": g.source_url,
+                    }
+                    for g in CareGuide.objects.filter(active=True)
+                ]
+            }
+        )
+
+
+class RemindersView(MobileView):
+    def get(self, request):
+        return JsonResponse({"items": scheduling.reminders(request.user)})
+
+    def post(self, request):
+        return JsonResponse(
+            {"claimed": scheduling.claim_reminder(request.user, self.data["token"])}
+        )
+
+
+class CapacityView(MobileView):
+    def post(self, request):
+        capacity.choose_capacity(
+            request.user,
+            self.data["patients"],
+            self.data["fingerprint"],
+            self.data["version"],
+        )
+        return JsonResponse({"saved": True})
+
+
+class TimerScheduleView(MobileView):
+    """Only eligible owned timers; no names/clinical data in local notifications."""
+    def get(self, request):
+        ids = capacity.capacity_state(request.user)["active_ids"]
+        rows = PostureTimer.objects.filter(patient_id__in=ids, paused=False, next_due_at__isnull=False)
+        return JsonResponse({"items": [{"id": t.patient_id, "generation": t.generation,
+            "due": t.next_due_at} for t in rows], "server_time": timezone.now()})

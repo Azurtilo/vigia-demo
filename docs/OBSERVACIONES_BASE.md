@@ -87,3 +87,20 @@ El dashboard agregado es una ampliación funcional documentada por separado, no 
 El antecedente DOCUMENTAR anterior se conserva; el propietario autorizó después la implementación completa. Se corrigieron seis enlaces sin SVG, Inicio visible a clientes y glifos del selector; Home reemplaza datos meteorológicos por agregados reales del prototipo. Navegador expuso la necesidad de scroll interno para últimos enlaces en ventanas bajas; ajuste acotado más details/noscript móvil para RF-008-06. Reglas de cuentas/planes anteriores preservadas.
 
 127 tests OK, check/esquema/Ruff/JS/build/77 HTML correctos; cinco anchos/dos modos, permisos, teclado y fallback/vacío con 18 JPEG válidos. [Resultados y límites](../specs/008-dashboard-navegacion/validation.md). No usar inspección estática del modo reducido ni cambio de viewport como evidencia de zoom nativo: ambos pendientes manuales. Preview en memoria y temporales retirados, sin datos reales/migración/commit/push/despliegue.
+
+## Inspección para 009 — 2026-10-06, DOCUMENTAR
+
+CuidadosApp ausente y siguiente libre 009 comprobados; implementación existente 007/008 y archivos del propietario preservados. Código real ofrece cuatro planes sin cuota de pacientes; Home del cliente redirige a Mi suscripción. Helper general admite superusuarios y no sirve como regla de pertenencia clínica: 009 debe filtrar por owner incluso para root, sin cambiar ese helper en las acciones internas existentes. Servicios comerciales ya bloquean User/Subscription en transacción; se propone compartir ese orden con altas/reactivaciones/selección de pacientes.
+
+Pedido humano cambia contexto a cuidadores, tres planes y pacientes propios. Documento adjunto mantiene portal limitado a suscripción/dos precios ficticios/cambio al período siguiente: no se trasladan esos puntos sobre las instrucciones actuales y 007. Confirmadas tres respuestas sobre precios, canal web abierta y selección en reducción; precisiones de expiración/catálogo/horarios diarias claramente propuestas en [009](../specs/009-cuidados-cuidadores/spec.md).
+
+Solo Markdown; sin app/modelos/migraciones/assets nuevos, suites/build ni lectura de .env/DB/media personal. Evidencia funcional anterior no cubre pacientes, temporizadores ni alertas; validación nueva requerirá servidor aislado y navegador después de instrucción posterior explícita.
+
+
+## Cierre de implementación 009 — 2026-10-06
+
+Autorización completa posterior recibida; CuidadosApp y adaptación de PlanesApp implementadas. Se preservan archivos/trabajo anterior, auth/usuarios/tema, helper interno y snapshots comerciales. Propiedad clínica exige titular incluso root; modelos clínicos fuera de admin y cuenta con fichas protegida ante eliminación genérica. Tres planes activos y Hogar histórico, cupo transaccional y selección explícita al reducir.
+
+158 pruebas OK, 89 HTML, JS/Ruff/check/esquema/build correctos; migraciones reversible/reaplicables ensayadas con catálogo ficticio personalizado en memoria. La revisión detectó y corrigió reabrir tomas al editar dosis, avisos retroactivos al cambiar/reactivar horarios y una fixture de medianoche UTC; casos de regresión incorporados. Cuatro SIM117 anteriores de PlanesApp/tests.py comprobados en HEAD, sin limpieza fuera del alcance. Carrera SQLite admite una sola alta en último cupo y devuelve error recuperable al otro escritor.
+
+Navegador verifica guías, cinco anchos/modos, flujos/pagos simulados/selección/archivo, dos cuentas/pestañas y fallback de formularios sin scripts. [Evidencia](../specs/009-cuidados-cuidadores/validation.md). Zoom/movimiento reducido/offline/suspensión nativos, backend de bloqueo de filas y aceptación pendientes; DB real/OAuth/deploy conservan sus requisitos operativos. Ninguna certificación clínica/producción derivada de la suite.

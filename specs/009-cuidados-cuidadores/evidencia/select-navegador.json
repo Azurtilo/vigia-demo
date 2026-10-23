@@ -1,0 +1,116 @@
+{
+  "date": "2026-10-06",
+  "before": [
+    {
+      "arrowBelow": true,
+      "arrowHeight": 240,
+      "arrowWidth": 240,
+      "id": "id_guide",
+      "selectHeight": 45
+    },
+    {
+      "arrowBelow": true,
+      "arrowHeight": 240,
+      "arrowWidth": 240,
+      "id": "id_interval",
+      "selectHeight": 45
+    }
+  ],
+  "after": [
+    {
+      "controls": [
+        {
+          "arrowHeight": 20,
+          "arrowInside": true,
+          "arrowWidth": 20,
+          "color": "rgb(176, 190, 207)",
+          "height": 47.59375,
+          "id": "id_guide"
+        },
+        {
+          "arrowHeight": 20,
+          "arrowInside": true,
+          "arrowWidth": 20,
+          "color": "rgb(176, 190, 207)",
+          "height": 47.59375,
+          "id": "id_interval"
+        }
+      ],
+      "mode": "dark",
+      "scrollWidth": 1440,
+      "width": 1440
+    },
+    {
+      "controls": [
+        {
+          "arrowHeight": 20,
+          "arrowInside": true,
+          "arrowWidth": 20,
+          "color": "rgb(176, 190, 207)",
+          "height": 47.59375,
+          "id": "id_guide"
+        },
+        {
+          "arrowHeight": 20,
+          "arrowInside": true,
+          "arrowWidth": 20,
+          "color": "rgb(176, 190, 207)",
+          "height": 47.59375,
+          "id": "id_interval"
+        }
+      ],
+      "mode": "dark",
+      "scrollWidth": 390,
+      "width": 390
+    },
+    {
+      "controls": [
+        {
+          "arrowHeight": 20,
+          "arrowInside": true,
+          "arrowWidth": 20,
+          "color": "rgb(80, 97, 119)",
+          "height": 47.59375,
+          "id": "id_guide"
+        },
+        {
+          "arrowHeight": 20,
+          "arrowInside": true,
+          "arrowWidth": 20,
+          "color": "rgb(80, 97, 119)",
+          "height": 47.59375,
+          "id": "id_interval"
+        }
+      ],
+      "mode": "light",
+      "scrollWidth": 1440,
+      "width": 1440
+    },
+    {
+      "controls": [
+        {
+          "arrowHeight": 20,
+          "arrowInside": true,
+          "arrowWidth": 20,
+          "color": "rgb(80, 97, 119)",
+          "height": 47.59375,
+          "id": "id_guide"
+        },
+        {
+          "arrowHeight": 20,
+          "arrowInside": true,
+          "arrowWidth": 20,
+          "color": "rgb(80, 97, 119)",
+          "height": 47.59375,
+          "id": "id_interval"
+        }
+      ],
+      "mode": "light",
+      "scrollWidth": 390,
+      "width": 390
+    }
+  ],
+  "keyboard": "ArrowDown selected Decúbito supino",
+  "required": "Blank guide blocked with native validation message",
+  "submission": "Lateral izquierdo + 90 minutes saved, patient timer confirmed"
+}
