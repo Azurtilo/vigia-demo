@@ -1,14 +1,20 @@
 import json
+import sys
+import types
 import uuid
 from datetime import timedelta
+from io import StringIO
+from unittest.mock import patch
 
 from django.contrib.auth.models import User
-from django.test import Client, TestCase
+from django.core.management import call_command
+from django.test import Client, TestCase, override_settings
 from django.core.cache import cache
 from django.utils import timezone
 
 from PlanesApp.models import Plan, Subscription
 
+from .management.commands.send_mobile_reminders import RISK_MESSAGES
 from .models import CareEvent, MobileDevice, Patient, PostureObservation, PostureTimer
 
 
@@ -201,6 +207,120 @@ class MobileTests(TestCase):
         self.premium()
         self.assertEqual(self.post(f"nodes/{node['id']}/revoke", {}).status_code, 200)
         self.assertEqual(send(data).status_code, 401)
+
+    def edge_node(self):
+        self.premium()
+        node = self.post(f"patients/{self.patient.pk}/nodes", {"name": "Cámara demo"}).json()
+
+        def send(**changes):
+            data = {
+                "event_id": str(uuid.uuid4()),
+                "observed_at": timezone.now().isoformat(),
+                "posture": "indeterminada",
+                "confidence": 0,
+                "model_version": "test",
+                "rule_version": "fall-v1",
+                "risk": "fall",
+                **changes,
+            }
+            return self.client.post(
+                "/api/v1/edge/observations",
+                data=json.dumps(data),
+                content_type="application/json",
+                HTTP_AUTHORIZATION="Bearer " + node["credential"],
+            )
+
+        return send
+
+    def test_edge_fall_is_stored_in_history_with_reception_time(self):
+        send = self.edge_node()
+        with self.assertLogs("vigia.edge", "WARNING") as logs:
+            self.assertEqual(send().status_code, 201)
+        self.assertIn("Riesgo fall recibido", logs.output[0])
+        self.assertEqual(send(posture="supina", confidence=0.7).status_code, 201)
+        self.assertEqual(send(risk="immobility").status_code, 400)
+        self.assertEqual(send(risk="caida").status_code, 400)
+        self.assertEqual(send(image="forbidden").status_code, 400)
+        item = self.get(f"patients/{self.patient.pk}/observations").json()["items"][-1]
+        self.assertEqual((item["risk"], item["posture"]), ("fall", "indeterminada"))
+        self.assertIsNotNone(item["received_at"])
+        self.assertEqual(PostureObservation.objects.filter(risk="fall").count(), 2)
+        self.assertFalse(CareEvent.objects.exists())
+
+    def push_runs(self, runs, failures=0):
+        """Runs the push command with a fake Firebase; the first `failures` sends fail."""
+        self.post("devices", {"installation_id": str(uuid.uuid4()),
+                              "token": "example-device-token-not-real", "platform": "android", "enabled": True})
+        sent, state = [], {"failures": failures}
+
+        class FirebaseError(Exception):
+            pass
+
+        def deliver(message):
+            if state["failures"]:
+                state["failures"] -= 1
+                raise FirebaseError("no disponible")
+            sent.append(message)
+
+        messaging = types.SimpleNamespace(
+            Message=lambda **kw: kw, Notification=lambda **kw: kw,
+            AndroidConfig=lambda **kw: kw, send=deliver,
+        )
+        firebase = types.SimpleNamespace(_apps=[object()], messaging=messaging)
+        exceptions = types.SimpleNamespace(FirebaseError=FirebaseError)
+        modules = {"firebase_admin": firebase, "firebase_admin.messaging": messaging,
+                   "firebase_admin.exceptions": exceptions}
+        errors = StringIO()
+        with patch.dict(sys.modules, modules):
+            for _ in range(runs):
+                call_command("send_mobile_reminders", stdout=StringIO(), stderr=errors)
+        risks = [m for m in sent if m["notification"]["body"] in RISK_MESSAGES.values()]
+        return risks, errors.getvalue()
+
+    @override_settings(VIGIA_PUSH_ENABLED=True)
+    def test_fall_push_uses_existing_channel_once_and_first(self):
+        send = self.edge_node()
+        self.assertEqual(send(risk="immobility", posture="supina", confidence=0.8).status_code, 201)
+        self.assertEqual(send().status_code, 201)
+        risks, _ = self.push_runs(2)
+        # Two calls, one push per risk: receipts prevent duplicates; falls go first.
+        self.assertEqual(len(risks), 2)
+        self.assertEqual(risks[0]["notification"]["body"], RISK_MESSAGES["fall"])
+        self.assertEqual(risks[0]["android"], {"priority": "high"})
+        self.assertIsNone(risks[1]["android"])
+
+    @override_settings(VIGIA_PUSH_ENABLED=True)
+    def test_late_or_failed_risk_push_is_retried_until_delivered_once(self):
+        # QA-2026-10-22-02: no fixed 2-minute window; an FCM failure is retried.
+        send = self.edge_node()
+        late = timezone.now() - timedelta(minutes=30)
+        self.assertEqual(send(observed_at=late.isoformat()).status_code, 201)
+        self.assertEqual(
+            send(risk="immobility", posture="supina", confidence=0.8).status_code, 201
+        )
+        PostureObservation.objects.update(received_at=timezone.now() - timedelta(minutes=10))
+        risks, errors = self.push_runs(3, failures=2)
+        self.assertIn("Entrega no confirmada", errors)
+        bodies = [m["notification"]["body"] for m in risks]
+        self.assertEqual(bodies, [RISK_MESSAGES["fall"], RISK_MESSAGES["immobility"]])
+
+    def test_late_risk_is_accepted_but_ordinary_observations_expire(self):
+        send = self.edge_node()
+        ago = lambda minutes: (timezone.now() - timedelta(minutes=minutes)).isoformat()
+        self.assertEqual(send(observed_at=ago(50)).status_code, 201)
+        self.assertEqual(send(observed_at=ago(61)).status_code, 400)
+        self.assertEqual(
+            send(observed_at=ago(5), risk="", posture="supina", confidence=0.7).status_code,
+            400,
+        )
+
+    @override_settings(VIGIA_PUSH_ENABLED=True)
+    def test_risk_older_than_push_window_is_not_announced(self):
+        send = self.edge_node()
+        self.assertEqual(send().status_code, 201)
+        PostureObservation.objects.update(received_at=timezone.now() - timedelta(hours=2))
+        risks, _ = self.push_runs(1)
+        self.assertEqual(risks, [])
 
     def test_bad_json_types_and_routes(self):
         self.assertEqual(self.post("patients", []).status_code, 400)

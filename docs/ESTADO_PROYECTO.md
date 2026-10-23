@@ -2,7 +2,16 @@
 
 Fecha: 2026-10-22.
 
-## Estado vigente — 011 reloj vacío y avisos locales, 2026-10-22
+## Estado vigente — 012 detección de caídas (RT-03), 2026-10-22
+
+- **Pedido.** Crear e implementar en la misma sesión la [spec 012](../specs/012-deteccion-caidas/spec.md): regla de caída en Edge, riesgo `fall` en el backend con aviso push, métricas KPI, `edge/bench.py`, pruebas sintéticas y protocolo de 20 caídas.
+- **Hecho.** `edge/fall.py` (velocidad de descenso de la cadera, descenso, ángulo del tronco, relación de aspecto y confirmación en el suelo; umbrales por `--fall-*` o JSON), `edge/metrics.py`, `edge/bench.py`, integración en `edge/run.py` con logging y reintento. Backend: `risk="fall"` (migración aditiva 0007 solo de `choices`), log de recepción, `received_at` en el historial y aviso «Posible caída» con prioridad alta en `send_mobile_reminders`. App: texto de caída en el historial. Protocolo en [edge/README.md](../edge/README.md#protocolo-de-prueba-20-caídas-simuladas).
+- **Evidencia (Windows).** Django **178 OK**, check y makemigrations --check sin cambios. Edge **16 OK** (sintéticos) y `edge.smoke` OK con el nuevo `.venv-edge-win`. Bench ejecutado solo con video sintético sin personas. Flutter analyze sin problemas, **19 OK**. Detalle en [validation 012](../specs/012-deteccion-caidas/validation.md).
+- **Correcciones QA (2026-10-22, posterior).** [QA_2026-10-22](QA_2026-10-22.md) QA-01/02/03 corregidos: envío del nodo en hilo aparte con cola, backoff y entrega al reconectar; riesgos aceptados hasta 1 h; avisos push por `received_at` sin ventana de 2 min y con reintento; `edge/run.py` en `Uplink`/`Monitor` con `edge/test_run.py`. Django **181 OK**, Edge **22 OK**, Flutter **19 OK**. Rama `feature/deteccion-caidas` (D-012-02).
+- **No hecho.** Sin ejecución en vivo de `edge.run` ni protocolo de 20 caídas: sensibilidad, falsos positivos y latencias **no medidos**. Sin Firebase real, DB real, migración real, deploy ni commit.
+- **Siguiente paso seguro.** Protocolo de 20 caídas con video autorizado y decisión P-012-01 (frecuencia de avisos). Siguen vigentes los pendientes de 011 (APK en Android real).
+
+## Antecedente — 011 reloj vacío y avisos locales, 2026-10-22
 
 - **Pedido.** Priorizar T-011-01/02 (reloj sin eventos) y T-011-03/04 (avisos locales Android) con regresiones, APK debug nuevo y commits por tarea. T-011-06 (estilo web) y T-011-10 (iOS) quedan para después.
 - **Hecho.** El estado vacío del reloj seguía fallando en web/API: se ofrecían pausar/reanudar/cambiar intervalo sin reloj y se respondía 404. Se reprodujo con tests y se corrigió en servicio, formulario, panel web y `ClockPanel` (commit `08e33f4`). Los avisos locales ya cumplían cancelación y reemplazo; se añadieron regresiones al pausar, registrar postura, archivar y cerrar sesión (commit `51d9728`). Detalle y mutaciones en [validation 011](../specs/011-ecosistema-instalable/validation.md).
