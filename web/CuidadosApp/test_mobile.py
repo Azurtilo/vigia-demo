@@ -325,6 +325,25 @@ class MobileTests(TestCase):
             self.assertEqual(r.status_code, 400, r.content)
         self.assertFalse(PostureTimer.objects.filter(patient=self.patient).exists())
 
+    def test_schedule_follows_posture_and_archive(self):
+        path = f"patients/{self.patient.pk}"
+        token = self.get(path).json()["tokens"]["timer"]
+        self.post(path + "/timer", {"token": token, "action": "start", "interval": 120})
+        first = self.get("timer-schedule").json()["items"][0]
+        guide = self.get("guides").json()["items"]
+        guide = next(g for g in guide if g["category"] == "posture")
+        token = self.get(path).json()["tokens"]["posture"]
+        r = self.post(path + "/posture", {"token": token, "guide": guide["id"],
+            "interval": 60, "note": ""})
+        self.assertEqual(r.status_code, 200, r.content)
+        second = self.get("timer-schedule").json()["items"][0]
+        self.assertGreater(second["generation"], first["generation"])
+        self.assertNotEqual(second["due"], first["due"])
+        token = self.get(path).json()["tokens"]["archive"]
+        r = self.post(path + "/archive/active", {"token": token})
+        self.assertEqual(r.status_code, 200, r.content)
+        self.assertEqual(self.get("timer-schedule").json()["items"], [])
+
     def test_local_reminder_preference_cannot_change_other_installation(self):
         device = MobileDevice.objects.create(user=self.other, installation_id=uuid.uuid4(),
             token='x'*40, platform='android', session_key='foreign')
