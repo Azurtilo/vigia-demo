@@ -2,7 +2,15 @@
 
 Fecha: 2026-10-22.
 
-## Estado vigente — reconciliación 011 en Windows, 2026-10-22
+## Estado vigente — 011 reloj vacío y avisos locales, 2026-10-22
+
+- **Pedido.** Priorizar T-011-01/02 (reloj sin eventos) y T-011-03/04 (avisos locales Android) con regresiones, APK debug nuevo y commits por tarea. T-011-06 (estilo web) y T-011-10 (iOS) quedan para después.
+- **Hecho.** El estado vacío del reloj seguía fallando en web/API: se ofrecían pausar/reanudar/cambiar intervalo sin reloj y se respondía 404. Se reprodujo con tests y se corrigió en servicio, formulario, panel web y `ClockPanel` (commit `08e33f4`). Los avisos locales ya cumplían cancelación y reemplazo; se añadieron regresiones al pausar, registrar postura, archivar y cerrar sesión (commit `51d9728`). Detalle y mutaciones en [validation 011](../specs/011-ecosistema-instalable/validation.md).
+- **Evidencia (Windows).** Django **176 OK**, check y makemigrations --check sin cambios. Flutter analyze sin problemas, **19 tests OK**. APK debug: ver validación.
+- **No hecho.** Prueba en un Android físico (notificación con pantalla bloqueada, permisos, reinicio). Sin DB real, migraciones reales, deploy ni push.
+- **Siguiente paso seguro.** T-011-09/11: instalar el APK en un Android real con servidor LAN y repetir los flujos del reloj y los avisos.
+
+## Antecedente — reconciliación 011 en Windows, 2026-10-22
 
 - **Pedido.** CLAUDE.md, ejecución de suites y reconciliación de estado; sin cambios de código. Nuevo [CLAUDE.md](../CLAUDE.md): remite a AGENTS.md y resume los requisitos del informe (HU-01..07, RT-01..03, RNF). El propietario fija **Windows, Android primero e iOS fuera de alcance**, registrado en [D-011-02](DECISIONES.md), la spec 011 y el índice de specs.
 - **Hecho según el código.** Separación física `web/` (todas las apps Django; `manage.py` raíz delega), `mobile/` y `edge/`. Flutter modularizado en `mobile/lib/{app,core,features/*,notifications,shared}`. El reloj ya admite inicio sin evento, pausa/reanudación e intervalos 60/90/120 en servicio, API y UI. Hay avisos locales (`flutter_local_notifications`) y migración 0006 de coordinación con push (aplicada solo en la demo). Los tokens web usan la paleta índigo. Detalle en [tasks 011](../specs/011-ecosistema-instalable/tasks.md#reconciliación-con-el-código--2026-10-22): T01/02/07/08 hechas; T03/04/06/09 parciales; T05/11 pendientes; T10 fuera de alcance.
