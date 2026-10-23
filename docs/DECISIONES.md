@@ -186,3 +186,7 @@ El propietario autoriza expresamente una limpieza de estructura sin fase documen
 | 4 | Revisión con `git ls-files` y el historial completo (`git log --all`): nunca se versionaron `.env`, `db.sqlite3`, `media/` ni `.DS_Store`, así que no hubo `git rm --cached`. Los `.DS_Store` y la caché `.gradle/` del plugin quedaron fuera del commit base |
 | 5 | Apps Django sin renombrar (labels amarrados a migraciones) |
 | 6 | Verificación final en Windows: check sin problemas, makemigrations --check sin cambios, **173 tests Django OK**, **5 tests Edge OK** (sintéticos), `flutter analyze` sin problemas y **13 tests Flutter OK**. `edge.smoke` no se ejecutó: no hay un entorno Edge de Windows con MediaPipe en esta máquina |
+
+## D-012-01 — Regla de caída sobre landmarks de imagen, 2026-10-22
+
+La detección de caídas (spec 012) usa `pose_landmarks` normalizados de imagen, no `pose_world_landmarks`: estos tienen el origen en la cadera y no permiten medir su altura. Las longitudes se normalizan por la longitud del tronco para no depender de la distancia a la cámara. Se elige una regla determinista con umbrales configurables en lugar de un clasificador entrenado, porque no hay datos etiquetados. Una caída puede llegar con postura `indeterminada` (la persona en el suelo no coincide con la calibración de cama); la inmovilidad no. La señal perdida más de `max_gap_seconds` reinicia la regla sin aviso, igual que la inmovilidad. Pendientes: P-012-01 (frecuencia de `send_mobile_reminders` para el objetivo de 10 s) y P-012-02 (ajuste de umbrales tras el protocolo).

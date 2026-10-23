@@ -14,6 +14,12 @@ from CuidadosApp.scheduling import reminders
 from PlanesApp.entitlements import capabilities
 from PlanesApp.services import locked_user
 
+# Lock-screen text never names the patient. Falls go first and with high priority.
+RISK_MESSAGES = {
+    "fall": "Posible caída detectada. Revisa al paciente ahora en VIGIA.",
+    "immobility": "Revisa un aviso de monitoreo en VIGIA.",
+}
+
 
 class Command(BaseCommand):
     help = "Send generic mobile reminders using configured Firebase credentials."
@@ -58,13 +64,13 @@ class Command(BaseCommand):
                     rows = PostureObservation.objects.filter(
                         node__patient_id__in=ids,
                         node__active=True,
-                        risk="immobility",
+                        risk__in=RISK_MESSAGES,
                         observed_at__gte=timezone.now() - timedelta(minutes=2),
                     )
-                    candidates += [
-                        (f"edge:{r.pk}", "Revisa un aviso de monitoreo en VIGIA.")
-                        for r in rows
-                    ]
+                    candidates = [
+                        (f"edge:{r.pk}", RISK_MESSAGES[r.risk])
+                        for r in sorted(rows, key=lambda r: r.risk != "fall")
+                    ] + candidates
                 for key, body in candidates:
                     if PushReceipt.objects.filter(device=device, key=key).exists():
                         continue
@@ -75,6 +81,9 @@ class Command(BaseCommand):
                                 notification=messaging.Notification(
                                     title="VIGIA", body=body
                                 ),
+                                android=messaging.AndroidConfig(priority="high")
+                                if body == RISK_MESSAGES["fall"]
+                                else None,
                             )
                         )
                     except (FirebaseError, ValueError) as exc:

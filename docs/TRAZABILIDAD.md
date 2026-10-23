@@ -241,3 +241,17 @@ Autorización posterior recibida; UI de seis secciones, tema índigo y cámara p
 ## Evolución011 — DOCUMENTAR22/10/2026
 
 RF-011-01→T09/10 instalación;02→T01/02 reloj (relacionado RF-010-04/10);03→T03/04 alarmas (RF-010-07);04→T05 integración007/010;05→T06 estilo002/010;06→T07/08 organización. T11 valida conjunto. Todas pendientes, sin evidencia nueva de ejecución. [Spec/aceptación](../specs/011-ecosistema-instalable/spec.md).
+
+## 012 — Detección de caídas (RT-03), 2026-10-22
+
+| RF | Tareas | Código real | Evidencia ejecutada / límite |
+|---|---|---|---|
+| RF-012-01..04 | T-012-01/02 | `edge/fall.py` | `edge.test_fall` (caída, recuperación, oclusión, suelo, cada condición, config). Sintético |
+| RF-012-05 | T-012-04 | `edge/run.py` | Revisión de código; ejecución en vivo pendiente |
+| RF-012-06 | T-012-06/08 | `mobile_models.py`, `0007`, `api/detection.py`, `patient_screen.dart` | `test_edge_fall_is_stored_in_history_with_reception_time`; flutter analyze |
+| RF-012-07 | T-012-07 | `send_mobile_reminders.py` | `test_fall_push_uses_existing_channel_once_and_first` (Firebase simulado) |
+| RF-012-08 | T-012-03/06 | `edge/metrics.py`, `run.py`, `detection.py` | `MetricsTests`; log del backend probado; log en vivo pendiente |
+| RF-012-09 | T-012-05 | `edge/bench.py` | Ejecutado con video sintético sin personas; KPI no medido |
+| RF-012-10 | T-012-02 | `edge/test_fall.py` | Sentarse, sentadilla, inclinarse, cama lento/rápido sin alerta. Sintético |
+
+RT-03 → RF-012-01..05; HU-05 → RF-012-07; HU-06 → RF-012-06. Los RNF de caídas (≥ 90 % / ≤ 5 %, ≤ 10 s, < 100 ms) siguen sin medir: protocolo en [edge/README.md](../edge/README.md#protocolo-de-prueba-20-caídas-simuladas).

@@ -648,10 +648,18 @@ class _PatientScreenState extends State<PatientScreen> {
             for (final o in observations)
               Card(
                 child: ListTile(
-                  leading: const Icon(Icons.accessibility_new),
+                  leading: Icon(
+                    o['risk'] == 'fall'
+                        ? Icons.warning_amber
+                        : Icons.accessibility_new,
+                  ),
                   title: Text(postureName(o['posture'])),
                   subtitle: Text(
-                    '${when(o['observed_at'])} · ${o['source']}\n${o['risk'] == 'immobility' ? 'Aviso de inmovilidad · Revisa al paciente' : 'Estimación automática'}',
+                    '${when(o['observed_at'])} · ${o['source']}\n${switch (o['risk']) {
+                      'fall' => 'Posible caída · Revisa al paciente ahora',
+                      'immobility' => 'Aviso de inmovilidad · Revisa al paciente',
+                      _ => 'Estimación automática',
+                    }}',
                   ),
                 ),
               ),

@@ -39,7 +39,7 @@ class PostureObservation(models.Model):
         max_length=24,
         default="",
         blank=True,
-        choices=[("", ""), ("immobility", "Inmovilidad")],
+        choices=[("", ""), ("immobility", "Inmovilidad"), ("fall", "Caída")],
     )
     payload_hash = models.CharField(max_length=64)
 

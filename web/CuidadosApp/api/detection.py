@@ -1,5 +1,6 @@
 import hashlib
 import json
+import logging
 import math
 import secrets
 import uuid
@@ -23,6 +24,8 @@ from PlanesApp.entitlements import capabilities
 from PlanesApp.services import locked_user
 
 from .base import MobileView, error
+
+log = logging.getLogger("vigia.edge")
 
 
 def allowed(user, patient):
@@ -101,6 +104,7 @@ class ObservationsView(MobileView):
                         "posture": r.posture,
                         "confidence": r.confidence,
                         "observed_at": r.observed_at,
+                        "received_at": r.received_at,
                         "risk": r.risk,
                         "source": r.node.name if r.node_id else f"Teléfono {r.platform}",
                         "source_type": "fixed" if r.node_id else "phone",
@@ -198,8 +202,10 @@ class EdgeView(View):
                     "indeterminada",
                 ):
                     return error("Postura inválida.")
-                if d["risk"] not in ("", "immobility") or (
-                    d["posture"] == "indeterminada" and d["risk"]
+                # A person on the floor rarely matches the bed calibration, so a
+                # fall may arrive as "indeterminada"; immobility may not.
+                if d["risk"] not in ("", "immobility", "fall") or (
+                    d["posture"] == "indeterminada" and d["risk"] == "immobility"
                 ):
                     return error("Riesgo inválido para esta observación.")
                 if any(
@@ -231,6 +237,17 @@ class EdgeView(View):
                 DetectionNode.objects.filter(pk=node.pk).update(
                     last_seen_at=timezone.now()
                 )
+                if row.risk:
+                    # Reception time for the alert-latency KPI; no patient data.
+                    log.warning(
+                        "Riesgo %s recibido: observación=%s event_id=%s observed_at=%s received_at=%s retraso=%.3f s",
+                        row.risk,
+                        row.pk,
+                        row.event_id,
+                        row.observed_at.isoformat(),
+                        row.received_at.isoformat(),
+                        (row.received_at - row.observed_at).total_seconds(),
+                    )
                 return JsonResponse({"id": row.pk, "duplicate": False}, status=201)
         except PermissionDenied:
             return error(
