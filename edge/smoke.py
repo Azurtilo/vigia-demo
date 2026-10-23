@@ -5,10 +5,12 @@ import numpy as np
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 
+from .run import DEFAULT_MODEL
+
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model', required=True)
+    parser.add_argument('--model', default=str(DEFAULT_MODEL))
     args = parser.parse_args()
     options = vision.PoseLandmarkerOptions(base_options=python.BaseOptions(model_asset_path=args.model, delegate=python.BaseOptions.Delegate.CPU))
     with vision.PoseLandmarker.create_from_options(options) as detector:

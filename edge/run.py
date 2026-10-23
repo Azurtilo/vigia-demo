@@ -11,12 +11,18 @@ from urllib.parse import urlparse
 
 from .posture import CalibratedClassifier, ImmobilityRule, features
 
+DEFAULT_MODEL = Path(__file__).resolve().parent / "models" / "pose_landmarker_lite.task"
+
 
 def args_parser():
     p = argparse.ArgumentParser(
         description="Nodo local VIGIA con calibración de postura"
     )
-    p.add_argument("--model", required=True, help="Modelo local pose_landmarker.task")
+    p.add_argument(
+        "--model",
+        default=str(DEFAULT_MODEL),
+        help="Modelo local pose_landmarker.task (por defecto edge/models/)",
+    )
     p.add_argument("--references", required=True, help="JSON local de calibración")
     p.add_argument(
         "--camera", default="0", help="Índice de cámara o video de prueba local"

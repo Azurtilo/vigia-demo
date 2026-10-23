@@ -2,12 +2,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/django
 # Edit at https://www.toptal.com/developers/gitignore?templates=django
 
-
-.venv
 ### Django ###
 *.log
 *.pot
-*.pyc
 __pycache__/
 local_settings.py
 
@@ -143,21 +140,17 @@ media/
 .codex-test-runtime/
 .ruff_cache/
 .venv-actualizada/
-.work-005/
-.recovery-004/
-.recovery-005/
-.recovery-007/
-.work-007-lock/
-.work-007/
-.work-008/
-.work-009/
-.work-009-images/
-.work-009-select/
+
+# Carpetas locales de trabajo y recuperación
+.work-*/
+.recovery-*/
+
+# Archivos de sistema de macOS
+.DS_Store
 
 # Entorno y artefactos locales de la app móvil
 .venv-mobile/
 .mobile-demo/
-.work-010/
 # Flutter source overrides the generic Python lib/ exclusion.
 !mobile/lib/
 !mobile/lib/**
@@ -170,14 +163,13 @@ mobile/ios/Pods/
 mobile/ios/.symlinks/
 mobile/ios/Runner/GoogleService-Info.plist
 mobile/android/app/google-services.json
+.gradle/
 
+# Entornos Edge (macOS: .venv-edge, Windows: .venv-edge-win) y modelo local
 .venv-edge/
-edge/*.task
+.venv-edge-win/
+edge/models/
 
 # Local Flutter native plugin source
 !mobile/plugins/vigia_pose/lib/
 !mobile/plugins/vigia_pose/lib/**
-
-# Local implementation/build logs
-.work-011/
-web/**/__pycache__/
