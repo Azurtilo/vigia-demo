@@ -5,8 +5,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:vigia_mobile/api.dart';
-import 'package:vigia_mobile/care.dart';
+import 'package:vigia_mobile/core/api.dart';
+import 'package:vigia_mobile/features/home/care_home.dart';
 
 void main() {
   testWidgets(

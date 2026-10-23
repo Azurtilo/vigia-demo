@@ -181,3 +181,4 @@ El propietario autoriza expresamente una limpieza de estructura sin fase documen
 | Punto | Cambio |
 |---|---|
 | 1 | `README.md` presenta VIGIA (componentes, entornos por sistema operativo, ejecución, equipo). El contenido de la base Django reutilizable pasa a [BASE_ORIGINAL.md](BASE_ORIGINAL.md). Convención de entornos: Windows usa `.venv` (web) y `.venv-edge-win` (edge); macOS conserva `.venv-mobile` y `.venv-edge`. Cada integrante los crea localmente y nunca se suben al repositorio |
+| 2 | Se eliminan los archivos de re-exportación de `mobile/lib/` (`api.dart`, `care.dart`, `phone_pose.dart`, `phone_pose_native.dart`, `phone_pose_web.dart`, `pose_classifier.dart`). Los imports apuntan directamente a `core/` y `features/`. Solo las pruebas los usaban |

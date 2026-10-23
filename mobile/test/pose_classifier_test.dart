@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vigia_mobile/pose_classifier.dart';
+import 'package:vigia_mobile/features/detection/pose_classifier.dart';
 
 void main() {
   test('Missing or multiple people never produce a posture', () {

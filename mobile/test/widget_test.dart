@@ -8,7 +8,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:vigia_mobile/main.dart';
-import 'package:vigia_mobile/api.dart';
+import 'package:vigia_mobile/core/api.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
