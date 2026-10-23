@@ -315,6 +315,16 @@ class MobileTests(TestCase):
         PostureTimer.objects.create(patient=self.foreign, next_due_at=timezone.now()+timedelta(hours=1))
         self.assertEqual(self.get('timer-schedule').json()['items'], [])
 
+    def test_clock_actions_without_clock_are_rejected_not_missing(self):
+        path = f"patients/{self.patient.pk}"
+        detail = self.get(path).json()
+        self.assertIsNone(detail["timer"])
+        for action in ("pause", "resume", "interval"):
+            r = self.post(path + "/timer", {"token": detail["tokens"]["timer"],
+                "action": action, "interval": 60})
+            self.assertEqual(r.status_code, 400, r.content)
+        self.assertFalse(PostureTimer.objects.filter(patient=self.patient).exists())
+
     def test_local_reminder_preference_cannot_change_other_installation(self):
         device = MobileDevice.objects.create(user=self.other, installation_id=uuid.uuid4(),
             token='x'*40, platform='android', session_key='foreign')

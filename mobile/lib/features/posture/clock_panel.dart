@@ -9,6 +9,8 @@ class ClockPanel extends StatefulWidget {
   final VigiaApi api;
   final Map<String, dynamic>? timer;
   final bool busy;
+  // False for archived patients: the server rejects clock actions anyway.
+  final bool enabled;
   final void Function(String) onAction;
   const ClockPanel({
     super.key,
@@ -16,6 +18,7 @@ class ClockPanel extends StatefulWidget {
     required this.timer,
     required this.busy,
     required this.onAction,
+    this.enabled = true,
   });
   @override
   State<ClockPanel> createState() => _ClockPanelState();
@@ -52,6 +55,7 @@ class _ClockPanelState extends State<ClockPanel> {
   @override
   Widget build(BuildContext context) {
     final timer = widget.timer;
+    final locked = widget.busy || !widget.enabled;
     final due = DateTime.tryParse(timer?['next_due_at']?.toString() ?? '');
     final seconds = due?.difference(DateTime.now()).inSeconds;
     final remaining = seconds == null
@@ -71,11 +75,17 @@ class _ClockPanelState extends State<ClockPanel> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if (!widget.enabled) ...[
+                  const Text(
+                    'Paciente archivado: reactívalo para usar el reloj.',
+                  ),
+                  const SizedBox(height: 16),
+                ],
                 if (timer == null) ...[
                   const Text('Aún no tienes un reloj para este paciente.'),
                   const SizedBox(height: 16),
                   FilledButton.icon(
-                    onPressed: widget.busy
+                    onPressed: locked
                         ? null
                         : () => widget.onAction('start'),
                     icon: const Icon(Icons.alarm_add),
@@ -96,7 +106,7 @@ class _ClockPanelState extends State<ClockPanel> {
                     spacing: 12,
                     children: [
                       TextButton(
-                        onPressed: widget.busy
+                        onPressed: locked
                             ? null
                             : () => widget.onAction(
                                 timer['paused'] == true ? 'resume' : 'pause',
@@ -106,7 +116,7 @@ class _ClockPanelState extends State<ClockPanel> {
                         ),
                       ),
                       TextButton(
-                        onPressed: widget.busy
+                        onPressed: locked
                             ? null
                             : () => widget.onAction('interval'),
                         child: const Text('Cambiar intervalo'),

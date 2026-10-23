@@ -419,6 +419,7 @@ class _PatientScreenState extends State<PatientScreen> {
                 api: widget.api,
                 timer: patient!['timer'],
                 busy: busy,
+                enabled: patient!['active'] == true,
                 onAction: timer,
               ),
             for (final g in (tab == 1 ? guides : []))

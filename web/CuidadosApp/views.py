@@ -327,7 +327,8 @@ class TimerView(CareView):
                 ),
                 "interval": timer.interval if timer else 120,
                 "action": "interval" if timer else "start",
-            }
+            },
+            timer=timer,
         )
         return self.form_page(
             request,
@@ -340,7 +341,9 @@ class TimerView(CareView):
 
     def post(self, request, pk):
         patient = services.own_patient(request.user, pk)
-        form = forms.TimerForm(request.POST)
+        form = forms.TimerForm(
+            request.POST, timer=PostureTimer.objects.filter(patient=patient).first()
+        )
         if form.is_valid():
             try:
                 services.configure_timer(request.user, pk, **form.cleaned_data)

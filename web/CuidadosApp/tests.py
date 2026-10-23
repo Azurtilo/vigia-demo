@@ -1,3 +1,4 @@
+import re
 from concurrent.futures import ThreadPoolExecutor
 from datetime import date, time, timedelta
 from threading import Barrier
@@ -332,6 +333,36 @@ class CareTests(TestCase):
             self.now + timedelta(hours=4, minutes=90),
         )
         self.assertEqual(CareEvent.objects.count(), 1)
+
+    def test_empty_clock_only_offers_creation_and_never_404s(self):
+        url = reverse("CuidadosApp:timer", args=[self.patient.pk])
+
+        def actions():
+            page = self.client.get(url).content.decode()
+            select = re.search(r'<select[^>]*name="action".*?</select>', page, re.S)
+            return re.findall(r'value="(\w+)"', select.group(0))
+
+        self.assertEqual(actions(), ["start"])
+        self.assertContains(
+            self.client.get(reverse("CuidadosApp:panel")),
+            reverse("CuidadosApp:timer", args=[self.patient.pk]),
+        )
+        token = action_token(self.user, self.patient, "timer", version=0)
+        for action in ("pause", "resume", "interval"):
+            with self.assertRaises(ValidationError):
+                configure_timer(self.user, self.patient.pk, token, action, 60)
+            response = self.client.post(
+                url, {"token": token, "action": action, "interval": 60}
+            )
+            self.assertEqual(response.status_code, 200)
+        self.assertFalse(PostureTimer.objects.filter(patient=self.patient).exists())
+        configure_timer(self.user, self.patient.pk, token, "start", 90)
+        self.assertEqual(actions(), ["interval", "pause"])
+        timer = PostureTimer.objects.get(patient=self.patient)
+        token = action_token(self.user, self.patient, "timer", version=timer.generation)
+        configure_timer(self.user, self.patient.pk, token, "pause", 90)
+        self.assertEqual(actions(), ["interval", "resume"])
+        self.assertEqual(CareEvent.objects.count(), 0)
 
     def test_reminder_ten_minutes_due_claim_and_new_generation(self):
         self.posture()

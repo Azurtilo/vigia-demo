@@ -158,6 +158,19 @@ class TimerForm(SignedForm):
         choices=[(60, "1 hora"), (90, "90 minutos"), (120, "2 horas")],
     )
 
+    def __init__(self, *args, timer=False, **kwargs):
+        """Offer only actions valid for the current clock; the service re-checks."""
+        super().__init__(*args, **kwargs)
+        if timer is not False:
+            allowed = (
+                {"start"}
+                if timer is None
+                else {"interval", "resume" if timer.paused else "pause"}
+            )
+            self.fields["action"].choices = [
+                c for c in self.fields["action"].choices if c[0] in allowed
+            ]
+
 
 class EventForm(SignedForm):
     status = forms.ChoiceField(

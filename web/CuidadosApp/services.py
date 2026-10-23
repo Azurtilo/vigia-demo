@@ -247,7 +247,10 @@ def configure_timer(user, pk, token, action, interval):
         timer.generation = 1
         timer.save()
         return
-    timer = get_object_or_404(PostureTimer, patient=patient)
+    timer = PostureTimer.objects.filter(patient=patient).first()
+    if timer is None:
+        # Empty state: only "start" is valid; never answer 404 for an owned patient.
+        raise ValidationError("Aún no hay recordatorio. Crea uno primero.")
     if timer.generation != data["version"] or interval not in (60, 90, 120):
         raise ValidationError("El reloj cambió o el intervalo no es válido. Recarga.")
     if action == "pause":
