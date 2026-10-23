@@ -17,6 +17,9 @@ Estado: verificación técnica **sintética**. Sin personas reales, cámara, ser
 | RF-012-07 | `test_fall_push_uses_existing_channel_once_and_first` (Firebase simulado en `sys.modules`) | Caída primero, texto propio, prioridad alta; inmovilidad sin prioridad; segunda ejecución sin duplicados | OK | Verificado (simulado); entrega FCM real pendiente |
 | RF-012-08 | `MetricsTests.test_mean_p95_and_max`; revisión del log de `run.py` | Promedio 50,5, p95 95, máx 100 para 1..100 | OK; log en vivo no ejecutado | Parcial |
 | RF-012-09 | `edge.bench` con video sintético de ruido (300 cuadros, 640×480, 30 FPS), en el scratchpad de la sesión | El script procesa y reporta | 0 personas, inferencia 12,73 ms promedio, 14,87 ms p95, 21,39 ms máx, 70,25 FPS, 0 caídas; `--json` OK | Script verificado; **la cifra no mide el KPI** (sin persona en el cuadro) |
+| RF-012-11 | `edge.test_run.SlowNetworkTests` (servidor que retiene la respuesta 2,5 s y 5 s reales) | Caída confirmada y encolada antes de la respuesta; cada cuadro < 0,5 s; entregada una vez | OK. Mutación: enviar dentro del bucle → el test falla | Verificado (simulado) |
+| RF-012-12 | `OutageTests` (red caída 6 intentos: backoff 1, 2, 4, 8, 16, 30 s; lease vencido; recuperación), `RetryTests` (respuesta perdida dos veces), expiración por tipo, 403 y 400 | Entrega con `observed_at`/`event_id` originales; 3 POST idénticos, 1 fila; ordinaria expira a 110 s, riesgo a 55 min | OK | Verificado (simulado) |
+| RF-012-07 (corrección) | `test_late_or_failed_risk_push_is_retried_until_delivered_once`, `test_risk_older_than_push_window_is_not_announced`, `test_late_risk_is_accepted_but_ordinary_observations_expire` | Caída de hace 30 min y FCM fallando 2 veces → 1 push de caída y 1 de inmovilidad; riesgo de hace 2 h sin push; riesgo de 50 min aceptado, de 61 min y ordinaria de 5 min rechazados | OK | Verificado (Firebase simulado) |
 | RF-012-06 (UI) | `flutter analyze`; `flutter test` | Sin problemas | Sin problemas; 19 OK | Verificado; visual en dispositivo pendiente |
 
 Márgenes de las secuencias sintéticas (máximo por escenario; umbrales: ángulo 60°, aspecto 1,0, velocidad 1,5 troncos/s, descenso 0,8 troncos):
@@ -32,6 +35,10 @@ Márgenes de las secuencias sintéticas (máximo por escenario; umbrales: ángul
 Las siluetas sintéticas son delgadas: el aumento de aspecto (`aspect_change`) discrimina poco en estas secuencias. Su efecto real se mide con el protocolo.
 
 ## Regresión de la base
+
+Tras las correcciones QA (2026-10-22, posterior): Django `check` y `makemigrations --check` sin cambios, **181 OK**; Edge `edge.test_posture edge.test_fall edge.test_run` **22 OK** (7,9 s); Flutter analyze sin problemas, **19 OK**; ruff sin hallazgos en `edge/run.py` y `edge/test_run.py`.
+
+Antes de las correcciones:
 
 - Django: `check` sin problemas; `makemigrations --check --dry-run` sin cambios; `manage.py test UsuarioApp homeApp PlanesApp CuidadosApp --settings=core.test_settings` → **178 OK** (176 anteriores + 2 nuevos).
 - Edge: `python -m unittest edge.test_posture edge.test_fall` → **16 OK** (5 anteriores + 11 nuevos). `edge.smoke` OK con MediaPipe 0.10.35 en Windows (primera ejecución en esta máquina).

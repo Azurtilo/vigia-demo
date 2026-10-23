@@ -15,6 +15,9 @@ from PlanesApp.entitlements import capabilities
 from PlanesApp.services import locked_user
 
 # Lock-screen text never names the patient. Falls go first and with high priority.
+# A risk stays pending until FCM accepts it (one PushReceipt per device), so a
+# late delivery or an FCM failure is retried on the next run instead of lost.
+RISK_PUSH_MAX_AGE = timedelta(hours=1)
 RISK_MESSAGES = {
     "fall": "Posible caída detectada. Revisa al paciente ahora en VIGIA.",
     "immobility": "Revisa un aviso de monitoreo en VIGIA.",
@@ -65,11 +68,13 @@ class Command(BaseCommand):
                         node__patient_id__in=ids,
                         node__active=True,
                         risk__in=RISK_MESSAGES,
-                        observed_at__gte=timezone.now() - timedelta(minutes=2),
+                        received_at__gte=timezone.now() - RISK_PUSH_MAX_AGE,
                     )
                     candidates = [
                         (f"edge:{r.pk}", RISK_MESSAGES[r.risk])
-                        for r in sorted(rows, key=lambda r: r.risk != "fall")
+                        for r in sorted(
+                            rows, key=lambda r: (r.risk != "fall", r.received_at)
+                        )
                     ] + candidates
                 for key, body in candidates:
                     if PushReceipt.objects.filter(device=device, key=key).exists():

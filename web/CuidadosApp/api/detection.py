@@ -26,6 +26,8 @@ from PlanesApp.services import locked_user
 from .base import MobileView, error
 
 log = logging.getLogger("vigia.edge")
+# Risk events keep their original time when delivered late; the node stops at 55 min.
+RISK_MAX_AGE = timedelta(hours=1)
 
 
 def allowed(user, patient):
@@ -182,8 +184,11 @@ class EdgeView(View):
                 observed = parse_datetime(d["observed_at"])
                 if observed is None or timezone.is_naive(observed):
                     return error("La observación debe incluir zona horaria.")
+                # A risk event may arrive late after the node reconnects; it
+                # keeps its original time and its event_id deduplicates retries.
+                max_age = RISK_MAX_AGE if d["risk"] else timedelta(minutes=2)
                 if (
-                    not timezone.now() - timedelta(minutes=2)
+                    not timezone.now() - max_age
                     <= observed
                     <= timezone.now() + timedelta(seconds=30)
                 ):

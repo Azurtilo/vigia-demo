@@ -24,7 +24,7 @@ Desde una cuenta Premium, paciente → Monitoreo → Vincular nodo local. La cre
 .venv-edge/bin/python -m edge.run --references edge/models/referencias.json --camera 0 --server http://127.0.0.1:8000 --allow-local-http --immobility-minutes 120
 ```
 
-HTTP solo se admite en loopback con opción explícita; para otro servidor se exige HTTPS. El nodo solicita autorización periódica, detiene lectura si pierde autorización/conexión y publica únicamente postura, calidad, versión, fecha, UUID y riesgo temporal. La API revalida revocación, propiedad y capacidad Premium; rechaza imágenes/campos adicionales y deduplica reintentos. No reinicia el reloj manual ni marca cuidados realizados.
+HTTP solo se admite en loopback con opción explícita; para otro servidor se exige HTTPS. El nodo renueva su autorización (lease de 15 s) en un hilo de envío aparte, detiene la lectura si la pierde o se le deniega y publica únicamente postura, calidad, versión, fecha, UUID y riesgo temporal. La API revalida revocación, propiedad y capacidad Premium; rechaza imágenes/campos adicionales y deduplica reintentos. No reinicia el reloj manual ni marca cuidados realizados.
 
 ## Detección de caídas (RT-03)
 
@@ -60,7 +60,7 @@ Por qué no alertan las actividades cotidianas (pruebas sintéticas de [test_fal
 
 Límites conocidos: requiere una cámara fija y nivelada, con vista lateral u oblicua. Una caída hacia la cámara puede no ensanchar la silueta. Un colchón en el suelo o un desplome lento no se distinguen bien. Con dos personas en el cuadro no hay detección.
 
-Al confirmar, el nodo envía a `edge/observations` una observación con `risk="fall"` y `rule_version="fall-v1"`, con el mismo contrato y la misma credencial que el resto de las observaciones, sin imágenes ni coordenadas. Si el envío falla, la reintenta con el mismo `event_id` durante 110 s; el backend deduplica. El backend la guarda en el historial con `received_at`, registra la recepción en su log y `send_mobile_reminders` envía al dueño el aviso «Posible caída detectada», con prioridad alta en Android. El tiempo hasta el teléfono depende de cada cuánto se ejecute ese comando (P-012-01).
+Al confirmar, el nodo envía a `edge/observations` una observación con `risk="fall"` y `rule_version="fall-v1"`, con el mismo contrato y la misma credencial que el resto de las observaciones, sin imágenes ni coordenadas. El envío ocurre en un hilo aparte con cola en memoria, de modo que un servidor lento no detiene el procesamiento de cuadros ni reinicia las reglas. Si el envío falla, se reintenta con backoff (1 → 30 s) y el mismo `event_id`; el backend deduplica. Las observaciones de riesgo se conservan hasta 55 min (el backend las acepta hasta 1 h) y las ordinarias 110 s. Si el lease vence durante una desconexión, la captura se detiene, pero lo pendiente se envía al reconectar con su hora original. El backend la guarda en el historial con `received_at`, registra la recepción en su log y `send_mobile_reminders` envía al dueño el aviso «Posible caída detectada», con prioridad alta en Android. El tiempo hasta el teléfono depende de cada cuánto se ejecute ese comando (P-012-01).
 
 ## Métricas (KPI)
 

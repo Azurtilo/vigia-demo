@@ -44,9 +44,25 @@ Estado: implementadas; verificación sintética OK, prueba en vivo y protocolo p
   - Archivos: `edge/README.md`, `validation.md`, índices y estado.
   - Hecho cuando: resultados reales en validation.md y documentos actualizados.
 
+- [x] T-012-10 — Envío desacoplado del bucle de cuadros (QA-2026-10-22-01).
+  - RF: RF-012-11, RF-012-12.
+  - Depende de: T-012-04.
+  - Archivos: `edge/run.py` (`Uplink` con hilo, cola, backoff y lease; `Monitor` sin red), `web/CuidadosApp/api/detection.py` (riesgos hasta 1 h).
+  - Hecho cuando: una demora de 2,5 s o 5 s no impide confirmar la caída; red caída y recuperada entrega con `observed_at` original.
+- [x] T-012-11 — Avisos push sin ventana de 2 minutos (QA-2026-10-22-02).
+  - RF: RF-012-07.
+  - Archivos: `send_mobile_reminders.py`, `test_mobile.py`.
+  - Hecho cuando: un riesgo recibido tarde o con fallo de FCM se avisa una vez en una ejecución posterior.
+- [x] T-012-12 — `main()` en funciones testeables y tests de entrega (QA-2026-10-22-03).
+  - RF: RF-012-05, RF-012-11, RF-012-12.
+  - Archivos: `edge/run.py`, `edge/test_run.py`.
+  - Hecho cuando: tests de red lenta (2,5 y 5 s), caída y recuperación, reintento sin duplicado, expiración y denegación pasan.
+
 ## Autorización posterior
 
 Usuario, 2026-10-22: «Te autorizo crear specs/012-deteccion-caidas/ (spec, plan, tasks) e implementarla completa en la misma sesión.» No autoriza producción, migración real ni cámara personal.
+
+Usuario, 2026-10-22 (posterior): «Corrige QA-01, QA-02 y QA-03 antes de commitear la spec 012 […] haz los commits […] en la rama feature/deteccion-caidas y haz push.»
 
 ## Ejecución
 
@@ -59,6 +75,8 @@ Usuario, 2026-10-22: «Te autorizo crear specs/012-deteccion-caidas/ (spec, plan
 | 2026-10-22 | T-012-06/07 | modelo, `0007`, `detection.py`, `send_mobile_reminders.py`, `test_mobile.py` | Django 178 OK |
 | 2026-10-22 | T-012-08 | `patient_screen.dart` | analyze sin problemas, 19 OK |
 | 2026-10-22 | T-012-09 | `edge/README.md`, validation, índices | Documentado; **protocolo de 20 caídas no ejecutado** |
+| 2026-10-22 | T-012-10/12 | `edge/run.py`, `edge/test_run.py`, `detection.py` | Edge 22 OK (6 nuevos); mutación «envío en el bucle» detectada |
+| 2026-10-22 | T-012-11 | `send_mobile_reminders.py`, `test_mobile.py` | Django 181 OK (3 nuevos) |
 
 ## Reanudación
 

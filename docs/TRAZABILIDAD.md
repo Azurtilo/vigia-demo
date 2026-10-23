@@ -247,9 +247,10 @@ RF-011-01→T09/10 instalación;02→T01/02 reloj (relacionado RF-010-04/10);03�
 | RF | Tareas | Código real | Evidencia ejecutada / límite |
 |---|---|---|---|
 | RF-012-01..04 | T-012-01/02 | `edge/fall.py` | `edge.test_fall` (caída, recuperación, oclusión, suelo, cada condición, config). Sintético |
-| RF-012-05 | T-012-04 | `edge/run.py` | Revisión de código; ejecución en vivo pendiente |
+| RF-012-05 | T-012-04/12 | `edge/run.py` | `edge.test_run` (entrega, reintento, mismo `event_id`); ejecución en vivo pendiente |
+| RF-012-11/12 | T-012-10/12 | `edge/run.py` (`Uplink`, `Monitor`), `api/detection.py` | `edge.test_run` (red lenta 2,5/5 s, caída y recuperación, expiración, 403/400); `test_late_risk_is_accepted_but_ordinary_observations_expire` |
 | RF-012-06 | T-012-06/08 | `mobile_models.py`, `0007`, `api/detection.py`, `patient_screen.dart` | `test_edge_fall_is_stored_in_history_with_reception_time`; flutter analyze |
-| RF-012-07 | T-012-07 | `send_mobile_reminders.py` | `test_fall_push_uses_existing_channel_once_and_first` (Firebase simulado) |
+| RF-012-07 | T-012-07/11 | `send_mobile_reminders.py` | `test_fall_push_uses_existing_channel_once_and_first`, `test_late_or_failed_risk_push_is_retried_until_delivered_once`, `test_risk_older_than_push_window_is_not_announced` (Firebase simulado) |
 | RF-012-08 | T-012-03/06 | `edge/metrics.py`, `run.py`, `detection.py` | `MetricsTests`; log del backend probado; log en vivo pendiente |
 | RF-012-09 | T-012-05 | `edge/bench.py` | Ejecutado con video sintético sin personas; KPI no medido |
 | RF-012-10 | T-012-02 | `edge/test_fall.py` | Sentarse, sentadilla, inclinarse, cama lento/rápido sin alerta. Sintético |

@@ -31,7 +31,7 @@ No incluye: validación clínica, entrenamiento de modelos, detección con varia
 1. El nodo procesa cada cuadro con MediaPipe (VIDEO). Si hay exactamente una persona, entrega a la regla los landmarks normalizados de imagen.
 2. La regla detecta un **impacto** cuando, en la ventana temporal, coinciden descenso rápido de la cadera, caída suficiente de altura, tronco inclinado, silueta más ancha que alta y aumento de la relación de aspecto.
 3. Durante la **confirmación** (N segundos) la persona debe seguir abajo y sin incorporarse. Si se incorpora o se pierde la señal más de lo tolerado, se cancela sin aviso.
-4. Al confirmarse se envía una observación `risk="fall"`. Si el envío falla, se reintenta con el mismo `event_id` hasta que expira la ventana de aceptación del backend.
+4. Al confirmarse se encola una observación `risk="fall"`; un hilo de envío la entrega sin bloquear el procesamiento de cuadros. Si el envío falla, se reintenta con backoff y el mismo `event_id` hasta que expira la ventana de aceptación del backend (corrección 2026-10-22, RF-012-11/12).
 5. El backend la valida, la guarda con `received_at`, registra la recepción en el log y el comando de avisos la incluye con un texto específico.
 
 ## Requisitos funcionales
@@ -41,8 +41,10 @@ No incluye: validación clínica, entrenamiento de modelos, detección con varia
 - RF-012-03: Tras emitir, EL SISTEMA no emite otra caída hasta observar a la persona incorporada o perder la señal.
 - RF-012-04: Todos los umbrales son configurables por argumento `--fall-*` o archivo JSON `--fall-config`; los valores por defecto están documentados; valores fuera de rango o claves desconocidas se rechazan al iniciar.
 - RF-012-05: AL confirmar una caída, el nodo envía a `POST /api/v1/edge/observations`, con la autenticación de nodo existente, una observación con `risk="fall"` y el mismo contrato de metadatos (sin imágenes ni coordenadas); reintenta con el mismo `event_id` si falla el envío.
+- RF-012-11 (2026-10-22, QA-2026-10-22-01): el envío y la renovación de autorización ocurren en un hilo aparte con cola en memoria; una demora o caída de la red no retrasa el procesamiento de cuadros ni reinicia la regla de caída ni la de inmovilidad. Solo la expiración o denegación de la autorización (lease) detiene la captura (fail-closed) y reinicia las reglas.
+- RF-012-12 (2026-10-22, QA-2026-10-22-01): las observaciones pendientes se conservan durante la desconexión y se envían al reconectar con su `observed_at` y `event_id` originales, con backoff exponencial (1 → 30 s) y prioridad a los riesgos. Las observaciones ordinarias expiran a los 110 s; las de riesgo (`fall`, `immobility`) a los 55 min, y el backend las acepta hasta 1 h de antigüedad. Un rechazo permanente (400/409/413) descarta la observación con log de error.
 - RF-012-06: El backend acepta `risk="fall"` también con postura `indeterminada`, sigue rechazando `immobility` con `indeterminada` y cualquier otro riesgo; guarda la observación y la expone en el historial del paciente con `received_at`.
-- RF-012-07: El comando de avisos incluye las caídas recientes del dueño con un texto específico, sin datos del paciente, con prioridad alta en Android y sin duplicar avisos por dispositivo.
+- RF-012-07: El comando de avisos incluye las caídas recientes del dueño con un texto específico, sin datos del paciente, con prioridad alta en Android y sin duplicar avisos por dispositivo. Corrección 2026-10-22 (QA-2026-10-22-02): «recientes» = recibidas en la última hora (`received_at`), no observadas en los últimos 2 minutos; todo riesgo (`fall` o `immobility`) sin `PushReceipt` en el dispositivo se reintenta en cada ejecución hasta que FCM lo acepte, y el recibo impide el duplicado.
 - RF-012-08: El nodo registra en su log el tiempo de inferencia por cuadro (promedio y p95 por intervalo) y la marca de tiempo de impacto y confirmación de cada caída; el backend registra la hora de recepción y el retraso respecto de `observed_at`.
 - RF-012-09: `edge/bench.py` procesa uno o más videos locales sin servidor y reporta latencia de inferencia (promedio, p95, máx.), FPS de procesamiento y conteo de caídas.
 - RF-012-10: Las secuencias sintéticas de sentarse, agacharse (sentadilla e inclinarse) y acostarse en la cama no disparan caída; la secuencia de caída sí, una vez.
@@ -85,6 +87,9 @@ Base de datos: se añade la opción `("fall", "Caída")` a `PostureObservation.r
 | RF-012-06 | Nodo envía `immobility` con `indeterminada` o riesgo `otro` | 400 |
 | RF-012-07 | Caída reciente y dispositivo activo con Premium | Un push con texto de caída; segunda ejecución no duplica |
 | RF-012-08/09 | `edge.metrics` con muestras conocidas; `bench.py --help` | Promedio/p95 correctos; script ejecutable |
+| RF-012-11 | Servidor que tarda 2,5 s o 5 s en responder durante una caída | La caída se confirma y se entrega una vez; ningún cuadro espera a la red |
+| RF-012-12 | Red caída y recuperada; respuesta perdida tras guardar | Entrega al reconectar con `observed_at` original; reintento sin duplicado |
+| RF-012-07 | Caída de hace 30 min recibida tarde; FCM falla dos veces | Push de caída y de inmovilidad una vez cada uno en la ejecución siguiente |
 
 ## No funcionales
 
@@ -105,3 +110,5 @@ Se preservan clasificación de postura, regla de inmovilidad, contrato y autenti
 ## Revisión y cambios
 
 2026-10-22: creada e implementada por autorización explícita del usuario en el mismo mensaje. Aceptación funcional pendiente.
+
+2026-10-22 (posterior): correcciones de la revisión [QA_2026-10-22](../../docs/QA_2026-10-22.md) autorizadas por el usuario: RF-012-11/12 nuevos y RF-012-07 precisado (QA-01, QA-02, QA-03). Decisión [D-012-02](../../docs/DECISIONES.md).
