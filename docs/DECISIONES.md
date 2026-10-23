@@ -173,3 +173,11 @@ Conservar backend y cuentas de007/010: RAR es referencia anterior, no reemplazo.
 ## D-011-02 — Alcance de plataforma, 2026-10-22
 
 El propietario fija el entorno del proyecto: Windows, **Android primero, iOS fuera de alcance**. Sustituye la parte iOS/iPhone de D-011-01 y de RF-011-01, RF-011-03 y la aceptación 2/6 de la [spec 011](../specs/011-ecosistema-instalable/spec.md). T-011-10 pasa a fuera de alcance; su ID se conserva. El código iOS existente (carpeta `mobile/ios`, plugin `vigia_pose`) no se elimina ni se mantiene activamente: no se compila, prueba ni declara entregado. Reincorporar iOS requiere una nueva decisión explícita.
+
+## D-011-03 — Limpieza de estructura, 2026-10-22
+
+El propietario autoriza expresamente una limpieza de estructura sin fase documental previa (spec/plan/tasks), con registro solo en este archivo. No cambia funcionalidad, datos, migraciones ni labels: las apps Django `CuidadosApp`, `PlanesApp`, `UsuarioApp` y `homeApp` **no se renombran** porque sus labels están amarrados a las migraciones. La reorganización previa en `web/`, `mobile/` y `edge/` se registró en un commit base antes de la limpieza.
+
+| Punto | Cambio |
+|---|---|
+| 1 | `README.md` presenta VIGIA (componentes, entornos por sistema operativo, ejecución, equipo). El contenido de la base Django reutilizable pasa a [BASE_ORIGINAL.md](BASE_ORIGINAL.md). Convención de entornos: Windows usa `.venv` (web) y `.venv-edge-win` (edge); macOS conserva `.venv-mobile` y `.venv-edge`. Cada integrante los crea localmente y nunca se suben al repositorio |

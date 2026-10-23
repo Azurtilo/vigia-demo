@@ -1,62 +1,163 @@
-# Base Django reutilizable con SDD
+# VIGIA
 
-Base personalizada para iniciar plataformas y añadir módulos progresivamente. Conserva usuarios, perfiles/cargos, autenticación allauth, MFA, inicio, navegación y diseño Tailwind/crispy. La spec transversal CalidadBase añadió configuración aislada y pruebas iniciales; esta copia incorpora PlanesApp y CuidadosApp para la demo VIGIA de cuidadores.
+VIGIA es un sistema de apoyo al cuidado domiciliario de personas con dependencia. Lo desarrollamos como Proyecto de Título en INACAP. Une tres partes: un portal web para la familia, una app móvil para el cuidador y un nodo local que analiza la postura de la persona cuidada sin enviar video a la nube.
 
-Esta copia implementa: [007 — PlanesApp](specs/007-planes-app/spec.md), registro público local/Google con cargo RESTRICTED y contratación de los planes Vigía mediante pagos simulados. [Plan](specs/007-planes-app/plan.md) y [tareas](specs/007-planes-app/tasks.md) documentados primero y alcance completo autorizado posteriormente. Registro público RESTRICTED/Free, correo confirmado, catálogo, métodos con tarjeta interactiva, checkout, cambio/cancelación/renovación e historial propios. **117 tests OK**, check/esquema/build y navegador con datos ficticios. [Validación y pendientes](specs/007-planes-app/validation.md), [guía de pruebas/Google](docs/PLANESAPP_DESARROLLO.md). Usar **.venv**; Google real requiere credenciales, migración de la DB existente y aceptación manual pendientes.
+> Estado: piloto técnico en desarrollo. No tiene validación clínica. Las metas del informe (alerta de caída en ≤ 10 s, inferencia < 100 ms, detección ≥ 90 %) todavía no se han medido; la evidencia real se registra en el `validation.md` de cada spec.
 
-Evolución [009 — CuidadosApp](specs/009-cuidados-cuidadores/spec.md) autorizada e implementada: pacientes propios, medicamentos/horarios, guías visuales, posturas con intervalos 60/90/120, avisos con la web abierta e historial. Planes Free/Plus/Premium con 1/3/ilimitados y selección al reducir cupo. **158 pruebas OK**. [Validación y pendientes](specs/009-cuidados-cuidadores/validation.md), [guía de desarrollo](docs/CUIDADOSAPP_DESARROLLO.md). Migraciones probadas en memoria, sin aplicación a la DB existente; IA/cámaras futuras.
+## Qué hace
 
-**Para comenzar:** lee [MANUAL_SDD.md](MANUAL_SDD.md). Indica primero el nombre del módulo (por ejemplo `NuevaAPP`) y después tus requisitos. La primera respuesta debe crear especificación, plan y tareas **sin código**.
+- La familia configura el plan de cuidados y los horarios de medicación, y gestiona su suscripción (Free, Plus o Premium) en el portal web.
+- El cuidador ve su agenda diaria, confirma la administración de cada medicamento y registra los cambios de posición en la app móvil.
+- La familia consulta el historial del cuidado y recibe avisos ante eventos de riesgo.
+- El nodo local usa MediaPipe Pose Landmarker para clasificar la postura y detectar inmovilidad prolongada. Solo envía metadatos al servidor (postura, confianza, fecha y riesgo), nunca imágenes.
 
-Evolución [008 — Dashboard y navegación](specs/008-dashboard-navegacion/spec.md) autorizada posteriormente e implementada: SVG, Inicio por permiso, selector compartido y dashboard de suscripciones/volumen simulado para ADMIN/MANAGER. **127 tests OK**, 77 HTML, build y navegador. [Evidencia y revisión manual pendiente](specs/008-dashboard-navegacion/validation.md). Reglas de planes y autenticación anteriores preservadas.
+## Componentes
 
-Esta copia Base-2 incorpora la [renovación visual integral 002](specs/002-renovacion-visual/spec.md): espacio claro, navegación compacta, formularios/cuenta/MFA coherentes y colores centralizados. Para cambiar la marca, edita [static/css/tokens.css](static/css/tokens.css) siguiendo la [guía de personalización](docs/PERSONALIZACION_VISUAL.md). Implementación autorizada y ejecutada; 27 pruebas Django y compilación correctas. [Validación y límites](specs/002-renovacion-visual/validation.md): quedan revisión de zoom/preferencia reducida en navegador y aceptación del propietario. Esa renovación no añadió negocio; PlanesApp se integra posteriormente en 007.
+| Carpeta | Componente | Tecnología |
+|---|---|---|
+| [web/](web/) | Backend, API y portal web (`core`, `UsuarioApp`, `homeApp`, `PlanesApp`, `CuidadosApp`, `theme`) | Django 5.2, allauth, Tailwind standalone |
+| [mobile/](mobile/) | App del cuidador y de la familia, con el plugin nativo `plugins/vigia_pose` | Flutter (Android primero) |
+| [edge/](edge/) | Nodo local de análisis de postura | Python 3.12, MediaPipe, OpenCV |
+| [docs/](docs/), [specs/](specs/) | Documentación, decisiones y trazabilidad SDD | Markdown |
 
-## Documentos
+El `manage.py` de la raíz delega en `web/manage.py`, así que los comandos Django funcionan desde la raíz o desde `web/`.
 
-Ampliación [003 — Modo claro/oscuro por usuario](specs/003-modo-visual-usuario/spec.md) autorizada e implementada: botón de sol/luna en Inicio y preferencia persistente por cuenta. 43 tests, build y 180 contrastes correctos; [validación visual parcial y aceptación pendientes](specs/003-modo-visual-usuario/validation.md). Migración 0002 creada/probada solo en SQLite efímero: **no aplicada a la base existente**, necesita autorización separada de entorno/respaldo antes de usar allí el guardado. Marca clara/oscura configurable en el único archivo de tokens.
+## Entorno por sistema operativo
 
-UsuarioApp incorpora [004 — Restablecimiento administrativo y jerarquía](specs/004-administracion-usuarios/spec.md): ADMIN restablece contraseñas de inferiores sin correo; ADMIN activa/desactiva MANAGER/RESTRICTED y MANAGER solo RESTRICTED. Superusuario también requiere cargo para estas acciones. Implementación autorizada, 57 tests y build correctos; [validación y revisión manual pendiente](specs/004-administracion-usuarios/validation.md). Sin migraciones nuevas ni cambios a registro/correo/MFA/modo visual.
+**Cada integrante crea sus entornos virtuales en su propio equipo. Los entornos nunca se suben al repositorio** (están en `.gitignore`). Un entorno creado en macOS no funciona en Windows, ni al revés: no se copian entre equipos.
+
+Para que una misma carpeta compartida no mezcle entornos, cada sistema usa nombres distintos:
+
+| Uso | Windows | macOS |
+|---|---|---|
+| Web (Django) | `.venv` | `.venv-mobile` (nombre que ya usan los integrantes con Mac) |
+| Edge (MediaPipe) | `.venv-edge-win` | `.venv-edge` |
+| Mobile (Flutter) | SDK de Flutter instalado en el equipo | SDK de Flutter instalado en el equipo |
+
+Requisitos: Python 3.12 y Flutter 3.47.7 (Dart 3.13.5, como exige `mobile/pubspec.yaml`).
+
+### Windows (PowerShell)
+
+Desde la raíz del repositorio:
+
+```powershell
+# Web
+py -3.12 -m venv .venv
+.venv\Scripts\python.exe -m pip install --require-hashes -r web/requirements.txt
+
+# Edge
+py -3.12 -m venv .venv-edge-win
+.venv-edge-win\Scripts\python.exe -m pip install -r edge/requirements.txt
+
+# Mobile (con Flutter en el PATH)
+cd mobile
+flutter pub get
+cd ..
+```
+
+### macOS (zsh)
+
+Desde la raíz del repositorio:
+
+```zsh
+# Web
+python3.12 -m venv .venv-mobile
+.venv-mobile/bin/python -m pip install --require-hashes -r web/requirements.txt
+
+# Edge
+python3.12 -m venv .venv-edge
+.venv-edge/bin/python -m pip install -r edge/requirements.txt
+
+# Mobile (con Flutter en el PATH)
+cd mobile
+flutter pub get
+cd ..
+```
+
+En los ejemplos siguientes, `PY_WEB` y `PY_EDGE` significan el intérprete del entorno de tu sistema. En Windows son `.venv\Scripts\python.exe` y `.venv-edge-win\Scripts\python.exe`. En macOS son `.venv-mobile/bin/python` y `.venv-edge/bin/python`.
+
+## Cómo ejecutar
+
+### Web
+
+La configuración normal lee un archivo `.env` en la raíz. `SECRET_KEY` es obligatoria; `DEBUG`, `ALLOWED_HOSTS` y `CSRF_TRUSTED_ORIGINS` son opcionales. El `.env` es personal y nunca se sube al repositorio.
+
+Para probar en local con datos ficticios, usa la configuración de demo. No lee `.env` y crea su propia base en `.mobile-demo/`:
+
+```bash
+PY_WEB manage.py migrate --settings=core.mobile_demo_settings
+PY_WEB manage.py seed_mobile_demo --settings=core.mobile_demo_settings
+PY_WEB manage.py runserver 127.0.0.1:8000 --settings=core.mobile_demo_settings --noreload
+```
+
+El portal queda en http://127.0.0.1:8000/. Las cuentas ficticias y el acceso desde un teléfono están en [docs/MOVIL_DESARROLLO.md](docs/MOVIL_DESARROLLO.md). No ejecutes `migrate` sin `--settings` sobre una base existente.
+
+### Mobile
+
+Con el servidor de demo activo, desde `mobile/`:
+
+```bash
+flutter run --dart-define=API_URL=http://10.0.2.2:8000
+flutter build apk --debug --dart-define=API_URL=http://10.0.2.2:8000
+```
+
+`10.0.2.2` es el equipo anfitrión visto desde el emulador Android. Para un teléfono físico, revisa [docs/MOVIL_DESARROLLO.md](docs/MOVIL_DESARROLLO.md). iOS está fuera de alcance (decisión D-011-02).
+
+### Edge
+
+El modelo va en `edge/models/pose_landmarker_lite.task`. Esa carpeta está en `.gitignore`. Copia el modelo que ya trae la app móvil o descárgalo desde la [documentación de MediaPipe](https://ai.google.dev/edge/mediapipe/solutions/vision/pose_landmarker):
+
+```powershell
+# Windows
+New-Item -ItemType Directory -Force edge/models
+Copy-Item mobile/assets/models/pose_landmarker_lite.task edge/models/
+```
+
+```zsh
+# macOS
+mkdir -p edge/models
+cp mobile/assets/models/pose_landmarker_lite.task edge/models/
+```
+
+Calibración y monitoreo (detalle, consentimiento y token del nodo en [edge/README.md](edge/README.md)):
+
+```bash
+PY_EDGE -m edge.run --references edge/models/referencias.json --camera ruta/video-autorizado.mp4 --calibrate supina
+PY_EDGE -m edge.run --references edge/models/referencias.json --camera 0 --server http://127.0.0.1:8000 --allow-local-http
+```
+
+## Pruebas
+
+```bash
+# Web, desde web/
+PY_WEB manage.py check --settings=core.test_settings
+PY_WEB manage.py makemigrations --check --dry-run --settings=core.test_settings
+PY_WEB manage.py test UsuarioApp homeApp PlanesApp CuidadosApp --settings=core.test_settings
+
+# Edge, desde la raíz
+PY_EDGE -m unittest edge.test_posture
+
+# Mobile, desde mobile/
+flutter analyze
+flutter test
+```
+
+Las pruebas Django usan `core.test_settings`: SQLite en memoria y sin leer `.env`. Las pruebas de Edge son geométricas y sintéticas; no prueban la precisión con personas reales.
+
+## Documentación
 
 | Necesidad | Archivo |
 |---|---|
-| Principios generales reutilizables | [constitution.md](constitution.md) |
-| Instrucciones del agente y convenciones Django | [AGENTS.md](AGENTS.md) |
-| Manual con mensajes listos para usar | [MANUAL_SDD.md](MANUAL_SDD.md) |
-| Selección de prompts o uso paso a paso | [prompts/README.md](prompts/README.md) |
-| Identidad y alcance del proyecto derivado | [docs/PROYECTO.md](docs/PROYECTO.md) |
-| Estado y punto de reanudación | [docs/ESTADO_PROYECTO.md](docs/ESTADO_PROYECTO.md) |
-| Mapa técnico de la base | [docs/ARQUITECTURA_BASE.md](docs/ARQUITECTURA_BASE.md) |
-| Cambiar colores y reutilizar componentes | [docs/PERSONALIZACION_VISUAL.md](docs/PERSONALIZACION_VISUAL.md) |
-| Entorno y comprobaciones | [docs/ENTORNO_Y_VERIFICACION.md](docs/ENTORNO_Y_VERIFICACION.md) |
-| Observaciones de la base recibida | [docs/OBSERVACIONES_BASE.md](docs/OBSERVACIONES_BASE.md) |
-| Ideas futuras no autorizadas | [docs/ROADMAP.md](docs/ROADMAP.md) |
-| Registro resumido de verificaciones | [docs/VERIFICACION.md](docs/VERIFICACION.md) |
-| Requisitos por módulo y plantillas | [specs/README.md](specs/README.md) |
-| Decisiones y relación requisitos/pruebas | [docs/DECISIONES.md](docs/DECISIONES.md), [docs/TRAZABILIDAD.md](docs/TRAZABILIDAD.md) |
-| Verificación documental inicial y validación de CalidadBase | [docs/VALIDACION_SDD.md](docs/VALIDACION_SDD.md), [spec 001](specs/001-calidad-seguridad-base/validation.md) |
+| Estado actual y punto de reanudación | [docs/ESTADO_PROYECTO.md](docs/ESTADO_PROYECTO.md) |
+| Specs y spec vigente | [specs/README.md](specs/README.md), [specs/011-ecosistema-instalable/](specs/011-ecosistema-instalable/) |
+| Decisiones y trazabilidad | [docs/DECISIONES.md](docs/DECISIONES.md), [docs/TRAZABILIDAD.md](docs/TRAZABILIDAD.md) |
+| Entorno y verificación | [docs/ENTORNO_Y_VERIFICACION.md](docs/ENTORNO_Y_VERIFICACION.md) |
+| App móvil y demo | [docs/MOVIL_DESARROLLO.md](docs/MOVIL_DESARROLLO.md) |
+| Flujo de trabajo SDD y reglas del agente | [constitution.md](constitution.md), [AGENTS.md](AGENTS.md), [MANUAL_SDD.md](MANUAL_SDD.md) |
+| Base Django original e historial de evolución | [docs/BASE_ORIGINAL.md](docs/BASE_ORIGINAL.md) |
 
-## Uso repetido
+## Equipo
 
-Conserva esta copia como base maestra y crea un proyecto/carpeta independiente para cada producto. Mantén constitución, convenciones, manual y plantillas. En cada derivado completa su identidad, estado, decisiones y specs con los requisitos de ese producto.
-
-No reutilices entre clientes bases de datos, secretos, archivos personales, historial funcional ni reglas de negocio. No sobrescribas documentación ya personalizada al actualizar la base.
-
-## Alcance de la entrega
-
-La base incorpora documentación SDD y la spec transversal 001-CalidadBase. Esta última no agrega migraciones ni despliegue: separa configuración común/pruebas, agrega casos funcionales, alinea el enlace Registro con el servidor y amplía el escaneo Tailwind. No incluye secretos, bases de prueba persistentes, dependencias instaladas ni subidas personales. Se conserva `media/profile.webp` como recurso predeterminado.
-
-Dependencias actuales: Django 5.2.17 LTS, allauth 65.19.7, django-tailwind 4.5.0 y Tailwind 4.3.0 standalone, sin Node.js. Entradas clasificadas y lock con hashes: [guía de dependencias](docs/DEPENDENCIAS.md). Correcciones 005/006 autorizadas y verificadas con 76 pruebas; permisos de Registro por cargo y guardado transaccional de usuario/perfil/fotografía. Migraciones solo ensayadas con datos ficticios; ninguna aplicación a la base real.
-
-django-axes y preventconcurrentlogins siguen desactivados aunque estén declarados. Las pruebas cubren la spec 001 y no certifican módulos futuros: ver observaciones. No trasladar aquí reglas de otro sistema.
-
-## Flujo
-
-Nombre del módulo y requerimiento → spec → plan → tareas → revisión del usuario → autorización de código → implementación → validación → actualización documental.
-
-Puedes usar un único prompt para coordinar la fase documental o pasar cada fase por separado. El manual explica ambos casos. No es necesario instalar un framework SDD.
-
-
-## Aplicación móvil — actualización 2026-10-19
-
-Aplicación Flutter Android/iOS y demo local disponibles. Ver [instrucciones y cuentas ficticias](docs/MOVIL_DESARROLLO.md) y [evidencia/pendientes](specs/010-aplicacion-movil/validation.md).
+- José Acuña
+- Constanza Contreras
+- Sandra Santos
