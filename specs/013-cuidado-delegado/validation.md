@@ -36,12 +36,14 @@ Ajuste pedido en la misma revisión: los mensajes emergentes (toasts) solo se ce
 
 ## Límites y fallos
 
-- **Pendiente: prueba en Android físico** con dos cuentas (titular y cuidador). Depende de T-011-09 (APK instalado y servidor alcanzable). Pasos y resultado esperado:
-  - código creado por el titular desde la app;
-  - el cuidador lo acepta con vista previa;
-  - el cuidador registra medicamento y postura;
-  - el titular ve la autoría;
-  - tras revocar, el cuidador recibe 404 y la ficha desaparece de su lista.
+- **Prueba en Android físico, 2026-10-25** (ELI NX9, Android 16; app debug y servidor demo por USB con `adb reverse`; titular `demo_premium`, cuidador `demo_plus`):
+  - Código creado por el titular desde la app («Invitar con un código» → Cuidador): `C9HCR-FC7F9`, un uso, vence a las 48 h. OK.
+  - **Falla: aceptar el código desde la app.** Al pulsar «Revisar código», la app cae en la pantalla roja de Flutter, con código válido o inválido. El servidor responde bien (`access/preview` 200 o 400), pero no se llega a la confirmación. Causa reproducida con una prueba de widget temporal: `askCode` ([access.dart:48](../../mobile/lib/features/patients/access.dart#L48)) libera el `TextEditingController` apenas se cierra el diálogo, mientras la animación de salida aún lo usa («A TextEditingController was used after being disposed»). En release las aserciones no se evalúan, pero el APK de pruebas es debug. **Corregido el mismo día (T-013-13)**, con `test/join_code_test.dart`; repetido en el teléfono: `demo_free` se unió a Rosa Demo desde la app («Listo. Ya puedes acompañar a este paciente.») y un código inválido muestra «El código no es válido o ya no está vigente.».
+  - Aceptación hecha desde el portal web en el navegador del teléfono (`/cuidados/pacientes/unirme/`): vista previa «Te unirás a Rosa Demo como cuidador» → «Confirmar y unirme». OK.
+  - Vista del cuidador en la app: la ficha aparece como «Cuidador» sin usar su cupo («1 activos»), con «Accedes como cuidador», sin edición ni gestión de accesos y con «Dejar de acompañar». OK.
+  - El cuidador registró una postura y un medicamento; en la base, `author = demo_plus`. OK.
+  - El titular ve en el historial «25/10 19:38 · demo_plus» y «19:37 · demo_plus». OK.
+  - El titular revoca («Dejará de ver esta ficha de inmediato. Sus registros se conservan.»); al volver a entrar como cuidador, la ficha ya no está en su lista. OK. La respuesta 404 de la API no se comprobó en el teléfono (sí la cubren las pruebas Django).
 - Push solo con Firebase simulado (D-054 pendiente).
 - SQLite no certifica el comportamiento de `select_for_update` bajo concurrencia real; la serialización por titular se verificó por diseño y con pruebas secuenciales.
 - El límite de intentos se guarda en la tabla `AccessCodeAttempt`, que crece sin purga; su conservación queda para la spec de privacidad (D-052).

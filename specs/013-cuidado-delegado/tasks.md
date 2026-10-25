@@ -70,6 +70,16 @@ Estado: T-013-01..10 hechas; T-013-11 parcial (revisión en navegador hecha; fal
   - Archivos: `templates/components/CuidadosApp/agenda.html`, `timer.html`, `CuidadosApp/scheduling.py` y `views.py` (`select_related` del autor, sin consultas por fila).
   - Hecho: `test_panel_shows_who_recorded_each_activity` y, para cuentas eliminadas, `PrivacidadApp.tests` («registrada por Cuenta eliminada»). Django 219 OK.
 
+## Tareas fechadas 2026-10-25 — fallo en Android físico
+
+- [x] T-013-13 — «Unirme con un código» en la app no debe caerse al cerrar el diálogo.
+  - RF: RF-013-02, RF-013-03. Componente: mobile.
+  - Autorización: «corrige fallos 1 y 2» (propietario, 2026-10-25).
+  - Fallo: `askCode` libera el `TextEditingController` justo al cerrarse el diálogo, mientras su animación de salida aún lo usa; en debug la app cae en pantalla roja con código válido o inválido ([validación](validation.md#límites-y-fallos)).
+  - Archivos: `mobile/lib/features/patients/access.dart`, prueba en `mobile/test/`.
+  - Hecho cuando: una prueba de widget recorre el diálogo con código válido (vista previa → confirmación → aceptar) y con código rechazado sin errores de Flutter, falla con el código anterior y pasa con la corrección; `flutter analyze` sin problemas.
+  - Hecho: el diálogo es un `StatefulWidget` (`_CodeDialog`) que libera su controlador en su propio `dispose()`. `test/join_code_test.dart` (2 pruebas): con el código anterior **−2** («A TextEditingController was used after being disposed»), con la corrección **+2**. Flutter **32 OK**. En Android, `demo_free` se unió a Rosa Demo desde la app y un código inválido muestra el mensaje genérico.
+
 ## Autorización posterior
 
 2026-10-25: «haz commit y pasa a implementarla en feature/013-cuidado-delegado». Autoriza el alcance completo de la 013 en esa rama (D-059). No autoriza merge, despliegue ni migración de una base real.
