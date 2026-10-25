@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import '../../core/api.dart';
 import '../../shared/care_widgets.dart';
 import '../detection/phone_pose.dart';
+import 'access.dart';
 
 class PatientScreen extends StatefulWidget {
   final VigiaApi api;
@@ -34,6 +35,7 @@ class _PatientScreenState extends State<PatientScreen> {
   String? failure;
   int tab = 0;
   int? nextHistoryPage;
+  bool can(String action) => allows(patient, action);
   Future<void> load({bool quiet = false}) async {
     if (busy) return;
     setState(() {
@@ -42,27 +44,36 @@ class _PatientScreenState extends State<PatientScreen> {
     });
     try {
       await widget.api.syncReminders();
+      final current = await widget.api.get('patients/${widget.id}');
+      // Spec 013: only request what this role may see; the server enforces it.
+      Future<Map<String, dynamic>> optional(String action, String path) =>
+          allows(current, action)
+          ? widget.api.get(path)
+          : Future.value(<String, dynamic>{'items': []});
       final r = await Future.wait([
-        widget.api.get('patients/${widget.id}'),
         widget.api.get('patients/${widget.id}/daily/medications'),
         widget.api.get('patients/${widget.id}/daily/tasks'),
         widget.api.get('guides'),
-        widget.api.get('patients/${widget.id}/history'),
-        widget.api.get('patients/${widget.id}/nodes'),
-        widget.api.get('patients/${widget.id}/observations'),
+        optional('history', 'patients/${widget.id}/history'),
+        optional('manage_nodes', 'patients/${widget.id}/nodes'),
+        optional('detection', 'patients/${widget.id}/observations'),
         widget.api.get('capabilities'),
       ]);
       if (mounted) {
         setState(() {
-          patient = r[0];
-          meds = r[1]['items'];
-          tasks = r[2]['items'];
-          guides = r[3]['items'];
-          history = r[4]['items'];
-          nextHistoryPage = r[4]['next_page'];
-          nodes = r[5]['items'];
-          observations = r[6]['items'];
-          caps = r[7];
+          patient = current;
+          meds = r[0]['items'];
+          tasks = r[1]['items'];
+          guides = r[2]['items'];
+          history = r[3]['items'];
+          nextHistoryPage = r[3]['next_page'];
+          nodes = r[4]['items'];
+          observations = r[5]['items'];
+          caps = r[6];
+          if ((tab == 2 && !can('history')) ||
+              (tab == 3 && !can('detection'))) {
+            tab = 0;
+          }
         });
       }
     } catch (e) {
@@ -230,6 +241,22 @@ class _PatientScreenState extends State<PatientScreen> {
     });
   }
 
+  Future<void> leave() async {
+    if (!await confirm(
+      context,
+      '¿Dejar de acompañar?',
+      'Ya no verás esta ficha. Tus registros se conservan en el historial.',
+    )) {
+      return;
+    }
+    try {
+      await widget.api.post('patients/${widget.id}/leave', {});
+      if (mounted) Navigator.pop(context);
+    } catch (e) {
+      if (mounted) notice(context, e);
+    }
+  }
+
   Future<void> addNode() async {
     final d = await editForm(context, 'Vincular cámara local', const [
       FormFieldSpec('name', 'Nombre del nodo', required: true),
@@ -308,7 +335,8 @@ class _PatientScreenState extends State<PatientScreen> {
           Padding(padding: const EdgeInsets.all(16), child: Text(failure!)),
         if (patient != null) ...[
           Text(
-            patient!['active'] ? 'Cuidado activo' : 'Paciente archivado',
+            '${patient!['active'] ? 'Cuidado activo' : 'Paciente archivado'}'
+            '${patient!['role'] == null || patient!['role'] == 'titular' ? '' : ' · Accedes como ${roleLabel(patient!['role']).toLowerCase()}'}',
             style: const TextStyle(
               color: Color(0xff5057a0),
               fontWeight: FontWeight.w600,
@@ -318,12 +346,14 @@ class _PatientScreenState extends State<PatientScreen> {
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: SegmentedButton<int>(
-              segments: const [
-                ButtonSegment(value: 0, label: Text('Cuidados')),
-                ButtonSegment(value: 1, label: Text('Guías')),
-                ButtonSegment(value: 4, label: Text('Reloj')),
-                ButtonSegment(value: 2, label: Text('Historial')),
-                ButtonSegment(value: 3, label: Text('Monitoreo')),
+              segments: [
+                const ButtonSegment(value: 0, label: Text('Cuidados')),
+                const ButtonSegment(value: 1, label: Text('Guías')),
+                const ButtonSegment(value: 4, label: Text('Reloj')),
+                if (can('history'))
+                  const ButtonSegment(value: 2, label: Text('Historial')),
+                if (can('detection'))
+                  const ButtonSegment(value: 3, label: Text('Monitoreo')),
               ],
               selected: {tab},
               onSelectionChanged: (s) => setState(() => tab = s.first),
@@ -339,11 +369,12 @@ class _PatientScreenState extends State<PatientScreen> {
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
                   ),
                 ),
-                IconButton(
-                  onPressed: busy ? null : editPatient,
-                  tooltip: 'Editar ficha',
-                  icon: const Icon(Icons.edit_outlined),
-                ),
+                if (can('edit_patient'))
+                  IconButton(
+                    onPressed: busy ? null : editPatient,
+                    tooltip: 'Editar ficha',
+                    icon: const Icon(Icons.edit_outlined),
+                  ),
               ],
             ),
             if (patient!['notes'] != '') Text(patient!['notes']),
@@ -370,8 +401,10 @@ class _PatientScreenState extends State<PatientScreen> {
                   subtitle: Text(
                     '${m['dose']} · ${m['hours']}${m['active'] ? '' : ' · Inactivo'}',
                   ),
-                  trailing: const Icon(Icons.edit_outlined),
-                  onTap: busy
+                  trailing: can('configure')
+                      ? const Icon(Icons.edit_outlined)
+                      : null,
+                  onTap: busy || !can('configure')
                       ? null
                       : () => editDaily(false, Map<String, dynamic>.from(m)),
                 ),
@@ -390,23 +423,37 @@ class _PatientScreenState extends State<PatientScreen> {
                   subtitle: Text(
                     '${t['time'] == '' ? 'Sin horario' : t['time']}${t['active'] ? '' : ' · Inactivo'}',
                   ),
-                  onTap: busy
+                  onTap: busy || !can('configure')
                       ? null
                       : () => editDaily(true, Map<String, dynamic>.from(t)),
                 ),
               ),
+            if (patient!['allowed_actions'] is List &&
+                can('manage_access')) ...[
+              const SizedBox(height: 24),
+              AccessPanel(api: widget.api, patientId: widget.id),
+            ],
             const SizedBox(height: 24),
-            TextButton.icon(
-              onPressed: busy ? null : archive,
-              icon: Icon(
-                patient!['active']
-                    ? Icons.archive_outlined
-                    : Icons.unarchive_outlined,
+            if (can('leave'))
+              TextButton.icon(
+                onPressed: busy ? null : leave,
+                icon: const Icon(Icons.logout),
+                label: const Text('Dejar de acompañar'),
               ),
-              label: Text(
-                patient!['active'] ? 'Archivar paciente' : 'Reactivar paciente',
+            if (can('archive'))
+              TextButton.icon(
+                onPressed: busy ? null : archive,
+                icon: Icon(
+                  patient!['active']
+                      ? Icons.archive_outlined
+                      : Icons.unarchive_outlined,
+                ),
+                label: Text(
+                  patient!['active']
+                      ? 'Archivar paciente'
+                      : 'Reactivar paciente',
+                ),
               ),
-            ),
           ],
           if (tab == 1 || tab == 4) ...[
             Text(
@@ -585,10 +632,11 @@ class _PatientScreenState extends State<PatientScreen> {
                       },
               ),
             const SizedBox(height: 20),
-            const Text(
-              'Cámara fija',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
+            if (can('manage_nodes'))
+              const Text(
+                'Cámara fija',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
             for (final n in nodes)
               Card(
                 child: ListTile(
@@ -627,7 +675,8 @@ class _PatientScreenState extends State<PatientScreen> {
                       : null,
                 ),
               ),
-            if (caps?['features']?['posture_detection'] == true)
+            if (caps?['features']?['posture_detection'] == true &&
+                can('manage_nodes'))
               OutlinedButton.icon(
                 onPressed: busy || !patient!['active'] ? null : addNode,
                 icon: const Icon(Icons.add_link),
@@ -676,11 +725,12 @@ class _PatientScreenState extends State<PatientScreen> {
           style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
         ),
       ),
-      IconButton(
-        onPressed: busy || patient?['active'] != true ? null : action,
-        tooltip: 'Agregar $title',
-        icon: const Icon(Icons.add_circle_outline),
-      ),
+      if (can('configure'))
+        IconButton(
+          onPressed: busy || patient?['active'] != true ? null : action,
+          tooltip: 'Agregar $title',
+          icon: const Icon(Icons.add_circle_outline),
+        ),
     ],
   );
 }

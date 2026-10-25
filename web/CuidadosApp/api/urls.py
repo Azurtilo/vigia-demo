@@ -40,3 +40,15 @@ urlpatterns += [
 from .devices import DevicesView, ReminderModeView
 
 urlpatterns += [path("devices", DevicesView.as_view()), path("devices/reminder-mode", ReminderModeView.as_view())]
+
+from . import access
+
+urlpatterns += [
+    path("patients/<int:pk>/access", access.AccessListView.as_view()),
+    path("patients/<int:pk>/leave", access.LeaveView.as_view()),
+    path("patients/<int:pk>/summary", access.SummaryView.as_view()),
+    path("access/<int:object_pk>/revoke", access.RevokeAccessView.as_view()),
+    path("invitations/<int:object_pk>/revoke", access.RevokeInvitationView.as_view()),
+    path("access/preview", access.PreviewView.as_view()),
+    path("access/accept", access.AcceptView.as_view()),
+]

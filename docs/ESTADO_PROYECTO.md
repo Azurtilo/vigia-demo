@@ -1,8 +1,53 @@
 # Estado y reanudación
 
-Fecha: 2026-10-22.
+Fecha: 2026-10-25.
 
-## Estado vigente — 012 detección de caídas (RT-03), 2026-10-22
+## Estado vigente — 013 cuidado delegado implementada, 2026-10-25
+
+- **Pedido.** «haz commit y pasa a implementarla en feature/013-cuidado-delegado».
+- **Hecho.** Rama `feature/013-cuidado-delegado` (desde `docs/decisiones-2026-10-25`), un commit por bloque de tareas (3a6e60d..4f39c68):
+  - vínculos e invitaciones (migración aditiva 0008);
+  - `access.py` con la matriz por rol; servicios que bloquean al titular y usan su cupo y su plan;
+  - web y API por rol, con gestión de accesos y «Unirme con un código»;
+  - push de cuidado a titular y cuidador, y de riesgo a todos los roles (D-063);
+  - app Flutter adaptada al rol.
+- **Evidencia (Windows).** Django **202 OK** (21 nuevas), check y makemigrations sin cambios, migración 0008 probada en avance y reversión. Edge **22 OK**. Flutter analyze sin problemas, **22 OK** (3 nuevas). [Validación](../specs/013-cuidado-delegado/validation.md).
+- **Revisión en navegador (mismo día).** El propietario revisó la web con el servidor demo y cuentas ficticias de los tres roles: «se ve todo bien». A pedido suyo, los mensajes emergentes ahora se cierran solos (6/10/12 s según tipo). Servidor detenido.
+- **No hecho.** Ensayo en Android físico con dos cuentas, Firebase real, merge, despliegue y migración de una base real.
+- **Pendiente de la 013: prueba en Android físico.** Requiere un servidor alcanzable desde la red local (T-011-09) y dos cuentas ficticias. Pasos:
+  1. El titular crea un código desde la app.
+  2. El cuidador lo ingresa en «Unirme con un código» y confirma.
+  3. El cuidador registra un medicamento y una postura.
+  4. El titular ve esos registros con el nombre del cuidador.
+  5. El titular revoca el acceso y el cuidador deja de ver la ficha.
+
+  El resultado se anota en [validation.md](../specs/013-cuidado-delegado/validation.md).
+- **Orden siguiente (plan del 2026-10-25):**
+  1. Prueba de la 013 en Android físico.
+  2. PR de `docs/decisiones-2026-10-25` y `feature/013-cuidado-delegado` hacia `develop`.
+  3. Tareas fechadas de la 012: push de caída inmediato (D-051) con destinatarios de la 013 (D-063), texto genérico del push (D-058), `minSdk` 26 (D-057) y hallazgos QA técnicos (QA-09, 10, 16, 19, 21).
+  4. Spec 014 de privacidad (D-052).
+  5. En paralelo, por parte del propietario: Firebase de prueba (D-054) y protocolo de caídas con voluntarios (D-053).
+- **Siguiente paso seguro (detalle).** Ensayo en dispositivo; luego PR de `docs/decisiones-2026-10-25` y `feature/013-cuidado-delegado` hacia `develop`.
+
+## Antecedente — spec 013 DOCUMENTAR, 2026-10-25
+
+- **Pedido.** Documentar la spec de familiar/cuidador decidida en D-050.
+- **Hecho.** [Spec](../specs/013-cuidado-delegado/spec.md) con 14 RF y matriz por rol (titular, familiar invitado, cuidador, sin vínculo); [plan](../specs/013-cuidado-delegado/plan.md) con `access.py`, bloqueo por titular, invitaciones con hash y límite de intentos, tres modelos nuevos (migración aditiva 0008) y endpoints aditivos; [tareas](../specs/013-cuidado-delegado/tasks.md) T-013-01..11, todas pendientes. Índice y trazabilidad prevista actualizados.
+- **Decisiones del propietario (mismo día):** D-061 familiar invitado igual al titular salvo archivar, cupo, nodos y accesos; D-062 el cuidador ve solo la agenda del día y la última postura; D-063 el push de riesgo también llega al cuidador. Spec, plan y tareas ajustados; sin decisiones pendientes.
+- **No hecho.** Sin código. Implementación no autorizada.
+- **Siguiente paso seguro.** Revisión de la 013 y, si corresponde, instrucción de implementación en la rama `feature/013-cuidado-delegado`.
+
+## Decisiones del propietario — 2026-10-25
+
+- **Pedido.** Registrar las respuestas al documento de pendientes del 23-10-2026 y las respuestas de la sesión.
+- **Hecho.** D-050 a D-060 en [DECISIONES.md](DECISIONES.md): familiar/cuidador con invitación por código (P-010-02), push de caída inmediato (P-012-01), spec de privacidad (QA-05), protocolo de caídas propio (P-012-02), Firebase de prueba (P-010-05), funciones por plan con nodos 0/0/1 (P-010-06), autenticación vigente con vencimiento y revocación (P-010-04), Edge como vía principal y Android API 26 (P-010-01/03), texto genérico del push (QA-14), política de Git (AGENTS.md) y disponibilidad declarada como no medida. Specs [010](../specs/010-aplicacion-movil/spec.md) y [012](../specs/012-deteccion-caidas/spec.md) marcan sus pendientes como resueltos.
+- **Actualización de reglas y documentación (mismo día).** AGENTS.md describe VIGIA (tres componentes, apps reales, comandos Windows por componente). Prompts 01/03/04/05/07 revisados: 04 y 07 ya no prohíben commits que D-059 permite; el comando Edge incluye `test_fall` y `test_run`; 05 remite a la matriz y a D-060. Nuevo [prompts/08-revision-qa.md](../prompts/08-revision-qa.md). Corregidos también CLAUDE.md y `.claude/agents/qa-vigia.md` (comando Edge incompleto), [PROYECTO.md](PROYECTO.md) (nombre VIGIA y estado 010–012), [specs/README.md](../specs/README.md), [ENTORNO_Y_VERIFICACION.md](ENTORNO_Y_VERIFICACION.md) y la [matriz HU/RT/RNF](TRAZABILIDAD.md#matriz-hurtrnf-vigente) en TRAZABILIDAD.
+- **Inconsistencia detectada, sin corregir (es código).** `mobile/android/app/build.gradle.kts` fija `minSdk = maxOf(24, …)`, pero D-057 decide API 26. Requiere una tarea.
+- **No hecho.** Sin código, specs nuevas ni tareas. Ninguna decisión autoriza implementación.
+- **Siguiente paso seguro.** DOCUMENTAR la spec 013 (familiar/cuidador) y la de privacidad, y las tareas fechadas de la 012 (D-051, D-058, minSdk 26 y QA técnicos).
+
+## Antecedente — 012 detección de caídas (RT-03), 2026-10-22
 
 - **Pedido.** Crear e implementar en la misma sesión la [spec 012](../specs/012-deteccion-caidas/spec.md): regla de caída en Edge, riesgo `fall` en el backend con aviso push, métricas KPI, `edge/bench.py`, pruebas sintéticas y protocolo de 20 caídas.
 - **Hecho.** `edge/fall.py` (velocidad de descenso de la cadera, descenso, ángulo del tronco, relación de aspecto y confirmación en el suelo; umbrales por `--fall-*` o JSON), `edge/metrics.py`, `edge/bench.py`, integración en `edge/run.py` con logging y reintento. Backend: `risk="fall"` (migración aditiva 0007 solo de `choices`), log de recepción, `received_at` en el historial y aviso «Posible caída» con prioridad alta en `send_mobile_reminders`. App: texto de caída en el historial. Protocolo en [edge/README.md](../edge/README.md#protocolo-de-prueba-20-caídas-simuladas).

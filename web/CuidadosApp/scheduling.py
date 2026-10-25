@@ -10,7 +10,8 @@ from django.utils import timezone
 
 from PlanesApp.services import locked_user
 
-from .capacity import capacity_state, materialize
+from . import access
+from .capacity import materialize
 from .models import (
     CareEvent,
     CareTask,
@@ -62,9 +63,9 @@ def occurrence(obj, date, hour, kind, user):
     }
 
 
-def agenda(user, now=None, patient_id=None):
+def agenda(user, now=None, patient_id=None, roles=access.ALL):
     now = now or timezone.now()
-    ids = capacity_state(user, now)["active_ids"]
+    ids = access.active_ids_for(user, now, roles)
     if patient_id:
         ids = [pk for pk in ids if pk == patient_id]
     today = now.astimezone(ZONE).date()
@@ -104,7 +105,7 @@ def agenda(user, now=None, patient_id=None):
     events = {
         e.occurrence_key: e
         for e in CareEvent.objects.filter(
-            patient__owner=user, occurrence_key__in=[i["key"] for i in items]
+            patient_id__in=ids, occurrence_key__in=[i["key"] for i in items]
         )
     }
     for item in items:
@@ -132,8 +133,10 @@ def agenda(user, now=None, patient_id=None):
 
 
 def reminders(user, now=None):
+    """Care reminders go to the titular and caregivers, not invited family."""
     now = now or timezone.now()
-    ids = capacity_state(user, now)["active_ids"]
+    roles = access.RECIPIENTS["care"]
+    ids = access.active_ids_for(user, now, roles)
     candidates = []
     for timer in PostureTimer.objects.filter(
         patient_id__in=ids, paused=False, next_due_at__isnull=False
@@ -151,7 +154,7 @@ def reminders(user, now=None):
                     "due": timer.next_due_at,
                 }
             )
-    for item in agenda(user, now):
+    for item in agenda(user, now, roles=roles):
         if item["overdue"]:
             candidates.append(
                 {

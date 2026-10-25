@@ -1,6 +1,23 @@
-# Identidad del proyecto derivado
+# Identidad del proyecto
 
-Evolución actual: **VIGIA para cuidadores**, [009 / CuidadosApp](../specs/009-cuidados-cuidadores/spec.md) implementada tras autorización posterior completa. Pacientes propios para todos los cargos, medicamentos/horarios, guías visuales, registro manual, historial y avisos con la web abierta. Free $0/un paciente, Plus $4.990/tres y Premium $9.990/ilimitados; IA/cámaras futuras. [Validación](../specs/009-cuidados-cuidadores/validation.md): 158 pruebas OK, migraciones ensayadas en memoria y navegador. Revisión manual, aceptación y aplicación de migraciones en DB existente pendientes.
+**VIGIA** apoya el cuidado domiciliario de personas con dependencia (Proyecto de Título, INACAP). Componentes: portal y backend Django (`web/`), app Flutter Android (`mobile/`, iOS fuera de alcance por D-011-02) y nodo Edge con MediaPipe (`edge/`), que envía solo metadatos.
+
+| Campo | Valor actual (2026-10-25) |
+|---|---|
+| Nombre del producto | VIGIA |
+| Specs vigentes | [010 app móvil](../specs/010-aplicacion-movil/spec.md), [011 ecosistema instalable](../specs/011-ecosistema-instalable/spec.md), [012 detección de caídas](../specs/012-deteccion-caidas/spec.md). Base 001–009 conservada |
+| Usuarios | Hoy una cuenta dueña configura y opera sus pacientes. Decidido (D-050, sin implementar): familiar que configura y supervisa, cuidador que ejecuta, con vínculo por código |
+| Alcance funcional | Planes Free/Plus/Premium con pagos simulados; pacientes, medicamentos, agenda, posturas, reloj, historial; avisos locales y push (Firebase solo simulado); detección de postura, inmovilidad y caídas en el nodo (Premium, 1 nodo por paciente, D-055) |
+| Pendientes principales | Familiar/cuidador (D-050), privacidad (D-052), push de caída inmediato (D-051), Firebase real (D-054), protocolo de caídas y mediciones RNF (D-053), pruebas en Android físico (011). Detalle en [ESTADO_PROYECTO](ESTADO_PROYECTO.md) |
+| Requerimientos | HU-01..07, RT-01..03 y no funcionales del informe; matriz en [TRAZABILIDAD](TRAZABILIDAD.md#matriz-hurtrnf-vigente). Los no funcionales son objetivos, ninguno medido |
+| Idioma / zona horaria | es-CL / America/Santiago |
+| Hosting e integraciones | Hosting por definir; SQLite en desarrollo; disponibilidad declarada como objetivo no medido (D-060). Google OAuth y Firebase requieren credenciales externas |
+
+Las secciones siguientes son antecedentes históricos y se conservan sin cambios; ante diferencias rige la tabla anterior.
+
+## Antecedente — 009
+
+Evolución: **VIGIA para cuidadores**, [009 / CuidadosApp](../specs/009-cuidados-cuidadores/spec.md) implementada tras autorización posterior completa. Pacientes propios para todos los cargos, medicamentos/horarios, guías visuales, registro manual, historial y avisos con la web abierta. Free $0/un paciente, Plus $4.990/tres y Premium $9.990/ilimitados; IA/cámaras futuras. [Validación](../specs/009-cuidados-cuidadores/validation.md): 158 pruebas OK, migraciones ensayadas en memoria y navegador. Revisión manual, aceptación y aplicación de migraciones en DB existente pendientes.
 
 Estado: copia de la base con PlanesApp y CuidadosApp implementadas tras autorización explícita; aceptación funcional e instalación en DB existente pendientes.
 

@@ -213,3 +213,29 @@ class SelectionForm(SignedForm):
             owner=user, active=True
         )
         self.fields["patients"].label_from_instance = lambda patient: patient.name
+
+
+class InviteForm(forms.Form):
+    role = forms.ChoiceField(
+        label="Rol de la persona invitada",
+        choices=[
+            ("cuidador", "Cuidador: ve la agenda y registra cuidados y posturas"),
+            ("familiar", "Familiar: configura cuidados y revisa el historial"),
+        ],
+    )
+
+
+class JoinForm(forms.Form):
+    code = forms.CharField(
+        label="Código de invitación",
+        max_length=20,
+        help_text="Lo entrega la persona responsable del paciente. Vence a las 48 horas.",
+        widget=forms.TextInput(attrs={"autocomplete": "off", "autocapitalize": "characters"}),
+    )
+    confirm = forms.CharField(required=False, widget=forms.HiddenInput)
+
+    def __init__(self, *args, confirming=False, **kwargs):
+        super().__init__(*args, **kwargs)
+        if confirming:
+            # Second step: the person already saw the patient and role.
+            self.fields["code"].widget = forms.HiddenInput()

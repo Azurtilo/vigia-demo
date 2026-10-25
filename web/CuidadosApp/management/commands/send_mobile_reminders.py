@@ -8,10 +8,9 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from django.utils import timezone
 
-from CuidadosApp.capacity import capacity_state
+from CuidadosApp.access import risk_patient_ids
 from CuidadosApp.models import MobileDevice, PostureObservation, PushReceipt
 from CuidadosApp.scheduling import reminders
-from PlanesApp.entitlements import capabilities
 from PlanesApp.services import locked_user
 
 # Lock-screen text never names the patient. Falls go first and with high priority.
@@ -62,8 +61,9 @@ class Command(BaseCommand):
                     for r in reminders(user)
                     if not r["seen"] and not (device.local_posture_reminders and r["key"].startswith("posture:"))
                 ]
-                if capabilities(user)["features"]["risk_alerts"]:
-                    ids = capacity_state(user)["active_ids"]
+                # Spec 013: titular, family and caregivers (D-063), titular's plan.
+                ids = risk_patient_ids(user)
+                if ids:
                     rows = PostureObservation.objects.filter(
                         node__patient_id__in=ids,
                         node__active=True,

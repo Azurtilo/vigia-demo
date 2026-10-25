@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from django.templatetags.static import static
 from django.utils import timezone
 
-from CuidadosApp import capacity, forms, scheduling, services
+from CuidadosApp import access, capacity, forms, scheduling, services
 from CuidadosApp.models import (
     CareEvent,
     CareGuide,
@@ -31,6 +31,16 @@ def patient_data(p):
             "active",
             "version",
         )
+    }
+
+
+def patient_payload(p, role, active_ids):
+    """Patient fields plus the caller's role; the server still enforces each action."""
+    return {
+        **patient_data(p),
+        "role": role,
+        "allowed_actions": access.allowed_actions(role),
+        "eligible": p.pk in active_ids,
     }
 
 
@@ -93,10 +103,13 @@ class CapabilitiesView(MobileView):
 class PatientsView(MobileView):
     def get(self, request):
         state = capacity.capacity_state(request.user)
+        roles = access.roles_for(request.user)
+        active = set(access.active_ids_for(request.user))
         return JsonResponse(
             {
                 "patients": [
-                    patient_data(p) for p in Patient.objects.filter(owner=request.user)
+                    patient_payload(p, roles[p.pk], active)
+                    for p in access.accessible_patients(request.user)
                 ],
                 "capacity": {
                     k: state[k] for k in ("limit", "active_ids", "pending", "count")
@@ -116,10 +129,13 @@ class PatientsView(MobileView):
 
 class PatientView(MobileView):
     def get(self, request, pk):
-        p = services.own_patient(request.user, pk)
+        p, role = access.patient_for(request.user, pk, "view")
         timer = PostureTimer.objects.filter(patient=p).first()
         generation = timer.generation if timer else 0
-        data = patient_data(p)
+        data = patient_payload(p, role, access.active_ids_for(request.user))
+        kinds = ["posture", "timer"]
+        if role in access.ACTIONS["archive"]:
+            kinds += ["archive", "reactivate"]
         data["tokens"] = {
             kind: services.action_token(
                 request.user,
@@ -127,7 +143,7 @@ class PatientView(MobileView):
                 kind,
                 version=generation if kind in ("posture", "timer") else p.version,
             )
-            for kind in ("archive", "reactivate", "posture", "timer")
+            for kind in kinds
         }
         data["timer"] = (
             {
@@ -143,7 +159,7 @@ class PatientView(MobileView):
         return JsonResponse(data)
 
     def post(self, request, pk):
-        p = services.own_patient(request.user, pk)
+        p, _ = access.patient_for(request.user, pk, "edit_patient")
         form = self.validated(forms.PatientForm(self.data, instance=p))
         return JsonResponse(
             patient_data(
@@ -169,7 +185,7 @@ class DailyView(MobileView):
     def get(self, request, pk, kind):
         if kind not in ("tasks", "medications"):
             raise Http404
-        p = services.own_patient(request.user, pk)
+        p, _ = access.patient_for(request.user, pk, "view")
         model = CareTask if kind == "tasks" else Medication
         return JsonResponse(
             {"items": [daily_data(obj) for obj in model.objects.filter(patient=p)]}
@@ -178,7 +194,7 @@ class DailyView(MobileView):
     def post(self, request, pk, kind, object_pk=None):
         if kind not in ("tasks", "medications"):
             raise Http404
-        p = services.own_patient(request.user, pk)
+        p, _ = access.patient_for(request.user, pk, "configure")
         task = kind == "tasks"
         model = CareTask if task else Medication
         obj = get_object_or_404(model, pk=object_pk, patient=p) if object_pk else None
@@ -195,7 +211,7 @@ class AgendaView(MobileView):
     def get(self, request):
         pid = request.GET.get("patient")
         if pid:
-            pid = services.own_patient(request.user, pid).pk
+            pid = access.patient_for(request.user, pid, "view")[0].pk
         items = []
         for i in scheduling.agenda(request.user, patient_id=pid):
             items.append(
@@ -244,7 +260,7 @@ class TimerView(MobileView):
 
 class HistoryView(MobileView):
     def get(self, request, pk):
-        p = services.own_patient(request.user, pk)
+        p, _ = access.patient_for(request.user, pk, "history")
         page = max(1, int(request.GET.get("page", 1)))
         rows = list(
             CareEvent.objects.filter(patient=p).select_related("author")[
@@ -313,7 +329,7 @@ class CapacityView(MobileView):
 class TimerScheduleView(MobileView):
     """Only eligible owned timers; no names/clinical data in local notifications."""
     def get(self, request):
-        ids = capacity.capacity_state(request.user)["active_ids"]
+        ids = access.active_ids_for(request.user, roles=access.RECIPIENTS["care"])
         rows = PostureTimer.objects.filter(patient_id__in=ids, paused=False, next_due_at__isnull=False)
         return JsonResponse({"items": [{"id": t.patient_id, "generation": t.generation,
             "due": t.next_due_at} for t in rows], "server_time": timezone.now()})

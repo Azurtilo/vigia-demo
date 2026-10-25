@@ -72,3 +72,7 @@ Sustituye las notas anteriores de SDK ausente y APK obsoleto: SDK3.47.7 restaura
 El APK usa inicialmente http://10.0.2.2:8000 (emulador Android); un teléfono físico necesita servidor de pruebas accesible y configurar su dirección desde «Servidor de pruebas» en login. No usar127.0.0.1 del teléfono para conectar al Mac. Para acceso LAN se debe configurar VIGIA_DEMO_HOSTS y escuchar en la interfaz correspondiente; el servidor actual solo escucha en127.0.0.1. No exponer la demo a Internet.
 
 MediaPipe ahora tiene dos orígenes: análisis puntual local en teléfono (calibrar, analizar y guardar metadatos) y monitoreo continuo mediante nodo fijo. La vista web no ejecuta la cámara del teléfono. Inferencia real pendiente de prueba física. iOS pendiente de espacio, SDK/CocoaPods y compilación. Ver [resultados y limitaciones](../specs/010-aplicacion-movil/validation.md).
+
+## Roles en la app (spec 013), 2026-10-25
+
+`GET /api/v1/patients` y `GET /api/v1/patients/<id>` incluyen `role` y `allowed_actions`; la app oculta lo que el rol no permite y no pide historial, observaciones ni nodos si no corresponde. Endpoints nuevos: `patients/<id>/access` (titular), `access/preview`, `access/accept`, `access/<id>/revoke`, `invitations/<id>/revoke`, `patients/<id>/leave` y `patients/<id>/summary`. Un servidor sin roles mantiene el comportamiento anterior (`features/patients/access.dart`).

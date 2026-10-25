@@ -1,6 +1,30 @@
 # Trazabilidad de requisitos y pruebas
 
-El primer módulo de negocio solicitado, PlanesApp (007), está implementado con pruebas de servidor y evidencia visual parcial. La spec transversal 001-CalidadBase y evoluciones 002–006 conservan su evidencia histórica.
+La matriz siguiente es la vista vigente de los requerimientos del informe. Las secciones por spec, más abajo, conservan el detalle y la evidencia histórica.
+
+## Matriz HU/RT/RNF vigente
+
+Actualizada el 2026-10-25 (tras implementar la 013). Estados: **Cubierto** (implementado y probado), **Parcial** (implementado con un límite declarado), **Sin evidencia** (implementado o decidido, sin medición o sin prueba en dispositivo). Pruebas automáticas: Django 202, Edge 22 y Flutter 22 OK en Windows (2026-10-25).
+
+| Req. | RF | Prueba / evidencia | Estado y límite |
+|---|---|---|---|
+| HU-01 Familiar configura plan y medicación | RF-009, RF-010-02/03, RF-013-07 | Suite Django CuidadosApp; `test_web_matrix_by_role`, `test_api_matrix_by_role_without_side_effects` | **Cubierto** en pruebas automáticas (titular y familiar configuran; cuidador 403). Sin prueba en dispositivo |
+| HU-02 Cuidador ve agenda diaria | RF-010-03, RF-013-08/14 | `test_lists_include_patients_of_two_titulars`, matriz API (`summary`), `patient_roles_test.dart` | **Cubierto** en pruebas automáticas. Sin prueba en dispositivo |
+| HU-03 Cuidador confirma medicamento (auditable) | RF-009, RF-010-03/05, RF-013-09 | `test_caregiver_is_the_author_and_occurrence_is_recorded_once` | **Cubierto**: autor = cuidador y ocurrencia única entre titular y cuidador |
+| HU-04 Cuidador registra cambio de posición | RF-010-04, RF-011-02 | `test_start_clock_without_fabricating_care_and_reject_replay`, `clock_panel_test.dart` | **Parcial**: el cuidador registra con autor propio (013); falta prueba en Android físico (T-011-09) |
+| HU-05 Familiar recibe push ante riesgo | RF-010-07, RF-011-03, RF-012-07 | `test_fall_push_uses_existing_channel_once_and_first`, `test_late_or_failed_risk_push_is_retried_until_delivered_once` (Firebase simulado) | **Sin evidencia** real: Firebase de prueba (D-054), push inmediato (D-051) y texto genérico (D-058) pendientes |
+| HU-06 Familiar ve historial | RF-010-05, RF-012-06 | `test_edge_fall_is_stored_in_history_with_reception_time` | **Parcial**: delegación y autoría cubiertas (013, `test_revocation_stops_actions_and_keeps_authorship`); la caída aparece como «Indeterminada» en el historial móvil (QA-16) |
+| HU-07 Familiar gestiona suscripción en el portal | RF-007, RF-010-06/11 | Suite Django PlanesApp; [validación 007](../specs/007-planes-app/validation.md) | **Parcial**: pagos simulados; ensayo web ↔ app pendiente (T-011-05) |
+| RT-01 Postura con MediaPipe | RF-010-09 | `edge.test_posture`, `edge.smoke` en Windows | **Parcial**: pruebas sintéticas; sin ejecución en vivo con cámara |
+| RT-02 Inmovilidad por tiempo configurable | RF-010-09 | `test_immobility_once_and_reset_on_gap_or_position`, `test_missing_signal_never_generates_immobility` | **Parcial**: pruebas sintéticas; sin ejecución en vivo |
+| RT-03 Caídas | RF-012-01..05, 10..12 | `edge.test_fall`, `edge.test_run` | **Parcial**: pruebas sintéticas; protocolo de caídas sin ejecutar (D-053) |
+| RNF sin video a la nube | RF-012-05, contrato de 7 claves de 010 | `test_edge_plan_revocation_dedup_and_no_clinical_event` (rechaza un campo `image` con 400) | **Cubierto** por contrato cerrado y prueba de regresión |
+| RNF alerta de caída ≤ 10 s | RF-012-07/08 | Sin medición de punta a punta (QA-15) | **Sin evidencia**: depende de D-051 y D-054 |
+| RNF inferencia < 100 ms por cuadro | RF-012-08/09 | `edge/bench.py` solo con video sintético sin personas (no válido) | **Sin evidencia**: medir con el video del protocolo |
+| RNF caídas ≥ 90 % y FP ≤ 5 % | RF-012-01..03 | Protocolo escrito en [edge/README.md](../edge/README.md) | **Sin evidencia**: protocolo sin ejecutar (D-053) |
+| RNF disponibilidad ≥ 99,5 % | — | — | Objetivo de diseño **no medido** (D-060) |
+
+Pendientes que cambian estados: prueba en dispositivo de la [spec 013](../specs/013-cuidado-delegado/validation.md) (HU-01/02/03/04/06), D-051/D-054/D-058 (HU-05 y alerta ≤ 10 s), D-053 (RT-03 y precisión), T-011-05/09 (dispositivo).
 
 Actualizar al crear una spec y después de verificarla:
 
@@ -256,3 +280,22 @@ RF-011-01→T09/10 instalación;02→T01/02 reloj (relacionado RF-010-04/10);03�
 | RF-012-10 | T-012-02 | `edge/test_fall.py` | Sentarse, sentadilla, inclinarse, cama lento/rápido sin alerta. Sintético |
 
 RT-03 → RF-012-01..05; HU-05 → RF-012-07; HU-06 → RF-012-06. Los RNF de caídas (≥ 90 % / ≤ 5 %, ≤ 10 s, < 100 ms) siguen sin medir: protocolo en [edge/README.md](../edge/README.md#protocolo-de-prueba-20-caídas-simuladas).
+
+## 013 — Cuidado delegado, trazabilidad prevista 2026-10-25
+
+[Spec](../specs/013-cuidado-delegado/spec.md), [plan](../specs/013-cuidado-delegado/plan.md), [tareas](../specs/013-cuidado-delegado/tasks.md). Propuesta: sin implementación ni pruebas ejecutadas.
+
+| Requerimiento | RF-013 | Tareas T-013 | Evidencia prevista |
+|---|---|---|---|
+| HU-01 (familiar configura) | 07, 09 | 02–04, 07 | Matriz por rol: titular y familiar configuran; cuidador recibe 403 |
+| HU-02 (cuidador ve agenda) | 08, 14 | 04, 07, 10 | Agenda con pacientes de dos titulares; vista resumida del cuidador |
+| HU-03 (confirmación auditable) | 09 | 03 | `CareEvent.author` = cuidador; ocurrencia única entre titular y cuidador |
+| HU-04 (cambio de posición) | 09 | 03, 10 | Postura y reloj registrados por el cuidador con autor propio |
+| HU-05 (push al familiar) | 11 | 09 | Riesgo a titular, familiar y cuidador (D-063); cuidado pendiente a titular y cuidador |
+| HU-06 (historial y trazabilidad) | 06, 07, 14 | 04, 05, 07 | Historial con autoría que se conserva tras la revocación; cuidador sin historial completo |
+| Acceso por invitación (D-050) | 01–06, 10, 13 | 01, 05, 06, 07, 10 | Código de un solo uso, vencido, propio, duplicado, límite de intentos, cupos sin cambio |
+| QA-2026-10-22-04 / 08 | 07 | 07, 08 | 404 para ajenos en todos los endpoints con paciente, incluida la detección |
+
+### 013 — Evidencia ejecutada, 2026-10-25
+
+Todas las filas de la tabla anterior tienen prueba automática en `web/CuidadosApp/test_access.py` (21 pruebas) y `mobile/test/patient_roles_test.dart` (3). Detalle por RF en [validation.md](../specs/013-cuidado-delegado/validation.md). Pendiente: navegador y Android físico.

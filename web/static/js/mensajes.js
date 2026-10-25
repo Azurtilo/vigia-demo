@@ -4,15 +4,24 @@
     if (!root) { root = document.createElement("div"); root.className = "notifications"; root.setAttribute("aria-label", "Notificaciones"); document.body.append(root); }
     return root;
   }
+  // Every toast fades out by itself; errors and warnings stay longer so they can be read.
+  const durations = { success: 6000, info: 6000, warning: 10000, error: 12000 };
+  function dismiss(toast) {
+    if (toast.classList.contains("is-leaving")) return;
+    toast.classList.add("is-leaving");
+    const done = () => toast.remove();
+    toast.addEventListener("animationend", done, { once: true });
+    setTimeout(done, 400); // reduced motion or no animation support
+  }
   function prepare(toast, kind) {
     toast.dataset.kind = kind;
     toast.setAttribute("role", kind === "error" ? "alert" : "status");
     const close = toast.querySelector(".toast-close");
     close?.addEventListener("click", () => toast.remove());
-    if (kind === "error" || kind === "warning") return;
     let timer;
     const pause = () => clearTimeout(timer);
-    const resume = () => { pause(); timer = setTimeout(() => { if (!toast.matches(":hover") && !toast.contains(document.activeElement)) toast.remove(); }, 8000); };
+    // Hover or keyboard focus pauses the countdown; leaving restarts it.
+    const resume = () => { pause(); timer = setTimeout(() => { if (!toast.matches(":hover") && !toast.contains(document.activeElement)) dismiss(toast); }, durations[kind]); };
     toast.addEventListener("mouseenter", pause);
     toast.addEventListener("mouseleave", resume);
     toast.addEventListener("focusin", pause);

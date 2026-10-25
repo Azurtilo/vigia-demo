@@ -57,5 +57,5 @@ cd web
 ../.venv/Scripts/python.exe manage.py test UsuarioApp homeApp PlanesApp CuidadosApp --settings=core.test_settings
 ```
 
-- Edge (entorno separado, `edge/requirements.txt`): `python -m unittest edge.test_posture` desde la raíz.
+- Edge (entorno separado `.venv-edge-win`, `edge/requirements.txt`): `python -m unittest edge.test_posture edge.test_fall edge.test_run` desde la raíz.
 - Flutter, desde `mobile/`: `flutter analyze` y `flutter test`. `pubspec.yaml` exige Dart ^3.13.5; el SDK local está fijado en Flutter 3.47.7 (`C:\Users\josea\flutter`).
