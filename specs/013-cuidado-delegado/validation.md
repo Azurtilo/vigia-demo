@@ -36,7 +36,12 @@ Ajuste pedido en la misma revisión: los mensajes emergentes (toasts) solo se ce
 
 ## Límites y fallos
 
-- Sin prueba en Android físico con dos cuentas (titular y cuidador): depende de T-011-09.
+- **Pendiente: prueba en Android físico** con dos cuentas (titular y cuidador). Depende de T-011-09 (APK instalado y servidor alcanzable). Pasos y resultado esperado:
+  - código creado por el titular desde la app;
+  - el cuidador lo acepta con vista previa;
+  - el cuidador registra medicamento y postura;
+  - el titular ve la autoría;
+  - tras revocar, el cuidador recibe 404 y la ficha desaparece de su lista.
 - Push solo con Firebase simulado (D-054 pendiente).
 - SQLite no certifica el comportamiento de `select_for_update` bajo concurrencia real; la serialización por titular se verificó por diseño y con pruebas secuenciales.
 - El límite de intentos se guarda en la tabla `AccessCodeAttempt`, que crece sin purga; su conservación queda para la spec de privacidad (D-052).

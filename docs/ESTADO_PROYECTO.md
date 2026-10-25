@@ -14,7 +14,21 @@ Fecha: 2026-10-25.
 - **Evidencia (Windows).** Django **202 OK** (21 nuevas), check y makemigrations sin cambios, migración 0008 probada en avance y reversión. Edge **22 OK**. Flutter analyze sin problemas, **22 OK** (3 nuevas). [Validación](../specs/013-cuidado-delegado/validation.md).
 - **Revisión en navegador (mismo día).** El propietario revisó la web con el servidor demo y cuentas ficticias de los tres roles: «se ve todo bien». A pedido suyo, los mensajes emergentes ahora se cierran solos (6/10/12 s según tipo). Servidor detenido.
 - **No hecho.** Ensayo en Android físico con dos cuentas, Firebase real, merge, despliegue y migración de una base real.
-- **Siguiente paso seguro.** Ensayo en dispositivo; luego PR de `docs/decisiones-2026-10-25` y `feature/013-cuidado-delegado` hacia `develop`.
+- **Pendiente de la 013: prueba en Android físico.** Requiere un servidor alcanzable desde la red local (T-011-09) y dos cuentas ficticias. Pasos:
+  1. El titular crea un código desde la app.
+  2. El cuidador lo ingresa en «Unirme con un código» y confirma.
+  3. El cuidador registra un medicamento y una postura.
+  4. El titular ve esos registros con el nombre del cuidador.
+  5. El titular revoca el acceso y el cuidador deja de ver la ficha.
+
+  El resultado se anota en [validation.md](../specs/013-cuidado-delegado/validation.md).
+- **Orden siguiente (plan del 2026-10-25):**
+  1. Prueba de la 013 en Android físico.
+  2. PR de `docs/decisiones-2026-10-25` y `feature/013-cuidado-delegado` hacia `develop`.
+  3. Tareas fechadas de la 012: push de caída inmediato (D-051) con destinatarios de la 013 (D-063), texto genérico del push (D-058), `minSdk` 26 (D-057) y hallazgos QA técnicos (QA-09, 10, 16, 19, 21).
+  4. Spec 014 de privacidad (D-052).
+  5. En paralelo, por parte del propietario: Firebase de prueba (D-054) y protocolo de caídas con voluntarios (D-053).
+- **Siguiente paso seguro (detalle).** Ensayo en dispositivo; luego PR de `docs/decisiones-2026-10-25` y `feature/013-cuidado-delegado` hacia `develop`.
 
 ## Antecedente — spec 013 DOCUMENTAR, 2026-10-25
 
