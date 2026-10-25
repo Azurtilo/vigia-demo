@@ -81,6 +81,8 @@ Hallazgos de interfaz (no corregidos):
 - En Plus, la pestaña Plan dice «Puedes analizar con la cámara de este teléfono o consultar un nodo fijo vinculado» y la ficha «Analiza y guarda una postura con el teléfono…», aunque la cámara es solo Premium. El bloqueo funciona; el texto lo contradice.
 - Al llegar al límite de pacientes, la app deja llenar el formulario y dar el consentimiento antes de que el servidor rechace por cupo.
 
+**Corregidos el mismo día** (T-011-12/13/14 y T-014-12, rama `feature/011-detalles-interfaz`), con `test/interface_details_test.dart` (7 pruebas a 360 dp; todas fallaban antes) y repetidos en el teléfono: seis pestañas de 200 px; secciones de la ficha en dos filas de chips; un solo botón de avisos que alterna; Plan y Monitoreo sin la cámara en Free/Plus; cupo lleno avisado antes del formulario; formulario rechazado que vuelve con los datos y sin repetir el consentimiento; solo el aviso de política cuando falta aceptarla. Flutter **39 OK**.
+
 No verificado aquí: servidor por la red local (LAN), reinicio del teléfono y ahorro de batería con avisos pendientes.
 
 ## Pendiente

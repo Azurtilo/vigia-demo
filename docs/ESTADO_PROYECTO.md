@@ -8,7 +8,7 @@ Lista única de lo que falta. El detalle vive en cada spec y en DECISIONES. «Pr
 
 | # | Pendiente | Dónde | Quién |
 |---|---|---|---|
-| 1 | Revisar y fusionar la [PR #4](https://github.com/Azurtilo/vigia-demo/pull/4) (014 y autoría en el panel) | `feature/014-privacidad` | Propietario |
+| 1 | ~~Revisar y fusionar la [PR #4](https://github.com/Azurtilo/vigia-demo/pull/4)~~ Fusionada en `develop` el 2026-10-25 (`0da7eda`) | — | Hecho |
 | 2 | Prueba en Android físico. **Hecho el 2026-10-25** (ELI NX9, Android 16, servidor por USB con `adb reverse`): instalación y login (T-011-09), HU-03, HU-04, permisos y aviso local con pantalla bloqueada (T-011-03), cierre de sesión sin alarmas (T-011-04), cupo Plus y bloqueo de cámara (T-011-05, parcial), flujo titular/cuidador de la 013, aceptación de política en el portal y consentimiento por paciente de la 014. Ver validaciones [011](../specs/011-ecosistema-instalable/validation.md#android-físico--2026-10-25), [013](../specs/013-cuidado-delegado/validation.md#límites-y-fallos) y [014](../specs/014-privacidad/validation.md#android-físico). **Falta:** servidor por la red local, T-011-05 con Free/Premium y reducción de cupo, revisión visual (T-011-06), validación integrada (T-011-11) | specs 011, 013, 014 | Propietario |
 | 3 | Firebase de prueba con credenciales fuera del repositorio; push real con la app cerrada; medir caída → teléfono (≤ 10 s) | D-054, T-011-04, QA-15 | Propietario |
 | 4 | Protocolo de caídas con voluntarios (20 caídas y 40 actividades normales), `bench.py` con ese video (p50/p95) y ajuste de umbrales | D-053, `edge/README.md` | Propietario + equipo |
@@ -18,11 +18,19 @@ Lista única de lo que falta. El detalle vive en cada spec y en DECISIONES. «Pr
 | 8 | Aplicar las migraciones (CuidadosApp 0008/0009, PrivacidadApp 0001) en una base real, con respaldo y autorización | — | Propietario |
 | 9 | RNF de disponibilidad ≥ 99,5 %: declarado objetivo de diseño no medido; describir la arquitectura necesaria en el informe | D-060 | Equipo (informe) |
 | 10 | Decidir si `.claude/skills/` (skill `validar-produccion-sdd`) se versiona | raíz del repo | Propietario |
-| 11 | Detalles de interfaz hallados en Android el 2026-10-25, sin corregir: pestaña «Perfil» fuera de pantalla, «Historial» cortado en la ficha, botones de avisos duplicados, textos de cámara que contradicen el plan Plus, alta de paciente que se pierde si el servidor la rechaza, inicio vacío bajo el aviso de política. (Los fallos de «Unirme con un código» y del login con política pendiente se corrigieron el mismo día: T-013-13 y T-014-11.) | specs 011, 013, 014 | Equipo (DOCUMENTAR) |
+| 11 | Revisar y fusionar la PR de `feature/011-detalles-interfaz` (T-011-12/13/14 y T-014-12: navegación en pantallas angostas, avisos, textos por plan, alta de paciente y aviso de política) | `feature/011-detalles-interfaz` | Propietario |
 
 Trabajo futuro registrado (no comprometido): invitación por correo (D-050), traspaso de titularidad, papelera de pacientes con «deshacer» (D-067), cifrado en reposo y PostgreSQL (014), registro de lecturas, push inmediato de inmovilidad (D-051), iOS (D-011-02).
 
-## Estado vigente — prueba en Android físico y dos correcciones, 2026-10-25
+## Estado vigente — PR #4 fusionada y detalles de interfaz, 2026-10-25
+
+- **Pedido.** «acepta el merge y arregla los detalles de interfaz».
+- **Hecho.** PR #4 fusionada en `develop` (merge commit `0da7eda`). Rama `feature/011-detalles-interfaz` desde `develop` con T-011-12/13/14 y T-014-12 ([tareas 011](../specs/011-ecosistema-instalable/tasks.md), [tareas 014](../specs/014-privacidad/tasks.md)).
+- **Evidencia.** `flutter analyze` sin problemas; Flutter **39 OK** (7 nuevas en `interface_details_test.dart`, todas fallaban antes); cada detalle repetido en el ELI NX9.
+- **Datos demo.** `demo_premium` tiene además «Prueba Premium».
+- **Siguiente paso seguro.** PR de `feature/011-detalles-interfaz` hacia `develop` (fila 11).
+
+## Antecedente — prueba en Android físico y dos correcciones, 2026-10-25
 
 - **Pedido.** «prueba la app, inicia la app en el telefono conectado»; luego «sigue probando flujos […] ve actualizando la lista de pendientes» y «corrige fallos 1 y 2».
 - **Hecho.** App debug en ELI NX9 (Android 16) con el servidor demo por USB (`adb reverse`). Comprobados login, HU-03, HU-04, avisos locales con pantalla bloqueada (T-011-03 cerrada), cierre de sesión, cupo Plus, flujo titular/cuidador de la 013 y política y consentimiento de la 014. Detalle en las validaciones de [011](../specs/011-ecosistema-instalable/validation.md#android-físico--2026-10-25), [013](../specs/013-cuidado-delegado/validation.md#límites-y-fallos) y [014](../specs/014-privacidad/validation.md#android-físico).
