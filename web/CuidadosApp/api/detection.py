@@ -19,7 +19,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 from CuidadosApp.capacity import capacity_state
 from CuidadosApp.models import DetectionNode, PostureObservation
-from CuidadosApp.services import digest, own_patient
+from CuidadosApp.access import patient_for
+from CuidadosApp.services import acting, digest
 from PlanesApp.entitlements import capabilities
 from PlanesApp.services import locked_user
 
@@ -31,9 +32,11 @@ RISK_MAX_AGE = timedelta(hours=1)
 
 
 def allowed(user, patient):
-    if not user.is_active or not capabilities(user)["features"]["posture_detection"]:
+    """Detection follows the titular's plan and capacity (spec 013)."""
+    titular = patient.owner
+    if not user.is_active or not capabilities(titular)["features"]["posture_detection"]:
         raise PermissionDenied
-    if patient.pk not in capacity_state(user)["active_ids"]:
+    if patient.pk not in capacity_state(titular)["active_ids"]:
         raise PermissionDenied
 
 
@@ -53,13 +56,12 @@ def node_data(node):
 
 class NodesView(MobileView):
     def get(self, request, pk):
-        p = own_patient(request.user, pk)
+        p, _ = patient_for(request.user, pk, "manage_nodes")
         return JsonResponse({"items": [node_data(n) for n in p.detection_nodes.all()]})
 
     @transaction.atomic
     def post(self, request, pk):
-        user = locked_user(request.user)
-        p = own_patient(user, pk)
+        user, _, p, _ = acting(request.user, pk, "manage_nodes")
         allowed(user, p)
         name = self.data.get("name", "")
         if not isinstance(name, str):
@@ -82,8 +84,8 @@ class NodesView(MobileView):
 class RevokeNodeView(MobileView):
     @transaction.atomic
     def post(self, request, node_id):
-        user = locked_user(request.user)
-        node = get_object_or_404(DetectionNode, pk=node_id, patient__owner=user)
+        node = get_object_or_404(DetectionNode, pk=node_id)
+        acting(request.user, node.patient_id, "manage_nodes")
         node.active = False
         node.save(update_fields=["active"])
         return JsonResponse({"revoked": True})
@@ -91,7 +93,7 @@ class RevokeNodeView(MobileView):
 
 class ObservationsView(MobileView):
     def get(self, request, pk):
-        p = own_patient(request.user, pk)
+        p, _ = patient_for(request.user, pk, "detection")
         page = max(1, int(request.GET.get("page", 1)))
         rows = list(
             PostureObservation.objects.filter(Q(node__patient=p) | Q(phone_patient=p)).select_related("node")[
@@ -116,7 +118,7 @@ class ObservationsView(MobileView):
                     for r in rows[:30]
                 ],
                 "next_page": page + 1 if len(rows) > 30 else None,
-                "enabled": capabilities(request.user)["features"]["posture_detection"],
+                "enabled": capabilities(p.owner)["features"]["posture_detection"],
             }
         )
 
@@ -265,14 +267,13 @@ class EdgeView(View):
 class PhoneObservationsView(MobileView):
     """Session-authenticated snapshots, never continuous-risk events or node credentials."""
     def get(self, request, pk):
-        patient = own_patient(request.user, pk)
+        patient, _ = patient_for(request.user, pk, "record")
         allowed(request.user, patient)
         return JsonResponse({"enabled": True, "mode": "snapshot", "server_time": timezone.now()})
 
     @transaction.atomic
     def post(self, request, pk):
-        user = locked_user(request.user)
-        patient = own_patient(user, pk)
+        user, _, patient, _ = acting(request.user, pk, "record")
         allowed(user, patient)
         data = self.data
         required = {"event_id", "observed_at", "posture", "confidence", "platform", "model_version", "rule_version"}
