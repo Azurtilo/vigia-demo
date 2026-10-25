@@ -60,7 +60,7 @@ Estado: implementadas; verificación sintética OK, prueba en vivo y protocolo p
 
 ## Tareas fechadas 2026-10-25 — push inmediato, texto genérico y QA técnicos
 
-Propuestas; no ejecutar sin autorización.
+Autorizadas el 2026-10-25: «autorizo implementacion de T-012-13 a T-012-21», con el push inmediato solo para caídas («prefiero solo caidas, al menos por ahora») y la migración 0009 aceptada.
 
 - [ ] T-012-13 — Envío común con reserva de recibo y FCM fuera de transacción.
   - RF: RF-012-14 (QA-09). Componente: web.
@@ -69,7 +69,7 @@ Propuestas; no ejecutar sin autorización.
 - [ ] T-012-14 — Push inmediato tras recibir un riesgo.
   - RF: RF-012-13 (D-051). Componente: web. Depende de: T-012-13.
   - Archivos: `web/CuidadosApp/api/detection.py`, `push.py`.
-  - Hecho cuando: la caída produce push sin ejecutar el comando, el comando posterior no lo repite y el nodo recibe 201 aunque FCM falle.
+  - Hecho cuando: la caída produce push sin ejecutar el comando, el comando posterior no lo repite y el nodo recibe 201 aunque FCM falle. La inmovilidad no se envía de inmediato.
 - [ ] T-012-15 — Texto genérico, visibilidad privada y destinatarios por rol.
   - RF: RF-012-07 (D-058, D-063). Componente: web. Depende de: T-012-13.
   - Hecho cuando: prueba del mensaje (texto, `visibility=private`, prioridad alta solo en caída) y de los destinatarios.

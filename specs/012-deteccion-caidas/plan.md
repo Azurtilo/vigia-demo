@@ -65,7 +65,7 @@ Propuesta; sin código. Inspección: `api/detection.py` (`EdgeView` bloquea al t
 - **Confirmar o liberar:** si FCM acepta, `confirmed=True`; si falla, se borra la reserva. Las reservas sin confirmar con más de 2 minutos se borran antes de reservar.
 - Lo usan el comando y el envío inmediato, así que el recibo deduplica entre ambos.
 
-**Push inmediato (RF-012-13).** En `EdgeView`, tras crear una observación con riesgo, `transaction.on_commit` lanza el envío para los dispositivos activos de `access.recipients(patient, "risk")` si el plan del titular tiene `risk_alerts`. El envío corre en un hilo daemon para no demorar la respuesta al nodo. Un ajuste `VIGIA_PUSH_INLINE` permite ejecutarlo en línea en las pruebas. Sin `VIGIA_PUSH_ENABLED` o sin `firebase_admin` no hace nada y el comando sigue como reintento.
+**Push inmediato (RF-012-13).** En `EdgeView`, tras crear una observación de caída (la inmovilidad queda en el comando, decisión del 2026-10-25), `transaction.on_commit` lanza el envío para los dispositivos activos de `access.recipients(patient, "risk")` si el plan del titular tiene `risk_alerts`. El envío corre en un hilo daemon para no demorar la respuesta al nodo. Un ajuste `VIGIA_PUSH_INLINE` permite ejecutarlo en línea en las pruebas. Sin `VIGIA_PUSH_ENABLED` o sin `firebase_admin` no hace nada y el comando sigue como reintento.
 
 **Comando (RF-012-14).** Bajo el bloqueo solo valida la sesión y calcula los candidatos; las reservas, envíos y confirmaciones van fuera, con `push.py`.
 
