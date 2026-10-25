@@ -8,7 +8,7 @@ Leyenda: [x] hecho con evidencia técnica · [~] parcial (código presente, falt
 |---|---|---|---|
 | [x] | T-011-01 /02 | Regresión del reloj vacío y contrato de inicio sin evento | Autorización; reproducir con paciente nuevo y documentar conducta |
 | [x] | T-011-02 /02,04 | Inicio, intervalo, pausa/reanudación y conflictos en servicio/API/UI |01; pruebas propiedad, tokens, generación y reintentos |
-| [~] | T-011-03 /03 | Seleccionar dependencia y programar avisos locales en ambos SO |02; permisos, estados y prueba real de notificación |
+| [x] | T-011-03 /03 | Seleccionar dependencia y programar avisos locales en ambos SO |02; permisos, estados y prueba real de notificación |
 | [~] | T-011-04 /03,04 | Cancelación/reconciliación y coordinación con push |03; logout/archivo/otra cuenta/cambio web sin duplicados; migración si procede |
 | [ ] | T-011-05 /04 | Ensayo cuenta y plan web/app con backend único |02; Free/Plus/Premium y reducción de cupo verificadas |
 | [~] | T-011-06 /05 | Tokens y componentes web con estilo aprobado |Autorización; claro/oscuro/contraste/teclado/móvil y Tailwind |
@@ -60,7 +60,7 @@ Pedido del propietario: priorizar T-011-01/02 y T-011-03/04 con regresiones, APK
 | Tarea | Estado | Cambio |
 |---|---|---|
 | T-011-01/02 | [x] | Fallo del estado vacío todavía presente en web/API, reproducido con tests antes de corregir: la web ofrecía pausar/reanudar/cambiar intervalo sin reloj y respondía 404; la API también daba 404. Corregido en `configure_timer`, `TimerForm(timer=…)`, panel web («Crear recordatorio») y `ClockPanel` (deshabilitado si el paciente está archivado). Commit `08e33f4` |
-| T-011-03 | [~] | Sin cambios de código: implementación existente verificada con pruebas. Falta notificación real en Android físico |
+| T-011-03 | [x] | Sin cambios de código: implementación existente verificada con pruebas. Notificación real con pantalla bloqueada y permiso denegado/permitido comprobados en Android físico el 2026-10-25 ([validación](validation.md#android-físico--2026-10-25)) |
 | T-011-04 | [~] | Regresiones de cancelación/reemplazo al pausar, registrar postura, archivar y cerrar sesión (Flutter y Django). Commit `51d9728`. Falta verificación en dispositivo y reconciliación tras cambio web con la app cerrada |
 | T-011-09 | [~] | APK debug regenerado en Windows (ver validación). Falta instalación y login en un Android real |
 
