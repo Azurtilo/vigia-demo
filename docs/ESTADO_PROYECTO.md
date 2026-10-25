@@ -17,12 +17,18 @@ Lista única de lo que falta. El detalle vive en cada spec y en DECISIONES. «Pr
 | 7 | Hallazgos QA sin abordar: QA-07 (confirmar con prueba que la inmovilidad se reintenta), QA-12/13 (refactor de validación duplicada y funciones largas), QA-17 (límite de tasa en `/api/v1/edge/*`), QA-18 (HSTS al tener dominio con HTTPS), QA-20 (IDs de decisiones ambiguos) | `docs/QA_2026-10-22.md` | Equipo |
 | 8 | Aplicar las migraciones (CuidadosApp 0008/0009, PrivacidadApp 0001) en una base real, con respaldo y autorización | — | Propietario |
 | 9 | RNF de disponibilidad ≥ 99,5 %: declarado objetivo de diseño no medido; describir la arquitectura necesaria en el informe | D-060 | Equipo (informe) |
-| 10 | Decidir si `.claude/skills/` (skill `validar-produccion-sdd`) se versiona | raíz del repo | Propietario |
-| 11 | Revisar y fusionar la [PR #5](https://github.com/Azurtilo/vigia-demo/pull/5) de `feature/011-detalles-interfaz` (T-011-12/13/14 y T-014-12: navegación en pantallas angostas, avisos, textos por plan, alta de paciente y aviso de política) | `feature/011-detalles-interfaz` | Propietario |
+| 10 | ~~Decidir si `.claude/skills/` se versiona~~ Versionada con ajustes ([PR #6](https://github.com/Azurtilo/vigia-demo/pull/6), `1f620a6`) | — | Hecho |
+| 11 | ~~Revisar y fusionar la [PR #5](https://github.com/Azurtilo/vigia-demo/pull/5)~~ Detalles de interfaz fusionados en `develop` (`f71d1be`) | — | Hecho |
 
 Trabajo futuro registrado (no comprometido): invitación por correo (D-050), traspaso de titularidad, papelera de pacientes con «deshacer» (D-067), cifrado en reposo y PostgreSQL (014), registro de lecturas, push inmediato de inmovilidad (D-051), iOS (D-011-02).
 
-## Estado vigente — PR #4 fusionada y detalles de interfaz, 2026-10-25
+## Estado vigente — PR #5 y #6 fusionadas, 2026-10-25
+
+- **Pedido.** «fusiona todo».
+- **Hecho.** [PR #5](https://github.com/Azurtilo/vigia-demo/pull/5) (detalles de interfaz, `f71d1be`) y [PR #6](https://github.com/Azurtilo/vigia-demo/pull/6) (skill `validar-produccion-sdd` versionada, `1f620a6`) fusionadas en `develop`. Pendientes 1, 10 y 11 cerrados.
+- **Siguiente paso seguro.** Pendientes abiertos de la tabla: servidor por la red local y T-011-05 completo (fila 2), Firebase (3), protocolo de caídas (4), revisión legal (5), sesiones D-056 (6), QA (7), migración real (8) e informe de disponibilidad (9).
+
+## Antecedente — PR #4 fusionada y detalles de interfaz, 2026-10-25
 
 - **Pedido.** «acepta el merge y arregla los detalles de interfaz».
 - **Hecho.** PR #4 fusionada en `develop` (merge commit `0da7eda`). Rama `feature/011-detalles-interfaz` desde `develop` con T-011-12/13/14 y T-014-12 ([tareas 011](../specs/011-ecosistema-instalable/tasks.md), [tareas 014](../specs/014-privacidad/tasks.md)).
