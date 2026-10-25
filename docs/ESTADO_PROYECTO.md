@@ -18,7 +18,7 @@ Lista única de lo que falta. El detalle vive en cada spec y en DECISIONES. «Pr
 | 8 | Aplicar las migraciones (CuidadosApp 0008/0009, PrivacidadApp 0001) en una base real, con respaldo y autorización | — | Propietario |
 | 9 | RNF de disponibilidad ≥ 99,5 %: declarado objetivo de diseño no medido; describir la arquitectura necesaria en el informe | D-060 | Equipo (informe) |
 | 10 | Decidir si `.claude/skills/` (skill `validar-produccion-sdd`) se versiona | raíz del repo | Propietario |
-| 11 | Revisar y fusionar la PR de `feature/011-detalles-interfaz` (T-011-12/13/14 y T-014-12: navegación en pantallas angostas, avisos, textos por plan, alta de paciente y aviso de política) | `feature/011-detalles-interfaz` | Propietario |
+| 11 | Revisar y fusionar la [PR #5](https://github.com/Azurtilo/vigia-demo/pull/5) de `feature/011-detalles-interfaz` (T-011-12/13/14 y T-014-12: navegación en pantallas angostas, avisos, textos por plan, alta de paciente y aviso de política) | `feature/011-detalles-interfaz` | Propietario |
 
 Trabajo futuro registrado (no comprometido): invitación por correo (D-050), traspaso de titularidad, papelera de pacientes con «deshacer» (D-067), cifrado en reposo y PostgreSQL (014), registro de lecturas, push inmediato de inmovilidad (D-051), iOS (D-011-02).
 
