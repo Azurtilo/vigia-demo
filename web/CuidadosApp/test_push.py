@@ -161,8 +161,6 @@ class ImmediateFallPushTests(TestCase):
 class ReservationTests(TransactionTestCase):
     """Real transactions: TestCase would hide whether FCM runs inside one."""
 
-    serialized_rollback = True
-
     def setUp(self):
         user = User.objects.create_user("dispositivo", "d@example.test", PASSWORD)
         self.device = MobileDevice.objects.create(
@@ -193,3 +191,35 @@ class ReservationTests(TransactionTestCase):
             sent_at=timezone.now() - timedelta(minutes=3)
         )
         self.assertTrue(push.deliver(firebase.fcm, self.device, "edge:3", "texto"))
+
+
+class DemoSafetyTests(TestCase):
+    """QA-2026-10-22-10: the DEBUG demo never uses a versioned key or public hosts."""
+
+    def test_only_loopback_or_private_hosts(self):
+        from django.core.exceptions import ImproperlyConfigured
+
+        from core.demo_safety import private_hosts
+
+        self.assertEqual(
+            private_hosts("192.168.1.20, 10.0.0.5,127.0.0.1"),
+            ["192.168.1.20", "10.0.0.5", "127.0.0.1"],
+        )
+        self.assertEqual(private_hosts(""), [])
+        for bad in ("8.8.8.8", "demo.example.com", "0.0.0.0", "192.168.1.2,1.1.1.1"):
+            with self.subTest(hosts=bad), self.assertRaises(ImproperlyConfigured):
+                private_hosts(bad)
+
+    def test_secret_key_is_random_and_stable(self):
+        import tempfile
+        from pathlib import Path
+
+        from core.demo_safety import demo_secret_key
+
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / "secret_key"
+            first = demo_secret_key(path)
+            self.assertGreaterEqual(len(first), 50)
+            self.assertEqual(demo_secret_key(path), first)
+        with tempfile.TemporaryDirectory() as folder:
+            self.assertNotEqual(demo_secret_key(Path(folder) / "secret_key"), first)
