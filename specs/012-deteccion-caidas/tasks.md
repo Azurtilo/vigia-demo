@@ -62,37 +62,37 @@ Estado: implementadas; verificación sintética OK, prueba en vivo y protocolo p
 
 Autorizadas el 2026-10-25: «autorizo implementacion de T-012-13 a T-012-21», con el push inmediato solo para caídas («prefiero solo caidas, al menos por ahora») y la migración 0009 aceptada.
 
-- [ ] T-012-13 — Envío común con reserva de recibo y FCM fuera de transacción.
+- [x] T-012-13 — Envío común con reserva de recibo y FCM fuera de transacción.
   - RF: RF-012-14 (QA-09). Componente: web.
   - Archivos: `web/CuidadosApp/push.py` (nuevo), `mobile_models.py`, migración `0009`, `send_mobile_reminders.py`.
   - Hecho cuando: pruebas de no transacción durante el envío, liberación tras fallo y expiración de reservas; las pruebas actuales del comando siguen verdes; migración probada en avance y reversión.
-- [ ] T-012-14 — Push inmediato tras recibir un riesgo.
+- [x] T-012-14 — Push inmediato tras recibir un riesgo.
   - RF: RF-012-13 (D-051). Componente: web. Depende de: T-012-13.
   - Archivos: `web/CuidadosApp/api/detection.py`, `push.py`.
   - Hecho cuando: la caída produce push sin ejecutar el comando, el comando posterior no lo repite y el nodo recibe 201 aunque FCM falle. La inmovilidad no se envía de inmediato.
-- [ ] T-012-15 — Texto genérico, visibilidad privada y destinatarios por rol.
+- [x] T-012-15 — Texto genérico, visibilidad privada y destinatarios por rol.
   - RF: RF-012-07 (D-058, D-063). Componente: web. Depende de: T-012-13.
   - Hecho cuando: prueba del mensaje (texto, `visibility=private`, prioridad alta solo en caída) y de los destinatarios.
-- [ ] T-012-16 — Android mínimo API 26.
+- [x] T-012-16 — Android mínimo API 26.
   - RF: RF-012-15 (D-057). Componente: mobile.
   - Archivos: `mobile/android/app/build.gradle.kts`.
   - Hecho cuando: el archivo fija 26; `flutter analyze` y `flutter test` verdes.
-- [ ] T-012-17 — Título «Posible caída» en el historial móvil.
+- [x] T-012-17 — Título «Posible caída» en el historial móvil.
   - RF: RF-012-16 (QA-16). Componente: mobile.
   - Archivos: `mobile/lib/features/patients/patient_screen.dart`, prueba en `mobile/test/`.
   - Hecho cuando: prueba de widget con observación `fall`.
-- [ ] T-012-18 — Demo móvil sin clave pública ni hosts abiertos.
+- [x] T-012-18 — Demo móvil sin clave pública ni hosts abiertos.
   - Hallazgo: QA-10. Componente: web.
   - Archivos: `web/core/mobile_demo_settings.py`.
   - Hecho cuando: la clave se genera al primer arranque en `.mobile-demo/`; un host público en `VIGIA_DEMO_HOSTS` impide arrancar; prueba de la validación.
-- [ ] T-012-19 — Listado de usuarios sin N+1.
+- [x] T-012-19 — Listado de usuarios sin N+1.
   - Hallazgo: QA-19. Componente: web.
   - Archivos: `web/UsuarioApp/views.py`, pruebas de UsuarioApp.
   - Hecho cuando: número de consultas constante con más usuarios (`assertNumQueries`).
-- [ ] T-012-20 — Artefacto local de Android.
+- [x] T-012-20 — Artefacto local de Android.
   - Hallazgo: QA-21. Componente: mobile.
   - Hecho cuando: `mobile/android/app/Users/` eliminado e ignorado.
-- [ ] T-012-21 — Validación y documentación.
+- [x] T-012-21 — Validación y documentación.
   - Depende de: T-012-13..20.
   - Hecho cuando: suites Django, Edge y Flutter verdes; `validation.md`, TRAZABILIDAD (HU-05) y estado actualizados.
 
@@ -115,6 +115,10 @@ Usuario, 2026-10-22 (posterior): «Corrige QA-01, QA-02 y QA-03 antes de commite
 | 2026-10-22 | T-012-09 | `edge/README.md`, validation, índices | Documentado; **protocolo de 20 caídas no ejecutado** |
 | 2026-10-22 | T-012-10/12 | `edge/run.py`, `edge/test_run.py`, `detection.py` | Edge 22 OK (6 nuevos); mutación «envío en el bucle» detectada |
 | 2026-10-22 | T-012-11 | `send_mobile_reminders.py`, `test_mobile.py` | Django 181 OK (3 nuevos) |
+| 2026-10-25 | T-012-13/14/15 | `push.py`, `0009`, `send_mobile_reminders.py`, `detection.py`, `test_push.py` (e1f25c4) | Push de caída inmediato, reserva de recibos fuera de bloqueo, texto genérico |
+| 2026-10-25 | T-012-16/17/20 | `build.gradle.kts`, `patient_screen.dart`, `.gitignore` (da04a1d) | APK compilado con minSdk 26; Flutter 23 OK |
+| 2026-10-25 | T-012-18/19 | `demo_safety.py`, `mobile_demo_settings.py`, `UsuarioApp/views.py` (84daf76) | Django 210 OK |
+| 2026-10-25 | T-012-21 | validation, trazabilidad, estado | Documentado |
 
 ## Reanudación
 
