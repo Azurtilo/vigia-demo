@@ -76,3 +76,7 @@ MediaPipe ahora tiene dos orígenes: análisis puntual local en teléfono (calib
 ## Roles en la app (spec 013), 2026-10-25
 
 `GET /api/v1/patients` y `GET /api/v1/patients/<id>` incluyen `role` y `allowed_actions`; la app oculta lo que el rol no permite y no pide historial, observaciones ni nodos si no corresponde. Endpoints nuevos: `patients/<id>/access` (titular), `access/preview`, `access/accept`, `access/<id>/revoke`, `invitations/<id>/revoke`, `patients/<id>/leave` y `patients/<id>/summary`. Un servidor sin roles mantiene el comportamiento anterior (`features/patients/access.dart`).
+
+## Privacidad en la app (spec 014), 2026-10-25
+
+Si la API responde 403 con `consent_required`, la app muestra un aviso con botón al portal (`/privacidad/aceptar/`). Al agregar un paciente pide quién da el consentimiento y envía `consent_basis`, `representative_name`, `representative_relation` y `consent_confirm`. El perfil enlaza la política y la exportación o eliminación de la cuenta en el portal (`features/profile/privacy.dart`).

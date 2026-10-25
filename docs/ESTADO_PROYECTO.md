@@ -2,6 +2,22 @@
 
 Fecha: 2026-10-25.
 
+## Estado vigente — 014 privacidad implementada, 2026-10-25
+
+- **Pedido.** «respecto a p14 me parece todo bien, registralo […] autorizo implementar». También preguntó si conviene conservar por un tiempo los datos de un paciente eliminado: se recomendó no hacerlo y usar archivar como vía reversible (D-067).
+- **Hecho.** Rama `feature/014-privacidad`, commits 0870edb, 58de2f3 y 444d0c3. App `PrivacidadApp` con:
+  - política versionada y puerta de aceptación (en la API, 403 `consent_required`);
+  - consentimiento por paciente, con alcances cuidado y detección, que bloquea registros y la cámara;
+  - exportación JSON de cuenta y de paciente;
+  - eliminación de paciente y de cuenta con anonimización;
+  - comando `purge_expired_data` con los plazos de D-064.
+
+  La app móvil muestra el aviso y pide el consentimiento al crear un paciente. La demo quedó migrada y con consentimientos ficticios.
+- **Evidencia (Windows).** Django **218 OK** (16 nuevas), Edge **22 OK**, Flutter **26 OK** (4 nuevas); migración probada en avance y reversión. [Validación](../specs/014-privacidad/validation.md).
+- **Desviación.** `core.test_settings` desactiva las reglas para las suites anteriores; las pruebas de privacidad las activan.
+- **No hecho.** Revisión en navegador, Android físico, revisión legal de la política, merge.
+- **Siguiente paso seguro.** Revisión en navegador con la demo; PR de la 014 hacia `develop` (la PR #3 sigue abierta).
+
 ## Spec 014 privacidad — DOCUMENTAR, 2026-10-25
 
 - **Pedido.** «sigue con la spec 14».

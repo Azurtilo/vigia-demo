@@ -2,7 +2,7 @@
 
 Estado: borrador documental. Fecha: 2026-10-25.
 Módulo: app nueva `PrivacidadApp` (propuesta) y ajustes en `UsuarioApp`, `CuidadosApp` y la app móvil. Fuente: decisión D-052 del propietario (QA-2026-10-22-05, opción A): «Spec de privacidad: consentimiento (versión, fecha, titular o representante), plazo de conservación por tipo de dato, comando de purga, exportación y eliminación de cuenta».
-Implementación autorizada: NO. Revisión del usuario: pendiente.
+Implementación autorizada: sí, 2026-10-25 (D-064..D-067). Revisión del usuario: P-014-01..04 aprobadas.
 
 ## Problema y resultado
 
@@ -129,3 +129,5 @@ Decisiones para el propietario:
 ## Revisión y cambios
 
 2026-10-25: creada en fase DOCUMENTAR a partir de D-052. Sin aprobación ni autorización de implementación.
+
+2026-10-25 (posterior): el propietario aprueba P-014-01..04 (D-064..D-067) y autoriza implementar. Ante la consulta de conservar los datos de un paciente eliminado, se mantiene la eliminación definitiva; archivar es la vía reversible (ver D-067).

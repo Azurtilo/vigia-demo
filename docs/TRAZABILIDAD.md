@@ -312,3 +312,7 @@ Todas las filas de la tabla anterior tienen prueba automática en `web/CuidadosA
 | D-052: eliminación | 11–12 | 06, 07 | Sin filas remanentes; autor «Cuenta eliminada»; sin acceso ni avisos |
 | Trazabilidad de operaciones | 13 | 05–07 | `PrivacyOperation` sin identificadores |
 | RNF «sin video a la nube» | — | 04 | Se preserva; la detección exige consentimiento propio |
+
+### 014 — Evidencia ejecutada, 2026-10-25
+
+RF-014-01..13 con prueba automática en `web/PrivacidadApp/tests.py` (16 pruebas, reglas activadas) y RF-014-14 en `mobile/test/privacy_test.dart` (4). Detalle en [validation.md](../specs/014-privacidad/validation.md). QA-2026-10-22-05 pasa de «sin spec» a implementado en el prototipo, sin revisión legal ni cifrado en reposo.
