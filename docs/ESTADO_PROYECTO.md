@@ -2,6 +2,22 @@
 
 Fecha: 2026-10-25.
 
+## Spec 014 privacidad — DOCUMENTAR, 2026-10-25
+
+- **Pedido.** «sigue con la spec 14».
+- **Contexto.** [PR #2](https://github.com/Azurtilo/vigia-demo/pull/2) (013) fusionada en `develop`. [PR #3](https://github.com/Azurtilo/vigia-demo/pull/3) (ajustes de la 012) abierta.
+- **Hecho.** Rama `feature/014-privacidad` desde `develop` con:
+  - [spec](../specs/014-privacidad/spec.md) (14 RF);
+  - [plan](../specs/014-privacidad/plan.md), con app nueva `PrivacidadApp`, puerta de consentimiento, consentimiento por paciente y alcance, exportación JSON, eliminación ordenada con anonimización y comando de purga;
+  - [tareas](../specs/014-privacidad/tasks.md) T-014-01..10, pendientes.
+- **Propuestas para el propietario:**
+  - P-014-01: plazos de conservación;
+  - P-014-02: al eliminar la cuenta del titular se eliminan sus pacientes;
+  - P-014-03: pacientes existentes sin consentimiento quedan con registros bloqueados;
+  - P-014-04: texto de la política como borrador pendiente de revisión legal.
+- **No hecho.** Sin código. Implementación no autorizada.
+- **Siguiente paso seguro.** Respuestas a P-014-01..04 e instrucción de implementación.
+
 ## Estado vigente — 013 cuidado delegado implementada, 2026-10-25
 
 - **Pedido.** «haz commit y pasa a implementarla en feature/013-cuidado-delegado».

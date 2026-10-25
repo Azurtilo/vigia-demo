@@ -299,3 +299,16 @@ RT-03 → RF-012-01..05; HU-05 → RF-012-07; HU-06 → RF-012-06. Los RNF de ca
 ### 013 — Evidencia ejecutada, 2026-10-25
 
 Todas las filas de la tabla anterior tienen prueba automática en `web/CuidadosApp/test_access.py` (21 pruebas) y `mobile/test/patient_roles_test.dart` (3). Detalle por RF en [validation.md](../specs/013-cuidado-delegado/validation.md). Pendiente: navegador y Android físico.
+
+## 014 — Privacidad, trazabilidad prevista 2026-10-25
+
+[Spec](../specs/014-privacidad/spec.md), [plan](../specs/014-privacidad/plan.md), [tareas](../specs/014-privacidad/tasks.md). Propuesta: sin implementación ni pruebas ejecutadas.
+
+| Fuente | RF-014 | Tareas T-014 | Evidencia prevista |
+|---|---|---|---|
+| QA-2026-10-22-05 / D-052: consentimiento | 01–07 | 01–04, 09 | Política versionada, aceptación en registro y puerta, consentimiento del paciente por alcance, bloqueos y revocación |
+| D-052: conservación y purga | 08 | 08 | Purga solo de lo vencido, `--dry-run`, salida sin datos personales |
+| D-052: exportación | 09–10 | 05 | JSON sin secretos; 403 para familiar y cuidador en el paciente |
+| D-052: eliminación | 11–12 | 06, 07 | Sin filas remanentes; autor «Cuenta eliminada»; sin acceso ni avisos |
+| Trazabilidad de operaciones | 13 | 05–07 | `PrivacyOperation` sin identificadores |
+| RNF «sin video a la nube» | — | 04 | Se preserva; la detección exige consentimiento propio |
