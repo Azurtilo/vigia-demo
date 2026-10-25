@@ -15,6 +15,7 @@ import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
+import '../patients/access.dart';
 import '../patients/patient_screen.dart';
 import '../posture/posture_hub.dart';
 
@@ -424,9 +425,8 @@ class _CareHomeState extends State<CareHome> with WidgetsBindingObserver {
                       ),
                     ),
                     subtitle: Text(
-                      p['active'] == true
-                          ? 'Paciente activo'
-                          : 'Archivado · Historial disponible',
+                      '${p['active'] == true ? 'Paciente activo' : 'Archivado · Historial disponible'}'
+                      '${p['role'] == null || p['role'] == 'titular' ? '' : ' · ${roleLabel(p['role'])}'}',
                     ),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () async {
@@ -553,6 +553,9 @@ class _CareHomeState extends State<CareHome> with WidgetsBindingObserver {
           () => choosePatient(0),
         ),
         quickAction('Registrar paciente', Icons.person_add_alt, newPatient),
+        quickAction('Unirme con un código', Icons.key_outlined, () async {
+          if (await joinWithCode(context, widget.api)) await reload();
+        }),
         quickAction(
           'Ver posturas',
           Icons.visibility_outlined,
@@ -618,7 +621,9 @@ class _CareHomeState extends State<CareHome> with WidgetsBindingObserver {
               mainAxisSize: MainAxisSize.min,
               children: [
                 for (final p in patients!['patients'])
-                  if (p['active'] == true)
+                  // Capacity counts only the account's own patients (D-050 a).
+                  if (p['active'] == true &&
+                      (p['role'] == null || p['role'] == 'titular'))
                     CheckboxListTile(
                       value: chosen.contains(p['id']),
                       title: Text(p['name']),
