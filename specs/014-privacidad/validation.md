@@ -2,7 +2,7 @@
 
 Fecha: 2026-10-25. Entorno aislado: Windows 10, `.venv` (web, SQLite en memoria), `.venv-edge-win`, Flutter 3.47.7. Solo datos ficticios.
 Referencia de código: rama `feature/014-privacidad`, commits `0870edb`, `58de2f3` y `444d0c3`.
-Estado: verificación técnica automática completa y revisión en navegador hecha por el propietario; Android físico pendiente.
+Estado: verificación técnica automática completa y revisión en navegador hecha por el propietario; Android físico probado el 2026-10-25; los dos fallos del inicio de sesión sin política aceptada se corrigieron (T-014-11) y se comprobaron en el teléfono.
 
 | RF | Prueba | Esperado | Obtenido | Estado |
 |---|---|---|---|---|
@@ -19,7 +19,7 @@ Estado: verificación técnica automática completa y revisión en navegador hec
 | RF-014-11 | `EraseTests.test_delete_patient_needs_exact_name_and_removes_everything` | Nombre incorrecto rechaza; cuidador 403; nombre correcto (sin importar mayúsculas ni espacios) borra todo, incluida una cadena de correcciones; ninguna fila de ningún modelo apunta al paciente | Cumple | OK |
 | RF-014-12 | `test_caregiver_erases_account_and_keeps_anonymous_authorship`, `test_titular_erasure_takes_patients_and_cuts_links` | Contraseña incorrecta no cambia nada; cuenta anonimizada e inactiva, sin correos, sesiones de la app ni inicio de sesión; historial muestra «Cuenta eliminada»; el titular se lleva sus pacientes y vínculos | Cumple | OK |
 | RF-014-13 | Exportación, eliminación y purga | `PrivacyOperation` con tipo y cantidades, sin nombres | Cumple | OK |
-| RF-014-14 | Flutter `privacy_test.dart` | Aviso con botón al portal ante `consent_required`; diálogo de consentimiento (paciente o representante con nombre y relación) | Cumple | OK |
+| RF-014-14 | Flutter `privacy_test.dart`; Android físico 2026-10-25 | Aviso con botón al portal ante `consent_required`; diálogo de consentimiento (paciente o representante con nombre y relación) | Cumple; en Android el aviso no aparecía al iniciar sesión, corregido en T-014-11 y comprobado en el teléfono (ver «Android físico») | OK |
 
 ## Regresión de la base
 
@@ -36,6 +36,17 @@ Estado: verificación técnica automática completa y revisión en navegador hec
 2. **«Cuenta eliminada» en «Mis cuidados»:** la eliminación funcionaba y el historial lo mostraba, pero el panel no mostraba autoría de ningún registro. Se agregó «Hecho por …» en la agenda y «registrada por …» en la última postura (RF-013-15, T-013-12).
 
 No se registró qué combinaciones de modo claro/oscuro y ancho móvil cubrió.
+
+## Android físico
+
+2026-10-25, ELI NX9 (Android 16), app debug con servidor demo por USB (`adb reverse`). Cuenta `demo_plus`, sin la política aceptada.
+
+- **Falla: sin botón al portal en el login.** Tras `auth/login`, la app pide `me`, recibe 403 `consent_required` y el login solo muestra en rojo «Acepta la política de privacidad en el portal para continuar.». `ConsentRequiredCard` (con «Abrir el portal») solo se muestra en el inicio ([care_home.dart:249](../../mobile/lib/features/home/care_home.dart#L249)), al que no se llega. Reiniciar la app tampoco lo muestra.
+- **Falla: segundo intento con 409.** El login ya guardó el token de sesión ([api.dart:140-143](../../mobile/lib/core/api.dart#L140-L143)). Tras aceptar la política en el portal, volver a pulsar «Ingresar» envía `auth/login` con ese token; allauth responde **409 Conflict** y la app muestra «No se pudo completar la operación.». Solo cerrando y reabriendo la app se entra (el token guardado ya es válido). Un usuario no tiene cómo saberlo.
+- Aceptación en el portal desde el navegador del teléfono: sin marcar la casilla el formulario no se envía; al marcarla queda `AccountConsent` con versión `2026-10-25` y fecha. OK.
+- Consentimiento al crear paciente en la app: diálogo «¿Quién da el consentimiento?»; con representante, nombre y relación vacíos muestran «Completa este campo.»; luego «Confirmar consentimiento». Dos pacientes ficticios creados con `PatientConsent` (alcance cuidado, base titular, versión y autor). El camino de representante no se completó con datos válidos (ese intento tenía una fecha inválida).
+- **Ambas fallas corregidas el mismo día (T-014-11)**, con `test/login_consent_test.dart`. Repetido en el teléfono con `demo_free` (sin política aceptada): tras el login aparece el aviso con «Abrir el portal» y «Ya la acepté»; mientras falta aceptar, «Ya la acepté» mantiene el aviso; «Abrir el portal» abre `/privacidad/aceptar/`; tras aceptar y volver, la app se recarga y entra («Hola, demo_free · VIGIA Free») sin otro `auth/login` ni 409 en el log. Queda un detalle previo: bajo el aviso se ve el inicio vacío («Hola,», «Cargando plan» y las acciones rápidas).
+- Detalle de uso: si el servidor rechaza el alta (fecha inválida o cupo lleno), el formulario ya se cerró y hay que reescribirlo y repetir el consentimiento. El mensaje de fecha usa el texto por defecto de Django («Introduzca una fecha válida.»).
 
 ## Límites y fallos
 

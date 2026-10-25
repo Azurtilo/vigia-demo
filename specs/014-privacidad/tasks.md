@@ -53,6 +53,16 @@ Estado: T-014-01..09 hechas; T-014-10 parcial (falta revisión en navegador y An
   - Depende de: T-014-01..09.
   - Hecho cuando: suites verdes con conteos reales; revisión en navegador y en Android; `validation.md`, TRAZABILIDAD, ESTADO, DECISIONES (P-014-01..04) y guías actualizados.
 
+## Tareas fechadas 2026-10-25 — fallo en Android físico
+
+- [x] T-014-11 — Política pendiente al iniciar sesión en la app.
+  - RF: RF-014-03, RF-014-14. Componente: mobile.
+  - Autorización: «corrige fallos 1 y 2» (propietario, 2026-10-25).
+  - Fallo: si `me` responde `consent_required` tras un login correcto, la app se queda en el login sin el botón al portal y con el token guardado; al reintentar, `auth/login` responde 409 hasta reabrir la app ([validación](validation.md#android-físico)).
+  - Archivos: `mobile/lib/features/auth/login_screen.dart`, prueba en `mobile/test/`.
+  - Hecho cuando: con `consent_required` tras el login se muestra el aviso con «Abrir el portal» y «Ya la acepté»; «Ya la acepté» entra sin volver a enviar la contraseña si la política ya se aceptó, y sigue mostrando el aviso si no; un nuevo login no recibe 409 por la sesión guardada; prueba de widget que falla antes y pasa después; `flutter analyze` sin problemas.
+  - Hecho: `consent_required` en el login o al reabrir la app (`session_gate.dart`) cuenta como sesión válida y lleva al inicio, donde `ConsentRequiredCard` ya existía. Antes de un login nuevo, si queda un token guardado se cierra esa sesión (`dropSavedSession`). `test/login_consent_test.dart` (3 pruebas): antes **−3**, después **+3**. Flutter **32 OK**. En Android con `demo_free`: aviso con botones, «Ya la acepté» mantiene el aviso mientras falta, «Abrir el portal» lleva a la aceptación y al volver entra sin otro login ni 409.
+
 ## Autorización posterior
 
 2026-10-25: «respecto a p14 me parece todo bien, registralo […] autorizo implementar». Alcance completo en `feature/014-privacidad`. No autoriza merge, despliegue ni migración de una base real.

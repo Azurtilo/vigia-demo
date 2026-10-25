@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/api.dart';
 import '../home/care_home.dart';
+import '../profile/privacy.dart';
 import 'login_screen.dart';
 
 class SessionGate extends StatefulWidget {
@@ -27,6 +28,8 @@ class _SessionGateState extends State<SessionGate> {
         signed = true;
       }
     } catch (e) {
+      // Spec 014: a pending policy is still a valid session; CareHome shows the notice.
+      signed = consentRequired(e);
       if (e is ApiError && e.status == 401) await widget.api.forget();
     }
     if (mounted) setState(() => loading = false);
