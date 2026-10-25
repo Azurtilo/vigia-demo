@@ -50,6 +50,7 @@ class _ClockPanelState extends State<ClockPanel> {
     } catch (e) {
       if (mounted) notice(context, e);
     }
+    if (mounted) setState(() {});
   }
 
   @override
@@ -85,9 +86,7 @@ class _ClockPanelState extends State<ClockPanel> {
                   const Text('Aún no tienes un reloj para este paciente.'),
                   const SizedBox(height: 16),
                   FilledButton.icon(
-                    onPressed: locked
-                        ? null
-                        : () => widget.onAction('start'),
+                    onPressed: locked ? null : () => widget.onAction('start'),
                     icon: const Icon(Icons.alarm_add),
                     label: const Text('Crear recordatorio'),
                   ),
@@ -132,19 +131,19 @@ class _ClockPanelState extends State<ClockPanel> {
           valueListenable: widget.api.reminders.status,
           builder: (_, value, child) => Text(value),
         ),
-        Wrap(
-          spacing: 12,
-          children: [
-            TextButton.icon(
-              onPressed: () => permission(true),
-              icon: const Icon(Icons.notifications_active_outlined),
-              label: const Text('Activar avisos en este teléfono'),
-            ),
-            TextButton(
-              onPressed: () => permission(false),
-              child: const Text('Desactivar avisos locales'),
-            ),
-          ],
+        // T-011-13: offer only the action that changes the current state.
+        Align(
+          alignment: Alignment.centerLeft,
+          child: widget.api.remindersEnabled
+              ? TextButton(
+                  onPressed: () => permission(false),
+                  child: const Text('Desactivar avisos locales'),
+                )
+              : TextButton.icon(
+                  onPressed: () => permission(true),
+                  icon: const Icon(Icons.notifications_active_outlined),
+                  label: const Text('Activar avisos en este teléfono'),
+                ),
         ),
         const Text(
           'El sonido depende de los ajustes del teléfono. Si cambias el reloj desde la web, abre la app con conexión para actualizar sus avisos.',

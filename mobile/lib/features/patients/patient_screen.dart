@@ -343,21 +343,24 @@ class _PatientScreenState extends State<PatientScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: SegmentedButton<int>(
-              segments: [
-                const ButtonSegment(value: 0, label: Text('Cuidados')),
-                const ButtonSegment(value: 1, label: Text('Guías')),
-                const ButtonSegment(value: 4, label: Text('Reloj')),
-                if (can('history'))
-                  const ButtonSegment(value: 2, label: Text('Historial')),
-                if (can('detection'))
-                  const ButtonSegment(value: 3, label: Text('Monitoreo')),
-              ],
-              selected: {tab},
-              onSelectionChanged: (s) => setState(() => tab = s.first),
-            ),
+          // T-011-12: chips wrap on narrow phones instead of hiding sections.
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final (value, label) in [
+                (0, 'Cuidados'),
+                (1, 'Guías'),
+                (4, 'Reloj'),
+                if (can('history')) (2, 'Historial'),
+                if (can('detection')) (3, 'Monitoreo'),
+              ])
+                ChoiceChip(
+                  label: Text(label),
+                  selected: tab == value,
+                  onSelected: (_) => setState(() => tab = value),
+                ),
+            ],
           ),
           const SizedBox(height: 24),
           if (tab == 0) ...[
@@ -632,7 +635,10 @@ class _PatientScreenState extends State<PatientScreen> {
                       },
               ),
             const SizedBox(height: 20),
-            if (can('manage_nodes'))
+            // T-011-13: no heading without nodes or the option to link one.
+            if (can('manage_nodes') &&
+                (nodes.isNotEmpty ||
+                    caps?['features']?['posture_detection'] == true))
               const Text(
                 'Cámara fija',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -688,10 +694,12 @@ class _PatientScreenState extends State<PatientScreen> {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
             ),
             if (observations.isEmpty)
-              const Padding(
-                padding: EdgeInsets.only(top: 12),
+              Padding(
+                padding: const EdgeInsets.only(top: 12),
                 child: Text(
-                  'Aún no hay observaciones. Analiza y guarda una postura con el teléfono, o vincula y calibra una cámara fija.',
+                  caps?['features']?['posture_detection'] == true
+                      ? 'Aún no hay observaciones. Analiza y guarda una postura con el teléfono, o vincula y calibra una cámara fija.'
+                      : 'Aún no hay observaciones.',
                 ),
               ),
             for (final o in observations)

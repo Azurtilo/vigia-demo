@@ -92,10 +92,13 @@ class SubscriptionPanel extends StatelessWidget {
         icon: const Icon(Icons.notifications_outlined),
         label: const Text('Activar avisos en este teléfono'),
       ),
-      const Padding(
-        padding: EdgeInsets.only(top: 12),
+      Padding(
+        padding: const EdgeInsets.only(top: 12),
+        // T-011-13: only plans with detection mention the camera.
         child: Text(
-          'Puedes analizar con la cámara de este teléfono o consultar un nodo fijo vinculado. Los avisos requieren permiso y conexión.',
+          caps['features']['posture_detection'] == true
+              ? 'Puedes analizar con la cámara de este teléfono o consultar un nodo fijo vinculado. Los avisos requieren permiso y conexión.'
+              : 'Los avisos requieren permiso y conexión.',
         ),
       ),
     ],

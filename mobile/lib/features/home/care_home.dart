@@ -94,16 +94,39 @@ class _CareHomeState extends State<CareHome> with WidgetsBindingObserver {
   }
 
   Future<void> newPatient() async {
-    final data = await editForm(context, 'Agregar paciente', patientFields);
-    if (data == null || !mounted) return;
-    // Spec 014: the health data needs the patient's or a representative's consent.
-    final consent = await askPatientConsent(context);
-    if (consent == null) return;
-    try {
-      await widget.api.post('patients', {...data, ...consent});
-      await reload();
-    } catch (e) {
-      if (mounted) notice(context, e);
+    // T-011-14: say it before the form; the server still enforces the limit.
+    final capacity = patients?['capacity'] as Map<String, dynamic>?;
+    final limit = capacity?['limit'];
+    if (limit is int && (capacity?['count'] ?? 0) >= limit) {
+      notice(
+        context,
+        'Alcanzaste el límite de pacientes activos. Archiva uno o cambia de plan.',
+      );
+      return;
+    }
+    Map<String, dynamic> data = {};
+    Map<String, dynamic>? consent;
+    // A rejected form comes back filled and keeps the consent already given.
+    while (true) {
+      if (!mounted) return;
+      final edited = await editForm(
+        context,
+        'Agregar paciente',
+        patientFields,
+        initial: data,
+      );
+      if (edited == null || !mounted) return;
+      data = edited;
+      // Spec 014: the health data needs the patient's or a representative's consent.
+      consent ??= await askPatientConsent(context);
+      if (consent == null) return;
+      try {
+        await widget.api.post('patients', {...data, ...consent});
+        await reload();
+        return;
+      } catch (e) {
+        if (mounted) notice(context, e);
+      }
     }
   }
 
@@ -191,48 +214,52 @@ class _CareHomeState extends State<CareHome> with WidgetsBindingObserver {
           ),
         ],
       ),
+      // T-011-12: six tabs must fit a ~360 dp phone without scrolling.
       bottomNavigationBar: SafeArea(
         top: false,
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: SizedBox(
-            width: MediaQuery.sizeOf(context).width < 420
-                ? 420
-                : MediaQuery.sizeOf(context).width,
-            child: NavigationBar(
-              selectedIndex: selected,
-              onDestinationSelected: (i) => setState(() => selected = i),
-              destinations: const [
-                NavigationDestination(
-                  icon: Icon(Icons.home_outlined),
-                  label: 'Inicio',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.people_outline),
-                  label: 'Pacientes',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.medication_outlined),
-                  label: 'Medicinas',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.accessibility_new),
-                  label: 'Posturas',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.auto_awesome_outlined),
-                  label: 'Plan',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.person_outline),
-                  label: 'Perfil',
-                ),
-              ],
+        child: NavigationBarTheme(
+          data: NavigationBarThemeData(
+            labelTextStyle: WidgetStatePropertyAll(
+              TextStyle(
+                fontSize: MediaQuery.sizeOf(context).width < 420 ? 11 : 12,
+                fontWeight: FontWeight.w500,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
+          ),
+          child: NavigationBar(
+            selectedIndex: selected,
+            onDestinationSelected: (i) => setState(() => selected = i),
+            destinations: const [
+              NavigationDestination(
+                icon: Icon(Icons.home_outlined),
+                label: 'Inicio',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.people_outline),
+                label: 'Pacientes',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.medication_outlined),
+                label: 'Medicinas',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.accessibility_new),
+                label: 'Posturas',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.auto_awesome_outlined),
+                label: 'Plan',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.person_outline),
+                label: 'Perfil',
+              ),
+            ],
           ),
         ),
       ),
-      floatingActionButton: selected == 1
+      floatingActionButton: selected == 1 && !needsConsent
           ? FloatingActionButton.extended(
               onPressed: busy ? null : newPatient,
               label: const Text('Agregar paciente'),
@@ -243,225 +270,240 @@ class _CareHomeState extends State<CareHome> with WidgetsBindingObserver {
         onRefresh: reload,
         child: ListView(
           padding: const EdgeInsets.fromLTRB(20, 12, 20, 100),
-          children: [
-            if (busy) const LinearProgressIndicator(),
-            if (needsConsent)
-              ConsentRequiredCard(baseUrl: widget.api.baseUrl, onRetry: reload)
-            else if (failure != null)
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(failure!),
+          // T-014-12: nothing else loads until the policy is accepted.
+          children: needsConsent
+              ? [
+                  if (busy) const LinearProgressIndicator(),
+                  ConsentRequiredCard(
+                    baseUrl: widget.api.baseUrl,
+                    onRetry: reload,
+                  ),
+                ]
+              : [
+                  if (busy) const LinearProgressIndicator(),
+                  if (failure != null)
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(failure!),
+                            TextButton(
+                              onPressed: reload,
+                              child: const Text('Reintentar'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  if (selected == 0) ...overview(),
+                  if (selected == 3) PostureHub(choosePatient: choosePatient),
+                  if (selected == 5)
+                    ProfilePanel(
+                      me: me,
+                      baseUrl: widget.api.baseUrl,
+                      onPlan: () => setState(() => selected = 4),
+                      enableNotifications: enableNotifications,
+                      logout: logout,
+                    ),
+                  if (selected == 0 || selected == 2) ...[
+                    Text(
+                      selected == 2
+                          ? 'Medicamentos y horarios'
+                          : 'Próximos cuidados',
+                      style: Theme.of(context).textTheme.headlineLarge,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      pending == 1
+                          ? '1 actividad pendiente'
+                          : '$pending actividades pendientes',
+                    ),
+                    const SizedBox(height: 20),
+                    if (selected == 2) ...[
+                      OutlinedButton.icon(
+                        onPressed: () => choosePatient(0),
+                        icon: const Icon(Icons.add),
+                        label: const Text('Gestionar medicamentos'),
+                      ),
+                      MedicineFilters(
+                        value: medicineFilter,
+                        onChanged: (value) =>
+                            setState(() => medicineFilter = value),
+                      ),
                       TextButton(
-                        onPressed: reload,
-                        child: const Text('Reintentar'),
+                        onPressed: () => choosePatient(2),
+                        child: const Text('Historial de administración'),
                       ),
                     ],
-                  ),
-                ),
-              ),
-            if (selected == 0) ...overview(),
-            if (selected == 3) PostureHub(choosePatient: choosePatient),
-            if (selected == 5)
-              ProfilePanel(
-                me: me,
-                baseUrl: widget.api.baseUrl,
-                onPlan: () => setState(() => selected = 4),
-                enableNotifications: enableNotifications,
-                logout: logout,
-              ),
-            if (selected == 0 || selected == 2) ...[
-              Text(
-                selected == 2 ? 'Medicamentos y horarios' : 'Próximos cuidados',
-                style: Theme.of(context).textTheme.headlineLarge,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                pending == 1
-                    ? '1 actividad pendiente'
-                    : '$pending actividades pendientes',
-              ),
-              const SizedBox(height: 20),
-              if (selected == 2) ...[
-                OutlinedButton.icon(
-                  onPressed: () => choosePatient(0),
-                  icon: const Icon(Icons.add),
-                  label: const Text('Gestionar medicamentos'),
-                ),
-                MedicineFilters(
-                  value: medicineFilter,
-                  onChanged: (value) => setState(() => medicineFilter = value),
-                ),
-                TextButton(
-                  onPressed: () => choosePatient(2),
-                  child: const Text('Historial de administración'),
-                ),
-              ],
-              if (patients?['capacity']?['pending'] == true)
-                Card(
-                  child: ListTile(
-                    leading: const Icon(Icons.info_outline),
-                    title: const Text('Selecciona tus pacientes activos'),
-                    subtitle: const Text(
-                      'Tu plan cambió. Conservamos el historial.',
-                    ),
-                    onTap: () => selectCapacity(),
-                  ),
-                ),
-              if (items.isEmpty && !busy)
-                empty(
-                  'Tu agenda está tranquila',
-                  'Agrega un paciente y sus horarios para organizar el día.',
-                  Icons.event_available,
-                ),
-              for (final item in items)
-                Card(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(
-                              item['kind'] == 'medication'
-                                  ? Icons.medication_outlined
-                                  : Icons.volunteer_activism_outlined,
-                              color: const Color(0xff5057a0),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Text(
-                                item['patient'],
+                    if (patients?['capacity']?['pending'] == true)
+                      Card(
+                        child: ListTile(
+                          leading: const Icon(Icons.info_outline),
+                          title: const Text('Selecciona tus pacientes activos'),
+                          subtitle: const Text(
+                            'Tu plan cambió. Conservamos el historial.',
+                          ),
+                          onTap: () => selectCapacity(),
+                        ),
+                      ),
+                    if (items.isEmpty && !busy)
+                      empty(
+                        'Tu agenda está tranquila',
+                        'Agrega un paciente y sus horarios para organizar el día.',
+                        Icons.event_available,
+                      ),
+                    for (final item in items)
+                      Card(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    item['kind'] == 'medication'
+                                        ? Icons.medication_outlined
+                                        : Icons.volunteer_activism_outlined,
+                                    color: const Color(0xff5057a0),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Text(
+                                      item['patient'],
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                  Text(when(item['due'])),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                item['label'],
                                 style: const TextStyle(
+                                  fontSize: 20,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
-                            ),
-                            Text(when(item['due'])),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          item['label'],
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        if (item['dose'] != '') Text(item['dose']),
-                        if (item['status'] == 'pending') ...[
-                          if (item['overdue'] == true)
-                            const Padding(
-                              padding: EdgeInsets.only(top: 6),
-                              child: Text(
-                                'Horario cumplido · Revisa el cuidado',
-                                style: TextStyle(color: Color(0xff854d0e)),
-                              ),
-                            ),
-                          const SizedBox(height: 12),
-                          Wrap(
-                            spacing: 12,
-                            children: [
-                              FilledButton(
-                                onPressed: busy
-                                    ? null
-                                    : () => event(item, 'done'),
-                                child: const Text('Marcar realizado'),
-                              ),
-                              TextButton(
-                                onPressed: busy
-                                    ? null
-                                    : () => event(item, 'omitted'),
-                                child: const Text('Omitir con motivo'),
-                              ),
+                              if (item['dose'] != '') Text(item['dose']),
+                              if (item['status'] == 'pending') ...[
+                                if (item['overdue'] == true)
+                                  const Padding(
+                                    padding: EdgeInsets.only(top: 6),
+                                    child: Text(
+                                      'Horario cumplido · Revisa el cuidado',
+                                      style: TextStyle(
+                                        color: Color(0xff854d0e),
+                                      ),
+                                    ),
+                                  ),
+                                const SizedBox(height: 12),
+                                Wrap(
+                                  spacing: 12,
+                                  children: [
+                                    FilledButton(
+                                      onPressed: busy
+                                          ? null
+                                          : () => event(item, 'done'),
+                                      child: const Text('Marcar realizado'),
+                                    ),
+                                    TextButton(
+                                      onPressed: busy
+                                          ? null
+                                          : () => event(item, 'omitted'),
+                                      child: const Text('Omitir con motivo'),
+                                    ),
+                                  ],
+                                ),
+                              ] else
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 10),
+                                  child: Text(
+                                    item['status'] == 'done'
+                                        ? '✓ Realizado'
+                                        : 'Omitido con motivo',
+                                  ),
+                                ),
                             ],
                           ),
-                        ] else
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Text(
-                              item['status'] == 'done'
-                                  ? '✓ Realizado'
-                                  : 'Omitido con motivo',
-                            ),
-                          ),
-                      ],
+                        ),
+                      ),
+                  ],
+                  if (selected == 1) ...[
+                    Text(
+                      'Mis pacientes',
+                      style: Theme.of(context).textTheme.headlineLarge,
                     ),
-                  ),
-                ),
-            ],
-            if (selected == 1) ...[
-              Text(
-                'Mis pacientes',
-                style: Theme.of(context).textTheme.headlineLarge,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                '${patients?['capacity']?['count'] ?? 0} activos · ${caps?['name'] ?? '…'}',
-              ),
-              const SizedBox(height: 20),
-              if ((patients?['patients'] as List? ?? []).isEmpty && !busy)
-                empty(
-                  'Empieza por una persona',
-                  'Su ficha, sus horarios y su historial permanecerán juntos.',
-                  Icons.person_add_alt,
-                ),
-              TextField(
-                decoration: const InputDecoration(
-                  labelText: 'Buscar paciente',
-                  prefixIcon: Icon(Icons.search),
-                ),
-                onChanged: (value) =>
-                    setState(() => patientQuery = value.trim().toLowerCase()),
-              ),
-              const SizedBox(height: 12),
-              for (final p in (patients?['patients'] as List? ?? []).where(
-                (p) =>
-                    p['name'].toString().toLowerCase().contains(patientQuery),
-              ))
-                Card(
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.all(16),
-                    leading: CircleAvatar(
-                      child: Text(p['name'].toString().substring(0, 1)),
+                    const SizedBox(height: 8),
+                    Text(
+                      '${patients?['capacity']?['count'] ?? 0} activos · ${caps?['name'] ?? '…'}',
                     ),
-                    title: Text(
-                      p['name'],
-                      style: const TextStyle(
-                        fontSize: 19,
-                        fontWeight: FontWeight.w600,
+                    const SizedBox(height: 20),
+                    if ((patients?['patients'] as List? ?? []).isEmpty && !busy)
+                      empty(
+                        'Empieza por una persona',
+                        'Su ficha, sus horarios y su historial permanecerán juntos.',
+                        Icons.person_add_alt,
+                      ),
+                    TextField(
+                      decoration: const InputDecoration(
+                        labelText: 'Buscar paciente',
+                        prefixIcon: Icon(Icons.search),
+                      ),
+                      onChanged: (value) => setState(
+                        () => patientQuery = value.trim().toLowerCase(),
                       ),
                     ),
-                    subtitle: Text(
-                      '${p['active'] == true ? 'Paciente activo' : 'Archivado · Historial disponible'}'
-                      '${p['role'] == null || p['role'] == 'titular' ? '' : ' · ${roleLabel(p['role'])}'}',
-                    ),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () async {
-                      await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              PatientScreen(api: widget.api, id: p['id']),
+                    const SizedBox(height: 12),
+                    for (final p
+                        in (patients?['patients'] as List? ?? []).where(
+                          (p) => p['name'].toString().toLowerCase().contains(
+                            patientQuery,
+                          ),
+                        ))
+                      Card(
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.all(16),
+                          leading: CircleAvatar(
+                            child: Text(p['name'].toString().substring(0, 1)),
+                          ),
+                          title: Text(
+                            p['name'],
+                            style: const TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          subtitle: Text(
+                            '${p['active'] == true ? 'Paciente activo' : 'Archivado · Historial disponible'}'
+                            '${p['role'] == null || p['role'] == 'titular' ? '' : ' · ${roleLabel(p['role'])}'}',
+                          ),
+                          trailing: const Icon(Icons.chevron_right),
+                          onTap: () async {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    PatientScreen(api: widget.api, id: p['id']),
+                              ),
+                            );
+                            await reload();
+                          },
                         ),
-                      );
-                      await reload();
-                    },
-                  ),
-                ),
-            ],
-            if (selected == 4 && caps != null)
-              SubscriptionPanel(
-                caps: caps,
-                baseUrl: widget.api.baseUrl,
-                enableNotifications: enableNotifications,
-              ),
-          ],
+                      ),
+                  ],
+                  if (selected == 4 && caps != null)
+                    SubscriptionPanel(
+                      caps: caps,
+                      baseUrl: widget.api.baseUrl,
+                      enableNotifications: enableNotifications,
+                    ),
+                ],
         ),
       ),
     );

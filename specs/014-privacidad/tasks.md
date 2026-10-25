@@ -61,7 +61,7 @@ Estado: T-014-01..09 hechas; T-014-10 parcial (falta revisión en navegador y An
   - Fallo: si `me` responde `consent_required` tras un login correcto, la app se queda en el login sin el botón al portal y con el token guardado; al reintentar, `auth/login` responde 409 hasta reabrir la app ([validación](validation.md#android-físico)).
   - Archivos: `mobile/lib/features/auth/login_screen.dart`, prueba en `mobile/test/`.
   - Hecho cuando: con `consent_required` tras el login se muestra el aviso con «Abrir el portal» y «Ya la acepté»; «Ya la acepté» entra sin volver a enviar la contraseña si la política ya se aceptó, y sigue mostrando el aviso si no; un nuevo login no recibe 409 por la sesión guardada; prueba de widget que falla antes y pasa después; `flutter analyze` sin problemas.
-  - Hecho: `consent_required` en el login o al reabrir la app (`session_gate.dart`) cuenta como sesión válida y lleva al inicio, donde `ConsentRequiredCard` ya existía. Antes de un login nuevo, si queda un token guardado se cierra esa sesión (`dropSavedSession`). `test/login_consent_test.dart` (3 pruebas): antes **−3**, después **+3**. Flutter **32 OK**. En Android con `demo_free`: aviso con botones, «Ya la acepté» mantiene el aviso mientras falta, «Abrir el portal» lleva a la aceptación y al volver entra sin otro login ni 409.
+  - Hecho (ver T-014-12 para el contenido bajo el aviso): `consent_required` en el login o al reabrir la app (`session_gate.dart`) cuenta como sesión válida y lleva al inicio, donde `ConsentRequiredCard` ya existía. Antes de un login nuevo, si queda un token guardado se cierra esa sesión (`dropSavedSession`). `test/login_consent_test.dart` (3 pruebas): antes **−3**, después **+3**. Flutter **32 OK**. En Android con `demo_free`: aviso con botones, «Ya la acepté» mantiene el aviso mientras falta, «Abrir el portal» lleva a la aceptación y al volver entra sin otro login ni 409.
 
 ## Autorización posterior
 
@@ -82,3 +82,10 @@ Estado: T-014-01..09 hechas; T-014-10 parcial (falta revisión en navegador y An
 ## Aceptación del usuario
 
 Pendiente; no marcarla automáticamente después de ejecutar tests.
+
+- [x] T-014-12 — Solo el aviso mientras falta aceptar la política (RF-014-14). Componente: mobile.
+  - Autorización: «acepta el merge y arregla los detalles de interfaz» (propietario, 2026-10-25). Rama `feature/011-detalles-interfaz`.
+  - Fallo: bajo el aviso se ve el inicio vacío («Hola,» sin nombre, «Cargando plan», acciones rápidas) y, en Pacientes, «Agregar paciente».
+  - Archivos: `mobile/lib/features/home/care_home.dart`, `test/privacy_test.dart`.
+  - Hecho cuando: con `consent_required` la pantalla muestra solo el aviso (y la barra de navegación), sin contenido ni botón de alta; prueba de widget.
+  - Hecho: `CareHome` muestra solo el aviso mientras falta aceptar y oculta «Agregar paciente». Prueba en `interface_details_test.dart` (antes −1, después +1). En el teléfono con `demo_free` sin aceptación: solo el aviso, también en Pacientes.
