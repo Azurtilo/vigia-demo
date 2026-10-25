@@ -155,6 +155,9 @@ def choose_capacity(user, selected, offered, version, future=False):
 
 
 def require_eligible(user, patient, now=None):
+    from PrivacidadApp.consent import require
+
+    require(patient, "cuidado")  # spec 014: file readable, new data needs consent
     materialize(user, now)
     if patient.pk not in capacity_state(user, now)["active_ids"]:
         raise ValidationError(

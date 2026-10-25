@@ -614,7 +614,7 @@ class RegistroPublicoTests(BaseUsuariosTestCase):
         self.assertEqual(counts, (User.objects.count(), Profile.objects.count(), EmailAddress.objects.count()))
 
     def test_post_signup_crea_restricted_sin_privilegios(self):
-        response = self.client.post("/accounts/signup/", {"username": "publico", "email": "publico@example.test", "password1": PASSWORD, "password2": PASSWORD, "is_superuser": "1", "position_FK": self.admin_position.pk})
+        response = self.client.post("/accounts/signup/", {"username": "publico", "email": "publico@example.test", "password1": PASSWORD, "password2": PASSWORD, "accept_privacy": "on", "is_superuser": "1", "position_FK": self.admin_position.pk})
         self.assertEqual(response.status_code, 302)
         user = User.objects.get(username="publico")
         self.assertEqual(user.profile.position_FK.permission_code, "RESTRICTED")

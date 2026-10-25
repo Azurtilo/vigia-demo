@@ -1,0 +1,6 @@
+{% extends 'pages/CuidadosApp/base.html' %}{% load crispy_forms_tags %}{% block care_title %}Eliminar mi cuenta{% endblock %}{% block care_content %}
+<div class="care-form-heading"><h1>Eliminar mi cuenta</h1>
+<p>Se eliminarán tu cuenta y, si eres responsable de pacientes, esos pacientes con todos sus datos; las personas que invitaste dejarán de verlos. Lo que registraste en pacientes de otras familias se conserva como «Cuenta eliminada». Esta acción no se puede deshacer.</p>
+<p>Si solo quieres dejar de usar una ficha, puedes archivar el paciente: se conserva y puedes reactivarlo.</p></div>
+<section class="panel care-form"><form method="post">{% csrf_token %}{% if has_password %}{{ form.password|as_crispy_field }}{% else %}{{ form.confirmation|as_crispy_field }}{% endif %}{% if form.non_field_errors %}<div class="errorlist" role="alert">{{ form.non_field_errors }}</div>{% endif %}<div class="care-form-actions"><button class="button" type="submit">Eliminar definitivamente</button><a class="button secondary" href="{% url 'Profile' %}">Cancelar</a></div></form></section>
+{% endblock %}

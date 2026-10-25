@@ -97,6 +97,8 @@ def replay(user, reference, payload):
 
 @transaction.atomic
 def save_patient(user, cleaned, pk=None, version=None):
+    from PrivacidadApp import consent
+
     if pk:
         actor, titular, patient, _ = acting(user, pk, "edit_patient")
         materialize(titular)
@@ -130,7 +132,17 @@ def save_patient(user, cleaned, pk=None, version=None):
         raise ValidationError("La fecha de nacimiento no puede ser futura.")
     patient.version += 1
     patient.full_clean()
+    creating = patient.pk is None
     patient.save()
+    if creating and (cleaned.get("consent_basis") or consent.enforced()):
+        consent.record(
+            patient,
+            "cuidado",
+            cleaned.get("consent_basis"),
+            actor,
+            cleaned.get("representative_name"),
+            cleaned.get("representative_relation"),
+        )
     return patient
 
 

@@ -224,3 +224,16 @@ Fuente: respuesta explícita en la sesión del 2026-10-25 a las propuestas de la
 | D-061 | **P-013-01** — El familiar invitado puede hacer lo mismo que el titular, salvo archivar pacientes, gestionar el cupo, los nodos y los accesos | Confirma la propuesta. Matriz de la spec 013 sin cambios |
 | D-062 | **P-013-02** — El cuidador no ve el historial completo, solo la agenda del día y la última postura | Confirma la propuesta (minimización de datos de salud). RF-013-14 |
 | D-063 | **P-013-03** — El push de caída o inmovilidad también llega al cuidador, que suele estar en el domicilio y podría reaccionar antes | Cambia la propuesta inicial (solo titular y familiar). Amplía HU-05, que nombra al familiar. RF-013-11, T-013-09 y la spec 012 (push inmediato, D-051) deben usar estos destinatarios |
+
+## Respuestas del propietario a la spec 014 — 2026-10-25
+
+Fuente: «respecto a p14 me parece todo bien, registralo […] autorizo implementar» (sesión del 2026-10-25). La implementación de T-014-01..10 queda autorizada en `feature/014-privacidad`; no autoriza merge, despliegue ni migración de una base real.
+
+| ID | Decisión | Efecto |
+|---|---|---|
+| D-064 | **P-014-01** — Plazos de conservación según la tabla de la spec 014 (intentos 24 h, invitaciones 90 días, recibos 30 días, observaciones sin riesgo 30 días y con riesgo 1 año, paciente archivado 2 años) | `PrivacidadApp/retention.py` y comando de purga |
+| D-065 | **P-014-02** — Al eliminar la cuenta del titular se eliminan sus pacientes con todos sus datos | `erase_account` usa `delete_patient`; el traspaso a un familiar queda como futuro |
+| D-066 | **P-014-03** — Pacientes existentes sin consentimiento: ficha visible, registros nuevos bloqueados hasta registrar el consentimiento | `consent.require` en la elegibilidad de cuidado y en la detección |
+| D-067 | **P-014-04** — Texto de la política como borrador del prototipo, pendiente de revisión legal antes de datos reales | Página pública versionada con el aviso |
+
+Consulta del propietario sobre conservar por un tiempo los datos de un paciente eliminado por si se vuelve a registrar: se recomienda no hacerlo. Eliminar es la supresión pedida, y reconocer al «mismo» paciente exigiría volver a vincular datos que se pidió borrar. La vía reversible es **archivar**, que conserva todo por 2 años (D-064) y permite reactivar. La confirmación de eliminación ofrece archivar como alternativa. Una papelera breve con «deshacer» (por ejemplo, 7 días) queda como opción futura si el propietario la pide.

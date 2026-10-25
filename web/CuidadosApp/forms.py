@@ -3,6 +3,8 @@ import re
 from django import forms
 from django.utils import timezone
 
+from PrivacidadApp.forms import ConsentFieldsMixin
+
 from .models import CareGuide, CareTask, Medication, Patient
 
 
@@ -213,6 +215,10 @@ class SelectionForm(SignedForm):
             owner=user, active=True
         )
         self.fields["patients"].label_from_instance = lambda patient: patient.name
+
+
+class NewPatientForm(ConsentFieldsMixin, PatientForm):
+    """Creating a patient also records who consents to the health data (spec 014)."""
 
 
 class InviteForm(forms.Form):

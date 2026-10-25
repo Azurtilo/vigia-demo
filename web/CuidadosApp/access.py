@@ -29,6 +29,8 @@ ACTIONS = {
     "archive": frozenset({TITULAR}),
     "manage_nodes": frozenset({TITULAR}),
     "manage_access": frozenset({TITULAR}),
+    "export_patient": frozenset({TITULAR}),  # spec 014
+    "erase_patient": frozenset({TITULAR}),
     "leave": frozenset({FAMILIAR, CUIDADOR}),
 }
 

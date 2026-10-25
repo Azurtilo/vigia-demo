@@ -15,7 +15,7 @@ DEFAULT_DJANGO_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.humanize",
 ]
-LOCAL_APPS = ["homeApp", "UsuarioApp", "PlanesApp", "CuidadosApp"]
+LOCAL_APPS = ["homeApp", "UsuarioApp", "PlanesApp", "CuidadosApp", "PrivacidadApp"]
 THIRD_APPS = [
     "tailwind",
     "theme",
@@ -49,6 +49,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
+    "PrivacidadApp.middleware.ConsentRequiredMiddleware",
     # "preventconcurrentlogins.middleware.PreventConcurrentLoginsMiddleware",
     # "axes.middleware.AxesMiddleware",
     "homeApp.middleware.UpdateLastActivityMiddleware",
@@ -142,6 +143,10 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 GOOGLE_OAUTH_ENABLED = False
 SESSION_COOKIE_AGE = 1800
+
+# Spec 014: bump the version when the policy text changes; every account re-accepts.
+PRIVACY_POLICY_VERSION = "2026-10-25"
+PRIVACY_ENFORCED = True
 
 # Native clients share allauth authentication/MFA with the existing portal.
 HEADLESS_CLIENTS = ("app",)

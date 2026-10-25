@@ -26,6 +26,25 @@ from .permissions import CareOwnerMixin
 from .scheduling import agenda, claim_reminder, reminders
 
 
+def privacy_context(patient, can):
+    """Consent status per scope for the titular's patient page (spec 014)."""
+    if "manage_access" not in can:
+        return {}
+    from PrivacidadApp.models import PatientConsent
+
+    live = {
+        c.scope: c for c in patient.consents.filter(revoked_at__isnull=True)
+    }
+    consents = [
+        {"scope": scope, "label": label, "consent": live.get(scope)}
+        for scope, label in PatientConsent.SCOPES
+    ]
+    return {
+        "consents": consents,
+        "missing_consent": any(item["consent"] is None for item in consents),
+    }
+
+
 def form_error(form, error):
     form.add_error(
         None,
@@ -146,7 +165,7 @@ class PatientFormView(CareView):
 
     def get(self, request, pk=None):
         patient = self.patient(request, pk) if pk else None
-        form = forms.PatientForm(
+        form = (forms.PatientForm if pk else forms.NewPatientForm)(
             instance=patient, initial={"version": patient.version if patient else 0}
         )
         return self.form_page(
@@ -159,7 +178,9 @@ class PatientFormView(CareView):
 
     def post(self, request, pk=None):
         patient = self.patient(request, pk) if pk else None
-        form = forms.PatientForm(request.POST, instance=patient)
+        form = (forms.PatientForm if pk else forms.NewPatientForm)(
+            request.POST, instance=patient
+        )
         if form.is_valid():
             try:
                 patient = services.save_patient(
@@ -213,6 +234,7 @@ class PatientDetailView(CareView):
             if "manage_access" in can
             else [],
             invitations=invitations.pending(patient) if "manage_access" in can else [],
+            **privacy_context(patient, can),
         )
 
 
