@@ -46,6 +46,19 @@ class RoleServer {
         'tokens': {'timer': 't', 'posture': 'p'},
         'timer': null,
       };
+    } else if (path.endsWith('/patients/1/observations')) {
+      body = {
+        'items': [
+          {
+            'id': 7,
+            'posture': 'indeterminada',
+            'risk': 'fall',
+            'observed_at': '2026-10-25T10:00:00Z',
+            'source': 'Cámara',
+          },
+        ],
+        'next_page': null,
+      };
     } else if (path.endsWith('/patients/1/access')) {
       body = {'accesses': [], 'invitations': []};
     } else if (path.endsWith('/capabilities')) {
@@ -111,6 +124,21 @@ void main() {
     );
     expect(find.text('Nadie más tiene acceso a esta ficha.'), findsOneWidget);
     expect(server.requested, contains('GET /api/v1/patients/1/access'));
+  });
+
+  testWidgets('A fall is titled as a possible fall, not as a posture', (
+    tester,
+  ) async {
+    await open(tester, 'titular', titularActions);
+    await tester.tap(find.text('Monitoreo'));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.text('Posible caída'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('Posible caída'), findsOneWidget);
+    expect(find.text('No se puede determinar'), findsNothing);
   });
 
   test('Older servers without roles keep full access', () {

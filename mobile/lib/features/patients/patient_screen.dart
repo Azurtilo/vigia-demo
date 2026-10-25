@@ -702,7 +702,12 @@ class _PatientScreenState extends State<PatientScreen> {
                         ? Icons.warning_amber
                         : Icons.accessibility_new,
                   ),
-                  title: Text(postureName(o['posture'])),
+                  // QA-16: a fall may arrive as "indeterminada"; say what matters.
+                  title: Text(
+                    o['risk'] == 'fall'
+                        ? 'Posible caída'
+                        : postureName(o['posture']),
+                  ),
                   subtitle: Text(
                     '${when(o['observed_at'])} · ${o['source']}\n${switch (o['risk']) {
                       'fall' => 'Posible caída · Revisa al paciente ahora',
