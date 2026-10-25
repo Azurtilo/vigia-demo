@@ -125,7 +125,7 @@ Preservar specs 004/006 (administración), 007 (cuentas/planes), 008 (dashboard)
 Los textos anteriores se conservan como antecedente. Detalle y fuente en [DECISIONES.md](../../docs/DECISIONES.md) D-050 a D-060. Ninguna respuesta autoriza código.
 
 - P-010-01 **resuelta (D-057)**: nodo Edge como vía principal; cámara del teléfono como alternativa demostrativa.
-- P-010-02 **resuelta (D-050)**: vínculo paciente–usuario con rol familiar o cuidador, invitación solo por código, aceptación y revocación. El cuidador no ocupa cupo, puede atender a varias familias y tras la revocación no ve nada (sus registros conservan autoría). Se documenta en una spec nueva; hasta implementarla rige la propiedad de 009.
+- P-010-02 **resuelta (D-050)**: vínculo paciente–usuario con rol familiar o cuidador, invitación solo por código, aceptación y revocación. El cuidador no ocupa cupo, puede atender a varias familias y tras la revocación no ve nada (sus registros conservan autoría). Documentado en la [spec 013](../013-cuidado-delegado/spec.md), que asume RF-010-08; hasta implementarla rige la propiedad de 009.
 - P-010-03 **resuelta en versión mínima (D-057)**: Android 8.0 (API 26). iOS fuera de alcance (D-011-02).
 - P-010-04 **resuelta (D-056)**: se aprueba `X-Session-Token` para la app y credencial con hash para el nodo; faltan definir vencimiento de sesión, cierre de sesión remoto y revocación de nodos desde el portal.
 - P-010-05 **resuelta (D-054)**: Firebase de prueba con credenciales por variable de entorno fuera del repositorio, prueba en Android físico y tiempos en `validation.md`. Pendiente de ejecución.

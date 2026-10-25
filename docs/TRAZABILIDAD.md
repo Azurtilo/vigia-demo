@@ -24,7 +24,7 @@ Actualizada el 2026-10-25. Estados: **Cubierto** (implementado y probado), **Par
 | RNF caídas ≥ 90 % y FP ≤ 5 % | RF-012-01..03 | Protocolo escrito en [edge/README.md](../edge/README.md) | **Sin evidencia**: protocolo sin ejecutar (D-053) |
 | RNF disponibilidad ≥ 99,5 % | — | — | Objetivo de diseño **no medido** (D-060) |
 
-Pendientes que cambian estados: D-050 (HU-01/02/03/04/06), D-051/D-054/D-058 (HU-05 y alerta ≤ 10 s), D-053 (RT-03 y precisión), T-011-05/09 (dispositivo).
+Pendientes que cambian estados: D-050 (HU-01/02/03/04/06, documentado en la [spec 013](../specs/013-cuidado-delegado/spec.md)), D-051/D-054/D-058 (HU-05 y alerta ≤ 10 s), D-053 (RT-03 y precisión), T-011-05/09 (dispositivo).
 
 Actualizar al crear una spec y después de verificarla:
 
@@ -280,3 +280,18 @@ RF-011-01→T09/10 instalación;02→T01/02 reloj (relacionado RF-010-04/10);03�
 | RF-012-10 | T-012-02 | `edge/test_fall.py` | Sentarse, sentadilla, inclinarse, cama lento/rápido sin alerta. Sintético |
 
 RT-03 → RF-012-01..05; HU-05 → RF-012-07; HU-06 → RF-012-06. Los RNF de caídas (≥ 90 % / ≤ 5 %, ≤ 10 s, < 100 ms) siguen sin medir: protocolo en [edge/README.md](../edge/README.md#protocolo-de-prueba-20-caídas-simuladas).
+
+## 013 — Cuidado delegado, trazabilidad prevista 2026-10-25
+
+[Spec](../specs/013-cuidado-delegado/spec.md), [plan](../specs/013-cuidado-delegado/plan.md), [tareas](../specs/013-cuidado-delegado/tasks.md). Propuesta: sin implementación ni pruebas ejecutadas.
+
+| Requerimiento | RF-013 | Tareas T-013 | Evidencia prevista |
+|---|---|---|---|
+| HU-01 (familiar configura) | 07, 09 | 02–04, 07 | Matriz por rol: titular y familiar configuran; cuidador recibe 403 |
+| HU-02 (cuidador ve agenda) | 08, 14 | 04, 07, 10 | Agenda con pacientes de dos titulares; vista resumida del cuidador |
+| HU-03 (confirmación auditable) | 09 | 03 | `CareEvent.author` = cuidador; ocurrencia única entre titular y cuidador |
+| HU-04 (cambio de posición) | 09 | 03, 10 | Postura y reloj registrados por el cuidador con autor propio |
+| HU-05 (push al familiar) | 11 | 09 | Riesgo a titular, familiar y cuidador (D-063); cuidado pendiente a titular y cuidador |
+| HU-06 (historial y trazabilidad) | 06, 07, 14 | 04, 05, 07 | Historial con autoría que se conserva tras la revocación; cuidador sin historial completo |
+| Acceso por invitación (D-050) | 01–06, 10, 13 | 01, 05, 06, 07, 10 | Código de un solo uso, vencido, propio, duplicado, límite de intentos, cupos sin cambio |
+| QA-2026-10-22-04 / 08 | 07 | 07, 08 | 404 para ajenos en todos los endpoints con paciente, incluida la detección |

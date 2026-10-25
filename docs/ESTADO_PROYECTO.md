@@ -2,6 +2,14 @@
 
 Fecha: 2026-10-25.
 
+## Spec 013 cuidado delegado — DOCUMENTAR, 2026-10-25
+
+- **Pedido.** Documentar la spec de familiar/cuidador decidida en D-050.
+- **Hecho.** [Spec](../specs/013-cuidado-delegado/spec.md) con 14 RF y matriz por rol (titular, familiar invitado, cuidador, sin vínculo); [plan](../specs/013-cuidado-delegado/plan.md) con `access.py`, bloqueo por titular, invitaciones con hash y límite de intentos, tres modelos nuevos (migración aditiva 0008) y endpoints aditivos; [tareas](../specs/013-cuidado-delegado/tasks.md) T-013-01..11, todas pendientes. Índice y trazabilidad prevista actualizados.
+- **Decisiones del propietario (mismo día):** D-061 familiar invitado igual al titular salvo archivar, cupo, nodos y accesos; D-062 el cuidador ve solo la agenda del día y la última postura; D-063 el push de riesgo también llega al cuidador. Spec, plan y tareas ajustados; sin decisiones pendientes.
+- **No hecho.** Sin código. Implementación no autorizada.
+- **Siguiente paso seguro.** Revisión de la 013 y, si corresponde, instrucción de implementación en la rama `feature/013-cuidado-delegado`.
+
 ## Decisiones del propietario — 2026-10-25
 
 - **Pedido.** Registrar las respuestas al documento de pendientes del 23-10-2026 y las respuestas de la sesión.

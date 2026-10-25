@@ -214,3 +214,13 @@ Fuente: documento «VIGIA — Pendientes por completar» (23-10-2026, commit 442
 | D-060 | **RNF disponibilidad ≥ 99,5 % — B.** Se declara objetivo de diseño **no medido**; el informe describe la arquitectura necesaria (base gestionada, más de una instancia, monitoreo externo de uptime) | Con SQLite en una sola instancia no se mide ni se declara cumplido |
 
 Siguiente paso documental: specs nuevas para D-050 (familiar/cuidador) y D-052 (privacidad), y tareas fechadas en la spec 012 para D-051 y D-058, junto con los hallazgos QA técnicos.
+
+## Respuestas del propietario a la spec 013 — 2026-10-25
+
+Fuente: respuesta explícita en la sesión del 2026-10-25 a las propuestas de la [spec 013](../specs/013-cuidado-delegado/spec.md). Fijan alcance; no autorizan código.
+
+| ID | Decisión | Efecto |
+|---|---|---|
+| D-061 | **P-013-01** — El familiar invitado puede hacer lo mismo que el titular, salvo archivar pacientes, gestionar el cupo, los nodos y los accesos | Confirma la propuesta. Matriz de la spec 013 sin cambios |
+| D-062 | **P-013-02** — El cuidador no ve el historial completo, solo la agenda del día y la última postura | Confirma la propuesta (minimización de datos de salud). RF-013-14 |
+| D-063 | **P-013-03** — El push de caída o inmovilidad también llega al cuidador, que suele estar en el domicilio y podría reaccionar antes | Cambia la propuesta inicial (solo titular y familiar). Amplía HU-05, que nombra al familiar. RF-013-11, T-013-09 y la spec 012 (push inmediato, D-051) deben usar estos destinatarios |
