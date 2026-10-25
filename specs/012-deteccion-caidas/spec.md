@@ -24,7 +24,7 @@ Nodo revocado, plan vencido o paciente archivado: rechazo 401/403 como en 010, s
 
 Incluye: regla de caída en `edge/fall.py`, umbrales configurables por argumento o JSON, integración en `edge/run.py`, envío con reintento idempotente, métricas de inferencia en el log, `edge/bench.py`, riesgo `fall` en el backend (validación, historial, log de recepción, push), texto en la app móvil, pruebas sintéticas y protocolo de prueba de 20 caídas.
 
-No incluye: validación clínica, entrenamiento de modelos, detección con varias personas en cuadro, cámaras no niveladas, almacenamiento de imágenes, envío inmediato de push en la petición del nodo (la vía existente es el comando periódico `send_mobile_reminders`), ni declarar cumplidos los RNF sin medición en hardware real.
+No incluye: validación clínica, entrenamiento de modelos, detección con varias personas en cuadro, cámaras no niveladas, almacenamiento de imágenes, envío inmediato de push en la petición del nodo (la vía existente es el comando periódico `send_mobile_reminders`; sustituido el 2026-10-25 por D-051, pendiente de tareas), ni declarar cumplidos los RNF sin medición en hardware real.
 
 ## Historias y flujo
 
@@ -104,11 +104,15 @@ Se preservan clasificación de postura, regla de inmovilidad, contrato y autenti
 
 - Supuesto: cámara fija aproximadamente nivelada (vertical de la imagen ≈ vertical real) y vista lateral u oblicua del área. Con la persona cayendo hacia la cámara (vista de frente al eje del cuerpo) la relación de aspecto puede no superar el umbral: limitación conocida.
 - Supuesto: una cama elevada separa «acostarse» de «caer»; un colchón o futón en el suelo puede confundirse con una caída lenta, pero la velocidad lo filtra.
-- P-012-01 (pendiente del responsable): frecuencia de ejecución de `send_mobile_reminders` en el despliegue (necesaria ≤ ~3 s para el objetivo de 10 s) o un envío inmediato en la recepción. No se decide en esta spec.
-- P-012-02 (pendiente): ajustar umbrales con los resultados del protocolo de 20 caídas.
+- P-012-01 (pendiente del responsable): frecuencia de ejecución de `send_mobile_reminders` en el despliegue (necesaria ≤ ~3 s para el objetivo de 10 s) o un envío inmediato en la recepción. No se decide en esta spec. **Resuelta 2026-10-25 (D-051):** push inmediato tras guardar la caída (`transaction.on_commit`, timeout corto, deduplicación por `PushReceipt`); el comando periódico queda como reintento.
+- P-012-02 (pendiente): ajustar umbrales con los resultados del protocolo de 20 caídas. **Resuelta 2026-10-25 (D-053):** protocolo con voluntarios, colchoneta y video autorizado procesado solo en local, más actividades normales para medir falsos positivos. El denominador se fija antes de ejecutarlo (propuesta 20 caídas / 40 actividades). Pendiente de ejecución.
+- QA-14 **resuelta 2026-10-25 (D-058):** el push de riesgo usa un texto genérico con visibilidad privada en la pantalla de bloqueo, en lugar de «Posible caída». Precisa RF-012-07; pendiente de tareas.
+- RNF disponibilidad (D-060): objetivo de diseño no medido; no aplica medición en esta spec.
 
 ## Revisión y cambios
 
 2026-10-22: creada e implementada por autorización explícita del usuario en el mismo mensaje. Aceptación funcional pendiente.
 
 2026-10-22 (posterior): correcciones de la revisión [QA_2026-10-22](../../docs/QA_2026-10-22.md) autorizadas por el usuario: RF-012-11/12 nuevos y RF-012-07 precisado (QA-01, QA-02, QA-03). Decisión [D-012-02](../../docs/DECISIONES.md).
+
+2026-10-25: el propietario resuelve P-012-01 (D-051), P-012-02 (D-053) y QA-14 (D-058). Los cambios de RF y las tareas fechadas se documentan en una fase posterior; no hay autorización de implementación.
