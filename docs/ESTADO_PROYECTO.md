@@ -2,6 +2,25 @@
 
 Fecha: 2026-10-25.
 
+## Pendientes abiertos — consolidado al 2026-10-25
+
+Lista única de lo que falta. El detalle vive en cada spec y en DECISIONES. «Propietario» indica que requiere dispositivo, cuenta externa, voluntarios o una decisión suya.
+
+| # | Pendiente | Dónde | Quién |
+|---|---|---|---|
+| 1 | Revisar y fusionar la [PR #4](https://github.com/Azurtilo/vigia-demo/pull/4) (014 y autoría en el panel) | `feature/014-privacidad` | Propietario |
+| 2 | Prueba en Android físico: APK instalado y servidor en la red local (T-011-09), notificación local con pantalla bloqueada (T-011-03), ensayo web ↔ app por plan (T-011-05), revisión visual (T-011-06), validación integrada (T-011-11); flujo titular/cuidador de la 013 y aviso de política y consentimiento de la 014 | specs 011, 013, 014 | Propietario |
+| 3 | Firebase de prueba con credenciales fuera del repositorio; push real con la app cerrada; medir caída → teléfono (≤ 10 s) | D-054, T-011-04, QA-15 | Propietario |
+| 4 | Protocolo de caídas con voluntarios (20 caídas y 40 actividades normales), `bench.py` con ese video (p50/p95) y ajuste de umbrales | D-053, `edge/README.md` | Propietario + equipo |
+| 5 | Revisión legal del texto de la política antes de usar datos reales | D-067, `/privacidad/` | Propietario |
+| 6 | Política de sesiones de D-056 (vencimiento, cierre de sesión remoto, revocación de nodos desde el portal web): aprobada, sin spec ni código | D-056 | Equipo (DOCUMENTAR) |
+| 7 | Hallazgos QA sin abordar: QA-07 (confirmar con prueba que la inmovilidad se reintenta), QA-12/13 (refactor de validación duplicada y funciones largas), QA-17 (límite de tasa en `/api/v1/edge/*`), QA-18 (HSTS al tener dominio con HTTPS), QA-20 (IDs de decisiones ambiguos) | `docs/QA_2026-10-22.md` | Equipo |
+| 8 | Aplicar las migraciones (CuidadosApp 0008/0009, PrivacidadApp 0001) en una base real, con respaldo y autorización | — | Propietario |
+| 9 | RNF de disponibilidad ≥ 99,5 %: declarado objetivo de diseño no medido; describir la arquitectura necesaria en el informe | D-060 | Equipo (informe) |
+| 10 | Decidir si `.claude/skills/` (skill `validar-produccion-sdd`) se versiona | raíz del repo | Propietario |
+
+Trabajo futuro registrado (no comprometido): invitación por correo (D-050), traspaso de titularidad, papelera de pacientes con «deshacer» (D-067), cifrado en reposo y PostgreSQL (014), registro de lecturas, push inmediato de inmovilidad (D-051), iOS (D-011-02).
+
 ## Estado vigente — 014 privacidad implementada, 2026-10-25
 
 - **Pedido.** «respecto a p14 me parece todo bien, registralo […] autorizo implementar». También preguntó si conviene conservar por un tiempo los datos de un paciente eliminado: se recomendó no hacerlo y usar archivar como vía reversible (D-067).
