@@ -10,7 +10,6 @@ from django.core import signing
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import transaction
 from django.db.models import F
-from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
@@ -61,14 +60,6 @@ def read_action(user, token, patient=None, kind=None):
         raise ValidationError(
             "Esta acción expiró o no es válida. Recarga y revisa antes de confirmar."
         ) from None
-
-
-def own_patient(user, pk):
-    try:
-        pk = int(pk)
-    except (ValueError, TypeError):
-        raise Http404 from None
-    return get_object_or_404(Patient, pk=pk, owner=user)
 
 
 def acting(user, pk, action):
