@@ -1391,3 +1391,32 @@ class MigracionModoVisualTests(TransactionTestCase):
             )
         self.assertEqual(UserVisualPreference.objects.count(), 0)
         self.assertTrue(User.objects.filter(pk=actor.pk).exists())
+
+
+class ListadoConsultasTests(BaseUsuariosTestCase):
+    """QA-2026-10-22-19: the user list must not query once per user."""
+
+    def page_queries(self):
+        from django.db import connection
+        from django.test.utils import CaptureQueriesContext
+
+        with CaptureQueriesContext(connection) as queries:
+            response = self.client.get(reverse("User"))
+        self.assertEqual(response.status_code, 200)
+        return len(queries), response
+
+    def test_query_count_does_not_grow_with_users(self):
+        admin = self.create_actor("lista_admin", position=self.admin_position)
+        self.client.force_login(admin)
+        verified = self.create_actor("lista_verificado", position=self.restricted_position)
+        EmailAddress.objects.create(
+            user=verified, email="verificado@example.test", verified=True, primary=True
+        )
+        self.page_queries()  # first visit also refreshes session and activity
+        few, response = self.page_queries()
+        self.assertContains(response, "Correo verificado")
+        self.assertContains(response, "Correo sin verificar")
+        for n in range(6):
+            self.create_actor(f"lista_extra_{n}", position=self.restricted_position)
+        many, _ = self.page_queries()
+        self.assertEqual(few, many)

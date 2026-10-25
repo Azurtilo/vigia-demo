@@ -2,6 +2,23 @@
 
 Fecha: 2026-10-25.
 
+## Paso 3 — ajustes de la 012, DOCUMENTAR, 2026-10-25
+
+- **Pedido.** «levanta pull request hacia develop y avanza en el paso 3».
+- **Hecho.** [PR #2](https://github.com/Azurtilo/vigia-demo/pull/2) de `feature/013-cuidado-delegado` hacia `develop`. Rama `feature/012-push-inmediato-qa` creada desde la 013. Spec 012 con RF-012-07 precisado y RF-012-13..16; plan con envío común, reserva de recibos y push inmediato; tareas T-012-13..21.
+- **Implementado (mismo día, autorizado: «autorizo implementacion de T-012-13 a T-012-21», push inmediato solo para caídas).** Commits e1f25c4, da04a1d, 84daf76:
+  - `push.py`: reserva de recibo, FCM fuera de transacción y confirmación (QA-09; migración aditiva 0009);
+  - push de caída tras `on_commit` en un hilo (D-051); la inmovilidad sigue por el comando;
+  - texto genérico con visibilidad privada (D-058), enviado a los destinatarios de la 013;
+  - `minSdk` 26 con APK compilado;
+  - «Posible caída» en la app (QA-16);
+  - demo con clave propia y solo IP privadas (QA-10);
+  - listado de usuarios sin N+1 (QA-19);
+  - artefacto Android eliminado (QA-21).
+- **Evidencia.** Django **210 OK**, Edge **22 OK**, Flutter **23 OK**; [validación 012](../specs/012-deteccion-caidas/validation.md).
+- **No hecho.** Firebase real, medición de ≤ 10 s, merge.
+- **Siguiente paso seguro.** PR de `feature/012-push-inmediato-qa` hacia `develop` después de la PR #2 (comparte su historia). Luego spec 014 de privacidad (D-052).
+
 ## Estado vigente — 013 cuidado delegado implementada, 2026-10-25
 
 - **Pedido.** «haz commit y pasa a implementarla en feature/013-cuidado-delegado».

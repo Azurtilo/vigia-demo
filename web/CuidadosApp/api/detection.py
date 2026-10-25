@@ -19,6 +19,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from CuidadosApp.capacity import capacity_state
 from CuidadosApp.models import DetectionNode, PostureObservation
+from CuidadosApp import push
 from CuidadosApp.access import patient_for
 from CuidadosApp.services import acting, digest
 from PlanesApp.entitlements import capabilities
@@ -244,6 +245,9 @@ class EdgeView(View):
                 DetectionNode.objects.filter(pk=node.pk).update(
                     last_seen_at=timezone.now()
                 )
+                if row.risk == "fall":
+                    # D-051: push right after commit, off the node's response path.
+                    transaction.on_commit(lambda pk=row.pk: push.schedule_fall(pk))
                 if row.risk:
                     # Reception time for the alert-latency KPI; no patient data.
                     log.warning(

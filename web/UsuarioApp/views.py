@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.views import redirect_to_login
 from django.core.exceptions import PermissionDenied
 from django.db import IntegrityError, OperationalError, transaction
-from django.db.models import Q
+from django.db.models import Exists, OuterRef, Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -96,6 +96,12 @@ class UserListView(LoginRequiredMixin, ListView):
         queryset = (
             User.objects.filter(is_active=not show_inactive)
             .select_related("profile__position_FK")
+            # QA-2026-10-22-19: one query for the page instead of one per user.
+            .annotate(
+                email_verified=Exists(
+                    EmailAddress.objects.filter(user=OuterRef("pk"), verified=True)
+                )
+            )
             .order_by("-id")
         )
 
@@ -124,10 +130,7 @@ class UserListView(LoginRequiredMixin, ListView):
             user.can_reset_password = puede_gestionar_cuenta(
                 self.request.user, user, "reset"
             )
-            verification = EmailAddress.objects.filter(
-                user=user, verified=True
-            ).exists()
-            verification_users.append((user, verification))
+            verification_users.append((user, user.email_verified))
 
         context["verification_users"] = verification_users
         context["placeholder"] = "Buscar por usuario, nombre o apellido"

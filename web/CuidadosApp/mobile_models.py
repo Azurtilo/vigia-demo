@@ -79,6 +79,8 @@ class PushReceipt(models.Model):
     device = models.ForeignKey(MobileDevice, on_delete=models.CASCADE)
     key = models.CharField(max_length=240)
     sent_at = models.DateTimeField(auto_now_add=True)
+    # False while reserved and FCM has not accepted it yet (QA-2026-10-22-09).
+    confirmed = models.BooleanField(default=True)
 
     class Meta:
         constraints = [
