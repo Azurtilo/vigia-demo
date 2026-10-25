@@ -246,5 +246,92 @@ class CapacitySelection(models.Model):
     effective_at = models.DateTimeField()
     updated_at = models.DateTimeField(auto_now=True)
 
+
+
+ACCESS_ROLES = [("familiar", "Familiar"), ("cuidador", "Cuidador")]
+
+
+class PatientInvitation(models.Model):
+    """Single-use access code; only its SHA-256 is stored (spec 013)."""
+
+    patient = models.ForeignKey(
+        Patient, on_delete=models.PROTECT, related_name="invitations"
+    )
+    role = models.CharField(max_length=10, choices=ACCESS_ROLES)
+    code_hash = models.CharField(max_length=64, unique=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="+"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    used_at = models.DateTimeField(null=True, blank=True)
+    used_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="+",
+    )
+    revoked_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["-created_at", "-pk"]
+        indexes = [models.Index(fields=["patient", "used_at", "revoked_at"])]
+        constraints = [
+            models.CheckConstraint(
+                condition=Q(role__in=["familiar", "cuidador"]),
+                name="invitation_role_valid",
+            )
+        ]
+
+
+class PatientAccess(models.Model):
+    """Delegated access to someone else's patient; revoked rows are kept."""
+
+    patient = models.ForeignKey(
+        Patient, on_delete=models.PROTECT, related_name="accesses"
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="care_accesses"
+    )
+    role = models.CharField(max_length=10, choices=ACCESS_ROLES)
+    invitation = models.ForeignKey(
+        PatientInvitation, on_delete=models.PROTECT, null=True, blank=True
+    )
+    accepted_at = models.DateTimeField(default=timezone.now)
+    revoked_at = models.DateTimeField(null=True, blank=True)
+    revoked_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="+",
+    )
+
+    class Meta:
+        ordering = ["accepted_at", "pk"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["patient", "user"],
+                condition=Q(revoked_at__isnull=True),
+                name="patient_access_active_once",
+            ),
+            models.CheckConstraint(
+                condition=Q(role__in=["familiar", "cuidador"]),
+                name="patient_access_role_valid",
+            ),
+        ]
+
+
+class AccessCodeAttempt(models.Model):
+    """Failed-code counter kept in the database so every process shares it."""
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        indexes = [models.Index(fields=["user", "created_at"])]
+
+
 # Kept separate for readability; registered under the existing CuidadosApp.
 from .mobile_models import DetectionNode, MobileDevice, PostureObservation, PushReceipt  # noqa: E402,F401
