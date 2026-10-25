@@ -1,7 +1,7 @@
 # Tareas — 013 / Cuidado delegado
 
 Spec: [spec.md](spec.md). Plan: [plan.md](plan.md).
-Estado: T-013-01..10 hechas; T-013-11 parcial (falta revisión visual y Android físico). Implementación autorizada: sí, 2026-10-25.
+Estado: T-013-01..10 hechas; T-013-11 parcial (revisión en navegador hecha; falta Android físico). Implementación autorizada: sí, 2026-10-25.
 
 - [x] T-013-01 — Modelos `PatientAccess`, `PatientInvitation` y `AccessCodeAttempt` con la migración aditiva 0008.
   - RF: RF-013-01, 02, 05, 06. Componente: web.
@@ -76,10 +76,11 @@ Estado: T-013-01..10 hechas; T-013-11 parcial (falta revisión visual y Android 
 | 2026-10-25 | T-013-07/08 | `api/access.py`, `api/views.py`, `api/detection.py`, `test_access.py` (84cf3b3) | 21 pruebas nuevas OK; cierra QA-08 |
 | 2026-10-25 | T-013-10 | Flutter `features/patients/access.dart`, `patient_screen.dart`, `care_home.dart`, `test/patient_roles_test.dart` (3c7d139) | `flutter analyze` sin problemas; 22 OK |
 | 2026-10-25 | T-013-11 | Suites completas; `validation.md` | Django 202, Edge 22, Flutter 22 OK. Pendiente: navegador y Android físico |
+| 2026-10-25 | T-013-11 | Revisión del propietario en navegador (servidor demo); ajuste de toasts con cierre automático | Aprobado por el propietario. Pendiente: Android físico |
 
 ## Reanudación
 
-Última acción: implementación T-013-01..10 y validación automática (2026-10-25). Siguiente: revisión visual en navegador y ensayo en Android físico con dos cuentas (titular y cuidador), luego PR hacia `develop`.
+Última acción: implementación T-013-01..10 y validación automática (2026-10-25). Revisión en navegador hecha. Siguiente: ensayo en Android físico con dos cuentas (titular y cuidador), luego PR hacia `develop`.
 
 ## Aceptación del usuario
 

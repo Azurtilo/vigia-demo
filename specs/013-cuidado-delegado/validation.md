@@ -2,7 +2,7 @@
 
 Fecha: 2026-10-25. Entorno aislado: Windows 10, `.venv` (web, SQLite en memoria de `core.test_settings`), `.venv-edge-win` (edge), Flutter 3.47.7. Solo datos ficticios.
 Referencia de código: rama `feature/013-cuidado-delegado`, commits `3a6e60d` a `4f39c68`.
-Estado: verificación técnica automática completa; revisión visual y prueba en Android físico pendientes.
+Estado: verificación técnica automática completa y revisión en navegador hecha por el propietario; prueba en Android físico pendiente.
 
 | RF | Prueba / pasos / comando | Esperado | Obtenido | Estado |
 |---|---|---|---|---|
@@ -30,7 +30,9 @@ Estado: verificación técnica automática completa; revisión visual y prueba e
 
 ## Revisión visual si aplica
 
-Pendiente. Las plantillas nuevas (`components/CuidadosApp/access.html`, `pages/CuidadosApp/access_code.html`) y los cambios en ficha y lista renderizan en las pruebas con el cliente de Django, pero no se revisaron en un navegador (claro/oscuro, ancho móvil, teclado). Reutilizan clases CSS existentes; no hizo falta compilar Tailwind.
+2026-10-25: el propietario revisó la web en el navegador con el servidor demo (`core.mobile_demo_settings`, base desechable `.mobile-demo/`) y las cuentas ficticias `demo_premium` (titular), `demo_familiar`, `demo_cuidador` y `demo_invitado`. Resultado informado: «se ve todo bien, al menos lo que revisé». No se registró qué combinaciones de modo claro/oscuro, ancho móvil y teclado cubrió.
+
+Ajuste pedido en la misma revisión: los mensajes emergentes (toasts) solo se cerraban con la X en errores y avisos. Ahora todos se cierran solos con desvanecido (éxito e información 6 s, atención 10 s, error 12 s), con pausa al pasar el mouse o enfocar con teclado y sin animación si el sistema pide reducir movimiento (`web/static/js/mensajes.js`, `web/static/css/mensajes.css`, versión de caché `?v=013`). El propietario confirmó que se ve bien. Django 202 OK tras el cambio. Es un ajuste transversal de la interfaz, fuera de los RF de la 013.
 
 ## Límites y fallos
 

@@ -12,8 +12,9 @@ Fecha: 2026-10-25.
   - push de cuidado a titular y cuidador, y de riesgo a todos los roles (D-063);
   - app Flutter adaptada al rol.
 - **Evidencia (Windows).** Django **202 OK** (21 nuevas), check y makemigrations sin cambios, migración 0008 probada en avance y reversión. Edge **22 OK**. Flutter analyze sin problemas, **22 OK** (3 nuevas). [Validación](../specs/013-cuidado-delegado/validation.md).
-- **No hecho.** Revisión en navegador, ensayo en Android físico con dos cuentas, Firebase real, merge, despliegue y migración de una base real.
-- **Siguiente paso seguro.** Revisión visual y ensayo en dispositivo; luego PR de `docs/decisiones-2026-10-25` y `feature/013-cuidado-delegado` hacia `develop`.
+- **Revisión en navegador (mismo día).** El propietario revisó la web con el servidor demo y cuentas ficticias de los tres roles: «se ve todo bien». A pedido suyo, los mensajes emergentes ahora se cierran solos (6/10/12 s según tipo). Servidor detenido.
+- **No hecho.** Ensayo en Android físico con dos cuentas, Firebase real, merge, despliegue y migración de una base real.
+- **Siguiente paso seguro.** Ensayo en dispositivo; luego PR de `docs/decisiones-2026-10-25` y `feature/013-cuidado-delegado` hacia `develop`.
 
 ## Antecedente — spec 013 DOCUMENTAR, 2026-10-25
 
