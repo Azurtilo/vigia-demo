@@ -2,7 +2,20 @@
 
 Fecha: 2026-10-25.
 
-## Spec 013 cuidado delegado — DOCUMENTAR, 2026-10-25
+## Estado vigente — 013 cuidado delegado implementada, 2026-10-25
+
+- **Pedido.** «haz commit y pasa a implementarla en feature/013-cuidado-delegado».
+- **Hecho.** Rama `feature/013-cuidado-delegado` (desde `docs/decisiones-2026-10-25`), un commit por bloque de tareas (3a6e60d..4f39c68):
+  - vínculos e invitaciones (migración aditiva 0008);
+  - `access.py` con la matriz por rol; servicios que bloquean al titular y usan su cupo y su plan;
+  - web y API por rol, con gestión de accesos y «Unirme con un código»;
+  - push de cuidado a titular y cuidador, y de riesgo a todos los roles (D-063);
+  - app Flutter adaptada al rol.
+- **Evidencia (Windows).** Django **202 OK** (21 nuevas), check y makemigrations sin cambios, migración 0008 probada en avance y reversión. Edge **22 OK**. Flutter analyze sin problemas, **22 OK** (3 nuevas). [Validación](../specs/013-cuidado-delegado/validation.md).
+- **No hecho.** Revisión en navegador, ensayo en Android físico con dos cuentas, Firebase real, merge, despliegue y migración de una base real.
+- **Siguiente paso seguro.** Revisión visual y ensayo en dispositivo; luego PR de `docs/decisiones-2026-10-25` y `feature/013-cuidado-delegado` hacia `develop`.
+
+## Antecedente — spec 013 DOCUMENTAR, 2026-10-25
 
 - **Pedido.** Documentar la spec de familiar/cuidador decidida en D-050.
 - **Hecho.** [Spec](../specs/013-cuidado-delegado/spec.md) con 14 RF y matriz por rol (titular, familiar invitado, cuidador, sin vínculo); [plan](../specs/013-cuidado-delegado/plan.md) con `access.py`, bloqueo por titular, invitaciones con hash y límite de intentos, tres modelos nuevos (migración aditiva 0008) y endpoints aditivos; [tareas](../specs/013-cuidado-delegado/tasks.md) T-013-01..11, todas pendientes. Índice y trazabilidad prevista actualizados.
