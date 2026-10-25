@@ -15,8 +15,9 @@ Fecha: 2026-10-25.
   La app móvil muestra el aviso y pide el consentimiento al crear un paciente. La demo quedó migrada y con consentimientos ficticios.
 - **Evidencia (Windows).** Django **218 OK** (16 nuevas), Edge **22 OK**, Flutter **26 OK** (4 nuevas); migración probada en avance y reversión. [Validación](../specs/014-privacidad/validation.md).
 - **Desviación.** `core.test_settings` desactiva las reglas para las suites anteriores; las pruebas de privacidad las activan.
-- **No hecho.** Revisión en navegador, Android físico, revisión legal de la política, merge.
-- **Siguiente paso seguro.** Revisión en navegador con la demo; PR de la 014 hacia `develop` (la PR #3 sigue abierta).
+- **Revisión en navegador (mismo día).** El propietario revisó la 014 en la demo: «lo demás que vi estaba bien». Hubo dos correcciones: aviso junto a los campos del representante, y autoría en el panel «Mis cuidados» («Hecho por …», «registrada por …», «Cuenta eliminada»; RF-013-15). Django **219 OK**.
+- **No hecho.** Android físico, revisión legal de la política, merge.
+- **Siguiente paso seguro.** Fusionar la PR #3, traer `develop` a `feature/014-privacidad` resolviendo conflictos y abrir su PR.
 
 ## Spec 014 privacidad — DOCUMENTAR, 2026-10-25
 

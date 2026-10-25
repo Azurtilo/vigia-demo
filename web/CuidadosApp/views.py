@@ -107,7 +107,7 @@ class PanelView(CareView):
         patients = list(
             Patient.objects.filter(
                 pk__in=access.active_ids_for(request.user)
-            ).select_related("timer__last_event")
+            ).select_related("timer__last_event__author")
         )
         chosen = request.GET.get("patient")
         selected = (
@@ -151,7 +151,7 @@ class PatientListView(CareView):
         roles = access.roles_for(request.user)
         patients = list(
             access.accessible_patients(request.user).select_related(
-                "timer__last_event"
+                "timer__last_event__author"
             )
         )
         for patient in patients:
@@ -207,7 +207,7 @@ class PatientDetailView(CareView):
         can = {action: True for action in access.allowed_actions(role)}
         timer = (
             PostureTimer.objects.filter(patient=patient)
-            .select_related("last_event")
+            .select_related("last_event__author")
             .first()
         )
         kind = "archive" if patient.active else "reactivate"

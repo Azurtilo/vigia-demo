@@ -2,7 +2,7 @@
 
 Fecha: 2026-10-25. Entorno aislado: Windows 10, `.venv` (web, SQLite en memoria), `.venv-edge-win`, Flutter 3.47.7. Solo datos ficticios.
 Referencia de código: rama `feature/014-privacidad`, commits `0870edb`, `58de2f3` y `444d0c3`.
-Estado: verificación técnica automática completa; revisión en navegador y en Android físico pendientes.
+Estado: verificación técnica automática completa y revisión en navegador hecha por el propietario; Android físico pendiente.
 
 | RF | Prueba | Esperado | Obtenido | Estado |
 |---|---|---|---|---|
@@ -30,10 +30,16 @@ Estado: verificación técnica automática completa; revisión en navegador y en
 
 ## Revisión visual si aplica
 
-Pendiente: política, aceptación, bloque «Consentimiento y datos» de la ficha, exportaciones, eliminación de paciente y de cuenta, en modo claro y oscuro y en ancho móvil. La demo (`.mobile-demo/`) quedó migrada y con consentimientos ficticios para sus tres pacientes; sus cuentas deberán aceptar la política al entrar.
+2026-10-25: el propietario revisó en la demo (`.mobile-demo/`, migrada y con consentimientos ficticios) política, aceptación, consentimientos, creación de paciente, exportaciones y eliminación de paciente y de cuenta. Resultado: «lo demás que vi estaba bien», con dos observaciones corregidas el mismo día:
+
+1. **Representante sin nombre:** la página se recargaba sin aviso visible. El error salía como error general del formulario, arriba de todo y con clases que la hoja de estilos compilada no incluye. Ahora cada campo vacío muestra su aviso («Indica el nombre del representante.», «Indica la relación con el paciente.»), con prueba.
+2. **«Cuenta eliminada» en «Mis cuidados»:** la eliminación funcionaba y el historial lo mostraba, pero el panel no mostraba autoría de ningún registro. Se agregó «Hecho por …» en la agenda y «registrada por …» en la última postura (RF-013-15, T-013-12).
+
+No se registró qué combinaciones de modo claro/oscuro y ancho móvil cubrió.
 
 ## Límites y fallos
 
+- Tras los ajustes de la revisión: Django **219 OK**.
 - **Desviación del plan:** las reglas (puerta de aceptación y consentimiento por paciente) rigen en producción (`PRIVACY_ENFORCED = True` en `common_settings`) y en la demo, pero `core.test_settings` las desactiva para las suites anteriores, que crean usuarios y pacientes sin consentimiento (unas 70 pruebas). `PrivacidadApp/tests.py` las activa con `override_settings`. El plan pedía ajustar todas las pruebas sin relajar la regla. Las altas de cuenta y de paciente sí exigen aceptación y consentimiento siempre, y sus pruebas se actualizaron.
 - La purga de recibos de push usa `sent_at`; con la PR #3 fusionada, las reservas sin confirmar también vencen a los 2 minutos por su propio mecanismo.
 - `end_sessions` recorre las sesiones vigentes para encontrar las de la cuenta; es adecuado para el volumen del prototipo, no para una base grande.

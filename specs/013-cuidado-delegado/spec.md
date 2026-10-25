@@ -75,6 +75,7 @@ Errores relevantes: código vencido, ya usado, revocado o inexistente (mismo men
 - RF-013-12: La API móvil informa por paciente el rol y las acciones permitidas. La app muestra u oculta las acciones según esa respuesta, sin reemplazar el control del servidor.
 - RF-013-13: El titular ve en la web y en la app la lista de personas con acceso (nombre, rol, fecha de aceptación) y de códigos pendientes, y puede revocarlos.
 - RF-013-14: El cuidador ve, en lugar del historial completo, el estado de la agenda del día y la última postura registrada del paciente.
+- RF-013-15 (2026-10-25, pedido del propietario en la revisión de la 014): en el panel «Mis cuidados», cada actividad registrada de la agenda indica quién la hizo («Hecho por …» u «Omitido por …») y la última postura indica quién la registró; una cuenta eliminada se muestra como «Cuenta eliminada».
 
 ## Datos y reglas
 
@@ -140,3 +141,5 @@ Sin decisiones pendientes.
 2026-10-25: creada en fase DOCUMENTAR a partir de D-050. Sin aprobación ni autorización de implementación.
 
 2026-10-25 (posterior): el propietario responde P-013-01..03 (D-061 a D-063). P-013-03 cambia la propuesta: el cuidador también recibe el push de riesgo (matriz, RF-013-11 y su criterio de aceptación actualizados). Sigue sin autorización de implementación.
+
+2026-10-25 (posterior): RF-013-15 añadido a pedido del propietario («agrégalo»), tras notar que el panel no mostraba autoría. Implementado en `feature/014-privacidad` (T-013-12).

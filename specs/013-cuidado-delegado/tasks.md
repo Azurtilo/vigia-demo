@@ -62,6 +62,14 @@ Estado: T-013-01..10 hechas; T-013-11 parcial (revisión en navegador hecha; fal
     - resultados en `validation.md`;
     - TRAZABILIDAD (HU-01/02/03/04/06), `specs/README.md`, ESTADO, `CUIDADOSAPP_DESARROLLO.md` y `MOVIL_DESARROLLO.md` actualizados.
 
+## Tareas fechadas 2026-10-25 — autoría en el panel
+
+- [x] T-013-12 — «Hecho por …» en la agenda del panel y «registrada por …» en la última postura.
+  - RF: RF-013-15. Componente: web.
+  - Autorización: «agrégalo» (propietario, 2026-10-25, revisión de la demo).
+  - Archivos: `templates/components/CuidadosApp/agenda.html`, `timer.html`, `CuidadosApp/scheduling.py` y `views.py` (`select_related` del autor, sin consultas por fila).
+  - Hecho: `test_panel_shows_who_recorded_each_activity` y, para cuentas eliminadas, `PrivacidadApp.tests` («registrada por Cuenta eliminada»). Django 219 OK.
+
 ## Autorización posterior
 
 2026-10-25: «haz commit y pasa a implementarla en feature/013-cuidado-delegado». Autoriza el alcance completo de la 013 en esa rama (D-059). No autoriza merge, despliegue ni migración de una base real.
