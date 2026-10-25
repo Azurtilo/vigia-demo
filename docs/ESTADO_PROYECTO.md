@@ -17,7 +17,8 @@ Fecha: 2026-10-25.
 - **Desviación.** `core.test_settings` desactiva las reglas para las suites anteriores; las pruebas de privacidad las activan.
 - **Revisión en navegador (mismo día).** El propietario revisó la 014 en la demo: «lo demás que vi estaba bien». Hubo dos correcciones: aviso junto a los campos del representante, y autoría en el panel «Mis cuidados» («Hecho por …», «registrada por …», «Cuenta eliminada»; RF-013-15). Django **219 OK**.
 - **No hecho.** Android físico, revisión legal de la política, merge.
-- **Siguiente paso seguro.** Fusionar la PR #3, traer `develop` a `feature/014-privacidad` resolviendo conflictos y abrir su PR.
+- **Fusión (mismo día).** PR #3 fusionada en `develop` y traída a esta rama. Conflicto solo en este archivo. Django **227 OK**, Edge **22 OK**, Flutter **27 OK**.
+- **Siguiente paso seguro.** Revisión de la PR de la 014; prueba en Android físico de 013/014.
 
 ## Spec 014 privacidad — DOCUMENTAR, 2026-10-25
 
@@ -34,6 +35,23 @@ Fecha: 2026-10-25.
   - P-014-04: texto de la política como borrador pendiente de revisión legal.
 - **No hecho.** Sin código. Implementación no autorizada.
 - **Siguiente paso seguro.** Respuestas a P-014-01..04 e instrucción de implementación.
+
+## Antecedente — paso 3, ajustes de la 012 (PR #3 fusionada), 2026-10-25
+
+- **Pedido.** «levanta pull request hacia develop y avanza en el paso 3».
+- **Hecho.** [PR #2](https://github.com/Azurtilo/vigia-demo/pull/2) de `feature/013-cuidado-delegado` hacia `develop`. Rama `feature/012-push-inmediato-qa` creada desde la 013. Spec 012 con RF-012-07 precisado y RF-012-13..16; plan con envío común, reserva de recibos y push inmediato; tareas T-012-13..21.
+- **Implementado (mismo día, autorizado: «autorizo implementacion de T-012-13 a T-012-21», push inmediato solo para caídas).** Commits e1f25c4, da04a1d, 84daf76:
+  - `push.py`: reserva de recibo, FCM fuera de transacción y confirmación (QA-09; migración aditiva 0009);
+  - push de caída tras `on_commit` en un hilo (D-051); la inmovilidad sigue por el comando;
+  - texto genérico con visibilidad privada (D-058), enviado a los destinatarios de la 013;
+  - `minSdk` 26 con APK compilado;
+  - «Posible caída» en la app (QA-16);
+  - demo con clave propia y solo IP privadas (QA-10);
+  - listado de usuarios sin N+1 (QA-19);
+  - artefacto Android eliminado (QA-21).
+- **Evidencia.** Django **210 OK**, Edge **22 OK**, Flutter **23 OK**; [validación 012](../specs/012-deteccion-caidas/validation.md).
+- **No hecho.** Firebase real, medición de ≤ 10 s, merge.
+- **Siguiente paso seguro.** PR de `feature/012-push-inmediato-qa` hacia `develop` después de la PR #2 (comparte su historia). Luego spec 014 de privacidad (D-052).
 
 ## Estado vigente — 013 cuidado delegado implementada, 2026-10-25
 

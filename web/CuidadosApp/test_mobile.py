@@ -264,7 +264,7 @@ class MobileTests(TestCase):
 
         messaging = types.SimpleNamespace(
             Message=lambda **kw: kw, Notification=lambda **kw: kw,
-            AndroidConfig=lambda **kw: kw, send=deliver,
+            AndroidConfig=lambda **kw: kw, AndroidNotification=lambda **kw: kw, send=deliver,
         )
         firebase = types.SimpleNamespace(_apps=[object()], messaging=messaging)
         exceptions = types.SimpleNamespace(FirebaseError=FirebaseError)
@@ -286,8 +286,10 @@ class MobileTests(TestCase):
         # Two calls, one push per risk: receipts prevent duplicates; falls go first.
         self.assertEqual(len(risks), 2)
         self.assertEqual(risks[0]["notification"]["body"], RISK_MESSAGES["fall"])
-        self.assertEqual(risks[0]["android"], {"priority": "high"})
-        self.assertIsNone(risks[1]["android"])
+        # D-058: same generic text; private on the lock screen; only falls are urgent.
+        private = {"visibility": "private"}
+        self.assertEqual(risks[0]["android"], {"priority": "high", "notification": private})
+        self.assertEqual(risks[1]["android"], {"priority": None, "notification": private})
 
     @override_settings(VIGIA_PUSH_ENABLED=True)
     def test_late_or_failed_risk_push_is_retried_until_delivered_once(self):

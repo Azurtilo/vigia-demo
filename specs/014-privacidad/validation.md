@@ -40,6 +40,7 @@ No se registró qué combinaciones de modo claro/oscuro y ancho móvil cubrió.
 ## Límites y fallos
 
 - Tras los ajustes de la revisión: Django **219 OK**.
+- Tras fusionar `develop` con la PR #3 (2026-10-25): conflicto solo en `docs/ESTADO_PROYECTO.md`, resuelto conservando ambas entradas. Django **227 OK**, `makemigrations --check` sin cambios, Edge **22 OK**, Flutter analyze sin problemas y **27 OK**.
 - **Desviación del plan:** las reglas (puerta de aceptación y consentimiento por paciente) rigen en producción (`PRIVACY_ENFORCED = True` en `common_settings`) y en la demo, pero `core.test_settings` las desactiva para las suites anteriores, que crean usuarios y pacientes sin consentimiento (unas 70 pruebas). `PrivacidadApp/tests.py` las activa con `override_settings`. El plan pedía ajustar todas las pruebas sin relajar la regla. Las altas de cuenta y de paciente sí exigen aceptación y consentimiento siempre, y sus pruebas se actualizaron.
 - La purga de recibos de push usa `sent_at`; con la PR #3 fusionada, las reservas sin confirmar también vencen a los 2 minutos por su propio mecanismo.
 - `end_sessions` recorre las sesiones vigentes para encontrar las de la cuenta; es adecuado para el volumen del prototipo, no para una base grande.

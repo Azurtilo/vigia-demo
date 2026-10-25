@@ -55,6 +55,27 @@ Antes de las correcciones:
 
 Migración `0007_postureobservation_risk_fall` (solo `choices`); no se aplicó en ninguna base real. Reversión: `migrate CuidadosApp 0006`.
 
+## Ajustes 2026-10-25 — push inmediato, texto genérico y QA técnicos
+
+Rama `feature/012-push-inmediato-qa` (desde la 013), commits `e1f25c4`, `da04a1d` y `84daf76`. Entorno Windows, datos ficticios.
+
+| RF / hallazgo | Prueba | Obtenido | Estado |
+|---|---|---|---|
+| RF-012-13 (D-051) | `test_push.ImmediateFallPushTests.test_fall_is_pushed_on_reception_and_not_repeated` (Firebase simulado, `on_commit` ejecutado) | Push al recibir la caída; el comando posterior no lo repite; recibo confirmado | OK (simulado) |
+| RF-012-13 (solo caídas) | `test_immobility_waits_for_the_command` | La inmovilidad no se envía de inmediato; el comando la envía una vez | OK |
+| RF-012-13/14 | `test_fcm_failure_keeps_node_response_and_command_retries` | Nodo recibe 201 aunque FCM falle; sin recibo; el comando reintenta y envía una vez | OK |
+| RF-012-14 (QA-09) | `test_push.ReservationTests` (transacciones reales) | FCM se llama con `in_atomic_block = False`; segunda entrega deduplicada; un fallo libera la reserva; una reserva abandonada expira a los 2 min | OK |
+| RF-012-07 (D-058, D-063) | `test_fall_push_uses_existing_channel_once_and_first`, `test_fall_is_pushed_on_reception…`, `test_access.test_push_command_sends_fall_to_family_and_caregiver` | Texto genérico, `visibility=private`, prioridad alta solo en caída; llega a titular, familiar y cuidador | OK (simulado) |
+| RF-012-15 (D-057) | `flutter build apk --debug` y manifiesto fusionado | APK compilado; `minSdkVersion="26"` | OK |
+| RF-012-16 (QA-16) | `patient_roles_test.dart`: «A fall is titled as a possible fall» | Título «Posible caída» | OK |
+| QA-10 | `test_push.DemoSafetyTests`; `check` con `VIGIA_DEMO_HOSTS=8.8.8.8` | Solo loopback o IP privada; host público impide arrancar; clave aleatoria estable en `.mobile-demo/secret_key` (ignorado) | OK |
+| QA-19 | `UsuarioApp.tests.ListadoConsultasTests` | Consultas constantes; contra el código anterior la prueba falla (9 → 15) | OK |
+| QA-21 | Revisión del árbol | `mobile/android/app/Users/` (vacío, no versionado) eliminado e ignorado | OK |
+
+Regresión: Django **210 OK** (8 nuevas: 7 en `test_push.py` y 1 en UsuarioApp), check y `makemigrations --check` sin cambios, migración aditiva `0009_pushreceipt_confirmed` probada en avance y reversión. Edge **22 OK**. Flutter analyze sin problemas, **23 OK**.
+
+Límites: push solo con Firebase simulado (D-054). El hilo del push inmediato puede perder el envío si el proceso termina justo después de responder; el comando lo reintenta. La latencia de punta a punta (≤ 10 s) sigue **sin medir**. La migración 0009 no se aplicó a ninguna base real.
+
 ## Aceptación funcional
 
 Pendiente.

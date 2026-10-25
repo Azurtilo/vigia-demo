@@ -474,7 +474,7 @@ class RecipientTests(DelegatedCareBase):
         messaging = types.SimpleNamespace(
             Message=lambda **kw: kw,
             Notification=lambda **kw: kw,
-            AndroidConfig=lambda **kw: kw,
+            AndroidConfig=lambda **kw: kw, AndroidNotification=lambda **kw: kw,
             send=sent.append,
         )
         modules = {

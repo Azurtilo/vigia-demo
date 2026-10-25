@@ -173,3 +173,6 @@ edge/models/
 # Local Flutter native plugin source
 !mobile/plugins/vigia_pose/lib/
 !mobile/plugins/vigia_pose/lib/**
+
+# Build output with another machine's absolute path (QA-2026-10-22-21)
+mobile/android/app/Users/
