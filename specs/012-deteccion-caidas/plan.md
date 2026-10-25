@@ -53,4 +53,35 @@ Edge: caída (una emisión, latencia ≈ `confirm_seconds`), caída con recupera
 
 ## Decisiones para implementar
 
-Ninguna bloqueante. P-012-01 y P-012-02 quedan abiertas (ver spec).
+Ninguna bloqueante. P-012-01 y P-012-02 quedan abiertas (ver spec). Resueltas el 2026-10-25 por D-051 y D-053.
+
+## Ajustes 2026-10-25 — push inmediato, texto genérico y QA técnicos
+
+Propuesta; sin código. Inspección: `api/detection.py` (`EdgeView` bloquea al titular y crea la observación), `send_mobile_reminders.py` (envía dentro de `transaction.atomic()` con el usuario bloqueado: QA-09), `access.recipients` y `risk_patient_ids` (spec 013), `mobile_models.PushReceipt`, `core/mobile_demo_settings.py`, `UsuarioApp/views.py`, `mobile/android/app/build.gradle.kts`.
+
+**Envío común (`CuidadosApp/push.py`, nuevo).** Concentra el mensaje FCM (texto, prioridad, visibilidad) y el ciclo reservar → enviar → confirmar.
+- **Reservar:** en una transacción corta se crea `PushReceipt(confirmed=False)`; la restricción única (dispositivo, clave) impide dos reservas.
+- **Enviar:** la llamada a FCM ocurre fuera de toda transacción.
+- **Confirmar o liberar:** si FCM acepta, `confirmed=True`; si falla, se borra la reserva. Las reservas sin confirmar con más de 2 minutos se borran antes de reservar.
+- Lo usan el comando y el envío inmediato, así que el recibo deduplica entre ambos.
+
+**Push inmediato (RF-012-13).** En `EdgeView`, tras crear una observación con riesgo, `transaction.on_commit` lanza el envío para los dispositivos activos de `access.recipients(patient, "risk")` si el plan del titular tiene `risk_alerts`. El envío corre en un hilo daemon para no demorar la respuesta al nodo. Un ajuste `VIGIA_PUSH_INLINE` permite ejecutarlo en línea en las pruebas. Sin `VIGIA_PUSH_ENABLED` o sin `firebase_admin` no hace nada y el comando sigue como reintento.
+
+**Comando (RF-012-14).** Bajo el bloqueo solo valida la sesión y calcula los candidatos; las reservas, envíos y confirmaciones van fuera, con `push.py`.
+
+**Texto (D-058).** Un único mensaje «VIGIA: alerta de riesgo, abre la app» para caída e inmovilidad, `AndroidNotification(visibility="private")` y prioridad alta para caída. La prioridad se decide por el tipo de riesgo, no comparando el texto.
+
+| RF / hallazgo | Archivos | Cambio | Evidencia prevista |
+|---|---|---|---|
+| RF-012-14 / QA-09 | `mobile_models.py`, migración aditiva `0009` (`PushReceipt.confirmed`, por defecto `True` para los recibos existentes), `push.py`, `send_mobile_reminders.py` | Reserva, envío fuera de transacción y confirmación | Prueba: durante `messaging.send` no hay transacción abierta; fallo libera la reserva; reserva abandonada expira |
+| RF-012-13 | `api/detection.py`, `push.py` | `on_commit` + hilo | Prueba en línea: push al recibir la caída y comando posterior sin duplicado; respuesta 201 aunque FCM falle |
+| RF-012-07 | `push.py` | Texto genérico, visibilidad privada, destinatarios de la 013 | Prueba del mensaje y de los destinatarios |
+| RF-012-15 | `mobile/android/app/build.gradle.kts` | `minSdk = maxOf(26, flutter.minSdkVersion)` | Revisión del archivo; compilación del APK si el entorno lo permite |
+| RF-012-16 | `mobile/lib/features/patients/patient_screen.dart` | Título «Posible caída» | `flutter test` con observación `fall` |
+| QA-10 | `core/mobile_demo_settings.py`, `.gitignore` | `SECRET_KEY` aleatoria guardada en `.mobile-demo/` (no versionada) y rechazo de `VIGIA_DEMO_HOSTS` que no sean loopback o IP privada | Prueba de la validación de hosts |
+| QA-19 | `UsuarioApp/views.py` | `annotate(Exists(EmailAddress verificada))` | `assertNumQueries` constante con más usuarios |
+| QA-21 | `mobile/android/app/Users/` (local), `.gitignore` | Borrar el artefacto e ignorar el patrón | `git status` limpio |
+
+**Riesgos.** El hilo daemon puede perder un envío si el proceso termina justo después de responder; el comando periódico lo reintenta (la reserva abandonada expira a los 2 minutos). En SQLite, una escritura concurrente puede esperar el bloqueo de la base; las transacciones quedan cortas.
+
+**Migración.** `0009` agrega una columna booleana con valor por defecto; reversible sin pérdida de datos clínicos.

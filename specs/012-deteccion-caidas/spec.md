@@ -49,6 +49,14 @@ No incluye: validación clínica, entrenamiento de modelos, detección con varia
 - RF-012-09: `edge/bench.py` procesa uno o más videos locales sin servidor y reporta latencia de inferencia (promedio, p95, máx.), FPS de procesamiento y conteo de caídas.
 - RF-012-10: Las secuencias sintéticas de sentarse, agacharse (sentadilla e inclinarse) y acostarse en la cama no disparan caída; la secuencia de caída sí, una vez.
 
+Ajustes del 2026-10-25 (decisiones D-051, D-057, D-058, D-063 y hallazgos QA-2026-10-22-09/16):
+
+- RF-012-07, precisión (D-058, D-063): el texto del push de riesgo es genérico e igual para caída e inmovilidad («VIGIA: alerta de riesgo, abre la app»), con visibilidad privada en la pantalla de bloqueo de Android y prioridad alta solo para caída. Lo reciben el titular, los familiares y los cuidadores con acceso vigente (spec 013), según el plan del titular.
+- RF-012-13 (D-051): CUANDO el backend guarda una observación de riesgo nueva (caída o inmovilidad), EL SISTEMA intenta el push a los destinatarios después de confirmar la transacción y en segundo plano, sin demorar la respuesta al nodo. El comando periódico `send_mobile_reminders` queda como reintento.
+- RF-012-14 (QA-09): EL SISTEMA no llama a FCM dentro de una transacción con filas bloqueadas. Reserva el recibo por dispositivo en una transacción corta, envía fuera de ella y confirma el recibo al aceptar FCM; si el envío falla, libera la reserva para reintentar. Una reserva sin confirmar por más de 2 minutos se considera abandonada. Ningún aviso se duplica por dispositivo entre el envío inmediato y el comando.
+- RF-012-15 (D-057): la app Android exige como mínimo Android 8.0 (API 26).
+- RF-012-16 (QA-16): en el historial móvil de observaciones, una caída se titula «Posible caída» aunque la postura sea indeterminada.
+
 ## Datos y reglas
 
 Coordenadas: landmarks normalizados de imagen (`x`, `y` en [0, 1], `y` hacia abajo). `x` se multiplica por la relación ancho/alto del cuadro para medir en unidades de altura de imagen. La escala corporal es la mayor longitud de tronco (punto medio hombros → punto medio caderas) en la ventana, de modo que los umbrales no dependen de la distancia a la cámara.
@@ -90,11 +98,16 @@ Base de datos: se añade la opción `("fall", "Caída")` a `PostureObservation.r
 | RF-012-11 | Servidor que tarda 2,5 s o 5 s en responder durante una caída | La caída se confirma y se entrega una vez; ningún cuadro espera a la red |
 | RF-012-12 | Red caída y recuperada; respuesta perdida tras guardar | Entrega al reconectar con `observed_at` original; reintento sin duplicado |
 | RF-012-07 | Caída de hace 30 min recibida tarde; FCM falla dos veces | Push de caída y de inmovilidad una vez cada uno en la ejecución siguiente |
+| RF-012-07 | Push de caída o inmovilidad | Texto genérico, visibilidad privada; prioridad alta solo en caída; titular, familiar y cuidador lo reciben |
+| RF-012-13 | El nodo envía una caída con push habilitado | El push sale tras confirmar la transacción, la respuesta al nodo no espera a FCM y el comando posterior no lo repite |
+| RF-012-14 | FCM tarda o falla durante el envío | Ninguna fila bloqueada durante la llamada; la reserva se libera y el reintento envía una vez |
+| RF-012-15 | `build.gradle.kts` | `minSdk` 26 |
+| RF-012-16 | Observación `fall` con postura indeterminada en la app | Título «Posible caída» |
 
 ## No funcionales
 
 - Privacidad: ningún cuadro sale del nodo; la observación de caída no lleva coordenadas.
-- Objetivos del informe (alerta ≤ 10 s, inferencia < 100 ms, sensibilidad ≥ 90 %, FP ≤ 5 %): **no se declaran cumplidos**. Con los valores por defecto, el nodo confirma ≈ 5–6,5 s después del inicio de la caída; el tiempo total hasta el teléfono depende además de la frecuencia de `send_mobile_reminders` y de FCM. Las cifras reales se registran con `bench.py` y el protocolo de `edge/README.md`.
+- Objetivos del informe (alerta ≤ 10 s, inferencia < 100 ms, sensibilidad ≥ 90 %, FP ≤ 5 %): **no se declaran cumplidos**. Con los valores por defecto, el nodo confirma ≈ 5–6,5 s después del inicio de la caída; el tiempo total hasta el teléfono depende además de FCM (desde el 2026-10-25 el push sale al recibir la caída, RF-012-13; antes dependía de la frecuencia de `send_mobile_reminders`). Las cifras reales se registran con `bench.py` y el protocolo de `edge/README.md`.
 
 ## Compatibilidad
 
@@ -116,3 +129,5 @@ Se preservan clasificación de postura, regla de inmovilidad, contrato y autenti
 2026-10-22 (posterior): correcciones de la revisión [QA_2026-10-22](../../docs/QA_2026-10-22.md) autorizadas por el usuario: RF-012-11/12 nuevos y RF-012-07 precisado (QA-01, QA-02, QA-03). Decisión [D-012-02](../../docs/DECISIONES.md).
 
 2026-10-25: el propietario resuelve P-012-01 (D-051), P-012-02 (D-053) y QA-14 (D-058). Los cambios de RF y las tareas fechadas se documentan en una fase posterior; no hay autorización de implementación.
+
+2026-10-25 (posterior): RF-012-07 precisado y RF-012-13..16 añadidos (D-051, D-057, D-058, D-063, QA-09, QA-16). Tareas T-012-13..21 en tasks.md. Implementación pendiente de autorización.

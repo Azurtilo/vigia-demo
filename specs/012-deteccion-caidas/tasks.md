@@ -58,6 +58,44 @@ Estado: implementadas; verificación sintética OK, prueba en vivo y protocolo p
   - Archivos: `edge/run.py`, `edge/test_run.py`.
   - Hecho cuando: tests de red lenta (2,5 y 5 s), caída y recuperación, reintento sin duplicado, expiración y denegación pasan.
 
+## Tareas fechadas 2026-10-25 — push inmediato, texto genérico y QA técnicos
+
+Propuestas; no ejecutar sin autorización.
+
+- [ ] T-012-13 — Envío común con reserva de recibo y FCM fuera de transacción.
+  - RF: RF-012-14 (QA-09). Componente: web.
+  - Archivos: `web/CuidadosApp/push.py` (nuevo), `mobile_models.py`, migración `0009`, `send_mobile_reminders.py`.
+  - Hecho cuando: pruebas de no transacción durante el envío, liberación tras fallo y expiración de reservas; las pruebas actuales del comando siguen verdes; migración probada en avance y reversión.
+- [ ] T-012-14 — Push inmediato tras recibir un riesgo.
+  - RF: RF-012-13 (D-051). Componente: web. Depende de: T-012-13.
+  - Archivos: `web/CuidadosApp/api/detection.py`, `push.py`.
+  - Hecho cuando: la caída produce push sin ejecutar el comando, el comando posterior no lo repite y el nodo recibe 201 aunque FCM falle.
+- [ ] T-012-15 — Texto genérico, visibilidad privada y destinatarios por rol.
+  - RF: RF-012-07 (D-058, D-063). Componente: web. Depende de: T-012-13.
+  - Hecho cuando: prueba del mensaje (texto, `visibility=private`, prioridad alta solo en caída) y de los destinatarios.
+- [ ] T-012-16 — Android mínimo API 26.
+  - RF: RF-012-15 (D-057). Componente: mobile.
+  - Archivos: `mobile/android/app/build.gradle.kts`.
+  - Hecho cuando: el archivo fija 26; `flutter analyze` y `flutter test` verdes.
+- [ ] T-012-17 — Título «Posible caída» en el historial móvil.
+  - RF: RF-012-16 (QA-16). Componente: mobile.
+  - Archivos: `mobile/lib/features/patients/patient_screen.dart`, prueba en `mobile/test/`.
+  - Hecho cuando: prueba de widget con observación `fall`.
+- [ ] T-012-18 — Demo móvil sin clave pública ni hosts abiertos.
+  - Hallazgo: QA-10. Componente: web.
+  - Archivos: `web/core/mobile_demo_settings.py`.
+  - Hecho cuando: la clave se genera al primer arranque en `.mobile-demo/`; un host público en `VIGIA_DEMO_HOSTS` impide arrancar; prueba de la validación.
+- [ ] T-012-19 — Listado de usuarios sin N+1.
+  - Hallazgo: QA-19. Componente: web.
+  - Archivos: `web/UsuarioApp/views.py`, pruebas de UsuarioApp.
+  - Hecho cuando: número de consultas constante con más usuarios (`assertNumQueries`).
+- [ ] T-012-20 — Artefacto local de Android.
+  - Hallazgo: QA-21. Componente: mobile.
+  - Hecho cuando: `mobile/android/app/Users/` eliminado e ignorado.
+- [ ] T-012-21 — Validación y documentación.
+  - Depende de: T-012-13..20.
+  - Hecho cuando: suites Django, Edge y Flutter verdes; `validation.md`, TRAZABILIDAD (HU-05) y estado actualizados.
+
 ## Autorización posterior
 
 Usuario, 2026-10-22: «Te autorizo crear specs/012-deteccion-caidas/ (spec, plan, tasks) e implementarla completa en la misma sesión.» No autoriza producción, migración real ni cámara personal.

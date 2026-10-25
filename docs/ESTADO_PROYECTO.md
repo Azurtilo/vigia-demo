@@ -2,6 +2,13 @@
 
 Fecha: 2026-10-25.
 
+## Paso 3 — ajustes de la 012, DOCUMENTAR, 2026-10-25
+
+- **Pedido.** «levanta pull request hacia develop y avanza en el paso 3».
+- **Hecho.** [PR #2](https://github.com/Azurtilo/vigia-demo/pull/2) de `feature/013-cuidado-delegado` hacia `develop`. Rama `feature/012-push-inmediato-qa` creada desde la 013. Spec 012 con RF-012-07 precisado y RF-012-13..16; plan con envío común, reserva de recibos y push inmediato; tareas T-012-13..21.
+- **No hecho.** Sin código del paso 3: falta la instrucción explícita de implementación (AGENTS.md).
+- **Siguiente paso seguro.** Autorizar T-012-13..21 o ajustar el plan.
+
 ## Estado vigente — 013 cuidado delegado implementada, 2026-10-25
 
 - **Pedido.** «haz commit y pasa a implementarla en feature/013-cuidado-delegado».
