@@ -35,3 +35,12 @@ Los cuatro SVG locales son referencias educativas originales. IA/cámaras se rot
 ## Cuidado delegado (spec 013), 2026-10-25
 
 El dueño de un paciente es su titular. Desde la ficha («Personas con acceso») genera un código de un solo uso, válido 48 horas, para un familiar o un cuidador. La persona invitada entra con su propia cuenta (correo verificado) y usa «Unirme con un código» en Mis pacientes. Permisos por rol en `CuidadosApp/access.py`: el familiar configura y ve el historial; el cuidador ve la agenda, registra cuidados y posturas y corrige solo sus registros; solo el titular archiva, gestiona cupo, nodos y accesos. Sin vínculo, la respuesta es 404, incluso para superusuarios. El cupo y las funciones del plan son siempre los del titular. Revocar o renunciar corta el acceso de inmediato y conserva la autoría de los registros. Detalle en la [spec 013](../specs/013-cuidado-delegado/spec.md).
+
+## Privacidad (spec 014), 2026-10-25
+
+- **Política.** Cada cuenta acepta la política vigente (`PRIVACY_POLICY_VERSION`) antes de usar el portal o la API.
+- **Consentimiento.** Cada paciente necesita un consentimiento registrado por el titular: del propio paciente o de un representante, con alcance «cuidado» (registros) o «detección» (cámara). Sin consentimiento, la ficha se ve pero no acepta datos nuevos y el nodo se detiene.
+- **Datos del titular.** El titular descarga los datos del paciente o lo elimina desde la ficha; cada persona descarga sus datos o elimina su cuenta desde el perfil. Archivar es la vía reversible.
+- **Purga.** `manage.py purge_expired_data [--dry-run]` aplica los plazos de D-064 y conviene programarla a diario en el servidor.
+- **Política provisoria.** El texto en `/privacidad/` es un borrador pendiente de revisión legal (D-067).
+- **Pruebas.** `core.test_settings` desactiva las reglas (`PRIVACY_ENFORCED = False`) para las suites anteriores; `PrivacidadApp/tests.py` las activa.

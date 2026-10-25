@@ -2,6 +2,7 @@ import 'dart:async';
 
 import '../medications/medicine_filters.dart';
 import '../subscription/subscription_panel.dart';
+import '../profile/privacy.dart';
 import '../profile/profile_panel.dart';
 
 import 'package:flutter/material.dart';
@@ -34,6 +35,7 @@ class _CareHomeState extends State<CareHome> with WidgetsBindingObserver {
   bool busy = false;
   Map<String, dynamic>? me, patients, agenda;
   String? failure;
+  bool needsConsent = false;
   @override
   void initState() {
     super.initState();
@@ -63,6 +65,7 @@ class _CareHomeState extends State<CareHome> with WidgetsBindingObserver {
     setState(() {
       busy = true;
       failure = null;
+      needsConsent = false;
     });
     try {
       await widget.api.syncReminders();
@@ -79,7 +82,12 @@ class _CareHomeState extends State<CareHome> with WidgetsBindingObserver {
         });
       }
     } catch (e) {
-      if (mounted) setState(() => failure = e.toString());
+      if (mounted) {
+        setState(() {
+          failure = e.toString();
+          needsConsent = consentRequired(e);
+        });
+      }
     } finally {
       if (mounted) setState(() => busy = false);
     }
@@ -87,9 +95,12 @@ class _CareHomeState extends State<CareHome> with WidgetsBindingObserver {
 
   Future<void> newPatient() async {
     final data = await editForm(context, 'Agregar paciente', patientFields);
-    if (data == null) return;
+    if (data == null || !mounted) return;
+    // Spec 014: the health data needs the patient's or a representative's consent.
+    final consent = await askPatientConsent(context);
+    if (consent == null) return;
     try {
-      await widget.api.post('patients', data);
+      await widget.api.post('patients', {...data, ...consent});
       await reload();
     } catch (e) {
       if (mounted) notice(context, e);
@@ -234,7 +245,9 @@ class _CareHomeState extends State<CareHome> with WidgetsBindingObserver {
           padding: const EdgeInsets.fromLTRB(20, 12, 20, 100),
           children: [
             if (busy) const LinearProgressIndicator(),
-            if (failure != null)
+            if (needsConsent)
+              ConsentRequiredCard(baseUrl: widget.api.baseUrl, onRetry: reload)
+            else if (failure != null)
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16),

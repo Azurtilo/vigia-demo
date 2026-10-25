@@ -18,35 +18,52 @@ String roleLabel(dynamic role) => switch (role) {
 };
 
 Future<String?> askCode(BuildContext context) async {
-  final controller = TextEditingController();
   final code = await showDialog<String>(
     context: context,
-    builder: (c) => AlertDialog(
-      title: const Text('Unirme con un código'),
-      content: TextField(
-        controller: controller,
-        autofocus: true,
-        textCapitalization: TextCapitalization.characters,
-        decoration: const InputDecoration(
-          labelText: 'Código de invitación',
-          helperText:
-              'Lo entrega la persona responsable. Vence a las 48 horas.',
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(c),
-          child: const Text('Volver'),
-        ),
-        FilledButton(
-          onPressed: () => Navigator.pop(c, controller.text.trim()),
-          child: const Text('Revisar código'),
-        ),
-      ],
-    ),
+    builder: (_) => const _CodeDialog(),
   );
-  controller.dispose();
   return code == null || code.isEmpty ? null : code;
+}
+
+/// Owns its controller: it must outlive the dialog's closing animation (T-013-13).
+class _CodeDialog extends StatefulWidget {
+  const _CodeDialog();
+  @override
+  State<_CodeDialog> createState() => _CodeDialogState();
+}
+
+class _CodeDialogState extends State<_CodeDialog> {
+  final controller = TextEditingController();
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => AlertDialog(
+    title: const Text('Unirme con un código'),
+    content: TextField(
+      controller: controller,
+      autofocus: true,
+      textCapitalization: TextCapitalization.characters,
+      decoration: const InputDecoration(
+        labelText: 'Código de invitación',
+        helperText: 'Lo entrega la persona responsable. Vence a las 48 horas.',
+      ),
+    ),
+    actions: [
+      TextButton(
+        onPressed: () => Navigator.pop(context),
+        child: const Text('Volver'),
+      ),
+      FilledButton(
+        onPressed: () => Navigator.pop(context, controller.text.trim()),
+        child: const Text('Revisar código'),
+      ),
+    ],
+  );
 }
 
 /// Preview first, then accept: the person sees patient and role before joining.

@@ -11,5 +11,6 @@
   {% include 'components/btn/button.html' with button_text='Guardar cambios' %}
   {% for message in messages %}{% if 'error' in message.tags %}<p class="field-error" role="alert">{{ message }}</p>{% endif %}{% endfor %}
 </form>
+<section class="privacy-actions" aria-labelledby="privacy-title"><h2 id="privacy-title">Privacidad</h2><p>Revisa la <a class="text-link" href="{% url 'PrivacidadApp:policy' %}">política de privacidad</a>, descarga tus datos o elimina tu cuenta.</p><form method="post" action="{% url 'PrivacidadApp:export_account' %}">{% csrf_token %}<button class="button secondary" type="submit">Descargar mis datos (JSON)</button></form><p><a class="text-link" href="{% url 'PrivacidadApp:delete_account' %}">Eliminar mi cuenta</a></p></section>
 {% endblock %}
 {% block javascript %}<script defer src="{% static 'js/script.js' %}?v=002"></script>{% endblock %}

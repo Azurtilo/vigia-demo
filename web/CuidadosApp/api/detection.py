@@ -21,6 +21,7 @@ from CuidadosApp.capacity import capacity_state
 from CuidadosApp.models import DetectionNode, PostureObservation
 from CuidadosApp import push
 from CuidadosApp.access import patient_for
+from PrivacidadApp import consent
 from CuidadosApp.services import acting, digest
 from PlanesApp.entitlements import capabilities
 from PlanesApp.services import locked_user
@@ -39,6 +40,8 @@ def allowed(user, patient):
         raise PermissionDenied
     if patient.pk not in capacity_state(titular)["active_ids"]:
         raise PermissionDenied
+    if consent.enforced() and not consent.active(patient, "deteccion"):
+        raise PermissionDenied  # spec 014: the node stops (fail-closed)
 
 
 def node_data(node):
@@ -63,6 +66,7 @@ class NodesView(MobileView):
     @transaction.atomic
     def post(self, request, pk):
         user, _, p, _ = acting(request.user, pk, "manage_nodes")
+        consent.require(p, "deteccion")
         allowed(user, p)
         name = self.data.get("name", "")
         if not isinstance(name, str):

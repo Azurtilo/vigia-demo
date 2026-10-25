@@ -13,6 +13,7 @@ from CuidadosApp.models import (
     PostureTimer,
 )
 from PlanesApp.entitlements import capabilities
+from PrivacidadApp.names import author_name
 
 from .base import MobileView
 
@@ -50,7 +51,7 @@ def event_data(e, user):
         "kind": e.kind,
         "status": e.status,
         "occurred_at": e.occurred_at,
-        "author": e.author.get_full_name() or e.author.username,
+        "author": author_name(e.author),
         "note": e.note,
         "label": e.snapshot.get("label", ""),
         "dose": e.snapshot.get("dose", ""),
@@ -120,7 +121,7 @@ class PatientsView(MobileView):
         )
 
     def post(self, request):
-        form = self.validated(forms.PatientForm(self.data))
+        form = self.validated(forms.NewPatientForm(self.data))
         return JsonResponse(
             patient_data(services.save_patient(request.user, form.cleaned_data)),
             status=201,

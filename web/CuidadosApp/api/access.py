@@ -5,13 +5,15 @@ from django.http import JsonResponse
 from CuidadosApp import access, invitations, scheduling
 from CuidadosApp.models import PostureTimer
 
+from PrivacidadApp.names import author_name
+
 from .base import MobileView
 
 
 def link_data(link):
     return {
         "id": link.pk,
-        "name": link.user.get_full_name() or link.user.username,
+        "name": author_name(link.user),
         "role": link.role,
         "accepted_at": link.accepted_at,
     }

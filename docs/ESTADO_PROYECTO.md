@@ -2,7 +2,69 @@
 
 Fecha: 2026-10-25.
 
-## Paso 3 — ajustes de la 012, DOCUMENTAR, 2026-10-25
+## Pendientes abiertos — consolidado al 2026-10-25
+
+Lista única de lo que falta. El detalle vive en cada spec y en DECISIONES. «Propietario» indica que requiere dispositivo, cuenta externa, voluntarios o una decisión suya.
+
+| # | Pendiente | Dónde | Quién |
+|---|---|---|---|
+| 1 | Revisar y fusionar la [PR #4](https://github.com/Azurtilo/vigia-demo/pull/4) (014 y autoría en el panel) | `feature/014-privacidad` | Propietario |
+| 2 | Prueba en Android físico. **Hecho el 2026-10-25** (ELI NX9, Android 16, servidor por USB con `adb reverse`): instalación y login (T-011-09), HU-03, HU-04, permisos y aviso local con pantalla bloqueada (T-011-03), cierre de sesión sin alarmas (T-011-04), cupo Plus y bloqueo de cámara (T-011-05, parcial), flujo titular/cuidador de la 013, aceptación de política en el portal y consentimiento por paciente de la 014. Ver validaciones [011](../specs/011-ecosistema-instalable/validation.md#android-físico--2026-10-25), [013](../specs/013-cuidado-delegado/validation.md#límites-y-fallos) y [014](../specs/014-privacidad/validation.md#android-físico). **Falta:** servidor por la red local, T-011-05 con Free/Premium y reducción de cupo, revisión visual (T-011-06), validación integrada (T-011-11) | specs 011, 013, 014 | Propietario |
+| 3 | Firebase de prueba con credenciales fuera del repositorio; push real con la app cerrada; medir caída → teléfono (≤ 10 s) | D-054, T-011-04, QA-15 | Propietario |
+| 4 | Protocolo de caídas con voluntarios (20 caídas y 40 actividades normales), `bench.py` con ese video (p50/p95) y ajuste de umbrales | D-053, `edge/README.md` | Propietario + equipo |
+| 5 | Revisión legal del texto de la política antes de usar datos reales | D-067, `/privacidad/` | Propietario |
+| 6 | Política de sesiones de D-056 (vencimiento, cierre de sesión remoto, revocación de nodos desde el portal web): aprobada, sin spec ni código | D-056 | Equipo (DOCUMENTAR) |
+| 7 | Hallazgos QA sin abordar: QA-07 (confirmar con prueba que la inmovilidad se reintenta), QA-12/13 (refactor de validación duplicada y funciones largas), QA-17 (límite de tasa en `/api/v1/edge/*`), QA-18 (HSTS al tener dominio con HTTPS), QA-20 (IDs de decisiones ambiguos) | `docs/QA_2026-10-22.md` | Equipo |
+| 8 | Aplicar las migraciones (CuidadosApp 0008/0009, PrivacidadApp 0001) en una base real, con respaldo y autorización | — | Propietario |
+| 9 | RNF de disponibilidad ≥ 99,5 %: declarado objetivo de diseño no medido; describir la arquitectura necesaria en el informe | D-060 | Equipo (informe) |
+| 10 | Decidir si `.claude/skills/` (skill `validar-produccion-sdd`) se versiona | raíz del repo | Propietario |
+| 11 | Detalles de interfaz hallados en Android el 2026-10-25, sin corregir: pestaña «Perfil» fuera de pantalla, «Historial» cortado en la ficha, botones de avisos duplicados, textos de cámara que contradicen el plan Plus, alta de paciente que se pierde si el servidor la rechaza, inicio vacío bajo el aviso de política. (Los fallos de «Unirme con un código» y del login con política pendiente se corrigieron el mismo día: T-013-13 y T-014-11.) | specs 011, 013, 014 | Equipo (DOCUMENTAR) |
+
+Trabajo futuro registrado (no comprometido): invitación por correo (D-050), traspaso de titularidad, papelera de pacientes con «deshacer» (D-067), cifrado en reposo y PostgreSQL (014), registro de lecturas, push inmediato de inmovilidad (D-051), iOS (D-011-02).
+
+## Estado vigente — prueba en Android físico y dos correcciones, 2026-10-25
+
+- **Pedido.** «prueba la app, inicia la app en el telefono conectado»; luego «sigue probando flujos […] ve actualizando la lista de pendientes» y «corrige fallos 1 y 2».
+- **Hecho.** App debug en ELI NX9 (Android 16) con el servidor demo por USB (`adb reverse`). Comprobados login, HU-03, HU-04, avisos locales con pantalla bloqueada (T-011-03 cerrada), cierre de sesión, cupo Plus, flujo titular/cuidador de la 013 y política y consentimiento de la 014. Detalle en las validaciones de [011](../specs/011-ecosistema-instalable/validation.md#android-físico--2026-10-25), [013](../specs/013-cuidado-delegado/validation.md#límites-y-fallos) y [014](../specs/014-privacidad/validation.md#android-físico).
+- **Corregido (autorizado).** T-013-13: «Unirme con un código» caía en pantalla roja. T-014-11: con la política pendiente, el login no mostraba el botón al portal y el reintento daba 409. Cinco pruebas nuevas; Flutter analyze sin problemas y **32 OK**; ambos flujos repetidos en el teléfono.
+- **Datos demo.** `demo_plus` tiene «Prueba Uno» y «Prueba Dos»; `demo_plus` y `demo_free` aceptaron la política; `demo_free` es cuidador de Rosa Demo; el reloj de Rosa Demo quedó vencido.
+- **No hecho.** Servidor por la red local, cámara MediaPipe en Premium, detalles de interfaz (fila 11), push.
+
+## Antecedente — 014 privacidad implementada, 2026-10-25
+
+- **Pedido.** «respecto a p14 me parece todo bien, registralo […] autorizo implementar». También preguntó si conviene conservar por un tiempo los datos de un paciente eliminado: se recomendó no hacerlo y usar archivar como vía reversible (D-067).
+- **Hecho.** Rama `feature/014-privacidad`, commits 0870edb, 58de2f3 y 444d0c3. App `PrivacidadApp` con:
+  - política versionada y puerta de aceptación (en la API, 403 `consent_required`);
+  - consentimiento por paciente, con alcances cuidado y detección, que bloquea registros y la cámara;
+  - exportación JSON de cuenta y de paciente;
+  - eliminación de paciente y de cuenta con anonimización;
+  - comando `purge_expired_data` con los plazos de D-064.
+
+  La app móvil muestra el aviso y pide el consentimiento al crear un paciente. La demo quedó migrada y con consentimientos ficticios.
+- **Evidencia (Windows).** Django **218 OK** (16 nuevas), Edge **22 OK**, Flutter **26 OK** (4 nuevas); migración probada en avance y reversión. [Validación](../specs/014-privacidad/validation.md).
+- **Desviación.** `core.test_settings` desactiva las reglas para las suites anteriores; las pruebas de privacidad las activan.
+- **Revisión en navegador (mismo día).** El propietario revisó la 014 en la demo: «lo demás que vi estaba bien». Hubo dos correcciones: aviso junto a los campos del representante, y autoría en el panel «Mis cuidados» («Hecho por …», «registrada por …», «Cuenta eliminada»; RF-013-15). Django **219 OK**.
+- **No hecho.** Android físico, revisión legal de la política, merge.
+- **Fusión (mismo día).** PR #3 fusionada en `develop` y traída a esta rama. Conflicto solo en este archivo. Django **227 OK**, Edge **22 OK**, Flutter **27 OK**.
+- **Siguiente paso seguro.** Revisión de la PR de la 014; prueba en Android físico de 013/014.
+
+## Spec 014 privacidad — DOCUMENTAR, 2026-10-25
+
+- **Pedido.** «sigue con la spec 14».
+- **Contexto.** [PR #2](https://github.com/Azurtilo/vigia-demo/pull/2) (013) fusionada en `develop`. [PR #3](https://github.com/Azurtilo/vigia-demo/pull/3) (ajustes de la 012) abierta.
+- **Hecho.** Rama `feature/014-privacidad` desde `develop` con:
+  - [spec](../specs/014-privacidad/spec.md) (14 RF);
+  - [plan](../specs/014-privacidad/plan.md), con app nueva `PrivacidadApp`, puerta de consentimiento, consentimiento por paciente y alcance, exportación JSON, eliminación ordenada con anonimización y comando de purga;
+  - [tareas](../specs/014-privacidad/tasks.md) T-014-01..10, pendientes.
+- **Propuestas para el propietario:**
+  - P-014-01: plazos de conservación;
+  - P-014-02: al eliminar la cuenta del titular se eliminan sus pacientes;
+  - P-014-03: pacientes existentes sin consentimiento quedan con registros bloqueados;
+  - P-014-04: texto de la política como borrador pendiente de revisión legal.
+- **No hecho.** Sin código. Implementación no autorizada.
+- **Siguiente paso seguro.** Respuestas a P-014-01..04 e instrucción de implementación.
+
+## Antecedente — paso 3, ajustes de la 012 (PR #3 fusionada), 2026-10-25
 
 - **Pedido.** «levanta pull request hacia develop y avanza en el paso 3».
 - **Hecho.** [PR #2](https://github.com/Azurtilo/vigia-demo/pull/2) de `feature/013-cuidado-delegado` hacia `develop`. Rama `feature/012-push-inmediato-qa` creada desde la 013. Spec 012 con RF-012-07 precisado y RF-012-13..16; plan con envío común, reserva de recibos y push inmediato; tareas T-012-13..21.

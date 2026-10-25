@@ -1,0 +1,38 @@
+{% extends 'components/Layout/base.html' %}
+{% block head_title %}Política de privacidad{% endblock %}
+{% block content %}
+<main class="care-form-heading privacy-policy">
+  <a class="text-link" href="{% if user.is_authenticated %}{% url 'CuidadosApp:panel' %}{% else %}{% url 'account_login' %}{% endif %}">Volver</a>
+  <h1>Política de privacidad de VIGIA</h1>
+  <p>Versión {{ version }}. <strong>Borrador del prototipo, pendiente de revisión legal.</strong> VIGIA es un proyecto de título (INACAP) que funciona con datos ficticios; esta política no debe usarse con personas reales sin esa revisión.</p>
+
+  <h2>Qué datos tratamos</h2>
+  <p>De tu cuenta: nombre de usuario, correo, nombre, foto de perfil opcional, plan, métodos de pago simulados (marca y últimos 4 dígitos, nunca el número completo) y dispositivos donde recibes avisos. De cada paciente que registras: nombre, fecha de nacimiento, información relevante, contacto de emergencia, medicamentos y horarios, cuidados, registros de lo realizado u omitido con su autor, posturas y, si activas la detección, observaciones de postura, inmovilidad y caídas.</p>
+  <p>Los datos de salud son datos sensibles. Solo se registran con el consentimiento del propio paciente o de su representante, que la cuenta responsable declara al crear la ficha.</p>
+
+  <h2>Para qué los usamos</h2>
+  <p>Para organizar y registrar el cuidado, enviar recordatorios y avisos de riesgo a las personas con acceso, y gestionar tu suscripción. No los vendemos ni los usamos para publicidad.</p>
+
+  <h2>Video y cámaras</h2>
+  <p>El nodo de detección analiza el video en el domicilio y nunca lo envía ni lo guarda: al servidor solo llegan metadatos (postura estimada, confianza, hora y tipo de riesgo).</p>
+
+  <h2>Quién accede</h2>
+  <p>El responsable del paciente y las personas que él invite como familiar o cuidador, cada una según su rol. El personal administrativo del portal no tiene acceso a datos de salud. Los avisos se envían mediante Firebase Cloud Messaging con un texto genérico que no revela el paciente ni el evento.</p>
+
+  <h2>Cuánto tiempo los conservamos</h2>
+  <ul>
+    <li>Registros de cuidado de un paciente activo: mientras siga activo.</li>
+    <li>Paciente archivado: 2 años desde el archivo.</li>
+    <li>Observaciones de detección: 30 días; las de riesgo, 1 año.</li>
+    <li>Recibos de avisos: 30 días. Invitaciones cerradas: 90 días. Intentos de código fallidos: 24 horas.</li>
+  </ul>
+
+  <h2>Tus derechos</h2>
+  <p>Puedes acceder a tus datos y descargarlos en formato JSON, corregirlos desde tu perfil o la ficha del paciente, revocar un consentimiento y eliminar un paciente o tu cuenta completa. Estas opciones están en tu perfil y en la ficha de cada paciente.</p>
+
+  <h2>Cambios</h2>
+  <p>Si esta política cambia, te pediremos aceptarla de nuevo antes de seguir usando VIGIA.</p>
+
+  <p class="care-footnote">Marco de referencia: Ley 21.719 sobre protección de datos personales y Ley 20.584 sobre derechos de los pacientes. Este texto no certifica su cumplimiento.</p>
+</main>
+{% endblock %}

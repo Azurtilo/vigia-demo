@@ -130,6 +130,7 @@ class PlanesTests(TestCase):
                 "email": "nuevo@example.test",
                 "password1": PASSWORD,
                 "password2": PASSWORD,
+                "accept_privacy": "on",
                 "is_staff": "1",
                 "is_superuser": "1",
             },
@@ -157,6 +158,7 @@ class PlanesTests(TestCase):
                         "email": "fallo@example.test",
                         "password1": PASSWORD,
                         "password2": PASSWORD,
+                        "accept_privacy": "on",
                     },
                 )
         self.assertFalse(User.objects.filter(username="fallo_demo").exists())

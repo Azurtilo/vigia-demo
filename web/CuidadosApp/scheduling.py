@@ -106,7 +106,7 @@ def agenda(user, now=None, patient_id=None, roles=access.ALL):
         e.occurrence_key: e
         for e in CareEvent.objects.filter(
             patient_id__in=ids, occurrence_key__in=[i["key"] for i in items]
-        )
+        ).select_related("author")
     }
     for item in items:
         item["event"] = events.get(item["key"])

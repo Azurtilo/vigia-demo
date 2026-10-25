@@ -176,7 +176,7 @@ class CareTests(TestCase):
     def test_patient_limits_and_owner_payload_ignored(self):
         response = self.client.post(
             reverse("CuidadosApp:patient_new"),
-            {"name": "Otra Demo", "owner": self.other.pk},
+            {"name": "Otra Demo", "owner": self.other.pk, "consent_basis": "titular", "consent_confirm": "on"},
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Patient.objects.filter(owner=self.user).count(), 1)
@@ -184,7 +184,7 @@ class CareTests(TestCase):
         for name in ("Berta Demo", "Carlos Demo"):
             response = self.client.post(
                 reverse("CuidadosApp:patient_new"),
-                {"name": name, "owner": self.other.pk},
+                {"name": name, "owner": self.other.pk, "consent_basis": "titular", "consent_confirm": "on"},
             )
             self.assertEqual(response.status_code, 302)
         self.assertEqual(Patient.objects.filter(owner=self.user).count(), 3)

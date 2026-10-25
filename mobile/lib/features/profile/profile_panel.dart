@@ -49,6 +49,24 @@ class ProfilePanel extends StatelessWidget {
         title: const Text('Avisos de monitoreo y otros cuidados'),
         onTap: enableNotifications,
       ),
+      // Spec 014: export and deletion run in the portal, with the full account.
+      ListTile(
+        leading: const Icon(Icons.privacy_tip_outlined),
+        title: const Text('Política de privacidad'),
+        onTap: () => launchUrl(
+          Uri.parse('$baseUrl/privacidad/'),
+          mode: LaunchMode.externalApplication,
+        ),
+      ),
+      ListTile(
+        leading: const Icon(Icons.download_outlined),
+        title: const Text('Descargar mis datos o eliminar mi cuenta'),
+        subtitle: const Text('Se abre tu perfil en el portal web'),
+        onTap: () => launchUrl(
+          Uri.parse('$baseUrl/perfil/'),
+          mode: LaunchMode.externalApplication,
+        ),
+      ),
       const SizedBox(height: 24),
       OutlinedButton.icon(
         onPressed: logout,

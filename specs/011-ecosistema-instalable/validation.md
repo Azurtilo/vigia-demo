@@ -59,6 +59,30 @@ flutter build apk --debug --target-platform android-arm64 --dart-define=API_URL=
 - `API_URL=10.0.2.2` solo sirve para el emulador. En un teléfono real, en modo debug, la dirección del servidor se cambia desde el login (`http://<IP-LAN>:8000`).
 - No se instaló ni se ejecutó en ningún dispositivo.
 
+## Android físico — 2026-10-25
+
+Teléfono ELI NX9, Android 16 (API 36), conectado por USB. App en modo debug instalada con `flutter run --dart-define=API_URL=http://127.0.0.1:8000` sobre `feature/014-privacidad` (`0c0aa74`). Servidor demo (`core.mobile_demo_settings`, cuentas ficticias) escuchando solo en `127.0.0.1:8000`, alcanzado desde el teléfono con `adb reverse tcp:8000 tcp:8000`, no por la red local.
+
+- **Instalación.** La app anterior en el teléfono estaba firmada con otra clave (`INSTALL_FAILED_UPDATE_INCOMPATIBLE`). Flutter la desinstaló y reinstaló; se perdieron sus datos locales.
+- **T-011-09 — login.** `demo_premium` entra, ve su paciente ficticio y la agenda de Medicinas con datos del servidor. OK.
+- **HU-03.** «Marcar realizado» → confirmar: pendientes 4 → 3. El historial de la ficha muestra «25/10 19:20 · demo_premium · Realizado». OK.
+- **HU-04.** Guías → «Registrar cambio realizado» → «Ya realicé el cambio»: el reloj pasó de 00:20:04 a 01:59:46 (intervalo 120 min). OK.
+- **T-011-03 — permisos.** Denegar → «Permiso denegado. Puedes habilitar notificaciones en los ajustes del teléfono.» Reintentar y permitir → la app abre «Alarmas y recordatorios». Sin alarmas exactas el estado dice «Horario aproximado: falta permiso de alarmas exactas»; al activarlas y volver a la app, se reprograma solo y el aviso queda exacto (`dumpsys alarm`: `RTC_WAKEUP … exactAllowReason=permission`). OK.
+- **T-011-03 — pantalla bloqueada.** Para no esperar 120 min se adelantó `next_due_at` del reloj en la base demo a +150 s (y `generation` +1, como un cambio desde la web). Tras «Actualizar ficha» y bloquear el teléfono (estado `Dozing`), la notificación «VIGIA · Reloj de cuidados — Es momento de revisar un cuidado. Abre VIGIA.» llegó a la hora y se vio en la pantalla de bloqueo, sin datos clínicos (canal de importancia alta, visibilidad privada). OK.
+
+- **T-011-04 — cerrar sesión.** Con un aviso ya disparado y el reloj vencido, cerrar sesión deja `dumpsys alarm` sin alarmas pendientes de la app (solo historial). OK.
+- **T-011-05 — plan Plus (parcial).** `demo_plus` (Plus, 3 pacientes): con 1 activo crea 2 más desde la app («3 activos · VIGIA Plus»); el cuarto lo rechaza el servidor con «Alcanzaste el límite de pacientes activos. Archiva uno o cambia de plan.». Una ficha donde es cuidador no cuenta en su cupo. «Analizar postura» en Plus muestra «La detección de posición está incluida en Premium». OK. No probado: Free, Premium, reducción de cupo ni cambio de plan en la web reflejado en la app.
+
+Hallazgos de interfaz (no corregidos):
+
+- La barra inferior tiene 6 pestañas y «Perfil» queda casi fuera de pantalla (62 px visibles en un ancho de 1200 px).
+- En la ficha, el selector «Cuidados / Guías / Reloj / Historial» se corta en «Histo».
+- Con los avisos desactivados se muestran a la vez «Activar avisos en este teléfono» y «Desactivar avisos locales».
+- En Plus, la pestaña Plan dice «Puedes analizar con la cámara de este teléfono o consultar un nodo fijo vinculado» y la ficha «Analiza y guarda una postura con el teléfono…», aunque la cámara es solo Premium. El bloqueo funciona; el texto lo contradice.
+- Al llegar al límite de pacientes, la app deja llenar el formulario y dar el consentimiento antes de que el servidor rechace por cupo.
+
+No verificado aquí: servidor por la red local (LAN), reinicio del teléfono y ahorro de batería con avisos pendientes.
+
 ## Pendiente
 
 T-011-09/11: instalar el APK en un Android real con un servidor alcanzable (LAN `http://<IP>:8000` desde el login en modo debug), recibir un aviso con pantalla bloqueada y repetir pausar/postura/archivar/cerrar sesión en el teléfono. T-011-06 (estilo web) y T-011-10 (iOS) quedan fuera de esta entrega por indicación del propietario.

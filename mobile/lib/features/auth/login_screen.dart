@@ -4,6 +4,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/api.dart';
+import '../profile/privacy.dart';
 
 class LoginScreen extends StatefulWidget {
   final VigiaApi api;
@@ -37,6 +38,8 @@ class _LoginScreenState extends State<LoginScreen> {
       await widget.api.get('me');
       widget.onSuccess();
     } on ApiError catch (e) {
+      // Spec 014: the session is valid; the home screen explains how to accept the policy.
+      if (consentRequired(e)) return widget.onSuccess();
       final flows = e.response['data']?['flows'] as List? ?? [];
       final pendingMfa = flows.any(
         (f) => f['id'] == 'mfa_authenticate' && f['is_pending'] == true,
@@ -61,12 +64,23 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  /// A saved session that could not be restored makes allauth answer 409 to a new login.
+  Future<void> dropSavedSession() async {
+    if (widget.api.token == null) return;
+    try {
+      await widget.api.logout();
+    } catch (_) {
+      // logout() already forgot the local session; the remote one expires on the server.
+    }
+  }
+
   Future<void> submit() => run(() async {
     if (mfa) {
       await widget.api.auth('auth/2fa/authenticate', {
         'code': code.text.trim(),
       });
     } else {
+      await dropSavedSession();
       await widget.api.auth('auth/login', {
         user.text.contains('@') ? 'email' : 'username': user.text.trim(),
         'password': password.text,
@@ -88,6 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
     final account = await GoogleSignIn.instance.authenticate();
     final idToken = account.authentication.idToken;
+    await dropSavedSession();
     await widget.api.auth('auth/provider/token', {
       'provider': 'google',
       'process': 'login',

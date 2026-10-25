@@ -7,6 +7,8 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
+from PrivacidadApp import consent
+
 
 def error(message, status=400, **extra):
     return JsonResponse({"error": message, **extra}, status=status)
@@ -27,6 +29,13 @@ class MobileView(View):
         )
         if not auth or not auth[0].is_active:
             response = error("Tu sesión terminó. Vuelve a ingresar.", 401)
+        elif consent.enforced() and not consent.account_ok(auth[0]):
+            response = error(
+                "Acepta la política de privacidad en el portal para continuar.",
+                403,
+                consent_required=True,
+                portal_path="/privacidad/aceptar/",
+            )
         else:
             request.user = auth[0]
             try:

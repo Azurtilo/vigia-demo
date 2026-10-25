@@ -26,6 +26,25 @@ from .permissions import CareOwnerMixin
 from .scheduling import agenda, claim_reminder, reminders
 
 
+def privacy_context(patient, can):
+    """Consent status per scope for the titular's patient page (spec 014)."""
+    if "manage_access" not in can:
+        return {}
+    from PrivacidadApp.models import PatientConsent
+
+    live = {
+        c.scope: c for c in patient.consents.filter(revoked_at__isnull=True)
+    }
+    consents = [
+        {"scope": scope, "label": label, "consent": live.get(scope)}
+        for scope, label in PatientConsent.SCOPES
+    ]
+    return {
+        "consents": consents,
+        "missing_consent": any(item["consent"] is None for item in consents),
+    }
+
+
 def form_error(form, error):
     form.add_error(
         None,
@@ -88,7 +107,7 @@ class PanelView(CareView):
         patients = list(
             Patient.objects.filter(
                 pk__in=access.active_ids_for(request.user)
-            ).select_related("timer__last_event")
+            ).select_related("timer__last_event__author")
         )
         chosen = request.GET.get("patient")
         selected = (
@@ -132,7 +151,7 @@ class PatientListView(CareView):
         roles = access.roles_for(request.user)
         patients = list(
             access.accessible_patients(request.user).select_related(
-                "timer__last_event"
+                "timer__last_event__author"
             )
         )
         for patient in patients:
@@ -146,7 +165,7 @@ class PatientFormView(CareView):
 
     def get(self, request, pk=None):
         patient = self.patient(request, pk) if pk else None
-        form = forms.PatientForm(
+        form = (forms.PatientForm if pk else forms.NewPatientForm)(
             instance=patient, initial={"version": patient.version if patient else 0}
         )
         return self.form_page(
@@ -159,7 +178,9 @@ class PatientFormView(CareView):
 
     def post(self, request, pk=None):
         patient = self.patient(request, pk) if pk else None
-        form = forms.PatientForm(request.POST, instance=patient)
+        form = (forms.PatientForm if pk else forms.NewPatientForm)(
+            request.POST, instance=patient
+        )
         if form.is_valid():
             try:
                 patient = services.save_patient(
@@ -186,7 +207,7 @@ class PatientDetailView(CareView):
         can = {action: True for action in access.allowed_actions(role)}
         timer = (
             PostureTimer.objects.filter(patient=patient)
-            .select_related("last_event")
+            .select_related("last_event__author")
             .first()
         )
         kind = "archive" if patient.active else "reactivate"
@@ -213,6 +234,7 @@ class PatientDetailView(CareView):
             if "manage_access" in can
             else [],
             invitations=invitations.pending(patient) if "manage_access" in can else [],
+            **privacy_context(patient, can),
         )
 
 

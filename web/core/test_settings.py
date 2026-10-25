@@ -48,3 +48,7 @@ LOGGING = {
     "handlers": {"console": {"class": "logging.StreamHandler"}},
     "root": {"handlers": ["console"], "level": "WARNING"},
 }
+
+# Spec 014: the policy gate and patient consent are enforced in production and in
+# the demo; existing suites predate them. PrivacidadApp tests enable them explicitly.
+PRIVACY_ENFORCED = False

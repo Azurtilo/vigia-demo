@@ -23,4 +23,5 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1", "10.0.2.2", "testserver"] + private_h
     os.environ.get("VIGIA_DEMO_HOSTS", "")
 )
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+PRIVACY_ENFORCED = True  # the demo behaves like production (spec 014)
 ACCOUNT_RATE_LIMITS = {"login": "30/m/ip", "login_failed": "20/m/ip,20/m/key"}

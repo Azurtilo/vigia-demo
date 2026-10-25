@@ -242,6 +242,21 @@ class DelegatedRecordTests(DelegatedCareBase):
             )
         self.assertEqual(CareEvent.objects.count(), 1)
 
+    def test_panel_shows_who_recorded_each_activity(self):
+        services.record_daily(
+            self.cuidador, self.patient.pk, self.agenda_token(self.cuidador), "done", ""
+        )
+        services.record_posture(
+            self.cuidador,
+            self.patient.pk,
+            services.action_token(self.cuidador, self.patient, "posture"),
+            self.guide,
+            120,
+        )
+        panel = self.web(self.titular).get(reverse("CuidadosApp:panel"))
+        self.assertContains(panel, "Hecho por Cuidador")
+        self.assertContains(panel, "registrada por Cuidador")
+
     def test_titular_capacity_and_archive_govern_the_caregiver(self):
         Patient.objects.filter(pk=self.patient.pk).update(active=False)
         token = services.action_token(self.cuidador, self.patient, "posture")

@@ -1,0 +1,11 @@
+{% extends 'components/Layout/base.html' %}
+{% load crispy_forms_tags %}
+{% block head_title %}Aceptar política de privacidad{% endblock %}
+{% block content %}
+<main class="care-form-heading">
+  <h1>Antes de continuar</h1>
+  <p>VIGIA trata datos de salud. Lee la <a class="text-link" href="{% url 'PrivacidadApp:policy' %}" target="_blank" rel="noopener">política de privacidad</a> (versión {{ version }}) y acéptala para seguir.</p>
+  <section class="panel care-form"><form method="post">{% csrf_token %}<input type="hidden" name="next" value="{{ next }}">{{ form|crispy }}<div class="care-form-actions"><button class="button" type="submit">Aceptar y continuar</button></div></form>
+  <form method="post" action="{% url 'account_logout' %}">{% csrf_token %}<button class="button secondary" type="submit">Cerrar sesión</button></form></section>
+</main>
+{% endblock %}
