@@ -29,11 +29,15 @@ class ConsentFieldsMixin(forms.Form):
 
     def clean(self):
         data = super().clean()
-        if data.get("consent_basis") == "representante" and not (
-            (data.get("representative_name") or "").strip()
-            and (data.get("representative_relation") or "").strip()
-        ):
-            raise forms.ValidationError("Indica nombre y relación del representante.")
+        if data.get("consent_basis") == "representante":
+            # Next to each field, where the person is looking (a form-level
+            # error renders at the top, far from these inputs).
+            for field, message in (
+                ("representative_name", "Indica el nombre del representante."),
+                ("representative_relation", "Indica la relación con el paciente."),
+            ):
+                if not (data.get(field) or "").strip():
+                    self.add_error(field, message)
         return data
 
 

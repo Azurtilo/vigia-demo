@@ -151,10 +151,13 @@ class PatientConsentTests(PrivacyBase):
         client = self.web(self.cuidador)
         url = reverse("CuidadosApp:patient_new")
         client.post(url, {"name": "Sin consentimiento"})
-        client.post(
+        missing = client.post(
             url,
             {"name": "Sin nombre", "consent_basis": "representante", "consent_confirm": "on"},
         )
+        # The error sits next to each empty field, not only at the top of the form.
+        self.assertContains(missing, 'id="error_1_id_representative_name"')
+        self.assertContains(missing, "Indica la relación con el paciente.")
         self.assertFalse(Patient.objects.filter(owner=self.cuidador).exists())
         client.post(
             url,
@@ -316,6 +319,8 @@ class EraseTests(PrivacyBase):
         event.refresh_from_db()
         history = self.web(self.titular).get(reverse("CuidadosApp:history", args=[self.patient.pk]))
         self.assertContains(history, "Registrado por Cuenta eliminada")
+        panel = self.web(self.titular).get(reverse("CuidadosApp:panel"))
+        self.assertContains(panel, "registrada por Cuenta eliminada")
         self.assertIsNone(access.role_for(user, self.patient))
 
     def test_titular_erasure_takes_patients_and_cuts_links(self):
