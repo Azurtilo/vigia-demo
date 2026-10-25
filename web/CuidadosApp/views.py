@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.core.exceptions import ValidationError
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import DatabaseError
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -10,9 +10,18 @@ from django.views.decorators.cache import never_cache
 
 from PlanesApp.models import Subscription
 
-from . import forms, services
+from . import access, forms, invitations, services
 from .capacity import capacity_state, choose_capacity, fingerprint
-from .models import CareEvent, CareGuide, CareTask, Medication, Patient, PostureTimer
+from .models import (
+    CareEvent,
+    CareGuide,
+    CareTask,
+    Medication,
+    Patient,
+    PatientAccess,
+    PatientInvitation,
+    PostureTimer,
+)
 from .permissions import CareOwnerMixin
 from .scheduling import agenda, claim_reminder, reminders
 
@@ -28,10 +37,16 @@ def form_error(form, error):
 
 @method_decorator(never_cache, name="dispatch")
 class CareView(CareOwnerMixin, View):
+    # Spec 013: each view states the action it needs on the patient in its URL.
+    care_action = "view"
+
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated and request.user.is_active and "pk" in kwargs:
-            services.own_patient(request.user, kwargs["pk"])
+            access.patient_for(request.user, kwargs["pk"], self.care_action)
         return super().dispatch(request, *args, **kwargs)
+
+    def patient(self, request, pk):
+        return access.patient_for(request.user, pk, self.care_action)[0]
 
     def page(self, request, template, **context):
         return render(
@@ -70,10 +85,9 @@ class PanelView(CareView):
     http_method_names = ["get", "head", "options"]
 
     def get(self, request):
-        state = capacity_state(request.user)
         patients = list(
             Patient.objects.filter(
-                owner=request.user, pk__in=state["active_ids"]
+                pk__in=access.active_ids_for(request.user)
             ).select_related("timer__last_event")
         )
         chosen = request.GET.get("patient")
@@ -102,9 +116,11 @@ class PanelView(CareView):
             agenda=agenda(
                 request.user, patient_id=selected.pk if chosen and selected else None
             ),
-            events=CareEvent.objects.filter(patient__owner=request.user).select_related(
-                "patient"
-            )[:5],
+            events=CareEvent.objects.filter(
+                patient_id__in=access.active_ids_for(
+                    request.user, roles=access.ACTIONS["history"]
+                )
+            ).select_related("patient")[:5],
         )
 
 
@@ -112,20 +128,24 @@ class PatientListView(CareView):
     http_method_names = ["get", "head", "options"]
 
     def get(self, request):
-        state = capacity_state(request.user)
+        active = set(access.active_ids_for(request.user))
+        roles = access.roles_for(request.user)
         patients = list(
-            Patient.objects.filter(owner=request.user).select_related(
+            access.accessible_patients(request.user).select_related(
                 "timer__last_event"
             )
         )
         for patient in patients:
-            patient.eligible = patient.pk in state["active_ids"]
+            patient.eligible = patient.pk in active
+            patient.role = roles[patient.pk]
         return self.page(request, "patients", patients=patients)
 
 
 class PatientFormView(CareView):
+    care_action = "edit_patient"
+
     def get(self, request, pk=None):
-        patient = services.own_patient(request.user, pk) if pk else None
+        patient = self.patient(request, pk) if pk else None
         form = forms.PatientForm(
             instance=patient, initial={"version": patient.version if patient else 0}
         )
@@ -138,7 +158,7 @@ class PatientFormView(CareView):
         )
 
     def post(self, request, pk=None):
-        patient = services.own_patient(request.user, pk) if pk else None
+        patient = self.patient(request, pk) if pk else None
         form = forms.PatientForm(request.POST, instance=patient)
         if form.is_valid():
             try:
@@ -162,35 +182,46 @@ class PatientDetailView(CareView):
     http_method_names = ["get", "head", "options"]
 
     def get(self, request, pk):
-        patient = services.own_patient(request.user, pk)
+        patient, role = access.patient_for(request.user, pk, "view")
+        can = {action: True for action in access.allowed_actions(role)}
         timer = (
             PostureTimer.objects.filter(patient=patient)
             .select_related("last_event")
             .first()
         )
-        state = capacity_state(request.user)
         kind = "archive" if patient.active else "reactivate"
         return self.page(
             request,
             "patient",
             patient=patient,
+            role=role,
+            can=can,
             timer=timer,
-            eligible=pk in state["active_ids"],
+            eligible=pk in access.active_ids_for(request.user),
             archive_token=services.action_token(
                 request.user, patient, kind, version=patient.version
-            ),
+            )
+            if "archive" in can
+            else "",
             medications=patient.medications.prefetch_related("times").all(),
             tasks=patient.tasks.all(),
-            events=patient.events.all()[:8],
+            # D-062: a caregiver sees today's agenda and the last posture only.
+            events=patient.events.all()[:8] if "history" in can else [],
+            accesses=patient.accesses.filter(revoked_at__isnull=True).select_related(
+                "user"
+            )
+            if "manage_access" in can
+            else [],
+            invitations=invitations.pending(patient) if "manage_access" in can else [],
         )
 
 
 class ArchiveView(CareView):
     http_method_names = ["post", "options"]
+    care_action = "archive"
     activate = False
 
     def post(self, request, pk):
-        services.own_patient(request.user, pk)
         try:
             services.set_patient_active(
                 request.user, pk, request.POST.get("token", ""), self.activate
@@ -217,10 +248,11 @@ class ReactivateView(ArchiveView):
 
 
 class DailyFormView(CareView):
+    care_action = "configure"
     task = False
 
     def form_context(self, request, pk, object_pk, data=None):
-        patient = services.own_patient(request.user, pk)
+        patient = self.patient(request, pk)
         obj = (
             get_object_or_404(
                 CareTask if self.task else Medication, pk=object_pk, patient=patient
@@ -271,8 +303,10 @@ class TaskFormView(DailyFormView):
 
 
 class PostureView(CareView):
+    care_action = "record"
+
     def get(self, request, pk):
-        patient = services.own_patient(request.user, pk)
+        patient = self.patient(request, pk)
         timer = PostureTimer.objects.filter(patient=patient).first()
         form = forms.PostureForm(
             initial={
@@ -295,7 +329,7 @@ class PostureView(CareView):
         )
 
     def post(self, request, pk):
-        patient = services.own_patient(request.user, pk)
+        patient = self.patient(request, pk)
         form = forms.PostureForm(request.POST)
         if form.is_valid():
             try:
@@ -317,8 +351,10 @@ class PostureView(CareView):
 
 
 class TimerView(CareView):
+    care_action = "record"
+
     def get(self, request, pk):
-        patient = services.own_patient(request.user, pk)
+        patient = self.patient(request, pk)
         timer = PostureTimer.objects.filter(patient=patient).first()
         form = forms.TimerForm(
             initial={
@@ -340,7 +376,7 @@ class TimerView(CareView):
         )
 
     def post(self, request, pk):
-        patient = services.own_patient(request.user, pk)
+        patient = self.patient(request, pk)
         form = forms.TimerForm(
             request.POST, timer=PostureTimer.objects.filter(patient=patient).first()
         )
@@ -365,21 +401,21 @@ class AgendaView(CareView):
 
     def get(self, request):
         pk = request.GET.get("patient")
-        patient = services.own_patient(request.user, pk) if pk else None
+        patient = access.patient_for(request.user, pk, "view")[0] if pk else None
         return self.page(
             request,
             "agenda",
             agenda=agenda(request.user, patient_id=patient.pk if patient else None),
             patient=patient,
-            patients=Patient.objects.filter(
-                owner=request.user, pk__in=capacity_state(request.user)["active_ids"]
-            ),
+            patients=Patient.objects.filter(pk__in=access.active_ids_for(request.user)),
         )
 
 
 class DailyEventView(CareView):
+    care_action = "record"
+
     def show(self, request, pk, form):
-        patient = services.own_patient(request.user, pk)
+        patient = self.patient(request, pk)
         data = services.read_action(request.user, form["token"].value() or "", patient)
         if data["kind"] not in ("care", "medication"):
             raise ValidationError("Esta actividad no corresponde a la agenda.")
@@ -398,7 +434,6 @@ class DailyEventView(CareView):
         )
 
     def get(self, request, pk):
-        services.own_patient(request.user, pk)
         form = forms.EventForm(initial={"token": request.GET.get("token", "")})
         try:
             return self.show(request, pk, form)
@@ -407,7 +442,7 @@ class DailyEventView(CareView):
             return redirect("CuidadosApp:agenda")
 
     def post(self, request, pk):
-        patient = services.own_patient(request.user, pk)
+        patient = self.patient(request, pk)
         form = forms.EventForm(request.POST)
         if form.is_valid():
             try:
@@ -425,11 +460,12 @@ class DailyEventView(CareView):
 
 class HistoryView(CareView):
     http_method_names = ["get", "head", "options"]
+    care_action = "history"
 
     def get(self, request, pk):
         from django.core.paginator import Paginator
 
-        patient = services.own_patient(request.user, pk)
+        patient = self.patient(request, pk)
         events = patient.events.select_related("corrected_event", "author").all()
         return self.page(
             request,
@@ -440,9 +476,17 @@ class HistoryView(CareView):
 
 
 class CorrectionView(CareView):
-    def get(self, request, pk, event_pk):
-        patient = services.own_patient(request.user, pk)
+    care_action = "correct"
+
+    def event(self, request, pk, event_pk):
+        patient, role = access.patient_for(request.user, pk, self.care_action)
         event = get_object_or_404(CareEvent, pk=event_pk, patient=patient)
+        if role == access.CUIDADOR and event.author_id != request.user.pk:
+            raise PermissionDenied
+        return patient, event
+
+    def get(self, request, pk, event_pk):
+        patient, event = self.event(request, pk, event_pk)
         form = forms.CorrectionForm(
             initial={
                 "token": services.action_token(
@@ -460,8 +504,7 @@ class CorrectionView(CareView):
         )
 
     def post(self, request, pk, event_pk):
-        patient = services.own_patient(request.user, pk)
-        get_object_or_404(CareEvent, pk=event_pk, patient=patient)
+        patient, _ = self.event(request, pk, event_pk)
         form = forms.CorrectionForm(request.POST)
         if form.is_valid():
             try:
@@ -567,6 +610,7 @@ class RemindersView(CareView):
 
     def get(self, request):
         state = capacity_state(request.user)
+        ids = access.active_ids_for(request.user, roles=access.RECIPIENTS["care"])
         return JsonResponse(
             {
                 "now": timezone.now().isoformat(),
@@ -581,9 +625,7 @@ class RemindersView(CareView):
                         "generation": t.generation,
                         "paused": t.paused,
                     }
-                    for t in PostureTimer.objects.filter(
-                        patient__owner=request.user, patient_id__in=state["active_ids"]
-                    )
+                    for t in PostureTimer.objects.filter(patient_id__in=ids)
                 ],
             }
         )
@@ -600,3 +642,122 @@ class ClaimView(CareView):
         except DatabaseError:
             return JsonResponse({"error": "No se pudo confirmar el aviso."}, status=503)
         return JsonResponse({"claimed": created})
+
+
+class AccessView(CareView):
+    """Titular creates a code; it is shown once and never stored in clear."""
+
+    http_method_names = ["post", "options"]
+    care_action = "manage_access"
+
+    def post(self, request, pk):
+        patient = self.patient(request, pk)
+        form = forms.InviteForm(request.POST)
+        try:
+            if not form.is_valid():
+                raise ValidationError("Elige el rol de la persona invitada.")
+            invitation, code = invitations.create_invitation(
+                request.user, pk, form.cleaned_data["role"]
+            )
+        except (ValidationError, DatabaseError) as error:
+            messages.error(
+                request,
+                error.messages[0]
+                if isinstance(error, ValidationError)
+                else "No se pudo crear el código.",
+            )
+            return redirect("CuidadosApp:patient", pk=pk)
+        return self.page(
+            request,
+            "access_code",
+            patient=patient,
+            invitation=invitation,
+            code=code,
+        )
+
+
+class RevokeAccessView(CareView):
+    http_method_names = ["post", "options"]
+    invitation = False
+
+    def post(self, request, object_pk):
+        model = PatientInvitation if self.invitation else PatientAccess
+        pk = get_object_or_404(model, pk=object_pk).patient_id
+        try:
+            (
+                invitations.revoke_invitation
+                if self.invitation
+                else invitations.revoke_access
+            )(
+                request.user, object_pk
+            )
+        except DatabaseError:
+            messages.error(request, "No se pudo revocar. Inténtalo nuevamente.")
+        else:
+            messages.success(
+                request,
+                "Código anulado."
+                if self.invitation
+                else "Acceso revocado. Sus registros anteriores se conservan.",
+            )
+        return redirect("CuidadosApp:patient", pk=pk)
+
+
+class RevokeInvitationView(RevokeAccessView):
+    invitation = True
+
+
+class JoinView(CareView):
+    def show(self, request, form, preview=None):
+        return self.form_page(
+            request,
+            "Unirme con un código",
+            form,
+            help_text=(
+                f"Te unirás a {preview['patient_name']} como "
+                f"{preview['role']}. Confirma para continuar."
+                if preview
+                else "Ingresa el código que te entregó la persona responsable del paciente."
+            ),
+            button="Confirmar y unirme" if preview else "Revisar código",
+        )
+
+    def get(self, request):
+        return self.show(request, forms.JoinForm())
+
+    def post(self, request):
+        form = forms.JoinForm(request.POST)
+        if form.is_valid():
+            code = form.cleaned_data["code"]
+            try:
+                if form.cleaned_data["confirm"] == "1":
+                    link = invitations.accept(request.user, code)
+                    messages.success(
+                        request, "Listo. Ya puedes acompañar a este paciente."
+                    )
+                    return redirect("CuidadosApp:patient", pk=link.patient_id)
+                found = invitations.preview(request.user, code)
+            except (ValidationError, DatabaseError) as error:
+                form_error(form, error)
+                form.data = form.data.copy()
+                form.data["confirm"] = ""
+            else:
+                confirmation = forms.JoinForm(
+                    initial={"code": code, "confirm": "1"}, confirming=True
+                )
+                return self.show(request, confirmation, found)
+        return self.show(request, form)
+
+
+class LeaveView(CareView):
+    http_method_names = ["post", "options"]
+    care_action = "leave"
+
+    def post(self, request, pk):
+        try:
+            invitations.leave(request.user, pk)
+        except DatabaseError:
+            messages.error(request, "No se pudo completar. Inténtalo nuevamente.")
+            return redirect("CuidadosApp:patient", pk=pk)
+        messages.success(request, "Dejaste de acompañar a este paciente.")
+        return redirect("CuidadosApp:patients")
