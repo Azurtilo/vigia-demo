@@ -1,12 +1,13 @@
-"""All care mutations lock the owner first, then validate ownership and state."""
+"""All care mutations lock the patient's titular first, then recheck the actor's role."""
 
 import hashlib
 import json
 import uuid
 from datetime import date, time, timedelta
 
+from django.contrib.auth import get_user_model
 from django.core import signing
-from django.core.exceptions import ValidationError
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import transaction
 from django.db.models import F
 from django.http import Http404
@@ -15,6 +16,7 @@ from django.utils import timezone
 
 from PlanesApp.services import locked_user
 
+from . import access
 from .capacity import archive_ids, capacity_state, materialize, require_eligible
 from .models import (
     CareEvent,
@@ -69,6 +71,24 @@ def own_patient(user, pk):
     return get_object_or_404(Patient, pk=pk, owner=user)
 
 
+def acting(user, pk, action):
+    """Lock the titular's row, then recheck the actor's live role (spec 013).
+
+    Serializes caregivers with the titular's plan/capacity changes and lets a
+    concurrent revocation win. Returns (actor, titular, patient, role).
+    """
+    patient, _ = access.patient_for(user, pk, action)
+    titular = locked_user(patient.owner)
+    if titular.pk == user.pk:
+        actor = titular
+    else:
+        actor = get_user_model().objects.get(pk=user.pk)
+        if not actor.is_active:
+            raise PermissionDenied
+    patient, role = access.patient_for(actor, pk, action)
+    return actor, titular, patient, role
+
+
 def digest(data):
     return hashlib.sha256(
         json.dumps(data, sort_keys=True, default=str).encode()
@@ -86,13 +106,14 @@ def replay(user, reference, payload):
 
 @transaction.atomic
 def save_patient(user, cleaned, pk=None, version=None):
-    actor = locked_user(user)
-    materialize(actor)
     if pk:
-        patient = own_patient(actor, pk)
+        actor, titular, patient, _ = acting(user, pk, "edit_patient")
+        materialize(titular)
         if version is None or patient.version != version:
             raise ValidationError("La ficha cambió. Recarga antes de guardar.")
     else:
+        actor = locked_user(user)
+        materialize(actor)
         state = capacity_state(actor)
         if state["pending"] or (
             state["limit"] is not None and state["count"] >= state["limit"]
@@ -124,8 +145,7 @@ def save_patient(user, cleaned, pk=None, version=None):
 
 @transaction.atomic
 def set_patient_active(user, pk, token, active):
-    actor = locked_user(user)
-    patient = own_patient(actor, pk)
+    actor, _, patient, _ = acting(user, pk, "archive")
     data = read_action(actor, token, patient, "reactivate" if active else "archive")
     materialize(actor)
     patient.refresh_from_db()
@@ -156,9 +176,8 @@ def set_patient_active(user, pk, token, active):
 
 @transaction.atomic
 def save_daily(user, pk, form, object_pk=None, task=False):
-    actor = locked_user(user)
-    patient = own_patient(actor, pk)
-    require_eligible(actor, patient)
+    _, titular, patient, _ = acting(user, pk, "configure")
+    require_eligible(titular, patient)
     model = CareTask if task else Medication
     if object_pk:
         obj = get_object_or_404(model, pk=object_pk, patient=patient)
@@ -186,8 +205,7 @@ def save_daily(user, pk, form, object_pk=None, task=False):
 
 @transaction.atomic
 def record_posture(user, pk, token, guide, interval, note=""):
-    actor = locked_user(user)
-    patient = own_patient(actor, pk)
+    actor, titular, patient, _ = acting(user, pk, "record")
     data = read_action(actor, token, patient, "posture")
     payload = digest(
         {"token": data, "guide": guide.pk, "interval": interval, "note": note}
@@ -195,7 +213,7 @@ def record_posture(user, pk, token, guide, interval, note=""):
     previous = replay(actor, data["reference"], payload)
     if previous:
         return previous
-    require_eligible(actor, patient)
+    require_eligible(titular, patient)
     timer, _ = PostureTimer.objects.get_or_create(patient=patient)
     if timer.generation != data["version"]:
         raise ValidationError(
@@ -231,10 +249,9 @@ def record_posture(user, pk, token, guide, interval, note=""):
 
 @transaction.atomic
 def configure_timer(user, pk, token, action, interval):
-    actor = locked_user(user)
-    patient = own_patient(actor, pk)
+    actor, titular, patient, _ = acting(user, pk, "record")
     data = read_action(actor, token, patient, "timer")
-    require_eligible(actor, patient)
+    require_eligible(titular, patient)
     if action == "start":
         if interval not in (60, 90, 120):
             raise ValidationError("Intervalo inválido.")
@@ -279,8 +296,7 @@ def configure_timer(user, pk, token, action, interval):
 def record_daily(user, pk, token, status, note):
     from .scheduling import occurrence, wall_instant
 
-    actor = locked_user(user)
-    patient = own_patient(actor, pk)
+    actor, titular, patient, _ = acting(user, pk, "record")
     data = read_action(actor, token, patient)
     if (
         data["kind"] not in ("medication", "care")
@@ -293,7 +309,7 @@ def record_daily(user, pk, token, status, note):
     previous = replay(actor, data["reference"], payload)
     if previous:
         return previous
-    require_eligible(actor, patient)
+    require_eligible(titular, patient)
     obj = get_object_or_404(
         Medication if data["kind"] == "medication" else CareTask,
         pk=data["subject"],
@@ -352,9 +368,10 @@ def record_daily(user, pk, token, status, note):
 
 @transaction.atomic
 def correct_event(user, pk, event_pk, token, note):
-    actor = locked_user(user)
-    patient = own_patient(actor, pk)
+    actor, _, patient, role = acting(user, pk, "correct")
     original = get_object_or_404(CareEvent, patient=patient, pk=event_pk)
+    if role == access.CUIDADOR and original.author_id != actor.pk:
+        raise PermissionDenied
     data = read_action(actor, token, patient, "correction")
     if data["subject"] != original.pk or not 2 <= len(note.strip()) <= 1000:
         raise ValidationError("La corrección no corresponde al registro.")
