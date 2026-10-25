@@ -9,6 +9,7 @@ from django.utils import timezone
 
 from CuidadosApp.models import CareTask, Medication, MedicationTime, Patient
 from PlanesApp.models import Plan, Subscription
+from PrivacidadApp.consent import record as record_consent
 from UsuarioApp.services import provision_public_user
 
 
@@ -62,6 +63,8 @@ class Command(BaseCommand):
                 contact_phone="+56 9 0000 0000",
                 contact_relation="Familiar",
             )
+            # Spec 014: fictitious consent so the demo can record care right away.
+            record_consent(p, "cuidado", "titular", user)
             m = Medication.objects.create(
                 patient=p,
                 name="Medicación de ejemplo",
