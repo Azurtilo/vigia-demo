@@ -7,7 +7,7 @@ Spec y plan: <carpeta>.
 Fase DOCUMENTAR.
 
 Lee los documentos y prepara tasks.md siguiendo la plantilla.
-Divide el plan en tareas pequeñas con ID, RF, dependencias, archivos previstos y condición comprobable de terminado. Incluye pruebas de reglas/permisos, regresiones y revisión visual cuando aplique.
+Divide el plan en tareas pequeñas con ID, RF, componente (web/mobile/edge), dependencias, archivos previstos y condición comprobable de terminado. Para cada tarea indica cómo se verifica en su componente: pruebas Django, flutter analyze/flutter test, pruebas edge (edge.test_posture, edge.test_fall, edge.test_run) o comprobación manual en dispositivo Android. Incluye pruebas de reglas/permisos, regresiones y revisión visual cuando aplique.
 Todas las tareas de implementación comienzan sin marcar. No escribas pruebas ejecutables ni código. Registra bloqueos sin inventar decisiones.
 Actualiza trazabilidad prevista y estado. Entrega spec, plan y tareas disponibles; detente antes de implementar. No marques aceptación del usuario.
 ```

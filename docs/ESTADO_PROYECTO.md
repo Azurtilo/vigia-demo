@@ -1,8 +1,17 @@
 # Estado y reanudación
 
-Fecha: 2026-10-22.
+Fecha: 2026-10-25.
 
-## Estado vigente — 012 detección de caídas (RT-03), 2026-10-22
+## Decisiones del propietario — 2026-10-25
+
+- **Pedido.** Registrar las respuestas al documento de pendientes del 23-10-2026 y las respuestas de la sesión.
+- **Hecho.** D-050 a D-060 en [DECISIONES.md](DECISIONES.md): familiar/cuidador con invitación por código (P-010-02), push de caída inmediato (P-012-01), spec de privacidad (QA-05), protocolo de caídas propio (P-012-02), Firebase de prueba (P-010-05), funciones por plan con nodos 0/0/1 (P-010-06), autenticación vigente con vencimiento y revocación (P-010-04), Edge como vía principal y Android API 26 (P-010-01/03), texto genérico del push (QA-14), política de Git (AGENTS.md) y disponibilidad declarada como no medida. Specs [010](../specs/010-aplicacion-movil/spec.md) y [012](../specs/012-deteccion-caidas/spec.md) marcan sus pendientes como resueltos.
+- **Actualización de reglas y documentación (mismo día).** AGENTS.md describe VIGIA (tres componentes, apps reales, comandos Windows por componente). Prompts 01/03/04/05/07 revisados: 04 y 07 ya no prohíben commits que D-059 permite; el comando Edge incluye `test_fall` y `test_run`; 05 remite a la matriz y a D-060. Nuevo [prompts/08-revision-qa.md](../prompts/08-revision-qa.md). Corregidos también CLAUDE.md y `.claude/agents/qa-vigia.md` (comando Edge incompleto), [PROYECTO.md](PROYECTO.md) (nombre VIGIA y estado 010–012), [specs/README.md](../specs/README.md), [ENTORNO_Y_VERIFICACION.md](ENTORNO_Y_VERIFICACION.md) y la [matriz HU/RT/RNF](TRAZABILIDAD.md#matriz-hurtrnf-vigente) en TRAZABILIDAD.
+- **Inconsistencia detectada, sin corregir (es código).** `mobile/android/app/build.gradle.kts` fija `minSdk = maxOf(24, …)`, pero D-057 decide API 26. Requiere una tarea.
+- **No hecho.** Sin código, specs nuevas ni tareas. Ninguna decisión autoriza implementación.
+- **Siguiente paso seguro.** DOCUMENTAR la spec 013 (familiar/cuidador) y la de privacidad, y las tareas fechadas de la 012 (D-051, D-058, minSdk 26 y QA técnicos).
+
+## Antecedente — 012 detección de caídas (RT-03), 2026-10-22
 
 - **Pedido.** Crear e implementar en la misma sesión la [spec 012](../specs/012-deteccion-caidas/spec.md): regla de caída en Edge, riesgo `fall` en el backend con aviso push, métricas KPI, `edge/bench.py`, pruebas sintéticas y protocolo de 20 caídas.
 - **Hecho.** `edge/fall.py` (velocidad de descenso de la cadera, descenso, ángulo del tronco, relación de aspecto y confirmación en el suelo; umbrales por `--fall-*` o JSON), `edge/metrics.py`, `edge/bench.py`, integración en `edge/run.py` con logging y reintento. Backend: `risk="fall"` (migración aditiva 0007 solo de `choices`), log de recepción, `received_at` en el historial y aviso «Posible caída» con prioridad alta en `send_mobile_reminders`. App: texto de caída en el historial. Protocolo en [edge/README.md](../edge/README.md#protocolo-de-prueba-20-caídas-simuladas).

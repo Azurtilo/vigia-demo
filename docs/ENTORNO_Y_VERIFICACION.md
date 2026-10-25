@@ -2,6 +2,16 @@
 
 La base incluye documentación SDD y una configuración aislada para sus pruebas iniciales.
 
+## Comandos vigentes de VIGIA (Windows, 2026-10-25)
+
+Rigen sobre los comandos históricos del resto de este documento, escritos cuando el proyecto estaba en la raíz y sin `web/`. En Windows no sirven `.venv-edge/` ni `.venv-mobile/` (son de macOS).
+
+| Componente | Entorno | Verificación |
+|---|---|---|
+| web | `.venv` en la raíz; `pip install --require-hashes -r web/requirements.txt` | Desde `web/`: `manage.py check`, `manage.py makemigrations --check --dry-run` y `manage.py test UsuarioApp homeApp PlanesApp CuidadosApp`, siempre con `--settings=core.test_settings` |
+| edge | `.venv-edge-win`; `edge/requirements.txt` | Desde la raíz: `python -m unittest edge.test_posture edge.test_fall edge.test_run`; con MediaPipe, `python -m edge.smoke` |
+| mobile | Flutter 3.47.7 en `C:\Users\josea\flutter` | Desde `mobile/`: `flutter analyze` y `flutter test` |
+
 ## Al desarrollar una copia nueva
 
 Trabajar con entorno virtual propio y datos ficticios. La configuración carga .env en la raíz. SECRET_KEY es obligatoria; DEBUG, ALLOWED_HOSTS, CSRF_TRUSTED_ORIGINS e INTERNAL_IPS son configurables. También lo son las opciones HTTPS del archivo settings.py.

@@ -3,7 +3,7 @@
 Puedes pedir a la IA que lea este archivo en el proyecto. Si copias el mensaje, reemplaza los campos entre <...>. Los nombres/IDs de ejemplo no son trabajo autorizado.
 
 ```text
-Lee AGENTS.md, constitution.md, docs/PROYECTO.md, docs/ESTADO_PROYECTO.md y specs/README.md. Inspecciona el estado real de los archivos y la spec afectada antes de proponer cambios.
+Lee AGENTS.md, constitution.md, CLAUDE.md (contexto VIGIA: componentes web/mobile/edge, HU/RT/RNF y comandos Windows), docs/ESTADO_PROYECTO.md y specs/README.md. Inspecciona el estado real de los archivos y la spec afectada antes de proponer cambios.
 
 Entrada del usuario:
 - Nombre del módulo: <NombreAPP>.

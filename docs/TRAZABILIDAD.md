@@ -1,6 +1,30 @@
 # Trazabilidad de requisitos y pruebas
 
-El primer módulo de negocio solicitado, PlanesApp (007), está implementado con pruebas de servidor y evidencia visual parcial. La spec transversal 001-CalidadBase y evoluciones 002–006 conservan su evidencia histórica.
+La matriz siguiente es la vista vigente de los requerimientos del informe. Las secciones por spec, más abajo, conservan el detalle y la evidencia histórica.
+
+## Matriz HU/RT/RNF vigente
+
+Actualizada el 2026-10-25. Estados: **Cubierto** (implementado y probado), **Parcial** (implementado con un límite declarado), **Sin evidencia** (implementado o decidido, sin medición o sin prueba en dispositivo). Pruebas automáticas: Django 181, Edge 22 y Flutter 19 OK en Windows (2026-10-22).
+
+| Req. | RF | Prueba / evidencia | Estado y límite |
+|---|---|---|---|
+| HU-01 Familiar configura plan y medicación | RF-009, RF-010-02/03 | Suite Django CuidadosApp; [validación 010](../specs/010-aplicacion-movil/validation.md) | **Parcial**: la configura la cuenta dueña; el rol familiar llega con D-050 |
+| HU-02 Cuidador ve agenda diaria | RF-010-03 | Suite Django; app móvil (flutter test) | **Parcial**: la ve la cuenta dueña, no un cuidador vinculado (D-050) |
+| HU-03 Cuidador confirma medicamento (auditable) | RF-009, RF-010-03/05 | Suite Django (sin duplicar ocurrencia, autor y snapshot) | **Parcial**: el autor auditado es la cuenta dueña; cuidador real con D-050 |
+| HU-04 Cuidador registra cambio de posición | RF-010-04, RF-011-02 | `test_start_clock_without_fabricating_care_and_reject_replay`, `clock_panel_test.dart` | **Parcial**: falta prueba en Android físico (T-011-09) y cuidador real (D-050) |
+| HU-05 Familiar recibe push ante riesgo | RF-010-07, RF-011-03, RF-012-07 | `test_fall_push_uses_existing_channel_once_and_first`, `test_late_or_failed_risk_push_is_retried_until_delivered_once` (Firebase simulado) | **Sin evidencia** real: Firebase de prueba (D-054), push inmediato (D-051) y texto genérico (D-058) pendientes |
+| HU-06 Familiar ve historial | RF-010-05, RF-012-06 | `test_edge_fall_is_stored_in_history_with_reception_time` | **Parcial**: la caída aparece como «Indeterminada» en el historial móvil (QA-16); falta delegación (D-050) |
+| HU-07 Familiar gestiona suscripción en el portal | RF-007, RF-010-06/11 | Suite Django PlanesApp; [validación 007](../specs/007-planes-app/validation.md) | **Parcial**: pagos simulados; ensayo web ↔ app pendiente (T-011-05) |
+| RT-01 Postura con MediaPipe | RF-010-09 | `edge.test_posture`, `edge.smoke` en Windows | **Parcial**: pruebas sintéticas; sin ejecución en vivo con cámara |
+| RT-02 Inmovilidad por tiempo configurable | RF-010-09 | `test_immobility_once_and_reset_on_gap_or_position`, `test_missing_signal_never_generates_immobility` | **Parcial**: pruebas sintéticas; sin ejecución en vivo |
+| RT-03 Caídas | RF-012-01..05, 10..12 | `edge.test_fall`, `edge.test_run` | **Parcial**: pruebas sintéticas; protocolo de caídas sin ejecutar (D-053) |
+| RNF sin video a la nube | RF-012-05, contrato de 7 claves de 010 | `test_edge_plan_revocation_dedup_and_no_clinical_event` (rechaza un campo `image` con 400) | **Cubierto** por contrato cerrado y prueba de regresión |
+| RNF alerta de caída ≤ 10 s | RF-012-07/08 | Sin medición de punta a punta (QA-15) | **Sin evidencia**: depende de D-051 y D-054 |
+| RNF inferencia < 100 ms por cuadro | RF-012-08/09 | `edge/bench.py` solo con video sintético sin personas (no válido) | **Sin evidencia**: medir con el video del protocolo |
+| RNF caídas ≥ 90 % y FP ≤ 5 % | RF-012-01..03 | Protocolo escrito en [edge/README.md](../edge/README.md) | **Sin evidencia**: protocolo sin ejecutar (D-053) |
+| RNF disponibilidad ≥ 99,5 % | — | — | Objetivo de diseño **no medido** (D-060) |
+
+Pendientes que cambian estados: D-050 (HU-01/02/03/04/06), D-051/D-054/D-058 (HU-05 y alerta ≤ 10 s), D-053 (RT-03 y precisión), T-011-05/09 (dispositivo).
 
 Actualizar al crear una spec y después de verificarla:
 
