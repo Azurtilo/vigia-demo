@@ -58,7 +58,10 @@ void main() {
     expect(find.text('Unirte a Rosa Demo'), findsOneWidget);
     await tester.tap(find.text('Confirmar'));
     await tester.pumpAndSettle();
-    expect(find.text('Listo. Ya puedes acompañar a este paciente.'), findsOneWidget);
+    expect(
+      find.text('Listo. Ya puedes acompañar a este paciente.'),
+      findsOneWidget,
+    );
     expect(calls, [
       '/api/v1/access/preview ABCDE-12345',
       '/api/v1/access/accept ABCDE-12345',

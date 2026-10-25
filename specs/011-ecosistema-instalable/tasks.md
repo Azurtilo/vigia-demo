@@ -65,3 +65,23 @@ Pedido del propietario: priorizar T-011-01/02 y T-011-03/04 con regresiones, APK
 | T-011-09 | [~] | APK debug regenerado en Windows (ver validación). Falta instalación y login en un Android real |
 
 Siguiente paso: T-011-09/11 en un teléfono Android con servidor LAN.
+
+## Tareas fechadas 2026-10-25 — detalles de interfaz hallados en Android
+
+Autorización: «acepta el merge y arregla los detalles de interfaz» (propietario, 2026-10-25). Rama `feature/011-detalles-interfaz` desde `develop`. Origen: [validación en Android físico](validation.md#android-físico--2026-10-25).
+
+- [x] T-011-12 — Navegación que cabe en pantallas angostas (sin RF propio: usabilidad de la app de la 010). Componente: mobile.
+  - Fallo: la barra inferior se fuerza a 420 dp y en un teléfono de ~369 dp «Perfil» queda fuera; el selector de la ficha se desplaza y corta «Historial».
+  - Archivos: `features/home/care_home.dart`, `features/patients/patient_screen.dart`.
+  - Hecho cuando: a 360 dp las seis pestañas y todas las secciones de la ficha se ven y se pulsan sin desplazamiento horizontal ni desbordes; prueba de widget.
+  - Hecho: la barra ocupa el ancho real (etiquetas de 11 sp bajo 420 dp) y el selector de la ficha usa chips que pasan a una segunda fila. `test/interface_details_test.dart`: antes «Perfil» llegaba a x=420 y las secciones a x=472 sobre 360; después todo dentro. En el teléfono (~369 dp): seis pestañas de 200 px y secciones en dos filas.
+- [x] T-011-13 — Botones de avisos y textos según el plan (RF-011-03, RF-011-04). Componente: mobile.
+  - Fallo: con avisos desactivados se ven «Activar» y «Desactivar» a la vez; en Plus, la pestaña Plan y la ficha invitan a usar la cámara, que es Premium, y la ficha muestra el título «Cámara fija» sin contenido.
+  - Archivos: `features/posture/clock_panel.dart`, `features/subscription/subscription_panel.dart`, `features/patients/patient_screen.dart`.
+  - Hecho cuando: el reloj muestra solo la acción que corresponde al estado de los avisos; sin detección por plan, ningún texto ofrece la cámara; pruebas de widget.
+  - Hecho: un solo botón según `remindersEnabled`; textos de Plan y Monitoreo según `posture_detection`; «Cámara fija» solo con nodos o con opción de vincular. Pruebas antes −2, después +2. En el teléfono (Free): «Activar» ↔ «Desactivar» alternan; Plan y Monitoreo sin mención de la cámara.
+- [x] T-011-14 — Alta de paciente sin perder lo escrito (RF-011-04). Componente: mobile.
+  - Fallo: si el servidor rechaza el alta (fecha inválida, cupo lleno), el formulario ya se cerró y hay que reescribirlo y repetir el consentimiento; con el cupo lleno, el aviso llega recién al final.
+  - Archivos: `features/home/care_home.dart`.
+  - Hecho cuando: ante un rechazo el formulario vuelve con los datos y el consentimiento dado se reutiliza; con el cupo lleno se avisa antes de abrir el formulario (el servidor sigue validando); prueba de widget.
+  - Hecho: `newPatient` comprueba `capacity.limit`/`count` y repite el formulario con lo escrito hasta que el servidor acepta o se cancela. Pruebas antes −2, después +2. En el teléfono: Free lleno avisa sin abrir el formulario; con Premium, fecha inválida → formulario de vuelta con los datos → fecha corregida → creado sin repetir el consentimiento (`PatientConsent` guardado).

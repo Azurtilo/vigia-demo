@@ -37,7 +37,8 @@ class FakeServer {
     }
     if (!accepted) {
       return _json({
-        'error': 'Acepta la política de privacidad en el portal para continuar.',
+        'error':
+            'Acepta la política de privacidad en el portal para continuar.',
         'consent_required': true,
         'portal_path': '/privacidad/aceptar/',
       }, 403);
@@ -123,7 +124,8 @@ void main() {
     final api = VigiaApi(
       client: MockClient((r) async {
         // The saved session cannot be checked (no network at start).
-        if (r.url.path.endsWith('/me') && r.headers['X-Session-Token'] == 'stale') {
+        if (r.url.path.endsWith('/me') &&
+            r.headers['X-Session-Token'] == 'stale') {
           throw http.ClientException('sin red');
         }
         return server.handle(r);
