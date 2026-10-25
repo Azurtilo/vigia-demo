@@ -7,6 +7,8 @@ description: "Revisar proyectos SDD completos antes de producción y bases reuti
 
 Evaluar la versión que se pretende desplegar o reutilizar como base y entregar evidencia verificable, hallazgos y pendientes. Trabajar en español salvo petición contraria. No presentar la revisión como certificación ni como aceptación del usuario.
 
+Existe una copia adaptada para Claude Code en `.claude/skills/validar-produccion-sdd/`. Al cambiar los pasos de una, actualizar también la otra.
+
 ## Límites
 
 - Autorizar lectura, comprobaciones aisladas y actualización documental. No implementar correcciones funcionales, modificar pruebas versionadas, desplegar, hacer commit/push, operar producción ni marcar aceptación funcional.
