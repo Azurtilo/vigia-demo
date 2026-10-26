@@ -80,7 +80,8 @@ Pendiente. Registrar mensaje, fecha y tareas autorizadas solo cuando ocurra. No 
 |---|---|---|---|
 
 ## Reanudación
-2026-10-26: spec, plan y tareas creados en fase DOCUMENTAR. Siguiente paso: respuestas del propietario a P-015-01..04 y autorización explícita de implementación. Sin código ni rama creada.
+2026-10-26: spec, plan y tareas creados en fase DOCUMENTAR. Spec, plan y tareas en la rama `docs/015-integracion-unificado` (`a02a9cd`), sin código.
+2026-10-26: revisión con el propietario. Lista A completa y nada de la B; P-015-01 = A (D-069), P-015-03 = adoptar (D-070), P-015-04 = sí (D-071). Siguiente paso: P-015-02 (equipo macOS, bloquea T-015-08..11) y autorización explícita de implementación de T-015-01..07.
 
 ## Aceptación del usuario
 Pendiente; no marcarla automáticamente después de ejecutar tests.

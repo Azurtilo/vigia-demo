@@ -25,8 +25,9 @@ Trabajo futuro registrado (no comprometido): invitación por correo (D-050), tra
 ## Estado vigente — spec 015 DOCUMENTAR, 2026-10-26
 
 - **Pedido.** Comparar este repositorio con [Sndrpaola/vigia-unificado](https://github.com/Sndrpaola/vigia-unificado) y «prepara la spec con la lista, ademas quiero incluir iOS al alcance».
-- **Hecho.** [Spec](../specs/015-integracion-unificado/spec.md), [plan](../specs/015-integracion-unificado/plan.md) y [tareas](../specs/015-integracion-unificado/tasks.md) de la 015, con la lista de lo que se trae (A1–A11), lo que no (B1–B10) y la resolución de los archivos modificados en ambas copias. D-068 (iOS en el alcance) sustituye D-011-02; AGENTS.md y CLAUDE.md actualizados. Sin código, sin rama y sin commits.
-- **Siguiente paso seguro.** Respuestas del propietario a P-015-01..04 y autorización explícita de implementación. Las tareas iOS (T-015-08..11) necesitan un Mac con Xcode.
+- **Hecho.** [Spec](../specs/015-integracion-unificado/spec.md), [plan](../specs/015-integracion-unificado/plan.md) y [tareas](../specs/015-integracion-unificado/tasks.md) de la 015, con la lista de lo que se trae (A1–A11), lo que no (B1–B10) y la resolución de los archivos modificados en ambas copias. D-068 (iOS en el alcance) sustituye D-011-02; AGENTS.md y CLAUDE.md actualizados. Rama `docs/015-integracion-unificado`, sin código.
+- **Revisión del propietario.** Se trae toda la lista A y nada de la B. P-015-01 = Apple ID gratuito, sin push en iPhone (D-069); P-015-03 = adoptar el rediseño (D-070); P-015-04 = `develop` único (D-071).
+- **Siguiente paso seguro.** Responder P-015-02 (quién compila iOS y en qué Mac) y autorizar explícitamente T-015-01..07. Las tareas iOS (T-015-08..11) necesitan un Mac con Xcode.
 
 ## Antecedente — PR #5 y #6 fusionadas, 2026-10-25
 

@@ -2,7 +2,7 @@
 
 Estado: borrador documental. Fecha: 2026-10-26.
 Módulo: cambio transversal en `mobile/`, `web/` (CuidadosApp, PlanesApp, core, plantillas) y documentación. Fuente: comparación de este repositorio con [Sndrpaola/vigia-unificado](https://github.com/Sndrpaola/vigia-unificado) y pedidos del propietario del 2026-10-26: «prepara la spec con la lista, ademas quiero incluir iOS al alcance».
-Implementación autorizada: NO. Revisión del usuario: pendiente (P-015-01..04).
+Implementación autorizada: NO. Revisión del usuario: 2026-10-26, P-015-01, 03 y 04 respondidas (D-069..D-071); P-015-02 pendiente.
 
 ## Problema y resultado
 
@@ -165,10 +165,12 @@ Decisiones del propietario:
   - (B) Apple Developer Program (pago anual): push APNs real y TestFlight para el equipo.
 
   Propuesta: A para el prototipo, con HU-05 comprobada en Android; B solo si el informe exige el push en iPhone.
-- **P-015-02 — Equipo macOS.** Confirmar quién compila y prueba iOS y en qué equipo, porque la evidencia iOS solo puede venir de macOS. Propuesta: el Mac de la autora de `vigia-unificado`, trabajando en ramas de este repositorio.
-- **P-015-03 — Diseño de la app.** Adoptar el rediseño de `vigia-unificado` como diseño vigente. Esto sustituye la preservación del diseño móvil aceptado en 010 (D-011-01). Propuesta: adoptarlo, sujeto a revisión visual en Android y iPhone.
-- **P-015-04 — Repositorio único.** Propuesta: `develop` de este repositorio queda como única fuente. `vigia-unificado` queda como antecedente de solo lectura y el trabajo nuevo de su autora entra por ramas `feature/NNN-…` y PR (D-059).
+  **Respuesta 2026-10-26: A ([D-069](../../docs/DECISIONES.md)).**
+- **P-015-02 — Equipo macOS.** Confirmar quién compila y prueba iOS y en qué equipo, porque la evidencia iOS solo puede venir de macOS. Propuesta: el Mac de la autora de `vigia-unificado`, trabajando en ramas de este repositorio. **Pendiente.**
+- **P-015-03 — Diseño de la app.** Adoptar el rediseño de `vigia-unificado` como diseño vigente. Esto sustituye la preservación del diseño móvil aceptado en 010 (D-011-01). Propuesta: adoptarlo, sujeto a revisión visual en Android y iPhone. **Respuesta 2026-10-26: adoptarlo ([D-070](../../docs/DECISIONES.md)).**
+- **P-015-04 — Repositorio único.** Propuesta: `develop` de este repositorio queda como única fuente. `vigia-unificado` queda como antecedente de solo lectura y el trabajo nuevo de su autora entra por ramas `feature/NNN-…` y PR (D-059). **Respuesta 2026-10-26: sí ([D-071](../../docs/DECISIONES.md)).**
 
 ## Revisión y cambios
 
 - 2026-10-26: borrador creado a partir de la comparación de ambos repositorios. D-068 (iOS en el alcance) registrada por pedido explícito del propietario. Sin autorización de implementación.
+- 2026-10-26: el propietario revisa la rama, confirma traer los cuatro grupos de la lista A y nada de la B, y responde P-015-01 (A), P-015-03 (adoptar) y P-015-04 (sí). Sin autorización de implementación.

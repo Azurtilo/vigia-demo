@@ -240,4 +240,15 @@ Consulta del propietario sobre conservar por un tiempo los datos de un paciente 
 
 ## D-068 — iOS en el alcance, 2026-10-26
 
-Fuente: «prepara la spec con la lista, ademas quiero incluir iOS al alcance» (sesión del 2026-10-26). **Sustituye D-011-02.** VIGIA se entrega en Android e iOS, con Android primero. Las compilaciones y pruebas iOS solo pueden hacerse en macOS con Xcode. El trabajo y la evidencia se documentan en la [spec 015](../specs/015-integracion-unificado/spec.md). T-011-10 conserva su ID y su trabajo pasa a T-015-08..11. Siguen fuera del alcance la publicación en App Store y, salvo que P-015-01 elija la opción B, TestFlight y el push APNs. Decisiones abiertas: P-015-01 (instalación y push en iPhone), P-015-02 (equipo macOS), P-015-03 (diseño de la app de `vigia-unificado`) y P-015-04 (repositorio único).
+Fuente: «prepara la spec con la lista, ademas quiero incluir iOS al alcance» (sesión del 2026-10-26). **Sustituye D-011-02.** VIGIA se entrega en Android e iOS, con Android primero. Las compilaciones y pruebas iOS solo pueden hacerse en macOS con Xcode. El trabajo y la evidencia se documentan en la [spec 015](../specs/015-integracion-unificado/spec.md). T-011-10 conserva su ID y su trabajo pasa a T-015-08..11. Siguen fuera del alcance la publicación en App Store y, salvo que P-015-01 elija la opción B, TestFlight y el push APNs. Respuestas del propietario a P-015-01, 03 y 04 en la sección siguiente; P-015-02 (equipo macOS) sigue abierta.
+
+## Respuestas del propietario a la spec 015 — 2026-10-26
+
+Fuente: respuesta explícita en la sesión del 2026-10-26 a las propuestas de la [spec 015](../specs/015-integracion-unificado/spec.md), tras revisar la rama `docs/015-integracion-unificado`. Se traen los cuatro grupos de la lista A (A1–A5, A6–A7, A8–A9 y A10–A11) y nada de la lista B (B1–B10): el borrado de `CLAUDE.md`, la sección añadida a `AGENTS.md`, las re-exportaciones eliminadas por D-011-03, los cambios a la spec 011, `.DS_Store`, cachés de Gradle y `.work-025/`, `docs/ORGANIZACION.md`, la guía de instalación con IP fija y contraseña, las evidencias de otra máquina, las diferencias solo de fin de línea en ~230 archivos y las ediciones desactualizadas de los documentos de estado. Fijan alcance; no autorizan código.
+
+| ID | Decisión | Efecto |
+|---|---|---|
+| D-069 | **P-015-01** — iPhone con Apple ID gratuito (Personal Team): instalación por cable, perfil de 7 días, sin push APNs ni TestFlight | RF-015-13 opción A: la app en iOS indica que el push no está disponible y HU-05 se comprueba en Android |
+| D-070 | **P-015-03** — El rediseño de `vigia-unificado` pasa a ser el diseño vigente de la app, sujeto a revisión visual en Android y iPhone | Sustituye la preservación del diseño móvil de la 010 (D-011-01). T-015-04 |
+| D-071 | **P-015-04** — `develop` de este repositorio es la única fuente; `vigia-unificado` queda como antecedente de solo lectura y el trabajo nuevo de su autora entra por ramas `feature/NNN-…` y PR (D-059) | T-015-01 |
+
