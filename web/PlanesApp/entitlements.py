@@ -2,7 +2,7 @@
 
 from django.utils import timezone
 
-from .models import Subscription
+from .models import Plan, Subscription
 from .services import free_plan
 
 
@@ -36,3 +36,27 @@ def capabilities(user, now=None):
         },
         "portal_path": "/planes/mi-suscripcion/",
     }
+
+
+def mobile_catalog():
+    """The app compares plans from the same catalog as the web; no prices in the app."""
+    plans = Plan.objects.filter(
+        active=True, code__in=("free", "plus", "pro")
+    ).prefetch_related("benefits")
+    return [
+        {
+            "code": plan.code,
+            "name": plan.name,
+            "description": plan.description,
+            "price_clp": plan.amount_clp,
+            "currency": plan.currency,
+            "max_active_patients": plan.max_active_patients,
+            "benefits": [benefit.text for benefit in plan.benefits.all()],
+        }
+        for plan in plans
+    ]
+
+
+def mobile_capabilities(user):
+    """Adds fields only, so installed apps that ignore them keep working."""
+    return {**capabilities(user), "plans": mobile_catalog(), "change_plan_path": "/planes/"}

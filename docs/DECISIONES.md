@@ -172,7 +172,7 @@ Conservar backend y cuentas de007/010: RAR es referencia anterior, no reemplazo.
 
 ## D-011-02 — Alcance de plataforma, 2026-10-22
 
-El propietario fija el entorno del proyecto: Windows, **Android primero, iOS fuera de alcance**. Sustituye la parte iOS/iPhone de D-011-01 y de RF-011-01, RF-011-03 y la aceptación 2/6 de la [spec 011](../specs/011-ecosistema-instalable/spec.md). T-011-10 pasa a fuera de alcance; su ID se conserva. El código iOS existente (carpeta `mobile/ios`, plugin `vigia_pose`) no se elimina ni se mantiene activamente: no se compila, prueba ni declara entregado. Reincorporar iOS requiere una nueva decisión explícita.
+El propietario fija el entorno del proyecto: Windows, **Android primero, iOS fuera de alcance**. Sustituye la parte iOS/iPhone de D-011-01 y de RF-011-01, RF-011-03 y la aceptación 2/6 de la [spec 011](../specs/011-ecosistema-instalable/spec.md). T-011-10 pasa a fuera de alcance; su ID se conserva. El código iOS existente (carpeta `mobile/ios`, plugin `vigia_pose`) no se elimina ni se mantiene activamente: no se compila, prueba ni declara entregado. Reincorporar iOS requiere una nueva decisión explícita. **Sustituida por [D-068](#d-068--ios-en-el-alcance-2026-10-26) el 2026-10-26.**
 
 ## D-011-03 — Limpieza de estructura, 2026-10-22
 
@@ -237,3 +237,21 @@ Fuente: «respecto a p14 me parece todo bien, registralo […] autorizo implemen
 | D-067 | **P-014-04** — Texto de la política como borrador del prototipo, pendiente de revisión legal antes de datos reales | Página pública versionada con el aviso |
 
 Consulta del propietario sobre conservar por un tiempo los datos de un paciente eliminado por si se vuelve a registrar: se recomienda no hacerlo. Eliminar es la supresión pedida, y reconocer al «mismo» paciente exigiría volver a vincular datos que se pidió borrar. La vía reversible es **archivar**, que conserva todo por 2 años (D-064) y permite reactivar. La confirmación de eliminación ofrece archivar como alternativa. Una papelera breve con «deshacer» (por ejemplo, 7 días) queda como opción futura si el propietario la pide.
+
+## D-068 — iOS en el alcance, 2026-10-26
+
+Fuente: «prepara la spec con la lista, ademas quiero incluir iOS al alcance» (sesión del 2026-10-26). **Sustituye D-011-02.** VIGIA se entrega en Android e iOS, con Android primero. Las compilaciones y pruebas iOS solo pueden hacerse en macOS con Xcode. El trabajo y la evidencia se documentan en la [spec 015](../specs/015-integracion-unificado/spec.md). T-011-10 conserva su ID y su trabajo pasa a T-015-08..11. Siguen fuera del alcance la publicación en App Store y, salvo que P-015-01 elija la opción B, TestFlight y el push APNs. Respuestas del propietario a P-015-01..04 en la sección siguiente.
+
+## Respuestas del propietario a la spec 015 — 2026-10-26
+
+Fuente: respuesta explícita en la sesión del 2026-10-26 a las propuestas de la [spec 015](../specs/015-integracion-unificado/spec.md), tras revisar la rama `docs/015-integracion-unificado`. Se traen los cuatro grupos de la lista A (A1–A5, A6–A7, A8–A9 y A10–A11) y nada de la lista B (B1–B10): el borrado de `CLAUDE.md`, la sección añadida a `AGENTS.md`, las re-exportaciones eliminadas por D-011-03, los cambios a la spec 011, `.DS_Store`, cachés de Gradle y `.work-025/`, `docs/ORGANIZACION.md`, la guía de instalación con IP fija y contraseña, las evidencias de otra máquina, las diferencias solo de fin de línea en ~230 archivos y las ediciones desactualizadas de los documentos de estado. Fijan alcance; no autorizan código.
+
+| ID | Decisión | Efecto |
+|---|---|---|
+| D-069 | **P-015-01** — iPhone con Apple ID gratuito (Personal Team): instalación por cable, perfil de 7 días, sin push APNs ni TestFlight | RF-015-13 opción A: la app en iOS indica que el push no está disponible y HU-05 se comprueba en Android |
+| D-070 | **P-015-03** — El rediseño de `vigia-unificado` pasa a ser el diseño vigente de la app, sujeto a revisión visual en Android y iPhone | Sustituye la preservación del diseño móvil de la 010 (D-011-01). T-015-04 |
+| D-071 | **P-015-04** — `develop` de este repositorio es la única fuente; `vigia-unificado` queda como antecedente de solo lectura y el trabajo nuevo de su autora entra por ramas `feature/NNN-…` y PR (D-059) | T-015-01 |
+| D-072 | **P-015-02** — Sandra compila y prueba iOS en su Mac | Responsable de T-015-08..11 y de la evidencia iOS en `validation.md` |
+
+Autorización: «P-015-02 sandra compila iOS, y autorizo para T-015-01..06. la 07 dejala en pendiente» (sesión del 2026-10-26). Autoriza implementar T-015-01..06 en `feature/015-integracion-unificado`; T-015-07 (Android físico) queda pendiente. No autoriza merge, despliegue ni migración real.
+

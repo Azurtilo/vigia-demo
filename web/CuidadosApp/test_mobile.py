@@ -473,3 +473,36 @@ class MobileTests(TestCase):
             'local_posture_reminders': True}).status_code, 200)
         device.refresh_from_db()
         self.assertFalse(device.local_posture_reminders)
+
+    def test_mobile_catalog_matches_web_and_read_does_not_change_subscription(self):
+        self.premium()
+        before = Subscription.objects.get(user=self.user)
+        result = self.get("me").json()["capabilities"]
+        self.assertEqual(result["change_plan_path"], "/planes/")
+        self.assertEqual(result["portal_path"], "/planes/mi-suscripcion/")
+        self.assertEqual(result["plan"], "pro")
+        rows = {p["code"]: p for p in result["plans"]}
+        self.assertEqual(set(rows), {"free", "plus", "pro"})
+        for code, row in rows.items():
+            plan = Plan.objects.get(code=code)
+            self.assertEqual(row["price_clp"], plan.amount_clp)
+            self.assertEqual(row["currency"], "CLP")
+            self.assertEqual(row["max_active_patients"], plan.max_active_patients)
+            self.assertEqual(
+                row["benefits"], list(plan.benefits.values_list("text", flat=True))
+            )
+        Plan.objects.filter(code="plus").update(amount_clp=5123)
+        updated = self.get("capabilities").json()
+        self.assertEqual(
+            next(p["price_clp"] for p in updated["plans"] if p["code"] == "plus"), 5123
+        )
+        after = Subscription.objects.get(user=self.user)
+        self.assertEqual(
+            (after.plan_id, after.version, after.amount_clp),
+            (before.plan_id, before.version, before.amount_clp),
+        )
+
+    def test_mobile_catalog_requires_session(self):
+        anonymous = Client(enforce_csrf_checks=True)
+        for path in ("me", "capabilities"):
+            self.assertEqual(anonymous.get("/api/v1/" + path).status_code, 401)

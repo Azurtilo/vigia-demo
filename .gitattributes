@@ -1,0 +1,2 @@
+# Shell scripts must keep LF so sh runs them on Windows (Git Bash) and macOS (spec 015).
+*.sh text eol=lf

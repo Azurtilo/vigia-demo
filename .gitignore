@@ -176,3 +176,7 @@ edge/models/
 
 # Build output with another machine's absolute path (QA-2026-10-22-21)
 mobile/android/app/Users/
+
+# SDK local de desarrollo y paquetes de entrega regenerables (spec 015)
+.tooling/
+/artifacts/

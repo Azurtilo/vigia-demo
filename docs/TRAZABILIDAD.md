@@ -316,3 +316,21 @@ Todas las filas de la tabla anterior tienen prueba automática en `web/CuidadosA
 ### 014 — Evidencia ejecutada, 2026-10-25
 
 RF-014-01..13 con prueba automática en `web/PrivacidadApp/tests.py` (16 pruebas, reglas activadas) y RF-014-14 en `mobile/test/privacy_test.dart` (4). Detalle en [validation.md](../specs/014-privacidad/validation.md). QA-2026-10-22-05 pasa de «sin spec» a implementado en el prototipo, sin revisión legal ni cifrado en reposo.
+
+## 015 — Integración de `vigia-unificado` e iOS, trazabilidad prevista 2026-10-26
+
+[Spec](../specs/015-integracion-unificado/spec.md), [plan](../specs/015-integracion-unificado/plan.md), [tareas](../specs/015-integracion-unificado/tasks.md). Propuesta: sin implementación ni pruebas ejecutadas.
+
+| Fuente | RF-015 | Tareas T-015 | Evidencia prevista |
+|---|---|---|---|
+| Comparación con `vigia-unificado`: método y no regresión de 011–014 | 01 | 01, 07 | Las tres suites; `git diff` sin archivos de la lista B |
+| Rediseño de la app (HU-02, HU-04, HU-06 en la interfaz) | 02 | 04, 07 | Pruebas de rol y privacidad; Android físico |
+| HU-07: plan en la app, cambio en la web | 03–04 | 02, 03 | Prueba del catálogo (Django) y del panel (Flutter) |
+| Demo instalable | 05, 07 | 05, 12 | Página con y sin APK; guía sin datos sensibles |
+| Marca VIGIA | 06 | 06 | Navegador claro/oscuro |
+| D-068: iOS en el alcance | 08–13 | 08–12 | Build de simulador, iPhone físico, avisos, cámara y push según P-015-01 |
+| RNF «sin video a la nube» en iOS | 12 | 10 | Observación `platform: "ios"` sin imagen |
+
+### 015 — Evidencia ejecutada, 2026-10-26
+
+RF-015-01: suites Django 235, Edge 22 y Flutter 43 OK y `git diff` sin archivos de la lista B. RF-015-02: `mobile/test/home_redesign_test.dart` (2) e `interface_details_test.dart`. RF-015-03: `web/CuidadosApp/test_mobile.py` (catálogo y 401 sin sesión). RF-015-04: `mobile/test/subscription_test.dart` (2). RF-015-05: `web/CuidadosApp/test_mobile_demo.py` (3) y el script ejecutado en Git Bash. RF-015-06: `web/homeApp/test_marca.py` (3) y revisión en Chrome en claro y oscuro. Android físico (ELI NX9) para RF-015-01, 02 y 04 en [validation.md](../specs/015-integracion-unificado/validation.md). RF-015-07..13 sin evidencia todavía. Detalle en [tasks.md](../specs/015-integracion-unificado/tasks.md#ejecución).

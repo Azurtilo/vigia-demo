@@ -7,7 +7,7 @@ VIGIA apoya el cuidado domiciliario de personas con dependencia (Proyecto de Tí
 | Carpeta | Componente |
 |---|---|
 | `web/` | Backend y portal Django: `core`, `homeApp`, `UsuarioApp`, `PlanesApp`, `CuidadosApp`, `theme`. El `manage.py` raíz delega en `web/manage.py` |
-| `mobile/` | App Flutter, Android primero (iOS fuera de alcance, D-011-02). Funciones en `lib/features/*`; plugin `plugins/vigia_pose` |
+| `mobile/` | App Flutter, Android primero e iOS en el alcance (D-068; compilación iOS solo en macOS). Funciones en `lib/features/*`; plugin `plugins/vigia_pose` |
 | `edge/` | Nodo Python con MediaPipe Pose Landmarker: postura, inmovilidad y caídas. Solo envía metadatos, nunca video |
 
 Las historias HU-01..07, los requerimientos técnicos RT-01..03 y los no funcionales del informe están en `CLAUDE.md` y en la matriz de `docs/TRAZABILIDAD.md`. Las cifras de los no funcionales son objetivos: no declararlas cumplidas sin medición registrada en `validation.md`. «NuevaAPP» es un ejemplo de nombre, no una app a crear automáticamente.
