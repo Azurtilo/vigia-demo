@@ -15,7 +15,7 @@ No ejecutar tareas de código por el hecho de aparecer aquí. Rama prevista: `fe
   - Depende de: T-015-01.
   - Archivos previstos: `web/PlanesApp/entitlements.py`, `web/CuidadosApp/api/views.py`, `web/CuidadosApp/test_mobile.py`.
   - Hecho cuando: pasan la prueba portada del catálogo y la de 401 sin sesión; las suites de 013/014 siguen pasando.
-- [ ] T-015-03 — Panel de plan en la app (A6).
+- [x] T-015-03 — Panel de plan en la app (A6).
   - RF: RF-015-04. Componente: mobile.
   - Depende de: T-015-02.
   - Archivos previstos: `mobile/lib/features/subscription/subscription_panel.dart`, `mobile/test/subscription_test.dart`.
@@ -80,6 +80,7 @@ No ejecutar tareas de código por el hecho de aparecer aquí. Rama prevista: `fe
 |---|---|---|---|
 | 2026-10-26 | T-015-01 | Rama `feature/015-integracion-unificado` (sobre `docs/015-integracion-unificado`, que parte de `develop` `ab9eab8`); `git remote add unificado` + `git fetch unificado` (`unificado/main` = `b4368e3`) | Línea base: `check` y `makemigrations --check` sin cambios; Django 227 OK (con PrivacidadApp); Edge 22 OK; `flutter analyze` sin problemas; Flutter 39 OK |
 | 2026-10-26 | T-015-02 | `web/PlanesApp/entitlements.py` (`mobile_catalog`, `mobile_capabilities`), `web/CuidadosApp/api/views.py`, `web/CuidadosApp/test_mobile.py` | Prueba portada del catálogo y nueva de 401 sin sesión; `manage.py test CuidadosApp.test_mobile PlanesApp`: 65 OK |
+| 2026-10-26 | T-015-03 | `mobile/lib/features/subscription/subscription_panel.dart`, `mobile/test/subscription_test.dart`, `mobile/lib/shared/vigia_design.dart` (A1, adelantado porque el panel lo usa) | Versión de `vigia-unificado` con la corrección de `b035678` (botón de avisos y texto sin cámara sin detección) y el enlace leído de `change_plan_path`. `flutter analyze` sin problemas; Flutter 41 OK |
 
 ## Reanudación
 2026-10-26: spec, plan y tareas creados en fase DOCUMENTAR. Spec, plan y tareas en la rama `docs/015-integracion-unificado` (`a02a9cd`), sin código.
