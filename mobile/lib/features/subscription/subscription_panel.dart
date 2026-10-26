@@ -4,8 +4,9 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../shared/care_widgets.dart';
 import '../../shared/vigia_design.dart';
 
+// Concatenated like VigiaApi and openPortal, so a server under a sub-path works.
 Uri changePlanUri(String baseUrl, Map<String, dynamic> caps) =>
-    Uri.parse(baseUrl).resolve(caps['change_plan_path'] ?? '/planes/');
+    Uri.parse('$baseUrl${caps['change_plan_path'] ?? '/planes/'}');
 
 class SubscriptionPanel extends StatelessWidget {
   final Map<String, dynamic> caps;

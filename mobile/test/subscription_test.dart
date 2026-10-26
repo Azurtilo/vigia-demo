@@ -84,6 +84,21 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+  test(
+    'The plan link keeps a server sub-path and the server-provided path',
+    () {
+      expect(
+        changePlanUri('https://vigia.example/demo', {}),
+        Uri.parse('https://vigia.example/demo/planes/'),
+      );
+      expect(
+        changePlanUri('https://vigia.example', {
+          'change_plan_path': '/planes/x/',
+        }),
+        Uri.parse('https://vigia.example/planes/x/'),
+      );
+    },
+  );
   testWidgets(
     'All six destinations fit 320px without horizontal navigation scrolling',
     (tester) async {

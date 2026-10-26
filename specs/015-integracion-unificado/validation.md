@@ -9,7 +9,7 @@ Rama: `feature/015-integracion-unificado`. El detalle de cada tarea está en la 
 |---|---|---|
 | Django (`UsuarioApp homeApp PlanesApp CuidadosApp PrivacidadApp`) | 227 OK | 235 OK |
 | Edge | 22 OK | 22 OK |
-| Flutter | 39 OK | 45 OK (43 tras T-015-04..06 y 2 más en T-015-14); `flutter analyze` sin problemas |
+| Flutter | 39 OK | 46 OK (43 tras T-015-04..06, 2 más en T-015-14 y 1 en la revisión de la PR); `flutter analyze` sin problemas |
 
 `git diff` contra `develop` sin archivos de la lista B (RF-015-01).
 
