@@ -1,6 +1,6 @@
 # Identidad del proyecto
 
-**VIGIA** apoya el cuidado domiciliario de personas con dependencia (Proyecto de Título, INACAP). Componentes: portal y backend Django (`web/`), app Flutter Android (`mobile/`, iOS fuera de alcance por D-011-02) y nodo Edge con MediaPipe (`edge/`), que envía solo metadatos.
+**VIGIA** apoya el cuidado domiciliario de personas con dependencia (Proyecto de Título, INACAP). Componentes: portal y backend Django (`web/`), app Flutter (`mobile/`: Android primero e iOS en el alcance por D-068, compilado en macOS) y nodo Edge con MediaPipe (`edge/`), que envía solo metadatos.
 
 | Campo | Valor actual (2026-10-25) |
 |---|---|

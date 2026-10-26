@@ -11,6 +11,7 @@ Rigen sobre los comandos históricos del resto de este documento, escritos cuand
 | web | `.venv` en la raíz; `pip install --require-hashes -r web/requirements.txt` | Desde `web/`: `manage.py check`, `manage.py makemigrations --check --dry-run` y `manage.py test UsuarioApp homeApp PlanesApp CuidadosApp`, siempre con `--settings=core.test_settings` |
 | edge | `.venv-edge-win`; `edge/requirements.txt` | Desde la raíz: `python -m unittest edge.test_posture edge.test_fall edge.test_run`; con MediaPipe, `python -m edge.smoke` |
 | mobile | Flutter 3.47.7 en `C:\Users\josea\flutter` | Desde `mobile/`: `flutter analyze` y `flutter test` |
+| mobile/ios | Mac con Xcode y CocoaPods (D-068; no se compila en Windows) | Desde `mobile/`: `pod install` en `ios/` y `flutter build ios --simulator --debug`; ver [INSTALACION_CELULAR.md](INSTALACION_CELULAR.md) |
 
 ## Al desarrollar una copia nueva
 

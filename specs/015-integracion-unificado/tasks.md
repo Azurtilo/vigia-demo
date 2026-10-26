@@ -70,19 +70,21 @@ No ejecutar tareas de código por el hecho de aparecer aquí. Rama prevista: `fe
 
 ## Cierre
 
-- [ ] T-015-12 — Documentación de alcance e instalación.
+- [x] T-015-12 — Documentación de alcance e instalación. La sección iPhone de la guía queda como procedimiento sin validar hasta T-015-09.
   - RF: RF-015-07, 08. Componente: docs.
   - Depende de: T-015-05 (guía Android); T-015-09 (guía iPhone).
   - Archivos previstos: `docs/INSTALACION_CELULAR.md` y los documentos de RF-015-08.
   - Hecho cuando: la guía no tiene IP fija, contraseñas ni rutas personales, los enlaces son válidos y «iOS fuera de alcance» solo aparece en antecedentes.
-- [ ] T-015-13 — Validación y cierre documental.
+- [ ] T-015-13 — Validación y cierre documental. **Parcial (2026-10-26):** cerrada la etapa de Windows y Android; se completa al terminar iOS.
   - RF: RF-015-01..13.
   - Depende de: tareas anteriores.
   - Hecho cuando: los resultados reales están en `validation.md` y la trazabilidad, el estado y el índice están actualizados; se quita el remoto `unificado`; queda la PR hacia `develop` sin fusionar.
 
 ## Autorización posterior
 2026-10-26: «P-015-02 sandra compila iOS, y autorizo para T-015-01..06. la 07 dejala en pendiente». Autorizadas T-015-01..06; T-015-07 queda pendiente; T-015-08..13 sin autorizar. Sin merge, despliegue ni migración real.
-2026-10-26: «te autorizo a la prueba en android fisico». Autorizada T-015-07. No confundir aprobación de requisitos con autorización de producción ni de publicación en tiendas.
+2026-10-26: «te autorizo a la prueba en android fisico». Autorizada T-015-07.
+2026-10-26: «revisa la pr y si no hay problemas fusiona». PR #8 revisada y fusionada en `develop` (`8d2be54`).
+2026-10-26: «completa estos pendientes» (estado tras la PR #8, guía de instalación y cierre). Autorizadas T-015-12 y T-015-13. No confundir aprobación de requisitos con autorización de producción ni de publicación en tiendas.
 
 ## Ejecución
 | Fecha | Tarea | Archivos / comando | Resultado / pendiente |
@@ -97,11 +99,14 @@ No ejecutar tareas de código por el hecho de aparecer aquí. Rama prevista: `fe
 | 2026-10-26 | T-015-07 | ELI NX9, Android 16, APK debug por USB (`adb reverse`), cuentas `demo_premium` y `demo_free` y una cuenta temporal sin política | Login, HU-03, HU-04, aviso con pantalla bloqueada, error de conexión informado, panel de plan, cierre de sesión sin alarmas, rol cuidador y puerta de privacidad: OK. Dos hallazgos de interfaz sin corregir. Detalle en [validation.md](validation.md#android-físico--t-015-07-2026-10-26) |
 | 2026-10-26 | T-015-14 | `home_overview.dart` (el texto de la acción rápida se reduce en vez de cortar la palabra), `care_home.dart` (`PageStorageKey` por pestaña), 2 pruebas nuevas en `home_redesign_test.dart` | Las 2 pruebas fallan sin la corrección y pasan con ella. `flutter analyze` sin problemas; Flutter 45 OK. Repetido en el ELI NX9: «Registrar medicamento» en dos líneas enteras y Posturas abre desde arriba tras bajar en Inicio |
 | 2026-10-26 | Revisión de la PR #8 | `subscription_panel.dart` (`changePlanUri` concatena como `VigiaApi` y `openPortal`), prueba nueva en `subscription_test.dart` | `Uri.resolve` descartaba una subruta del servidor (`https://host/demo` → `/planes/`). Corregido; Flutter 46 OK |
+| 2026-10-26 | T-015-12 | `docs/INSTALACION_CELULAR.md` (nueva); RF-015-08 en `CLAUDE.md`, `README.md`, `docs/PROYECTO.md`, `mobile/README.md`, `docs/MOVIL_DESARROLLO.md`, `docs/ENTORNO_Y_VERIFICACION.md` y notas fechadas en las specs 010, 011 y el índice | Guía sin IP fija, contraseñas ni rutas personales. Android según lo probado; iPhone como procedimiento sin validar. La búsqueda de «iOS fuera de alcance» solo encuentra antecedentes fechados y D-011-02 |
+| 2026-10-26 | T-015-13 (parcial) | `git remote remove unificado`; estado, índice y trazabilidad | Remoto de solo lectura quitado. PR #8 fusionada (`8d2be54`). La spec sigue abierta por iOS (T-015-08..11) |
 
 ## Reanudación
 2026-10-26: spec, plan y tareas creados en fase DOCUMENTAR. Spec, plan y tareas en la rama `docs/015-integracion-unificado` (`a02a9cd`), sin código.
 2026-10-26: revisión con el propietario. Lista A completa y nada de la B; P-015-01 = A (D-069), P-015-03 = adoptar (D-070), P-015-04 = sí (D-071). Siguiente paso: P-015-02 (equipo macOS, bloquea T-015-08..11) y autorización explícita de implementación de T-015-01..07.
-2026-10-26: P-015-02 = Sandra (D-072). Implementadas en `feature/015-integracion-unificado` T-015-01..06 (T-015-06 revisada en navegador). Suites finales: Django 235, Edge 22 y Flutter 43 OK; `flutter analyze` sin problemas; `git diff` sin archivos de la lista B. T-015-07 hecha en el teléfono (ver [validation.md](validation.md)). Los dos hallazgos se corrigieron en T-015-14. Pendientes: T-015-08..11 (iOS, Sandra en macOS) y T-015-12..13 sin autorizar. El remoto `unificado` sigue configurado hasta T-015-13. [PR #8](https://github.com/Azurtilo/vigia-demo/pull/8) abierta hacia `develop`, sin merge.
+2026-10-26: P-015-02 = Sandra (D-072). Implementadas en `feature/015-integracion-unificado` T-015-01..06 (T-015-06 revisada en navegador). Suites finales: Django 235, Edge 22 y Flutter 43 OK; `flutter analyze` sin problemas; `git diff` sin archivos de la lista B. T-015-07 hecha en el teléfono (ver [validation.md](validation.md)). Los dos hallazgos se corrigieron en T-015-14. Pendientes: T-015-08..11 (iOS, Sandra en macOS) y T-015-12..13 sin autorizar. El remoto `unificado` sigue configurado hasta T-015-13. [PR #8](https://github.com/Azurtilo/vigia-demo/pull/8) fusionada en `develop` (`8d2be54`).
+2026-10-26: guía de instalación y documentación de alcance (T-015-12); remoto `unificado` quitado (T-015-13 parcial). Siguiente paso: iOS (T-015-08..11) con Sandra en macOS, con autorización aparte; al terminar, completar T-015-13.
 
 ## Aceptación del usuario
 Pendiente; no marcarla automáticamente después de ejecutar tests.
