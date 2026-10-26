@@ -21,7 +21,9 @@ VIGIA parte de una base Django reutilizable (001–006) y añade PlanesApp (007)
 | 013 | Cuidado delegado: vínculos familiar/cuidador por código, matriz de permisos por rol, autor real y destinatarios de avisos | [013-cuidado-delegado](./013-cuidado-delegado/spec.md) | Implementada en `feature/013-cuidado-delegado`: T-013-01..10 hechas, T-013-11 parcial. Django 202, Edge 22 y Flutter 22 OK. Navegador revisado por el propietario. Pendiente: Android físico. [Validación](./013-cuidado-delegado/validation.md), [tareas](./013-cuidado-delegado/tasks.md) | Sí, 2026-10-25; sin merge, despliegue ni migración real |
 | 014 | Privacidad de datos de salud: política versionada, consentimiento por paciente, plazos y purga, exportación y eliminación de cuenta | [014-privacidad](./014-privacidad/spec.md) | Implementada en `feature/014-privacidad`: T-014-01..09 hechas, T-014-10 parcial. Django 218, Edge 22, Flutter 26 OK. Pendiente: navegador y Android. [Validación](./014-privacidad/validation.md) | Sí, 2026-10-25; sin merge ni migración real |
 
-Siguiente número sugerido: 015. Comprobar el siguiente libre en cada uso. Una app puede tener varias specs de evolución; una spec transversal puede afectar varias apps.
+| 015 | Integración de `vigia-unificado` (rediseño de la app, catálogo de planes en la app, descarga estable del APK, marca web, preparación iOS) e iOS en el alcance (D-068) | [015-integracion-unificado](./015-integracion-unificado/spec.md) | Borrador documental 2026-10-26: spec, plan y tareas. Pendientes P-015-01..04 del propietario | No |
+
+Siguiente número sugerido: 016. Comprobar el siguiente libre en cada uso. Una app puede tener varias specs de evolución; una spec transversal puede afectar varias apps.
 
 Auditoría independiente y cierre de correcciones: [VALIDACION_PREPRODUCCION.md](../docs/VALIDACION_PREPRODUCCION.md), 2026-10-02. La auditoría inicial detectó bloqueadores; la implementación posterior autorizada de 005/006 los corrigió en el alcance verificado. Conserva pendientes operativos y de revisión manual; no equivale a aceptación ni autorización para producción.
 

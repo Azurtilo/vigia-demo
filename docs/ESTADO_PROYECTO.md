@@ -20,9 +20,15 @@ Lista única de lo que falta. El detalle vive en cada spec y en DECISIONES. «Pr
 | 10 | ~~Decidir si `.claude/skills/` se versiona~~ Versionada con ajustes ([PR #6](https://github.com/Azurtilo/vigia-demo/pull/6), `1f620a6`) | — | Hecho |
 | 11 | ~~Revisar y fusionar la [PR #5](https://github.com/Azurtilo/vigia-demo/pull/5)~~ Detalles de interfaz fusionados en `develop` (`f71d1be`) | — | Hecho |
 
-Trabajo futuro registrado (no comprometido): invitación por correo (D-050), traspaso de titularidad, papelera de pacientes con «deshacer» (D-067), cifrado en reposo y PostgreSQL (014), registro de lecturas, push inmediato de inmovilidad (D-051), iOS (D-011-02).
+Trabajo futuro registrado (no comprometido): invitación por correo (D-050), traspaso de titularidad, papelera de pacientes con «deshacer» (D-067), cifrado en reposo y PostgreSQL (014), registro de lecturas, push inmediato de inmovilidad (D-051). iOS pasó al alcance el 2026-10-26 (D-068, spec 015).
 
-## Estado vigente — PR #5 y #6 fusionadas, 2026-10-25
+## Estado vigente — spec 015 DOCUMENTAR, 2026-10-26
+
+- **Pedido.** Comparar este repositorio con [Sndrpaola/vigia-unificado](https://github.com/Sndrpaola/vigia-unificado) y «prepara la spec con la lista, ademas quiero incluir iOS al alcance».
+- **Hecho.** [Spec](../specs/015-integracion-unificado/spec.md), [plan](../specs/015-integracion-unificado/plan.md) y [tareas](../specs/015-integracion-unificado/tasks.md) de la 015, con la lista de lo que se trae (A1–A11), lo que no (B1–B10) y la resolución de los archivos modificados en ambas copias. D-068 (iOS en el alcance) sustituye D-011-02; AGENTS.md y CLAUDE.md actualizados. Sin código, sin rama y sin commits.
+- **Siguiente paso seguro.** Respuestas del propietario a P-015-01..04 y autorización explícita de implementación. Las tareas iOS (T-015-08..11) necesitan un Mac con Xcode.
+
+## Antecedente — PR #5 y #6 fusionadas, 2026-10-25
 
 - **Pedido.** «fusiona todo».
 - **Hecho.** [PR #5](https://github.com/Azurtilo/vigia-demo/pull/5) (detalles de interfaz, `f71d1be`) y [PR #6](https://github.com/Azurtilo/vigia-demo/pull/6) (skill `validar-produccion-sdd` versionada, `1f620a6`) fusionadas en `develop`. Pendientes 1, 10 y 11 cerrados.

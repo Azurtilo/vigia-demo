@@ -172,7 +172,7 @@ Conservar backend y cuentas de007/010: RAR es referencia anterior, no reemplazo.
 
 ## D-011-02 — Alcance de plataforma, 2026-10-22
 
-El propietario fija el entorno del proyecto: Windows, **Android primero, iOS fuera de alcance**. Sustituye la parte iOS/iPhone de D-011-01 y de RF-011-01, RF-011-03 y la aceptación 2/6 de la [spec 011](../specs/011-ecosistema-instalable/spec.md). T-011-10 pasa a fuera de alcance; su ID se conserva. El código iOS existente (carpeta `mobile/ios`, plugin `vigia_pose`) no se elimina ni se mantiene activamente: no se compila, prueba ni declara entregado. Reincorporar iOS requiere una nueva decisión explícita.
+El propietario fija el entorno del proyecto: Windows, **Android primero, iOS fuera de alcance**. Sustituye la parte iOS/iPhone de D-011-01 y de RF-011-01, RF-011-03 y la aceptación 2/6 de la [spec 011](../specs/011-ecosistema-instalable/spec.md). T-011-10 pasa a fuera de alcance; su ID se conserva. El código iOS existente (carpeta `mobile/ios`, plugin `vigia_pose`) no se elimina ni se mantiene activamente: no se compila, prueba ni declara entregado. Reincorporar iOS requiere una nueva decisión explícita. **Sustituida por [D-068](#d-068--ios-en-el-alcance-2026-10-26) el 2026-10-26.**
 
 ## D-011-03 — Limpieza de estructura, 2026-10-22
 
@@ -237,3 +237,7 @@ Fuente: «respecto a p14 me parece todo bien, registralo […] autorizo implemen
 | D-067 | **P-014-04** — Texto de la política como borrador del prototipo, pendiente de revisión legal antes de datos reales | Página pública versionada con el aviso |
 
 Consulta del propietario sobre conservar por un tiempo los datos de un paciente eliminado por si se vuelve a registrar: se recomienda no hacerlo. Eliminar es la supresión pedida, y reconocer al «mismo» paciente exigiría volver a vincular datos que se pidió borrar. La vía reversible es **archivar**, que conserva todo por 2 años (D-064) y permite reactivar. La confirmación de eliminación ofrece archivar como alternativa. Una papelera breve con «deshacer» (por ejemplo, 7 días) queda como opción futura si el propietario la pide.
+
+## D-068 — iOS en el alcance, 2026-10-26
+
+Fuente: «prepara la spec con la lista, ademas quiero incluir iOS al alcance» (sesión del 2026-10-26). **Sustituye D-011-02.** VIGIA se entrega en Android e iOS, con Android primero. Las compilaciones y pruebas iOS solo pueden hacerse en macOS con Xcode. El trabajo y la evidencia se documentan en la [spec 015](../specs/015-integracion-unificado/spec.md). T-011-10 conserva su ID y su trabajo pasa a T-015-08..11. Siguen fuera del alcance la publicación en App Store y, salvo que P-015-01 elija la opción B, TestFlight y el push APNs. Decisiones abiertas: P-015-01 (instalación y push en iPhone), P-015-02 (equipo macOS), P-015-03 (diseño de la app de `vigia-unificado`) y P-015-04 (repositorio único).

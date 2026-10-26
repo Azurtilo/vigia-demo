@@ -316,3 +316,17 @@ Todas las filas de la tabla anterior tienen prueba automática en `web/CuidadosA
 ### 014 — Evidencia ejecutada, 2026-10-25
 
 RF-014-01..13 con prueba automática en `web/PrivacidadApp/tests.py` (16 pruebas, reglas activadas) y RF-014-14 en `mobile/test/privacy_test.dart` (4). Detalle en [validation.md](../specs/014-privacidad/validation.md). QA-2026-10-22-05 pasa de «sin spec» a implementado en el prototipo, sin revisión legal ni cifrado en reposo.
+
+## 015 — Integración de `vigia-unificado` e iOS, trazabilidad prevista 2026-10-26
+
+[Spec](../specs/015-integracion-unificado/spec.md), [plan](../specs/015-integracion-unificado/plan.md), [tareas](../specs/015-integracion-unificado/tasks.md). Propuesta: sin implementación ni pruebas ejecutadas.
+
+| Fuente | RF-015 | Tareas T-015 | Evidencia prevista |
+|---|---|---|---|
+| Comparación con `vigia-unificado`: método y no regresión de 011–014 | 01 | 01, 07 | Las tres suites; `git diff` sin archivos de la lista B |
+| Rediseño de la app (HU-02, HU-04, HU-06 en la interfaz) | 02 | 04, 07 | Pruebas de rol y privacidad; Android físico |
+| HU-07: plan en la app, cambio en la web | 03–04 | 02, 03 | Prueba del catálogo (Django) y del panel (Flutter) |
+| Demo instalable | 05, 07 | 05, 12 | Página con y sin APK; guía sin datos sensibles |
+| Marca VIGIA | 06 | 06 | Navegador claro/oscuro |
+| D-068: iOS en el alcance | 08–13 | 08–12 | Build de simulador, iPhone físico, avisos, cámara y push según P-015-01 |
+| RNF «sin video a la nube» en iOS | 12 | 10 | Observación `platform: "ios"` sin imagen |

@@ -41,7 +41,7 @@ No funcionales:
 - Backend con disponibilidad ≥ 99,5 %.
 - Detección de caídas ≥ 90 % y falsos positivos ≤ 5 %.
 
-Entorno: Windows, Android primero (iOS fuera de alcance), español es-CL.
+Entorno: Windows, Android primero e iOS en el alcance (D-068, spec 015; iOS se compila solo en macOS), español es-CL.
 
 Estas cifras son objetivos del informe, no resultados medidos: no declararlas cumplidas sin evidencia registrada en `validation.md`.
 
