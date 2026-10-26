@@ -1,7 +1,7 @@
 # Tareas — 015 / Integración de `vigia-unificado` e iOS
 
 Spec: [spec.md](spec.md). Plan: [plan.md](plan.md).
-Estado: en implementación. Implementación autorizada: T-015-01..06 (2026-10-26); T-015-07 pendiente.
+Estado: en implementación. Implementación autorizada: T-015-01..07 (2026-10-26).
 No ejecutar tareas de código por el hecho de aparecer aquí. Rama prevista: `feature/015-integracion-unificado`, un commit por tarea (D-059).
 
 ## Integración (Windows)
@@ -35,7 +35,7 @@ No ejecutar tareas de código por el hecho de aparecer aquí. Rama prevista: `fe
   - Depende de: T-015-01.
   - Archivos previstos: `web/static/img/vigia.svg` y las plantillas de A9.
   - Hecho cuando: las plantillas compilan y la marca se ve en navegador, en claro y oscuro, en login, catálogo público, portal y descarga.
-- [ ] T-015-07 — Android físico con el diseño nuevo.
+- [x] T-015-07 — Android físico con el diseño nuevo.
   - RF: RF-015-01, 02, 04. Componente: mobile.
   - Depende de: T-015-03..06.
   - Hecho cuando: el recorrido del 2026-10-25 (login, HU-03, HU-04, avisos con pantalla bloqueada, cierre de sesión, roles de la 013, privacidad de la 014) y el panel de plan quedan registrados en `validation.md`.
@@ -73,7 +73,8 @@ No ejecutar tareas de código por el hecho de aparecer aquí. Rama prevista: `fe
   - Hecho cuando: los resultados reales están en `validation.md` y la trazabilidad, el estado y el índice están actualizados; se quita el remoto `unificado`; queda la PR hacia `develop` sin fusionar.
 
 ## Autorización posterior
-2026-10-26: «P-015-02 sandra compila iOS, y autorizo para T-015-01..06. la 07 dejala en pendiente». Autorizadas T-015-01..06; T-015-07 queda pendiente; T-015-08..13 sin autorizar. Sin merge, despliegue ni migración real. No confundir aprobación de requisitos con autorización de producción ni de publicación en tiendas.
+2026-10-26: «P-015-02 sandra compila iOS, y autorizo para T-015-01..06. la 07 dejala en pendiente». Autorizadas T-015-01..06; T-015-07 queda pendiente; T-015-08..13 sin autorizar. Sin merge, despliegue ni migración real.
+2026-10-26: «te autorizo a la prueba en android fisico». Autorizada T-015-07. No confundir aprobación de requisitos con autorización de producción ni de publicación en tiendas.
 
 ## Ejecución
 | Fecha | Tarea | Archivos / comando | Resultado / pendiente |
@@ -85,11 +86,12 @@ No ejecutar tareas de código por el hecho de aparecer aquí. Rama prevista: `fe
 | 2026-10-26 | T-015-05 | `web/core/mobile_demo_urls.py` (`android_artifact`, `apk_available`), `web/templates/mobile_demo_download.html`, `mobile/tool/build_android.sh`, `.gitignore`; prueba nueva `web/CuidadosApp/test_mobile_demo.py` | Prueba Django: 3 OK (sin APK la página lo dice y la descarga da 404; se prefiere `artifacts/` sobre `build/`). `sh mobile/tool/build_android.sh` en Git Bash de Windows: APK en `artifacts/android/` en 65 s, ignorado por Git. El script usa el `flutter` del PATH si no hay `.tooling/`. Texto iPhone según D-069 |
 | 2026-10-26 | T-015-06 | `web/static/img/vigia.svg`; `logo.svg` → `vigia.svg` en `base.html` (favicon), `base_simple.html`, `login.html`, `navbar_desktop.html` («VIGIA · Tu espacio de cuidado»), `catalogo.html` («VIGIA · Planes») y `mobile_demo_download.html`; título «· VIGIA»; prueba nueva `web/homeApp/test_marca.py` | Prueba Django: 3 OK (login, catálogo público, portal y descarga con `vigia.svg` y sin `logo.svg`). **Pendiente:** revisión en navegador en claro y oscuro, que no se pudo hacer en esta sesión |
 | 2026-10-26 | T-015-06 (navegador) | `runserver` con `core.mobile_demo_settings` (base desechable en `.mobile-demo/`, superusuario ficticio) y Chrome sin interfaz controlado por Playwright (entorno temporal fuera del repositorio); 1280×800 y 390×844 | Login, catálogo público, descarga y portal muestran `vigia.svg`; el favicon responde 200 en todas; título «· VIGIA». Portal revisado en claro y oscuro, en escritorio y móvil. Las páginas sin sesión se ven siempre en claro porque el modo oscuro es una preferencia de cada usuario. Observación: en oscuro el trazo `#5057a0` del logo tiene poco contraste con el fondo (≈2,3:1), pero se distingue; los logotipos están exentos del criterio de contraste. Se pide la confirmación visual del propietario |
+| 2026-10-26 | T-015-07 | ELI NX9, Android 16, APK debug por USB (`adb reverse`), cuentas `demo_premium` y `demo_free` y una cuenta temporal sin política | Login, HU-03, HU-04, aviso con pantalla bloqueada, error de conexión informado, panel de plan, cierre de sesión sin alarmas, rol cuidador y puerta de privacidad: OK. Dos hallazgos de interfaz sin corregir. Detalle en [validation.md](validation.md#android-físico--t-015-07-2026-10-26) |
 
 ## Reanudación
 2026-10-26: spec, plan y tareas creados en fase DOCUMENTAR. Spec, plan y tareas en la rama `docs/015-integracion-unificado` (`a02a9cd`), sin código.
 2026-10-26: revisión con el propietario. Lista A completa y nada de la B; P-015-01 = A (D-069), P-015-03 = adoptar (D-070), P-015-04 = sí (D-071). Siguiente paso: P-015-02 (equipo macOS, bloquea T-015-08..11) y autorización explícita de implementación de T-015-01..07.
-2026-10-26: P-015-02 = Sandra (D-072). Implementadas en `feature/015-integracion-unificado` T-015-01..06 (T-015-06 revisada en navegador). Suites finales: Django 235, Edge 22 y Flutter 43 OK; `flutter analyze` sin problemas; `git diff` sin archivos de la lista B. Pendientes: T-015-07 (Android físico) a la espera de autorización; T-015-08..11 (iOS, Sandra en macOS) y T-015-12..13 sin autorizar. El remoto `unificado` sigue configurado hasta T-015-13. Sin PR ni merge.
+2026-10-26: P-015-02 = Sandra (D-072). Implementadas en `feature/015-integracion-unificado` T-015-01..06 (T-015-06 revisada en navegador). Suites finales: Django 235, Edge 22 y Flutter 43 OK; `flutter analyze` sin problemas; `git diff` sin archivos de la lista B. T-015-07 hecha en el teléfono (ver [validation.md](validation.md)). Pendientes: dos hallazgos de interfaz por decidir; T-015-08..11 (iOS, Sandra en macOS) y T-015-12..13 sin autorizar. El remoto `unificado` sigue configurado hasta T-015-13. Sin PR ni merge.
 
 ## Aceptación del usuario
 Pendiente; no marcarla automáticamente después de ejecutar tests.
