@@ -5,13 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% block extra_meta %}{% endblock %}
-    <title>{% block head_title %}Inicio{% endblock %} · Plataforma</title>
+    <title>{% block head_title %}Inicio{% endblock %} · VIGIA</title>
     <link rel="stylesheet" href="{% static 'css/tokens.css' %}?v=011">
     {% tailwind_css %}
     <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=011">
     <link rel="stylesheet" href="{% static 'css/mensajes.css' %}?v=013">
     <link rel="stylesheet" href="{% static 'css/spiner.css' %}?v=011">
-    <link rel="icon" href="{% static 'img/logo.svg' %}" type="image/svg+xml">
+    <link rel="icon" href="{% static 'img/vigia.svg' %}" type="image/svg+xml">
     {% block extra_css %}{% endblock %}
     {% if request.user.is_authenticated and request.user.is_active %}<link rel="stylesheet" href="{% static 'CuidadosApp/care.css' %}?v=011"><script defer src="{% static 'CuidadosApp/care.js' %}?v=011"></script>{% endif %}
     <script defer src="{% static 'js/interfaz.js' %}?v=011"></script>
