@@ -97,7 +97,7 @@ void main() {
         'Pacientes',
         'Medicinas',
         'Posturas',
-        'Plan',
+        'Planes',
         'Perfil',
       ]) {
         expectOnScreen(tester, tab);
@@ -268,7 +268,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Abrir el portal'), findsOneWidget);
     expect(find.text('Cargando plan'), findsNothing);
-    expect(find.text('Acciones rápidas'), findsNothing);
+    expect(find.text('ACCIONES RÁPIDAS'), findsNothing);
     await tester.tap(find.text('Pacientes'));
     await tester.pumpAndSettle();
     expect(find.text('Abrir el portal'), findsOneWidget);

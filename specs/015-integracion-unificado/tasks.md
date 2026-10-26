@@ -20,7 +20,7 @@ No ejecutar tareas de código por el hecho de aparecer aquí. Rama prevista: `fe
   - Depende de: T-015-02.
   - Archivos previstos: `mobile/lib/features/subscription/subscription_panel.dart`, `mobile/test/subscription_test.dart`.
   - Hecho cuando: la versión de `vigia-unificado` queda con la corrección de `b035678` aplicada y `subscription_test.dart` y `flutter analyze` pasan.
-- [ ] T-015-04 — Rediseño de la app (A1–A5) integrado con roles y privacidad.
+- [x] T-015-04 — Rediseño de la app (A1–A5) integrado con roles y privacidad.
   - RF: RF-015-02. Componente: mobile.
   - Depende de: T-015-01 y P-015-03.
   - Archivos previstos: `mobile/lib/shared/vigia_design.dart`, `mobile/lib/shared/care_agenda_card.dart`, `mobile/lib/features/home/home_overview.dart`, `mobile/lib/features/patients/patient_summary_card.dart`, `mobile/lib/features/home/care_home.dart`, `mobile/lib/app/vigia_app.dart`, `mobile/lib/features/posture/posture_hub.dart`, una prueba nueva de inicio por rol.
@@ -81,6 +81,7 @@ No ejecutar tareas de código por el hecho de aparecer aquí. Rama prevista: `fe
 | 2026-10-26 | T-015-01 | Rama `feature/015-integracion-unificado` (sobre `docs/015-integracion-unificado`, que parte de `develop` `ab9eab8`); `git remote add unificado` + `git fetch unificado` (`unificado/main` = `b4368e3`) | Línea base: `check` y `makemigrations --check` sin cambios; Django 227 OK (con PrivacidadApp); Edge 22 OK; `flutter analyze` sin problemas; Flutter 39 OK |
 | 2026-10-26 | T-015-02 | `web/PlanesApp/entitlements.py` (`mobile_catalog`, `mobile_capabilities`), `web/CuidadosApp/api/views.py`, `web/CuidadosApp/test_mobile.py` | Prueba portada del catálogo y nueva de 401 sin sesión; `manage.py test CuidadosApp.test_mobile PlanesApp`: 65 OK |
 | 2026-10-26 | T-015-03 | `mobile/lib/features/subscription/subscription_panel.dart`, `mobile/test/subscription_test.dart`, `mobile/lib/shared/vigia_design.dart` (A1, adelantado porque el panel lo usa) | Versión de `vigia-unificado` con la corrección de `b035678` (botón de avisos y texto sin cámara sin detección) y el enlace leído de `change_plan_path`. `flutter analyze` sin problemas; Flutter 41 OK |
+| 2026-10-26 | T-015-04 | `care_home.dart` (base local), `home_overview.dart`, `patient_summary_card.dart`, `care_agenda_card.dart`, `vigia_app.dart`, `posture_hub.dart`; prueba nueva `test/home_redesign_test.dart`; `interface_details_test.dart` ajustada | Se conservan la puerta de política (T-014-12), «Unirme con un código» y el rol en la lista (013). Sin la barra superior, «Cerrar sesión» queda bajo el aviso de política. Pestaña «Plan» → «Planes» y «ACCIONES RÁPIDAS» por el diseño adoptado (D-070). `flutter analyze` sin problemas; Flutter 43 OK. Revisión visual en Android pendiente (T-015-07) |
 
 ## Reanudación
 2026-10-26: spec, plan y tareas creados en fase DOCUMENTAR. Spec, plan y tareas en la rama `docs/015-integracion-unificado` (`a02a9cd`), sin código.

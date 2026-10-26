@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import '../core/api.dart';
+import '../shared/vigia_design.dart';
 import '../features/auth/session_gate.dart';
 
 class VigiaApp extends StatelessWidget {
@@ -16,8 +17,13 @@ class VigiaApp extends StatelessWidget {
     localizationsDelegates: GlobalMaterialLocalizations.delegates,
     theme: ThemeData(
       useMaterial3: true,
-      colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xff5057a0)),
-      scaffoldBackgroundColor: const Color(0xfff6f7fc),
+      colorScheme: ColorScheme.fromSeed(seedColor: VigiaColors.brand).copyWith(
+        primary: VigiaColors.brand,
+        surface: Colors.white,
+        onSurface: VigiaColors.ink,
+        outline: VigiaColors.line,
+      ),
+      scaffoldBackgroundColor: VigiaColors.page,
       appBarTheme: const AppBarTheme(
         backgroundColor: Color(0xfff6f7fc),
         foregroundColor: Color(0xff252a38),
@@ -27,21 +33,58 @@ class VigiaApp extends StatelessWidget {
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(22),
-          side: const BorderSide(color: Color(0xffe3e5ef)),
+          side: const BorderSide(color: VigiaColors.line),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: Colors.white,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: const BorderSide(color: VigiaColors.line),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: const BorderSide(color: VigiaColors.line),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: const BorderSide(color: VigiaColors.brand),
+        ),
       ),
       filledButtonTheme: FilledButtonThemeData(
-        style: FilledButton.styleFrom(minimumSize: const Size(48, 52)),
+        style: FilledButton.styleFrom(
+          minimumSize: const Size(48, 44),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 13),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          side: const BorderSide(color: VigiaColors.line),
+          foregroundColor: VigiaColors.brand,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+        ),
+      ),
+      chipTheme: ChipThemeData(
+        side: BorderSide.none,
+        backgroundColor: Colors.white,
+        selectedColor: VigiaColors.lavender,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       ),
       textTheme: const TextTheme(
         headlineLarge: TextStyle(
-          fontSize: 32,
-          fontWeight: FontWeight.w700,
+          fontSize: 26,
+          fontWeight: FontWeight.w800,
           color: Color(0xff252a38),
         ),
       ),
