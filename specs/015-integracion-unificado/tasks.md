@@ -25,7 +25,7 @@ No ejecutar tareas de código por el hecho de aparecer aquí. Rama prevista: `fe
   - Depende de: T-015-01 y P-015-03.
   - Archivos previstos: `mobile/lib/shared/vigia_design.dart`, `mobile/lib/shared/care_agenda_card.dart`, `mobile/lib/features/home/home_overview.dart`, `mobile/lib/features/patients/patient_summary_card.dart`, `mobile/lib/features/home/care_home.dart`, `mobile/lib/app/vigia_app.dart`, `mobile/lib/features/posture/posture_hub.dart`, una prueba nueva de inicio por rol.
   - Hecho cuando: todas las pruebas Flutter pasan, incluidas `patient_roles_test`, `privacy_test`, `login_consent_test` e `interface_details_test`, y la prueba nueva comprueba lo que ve cada rol.
-- [ ] T-015-05 — Descarga estable del APK (A8).
+- [x] T-015-05 — Descarga estable del APK (A8).
   - RF: RF-015-05. Componente: web y mobile.
   - Depende de: T-015-01.
   - Archivos previstos: `web/core/mobile_demo_urls.py`, `web/templates/mobile_demo_download.html`, `mobile/tool/build_android.sh`, `.gitignore`, una prueba Django.
@@ -82,6 +82,7 @@ No ejecutar tareas de código por el hecho de aparecer aquí. Rama prevista: `fe
 | 2026-10-26 | T-015-02 | `web/PlanesApp/entitlements.py` (`mobile_catalog`, `mobile_capabilities`), `web/CuidadosApp/api/views.py`, `web/CuidadosApp/test_mobile.py` | Prueba portada del catálogo y nueva de 401 sin sesión; `manage.py test CuidadosApp.test_mobile PlanesApp`: 65 OK |
 | 2026-10-26 | T-015-03 | `mobile/lib/features/subscription/subscription_panel.dart`, `mobile/test/subscription_test.dart`, `mobile/lib/shared/vigia_design.dart` (A1, adelantado porque el panel lo usa) | Versión de `vigia-unificado` con la corrección de `b035678` (botón de avisos y texto sin cámara sin detección) y el enlace leído de `change_plan_path`. `flutter analyze` sin problemas; Flutter 41 OK |
 | 2026-10-26 | T-015-04 | `care_home.dart` (base local), `home_overview.dart`, `patient_summary_card.dart`, `care_agenda_card.dart`, `vigia_app.dart`, `posture_hub.dart`; prueba nueva `test/home_redesign_test.dart`; `interface_details_test.dart` ajustada | Se conservan la puerta de política (T-014-12), «Unirme con un código» y el rol en la lista (013). Sin la barra superior, «Cerrar sesión» queda bajo el aviso de política. Pestaña «Plan» → «Planes» y «ACCIONES RÁPIDAS» por el diseño adoptado (D-070). `flutter analyze` sin problemas; Flutter 43 OK. Revisión visual en Android pendiente (T-015-07) |
+| 2026-10-26 | T-015-05 | `web/core/mobile_demo_urls.py` (`android_artifact`, `apk_available`), `web/templates/mobile_demo_download.html`, `mobile/tool/build_android.sh`, `.gitignore`; prueba nueva `web/CuidadosApp/test_mobile_demo.py` | Prueba Django: 3 OK (sin APK la página lo dice y la descarga da 404; se prefiere `artifacts/` sobre `build/`). `sh mobile/tool/build_android.sh` en Git Bash de Windows: APK en `artifacts/android/` en 65 s, ignorado por Git. El script usa el `flutter` del PATH si no hay `.tooling/`. Texto iPhone según D-069 |
 
 ## Reanudación
 2026-10-26: spec, plan y tareas creados en fase DOCUMENTAR. Spec, plan y tareas en la rama `docs/015-integracion-unificado` (`a02a9cd`), sin código.

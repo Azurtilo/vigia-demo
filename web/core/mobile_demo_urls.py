@@ -15,12 +15,23 @@ def mobile(request, asset="index.html"):
     )
 
 
+def android_artifact():
+    """Prefers the copy kept by mobile/tool/build_android.sh over Flutter's build output."""
+    stable = settings.REPO_DIR / "artifacts/android/VIGIA-android-prueba.apk"
+    if stable.is_file():
+        return stable
+    return settings.REPO_DIR / "mobile/build/app/outputs/flutter-apk/app-debug.apk"
+
+
 def download_page(request):
-    return render(request, "mobile_demo_download.html", {"server_url": request.build_absolute_uri("/").rstrip("/")})
+    return render(request, "mobile_demo_download.html", {
+        "server_url": request.build_absolute_uri("/").rstrip("/"),
+        "apk_available": android_artifact().is_file(),
+    })
 
 
 def download_apk(request):
-    artifact = settings.REPO_DIR / "mobile/build/app/outputs/flutter-apk/app-debug.apk"
+    artifact = android_artifact()
     if not artifact.is_file():
         raise Http404("APK todavía no generado")
     return FileResponse(artifact.open("rb"), as_attachment=True, filename="VIGIA-android-prueba.apk",
