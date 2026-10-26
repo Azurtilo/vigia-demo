@@ -1,6 +1,6 @@
 # Estado y reanudación
 
-Fecha: 2026-10-25.
+Fecha: 2026-10-26.
 
 ## Pendientes abiertos — consolidado al 2026-10-25
 
@@ -19,19 +19,22 @@ Lista única de lo que falta. El detalle vive en cada spec y en DECISIONES. «Pr
 | 9 | RNF de disponibilidad ≥ 99,5 %: declarado objetivo de diseño no medido; describir la arquitectura necesaria en el informe | D-060 | Equipo (informe) |
 | 10 | ~~Decidir si `.claude/skills/` se versiona~~ Versionada con ajustes ([PR #6](https://github.com/Azurtilo/vigia-demo/pull/6), `1f620a6`) | — | Hecho |
 | 11 | ~~Revisar y fusionar la [PR #5](https://github.com/Azurtilo/vigia-demo/pull/5)~~ Detalles de interfaz fusionados en `develop` (`f71d1be`) | — | Hecho |
+| 12 | ~~Revisar y fusionar la [PR #8](https://github.com/Azurtilo/vigia-demo/pull/8)~~ Spec 015 fusionada en `develop` el 2026-10-26 (`8d2be54`) | — | Hecho |
+| 13 | iOS: dependencias y build de simulador, iPhone físico, avisos locales y cámara (T-015-08..10); mensaje de push no disponible (T-015-11, D-069) | spec 015 | Sandra (macOS), con autorización aparte |
 
 Trabajo futuro registrado (no comprometido): invitación por correo (D-050), traspaso de titularidad, papelera de pacientes con «deshacer» (D-067), cifrado en reposo y PostgreSQL (014), registro de lecturas, push inmediato de inmovilidad (D-051). iOS pasó al alcance el 2026-10-26 (D-068, spec 015).
 
-## Estado vigente — spec 015 DOCUMENTAR, 2026-10-26
+## Estado vigente — spec 015 fusionada, 2026-10-26
 
 - **Pedido.** Comparar este repositorio con [Sndrpaola/vigia-unificado](https://github.com/Sndrpaola/vigia-unificado) y «prepara la spec con la lista, ademas quiero incluir iOS al alcance».
 - **Hecho.** [Spec](../specs/015-integracion-unificado/spec.md), [plan](../specs/015-integracion-unificado/plan.md) y [tareas](../specs/015-integracion-unificado/tasks.md) de la 015, con la lista de lo que se trae (A1–A11), lo que no (B1–B10) y la resolución de los archivos modificados en ambas copias. D-068 (iOS en el alcance) sustituye D-011-02; AGENTS.md y CLAUDE.md actualizados. Rama `docs/015-integracion-unificado`, sin código.
 - **Revisión del propietario.** Se trae toda la lista A y nada de la B. P-015-01 = Apple ID gratuito, sin push en iPhone (D-069); P-015-03 = adoptar el rediseño (D-070); P-015-04 = `develop` único (D-071).
-- **Implementación.** P-015-02: Sandra compila iOS (D-072). Autorizadas T-015-01..06; T-015-07 queda pendiente. En `feature/015-integracion-unificado`: catálogo de planes en la API, panel de plan, rediseño de la app con roles (013) y privacidad (014), descarga estable del APK (`mobile/tool/build_android.sh`) y marca VIGIA en el portal. Django 235, Edge 22 y Flutter 43 OK.
-- **Android físico (T-015-07).** Recorrido completo en el ELI NX9: login, HU-03, HU-04, aviso con pantalla bloqueada, panel de plan, cierre de sesión, rol cuidador y puerta de privacidad, todo OK ([validation.md](../specs/015-integracion-unificado/validation.md)). Los dos hallazgos de interfaz («Registrar medicamento» cortaba la palabra y al cambiar de pestaña se conservaba la posición de desplazamiento) se corrigieron en T-015-14 y se repitieron en el teléfono. Flutter 45 OK.
+- **Implementación.** P-015-02: Sandra compila iOS (D-072). Autorizadas T-015-01..07. En `feature/015-integracion-unificado`: catálogo de planes en la API, panel de plan, rediseño de la app con roles (013) y privacidad (014), descarga estable del APK (`mobile/tool/build_android.sh`) y marca VIGIA en el portal. Django 235, Edge 22 y Flutter 43 OK.
+- **Android físico (T-015-07).** Recorrido completo en el ELI NX9: login, HU-03, HU-04, aviso con pantalla bloqueada, panel de plan, cierre de sesión, rol cuidador y puerta de privacidad, todo OK ([validation.md](../specs/015-integracion-unificado/validation.md)). Los dos hallazgos de interfaz («Registrar medicamento» cortaba la palabra y al cambiar de pestaña se conservaba la posición de desplazamiento) se corrigieron en T-015-14 y se repitieron en el teléfono. La revisión de la PR corrigió además el enlace de cambio de plan con subruta. Flutter 46 OK.
 - **No comprobado.** iOS. La marca se revisó en navegador (claro y oscuro) el 2026-10-26.
-- **PR.** [PR #8](https://github.com/Azurtilo/vigia-demo/pull/8) hacia `develop`, abierta el 2026-10-26, sin fusionar.
-- **Siguiente paso seguro.** Revisar y fusionar la PR #8 (requiere autorización explícita). iOS (T-015-08..11) queda para Sandra en macOS. Las tareas iOS (T-015-08..11) quedan para Sandra en macOS, con autorización aparte.
+- **PR.** [PR #8](https://github.com/Azurtilo/vigia-demo/pull/8) revisada y fusionada en `develop` el 2026-10-26 (`8d2be54`).
+- **Cierre de etapa.** Guía [INSTALACION_CELULAR.md](INSTALACION_CELULAR.md) y documentación de alcance iOS (T-015-12); remoto `unificado` quitado (T-015-13 parcial).
+- **Siguiente paso seguro.** iOS (T-015-08..11) con Sandra en macOS, con autorización aparte; después, completar T-015-13.
 
 ## Antecedente — PR #5 y #6 fusionadas, 2026-10-25
 

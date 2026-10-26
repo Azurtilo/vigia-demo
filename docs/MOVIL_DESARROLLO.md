@@ -1,5 +1,7 @@
 # VIGIA móvil — pruebas locales
 
+Para instalar en un teléfono (Android por USB o red local, iPhone en macOS) sigue [INSTALACION_CELULAR.md](INSTALACION_CELULAR.md); esta página conserva notas de desarrollo anteriores. iOS está en el alcance desde el 2026-10-26 (D-068).
+
 Versión de desarrollo Flutter para Android/iOS. Backend Django existente, API por sesión y capacidades calculadas por servidor. No es una entrega publicada ni validada clínicamente. Estado y límites: [validación 010](../specs/010-aplicacion-movil/validation.md).
 
 ## Probar ahora en este Mac

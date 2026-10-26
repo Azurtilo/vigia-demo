@@ -126,7 +126,7 @@ Los textos anteriores se conservan como antecedente. Detalle y fuente en [DECISI
 
 - P-010-01 **resuelta (D-057)**: nodo Edge como vía principal; cámara del teléfono como alternativa demostrativa.
 - P-010-02 **resuelta (D-050)**: vínculo paciente–usuario con rol familiar o cuidador, invitación solo por código, aceptación y revocación. El cuidador no ocupa cupo, puede atender a varias familias y tras la revocación no ve nada (sus registros conservan autoría). Documentado en la [spec 013](../013-cuidado-delegado/spec.md), que asume RF-010-08; hasta implementarla rige la propiedad de 009.
-- P-010-03 **resuelta en versión mínima (D-057)**: Android 8.0 (API 26). iOS fuera de alcance (D-011-02).
+- P-010-03 **resuelta en versión mínima (D-057)**: Android 8.0 (API 26). iOS fuera de alcance (D-011-02; sustituida por D-068 el 2026-10-26).
 - P-010-04 **resuelta (D-056)**: se aprueba `X-Session-Token` para la app y credencial con hash para el nodo; faltan definir vencimiento de sesión, cierre de sesión remoto y revocación de nodos desde el portal.
 - P-010-05 **resuelta (D-054)**: Firebase de prueba con credenciales por variable de entorno fuera del repositorio, prueba en Android físico y tiempos en `validation.md`. Pendiente de ejecución.
 - P-010-06 **resuelta (D-055)**: recordatorios móviles en los tres planes; MediaPipe y alertas automáticas solo en Premium. Nodos: Free 0, Plus 0, Premium 1 activo por paciente.

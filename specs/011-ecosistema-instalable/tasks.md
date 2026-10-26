@@ -15,7 +15,7 @@ Leyenda: [x] hecho con evidencia técnica · [~] parcial (código presente, falt
 | [x] | T-011-07 /06 | Inventario de rutas y manifiesto de traslado |Autorización; DB/secretos/entornos fuera del traslado automático |
 | [x] | T-011-08 /06 | Separar web/ y modularizar Flutter por función |07; imports, comandos, assets, enlaces y pruebas sin regresión |
 | [~] | T-011-09 /01 | Preparar APK y conexión desde Android real |02–08; instalación y login con servidor accesible |
-| [—] | T-011-10 /01 | Build iOS y prueba en iPhone firmado |Fuera de alcance desde 2026-10-22: iOS excluido por el propietario (ver Reconciliación) |
+| [—] | T-011-10 /01 | Build iOS y prueba en iPhone firmado |Fuera de alcance desde 2026-10-22: iOS excluido por el propietario (ver Reconciliación). **2026-10-26: vuelve al alcance por D-068; el trabajo sigue en T-015-08..11** |
 | [ ] | T-011-11 /01–06 | Validación integrada y guía de entrega |09; alarmas con pantalla bloqueada, cámara dual sin regresión y límites honestos |
 
 Bloqueos externos: destino remoto no definido; dispositivo Android real no verificado. Documentar evidencia por plataforma, no marcar tareas terminadas con pruebas sintéticas solamente.

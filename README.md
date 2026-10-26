@@ -16,7 +16,7 @@ VIGIA es un sistema de apoyo al cuidado domiciliario de personas con dependencia
 | Carpeta | Componente | Tecnología |
 |---|---|---|
 | [web/](web/) | Backend, API y portal web (`core`, `UsuarioApp`, `homeApp`, `PlanesApp`, `CuidadosApp`, `theme`) | Django 5.2, allauth, Tailwind standalone |
-| [mobile/](mobile/) | App del cuidador y de la familia, con el plugin nativo `plugins/vigia_pose` | Flutter (Android primero) |
+| [mobile/](mobile/) | App del cuidador y de la familia, con el plugin nativo `plugins/vigia_pose` | Flutter (Android primero; iOS se compila en macOS) |
 | [edge/](edge/) | Nodo local de análisis de postura | Python 3.12, MediaPipe, OpenCV |
 | [docs/](docs/), [specs/](specs/) | Documentación, decisiones y trazabilidad SDD | Markdown |
 
@@ -101,7 +101,7 @@ flutter run --dart-define=API_URL=http://10.0.2.2:8000
 flutter build apk --debug --dart-define=API_URL=http://10.0.2.2:8000
 ```
 
-`10.0.2.2` es el equipo anfitrión visto desde el emulador Android. Para un teléfono físico, revisa [docs/MOVIL_DESARROLLO.md](docs/MOVIL_DESARROLLO.md). iOS está fuera de alcance (decisión D-011-02).
+`10.0.2.2` es el equipo anfitrión visto desde el emulador Android. Para un teléfono físico, Android o iPhone, sigue [docs/INSTALACION_CELULAR.md](docs/INSTALACION_CELULAR.md). iOS está en el alcance desde el 2026-10-26 (D-068) y se compila solo en macOS.
 
 ### Edge
 

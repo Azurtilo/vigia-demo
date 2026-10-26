@@ -9,7 +9,7 @@ VIGIA (Proyecto de Título, INACAP): apoyo al cuidado domiciliario de personas c
 | Carpeta | Componente |
 |---|---|
 | `web/` | Backend y portal Django (`core`, `UsuarioApp`, `homeApp`, `PlanesApp`, `CuidadosApp`, `theme`). `manage.py` raíz delega en `web/manage.py` |
-| `mobile/` | App Flutter (Android primero), `lib/features/*`, plugin `plugins/vigia_pose` |
+| `mobile/` | App Flutter (Android primero; iOS en el alcance, se compila en macOS), `lib/features/*`, plugin `plugins/vigia_pose` |
 | `edge/` | Nodo Python con MediaPipe Pose Landmarker |
 | `docs/`, `specs/` | Documentación y trazabilidad SDD |
 

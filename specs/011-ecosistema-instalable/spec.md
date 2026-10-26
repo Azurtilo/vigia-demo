@@ -49,7 +49,7 @@ El usuario indica «perfecto ahora modificalo»: implementación completa011 aut
 
 ## Decisión de alcance — 2026-10-22
 
-El propietario indica: entorno Windows, **Android primero, iOS fuera de alcance** ([D-011-02](../../docs/DECISIONES.md)). En esta spec, las menciones a iOS/iPhone quedan sustituidas, sin reciclar IDs:
+El propietario indica: entorno Windows, **Android primero, iOS fuera de alcance** ([D-011-02](../../docs/DECISIONES.md); sustituida por D-068 el 2026-10-26, ver [spec 015](../015-integracion-unificado/spec.md)). En esta spec, las menciones a iOS/iPhone quedan sustituidas, sin reciclar IDs:
 
 - RF-011-01: instalación de prueba solo en Android. Sin build ni prueba iOS.
 - RF-011-03: aviso local solo en Android.
