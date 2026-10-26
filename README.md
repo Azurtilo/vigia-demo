@@ -132,7 +132,7 @@ PY_EDGE -m edge.run --references edge/models/referencias.json --camera 0 --serve
 # Web, desde web/
 PY_WEB manage.py check --settings=core.test_settings
 PY_WEB manage.py makemigrations --check --dry-run --settings=core.test_settings
-PY_WEB manage.py test UsuarioApp homeApp PlanesApp CuidadosApp --settings=core.test_settings
+PY_WEB manage.py test UsuarioApp homeApp PlanesApp CuidadosApp PrivacidadApp --settings=core.test_settings
 
 # Edge, desde la raíz
 PY_EDGE -m unittest edge.test_posture

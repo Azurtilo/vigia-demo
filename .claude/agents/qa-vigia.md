@@ -27,7 +27,7 @@ Desde la raíz `vigia/`. Registra comando, código de salida y conteos reales (a
 cd web
 ../.venv/Scripts/python.exe manage.py check --settings=core.test_settings
 ../.venv/Scripts/python.exe manage.py makemigrations --check --dry-run --settings=core.test_settings
-../.venv/Scripts/python.exe manage.py test UsuarioApp homeApp PlanesApp CuidadosApp --settings=core.test_settings
+../.venv/Scripts/python.exe manage.py test UsuarioApp homeApp PlanesApp CuidadosApp PrivacidadApp --settings=core.test_settings
 
 # Edge (entorno Windows .venv-edge-win, desde la raíz)
 .venv-edge-win/Scripts/python.exe -m unittest edge.test_posture edge.test_fall edge.test_run -v

@@ -54,7 +54,7 @@ Los venv `.venv-edge/` y `.venv-mobile/` del repo son de macOS (`bin/`), no sirv
 cd web
 ../.venv/Scripts/python.exe manage.py check --settings=core.test_settings
 ../.venv/Scripts/python.exe manage.py makemigrations --check --dry-run --settings=core.test_settings
-../.venv/Scripts/python.exe manage.py test UsuarioApp homeApp PlanesApp CuidadosApp --settings=core.test_settings
+../.venv/Scripts/python.exe manage.py test UsuarioApp homeApp PlanesApp CuidadosApp PrivacidadApp --settings=core.test_settings
 ```
 
 - Edge (entorno separado `.venv-edge-win`, `edge/requirements.txt`): `python -m unittest edge.test_posture edge.test_fall edge.test_run` desde la raíz.

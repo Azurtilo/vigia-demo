@@ -9,7 +9,7 @@ Usar `.venv` en esta copia, idioma es-cl y America/Santiago. No se añadieron de
 ```powershell
 .venv/Scripts/python.exe manage.py check --settings=core.test_settings
 .venv/Scripts/python.exe manage.py makemigrations --check --dry-run --settings=core.test_settings
-.venv/Scripts/python.exe manage.py test UsuarioApp homeApp PlanesApp CuidadosApp --settings=core.test_settings
+.venv/Scripts/python.exe manage.py test UsuarioApp homeApp PlanesApp CuidadosApp PrivacidadApp --settings=core.test_settings
 .venv/Scripts/python.exe manage.py tailwind --settings=core.test_settings build
 ```
 

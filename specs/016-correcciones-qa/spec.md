@@ -28,7 +28,7 @@ Resultado esperado:
   - Flutter: `analyze` y `test`;
   - `pip-audit` de los requisitos de Python.
 
-  Usa versiones fijas de las acciones y del SDK, sin secretos.
+  Las acciones van en una versión mayor fija; Python, Flutter y `pip-audit`, en versión exacta. No usa secretos.
 - RF-016-05: `docs/OPERACION.md` indica cómo programar en el servidor:
   - `purge_expired_data`, una vez al día;
   - `send_mobile_reminders`, cada 5 minutos (propuesta: P-012-01 sigue abierta).

@@ -10,7 +10,7 @@ Esta instrucción es posterior a la fase documental.
 Lee AGENTS.md, spec.md, plan.md y tasks.md. Comprueba cambios locales y conserva los míos.
 Implementa en pasos pequeños reutilizando la base. Añade/ajusta las pruebas pertinentes, verifica permisos en servidor y no amplíes el alcance.
 Ejecuta las verificaciones de cada componente tocado (Windows; los venv .venv-edge/ y .venv-mobile/ son de macOS y no sirven):
-- web/: desde web/ con ../.venv/Scripts/python.exe: manage.py check, manage.py makemigrations --check --dry-run y manage.py test UsuarioApp homeApp PlanesApp CuidadosApp, siempre con --settings=core.test_settings.
+- web/: desde web/ con ../.venv/Scripts/python.exe: manage.py check, manage.py makemigrations --check --dry-run y manage.py test UsuarioApp homeApp PlanesApp CuidadosApp PrivacidadApp, siempre con --settings=core.test_settings.
 - mobile/: flutter analyze y flutter test desde mobile/.
 - edge/: python -m unittest edge.test_posture edge.test_fall edge.test_run desde la raíz, en su entorno separado (.venv-edge-win, edge/requirements.txt).
 Si aparece una decisión crítica nueva, contradicción o migración con efectos no acordados, explica el bloqueo antes de asumirlo. No repitas preguntas ya resueltas.
