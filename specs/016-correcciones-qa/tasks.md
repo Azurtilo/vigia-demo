@@ -6,7 +6,7 @@ Estado: en implementación. Rama: `feature/016-correcciones-qa`, un commit por t
 - [x] T-016-01 — Pillow y certifi actualizados; herramientas de desarrollo fuera de producción.
   - RF: RF-016-01, 02. Hallazgos: QA-2026-10-26-01, 06 y 08.
   - Hecho cuando: el lock se instala con hashes en un entorno limpio, las suites Django pasan y `pip-audit` no reporta vulnerabilidades en `web/requirements.txt`.
-- [ ] T-016-02 — Comando de pruebas completo e integración continua mínima.
+- [x] T-016-02 — Comando de pruebas completo e integración continua mínima.
   - RF: RF-016-03, 04. Hallazgos: QA-2026-10-26-02 y 03.
   - Hecho cuando: los documentos vigentes indican `PrivacidadApp` y el CI pasa en la PR.
 - [x] T-016-03 — Guía para programar la purga y los avisos.
@@ -23,9 +23,10 @@ Estado: en implementación. Rama: `feature/016-correcciones-qa`, un commit por t
 | 2026-10-26 | T-016-02 | Comando con `PrivacidadApp` en `CLAUDE.md`, `AGENTS.md`, `README.md`, `docs/ENTORNO_Y_VERIFICACION.md`, `docs/CUIDADOSAPP_DESARROLLO.md`, `prompts/04-implementar.md`, `.claude/agents/qa-vigia.md` y la skill `validar-produccion-sdd`; nuevo `.github/workflows/ci.yml` (Django, Edge, Flutter y `pip-audit`) | Sin documentos vigentes con el comando antiguo (las líneas fechadas de `ENTORNO_Y_VERIFICACION.md` se conservan). El CI se comprueba en la PR |
 | 2026-10-26 | T-016-02 (corrección) | `.github/workflows/ci.yml` | La auditoría combinada de los tres archivos falló en local (pip no mezcla requisitos con y sin hashes), aunque el commit anterior la daba por probada. Ahora se audita un archivo por paso, incluido `requirements-dev.txt`; los cuatro se probaron en local sin vulnerabilidades |
 | 2026-10-26 | T-016-03 | `docs/OPERACION.md` (nueva), enlaces en `docs/CUIDADOSAPP_DESARROLLO.md` y `README.md` | Contra la demo: `purge_expired_data --dry-run` informa cantidades sin borrar; `send_mobile_reminders` termina con «VIGIA_PUSH_ENABLED está desactivado»; el comando para ver la última purga responde `None` (nunca hubo una purga real). Hallado: `VIGIA_PUSH_ENABLED` no se define en ninguna configuración ni se lee del entorno. Pendiente del propietario: configurar las tareas en el servidor real |
+| 2026-10-26 | T-016-02 (CI en GitHub) | [Ejecución 40415661262](https://github.com/Azurtilo/vigia-demo/actions/runs/40415661262) en la [PR #11](https://github.com/Azurtilo/vigia-demo/pull/11) | Los cuatro trabajos pasan: Django 235 pruebas (35 s), Edge 22 (16 s), Flutter `analyze` sin problemas y 46 pruebas (1 m 44 s), `pip-audit` sin vulnerabilidades en los cuatro archivos (47 s). El push necesitó agregar el permiso `workflow` a la credencial de `gh` |
 
 ## Reanudación
-2026-10-26: T-016-01..03 hechas. Siguiente paso: comprobar el CI en la PR y fusionar con autorización. Pendientes del propietario: tareas en el servidor y activación de `VIGIA_PUSH_ENABLED`.
+2026-10-26: T-016-01..03 hechas y CI verde en la PR #11. Siguiente paso: fusionar con autorización. Pendientes del propietario: tareas en el servidor y activación de `VIGIA_PUSH_ENABLED`.
 
 ## Aceptación del usuario
 Pendiente.

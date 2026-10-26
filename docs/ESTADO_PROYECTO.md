@@ -33,7 +33,8 @@ Trabajo futuro registrado (no comprometido): invitación por correo (D-050), tra
   - CI en `.github/workflows/ci.yml`;
   - guía [OPERACION.md](OPERACION.md) para programar la purga y los avisos.
 - **Hallado de paso.** `VIGIA_PUSH_ENABLED` no está definido en la configuración ni se lee del entorno: en producción los avisos no pueden activarse sin decidir cómo se configura.
-- **Siguiente paso seguro.** Ver el CI en la PR de la 016 y fusionar con autorización. Pendiente del propietario: programar las tareas en el servidor (OPERACION.md) y decidir la activación del push.
+- **CI.** Verde en la [PR #11](https://github.com/Azurtilo/vigia-demo/pull/11): Django 235, Edge 22, Flutter 46, `pip-audit` sin vulnerabilidades.
+- **Siguiente paso seguro.** Fusionar las PR #10 y #11 con autorización. Pendiente del propietario: programar las tareas en el servidor (OPERACION.md) y decidir la activación del push.
 
 ## Antecedente — spec 015 fusionada, 2026-10-26
 
