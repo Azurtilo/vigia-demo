@@ -70,4 +70,8 @@ jobs:
         with:
           python-version: "3.12"
       - run: python -m pip install pip-audit==2.10.1
-      - run: python -m pip_audit -r web/requirements.txt -r web/requirements-push.txt -r edge/requirements.txt --progress-spinner off
+      # Un archivo por paso: pip no mezcla requisitos con y sin hashes.
+      - run: python -m pip_audit -r web/requirements.txt --progress-spinner off
+      - run: python -m pip_audit -r web/requirements-dev.txt --progress-spinner off
+      - run: python -m pip_audit -r web/requirements-push.txt --progress-spinner off
+      - run: python -m pip_audit -r edge/requirements.txt --progress-spinner off
