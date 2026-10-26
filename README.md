@@ -103,6 +103,8 @@ flutter build apk --debug --dart-define=API_URL=http://10.0.2.2:8000
 
 `10.0.2.2` es el equipo anfitrión visto desde el emulador Android. Para un teléfono físico, Android o iPhone, sigue [docs/INSTALACION_CELULAR.md](docs/INSTALACION_CELULAR.md). iOS está en el alcance desde el 2026-10-26 (D-068) y se compila solo en macOS.
 
+En el servidor hay que programar dos tareas periódicas, la purga de datos y los avisos al teléfono: ver [docs/OPERACION.md](docs/OPERACION.md).
+
 ### Edge
 
 El modelo va en `edge/models/pose_landmarker_lite.task`. Esa carpeta está en `.gitignore`. Copia el modelo que ya trae la app móvil o descárgalo desde la [documentación de MediaPipe](https://ai.google.dev/edge/mediapipe/solutions/vision/pose_landmarker):
@@ -132,7 +134,7 @@ PY_EDGE -m edge.run --references edge/models/referencias.json --camera 0 --serve
 # Web, desde web/
 PY_WEB manage.py check --settings=core.test_settings
 PY_WEB manage.py makemigrations --check --dry-run --settings=core.test_settings
-PY_WEB manage.py test UsuarioApp homeApp PlanesApp CuidadosApp --settings=core.test_settings
+PY_WEB manage.py test UsuarioApp homeApp PlanesApp CuidadosApp PrivacidadApp --settings=core.test_settings
 
 # Edge, desde la raíz
 PY_EDGE -m unittest edge.test_posture

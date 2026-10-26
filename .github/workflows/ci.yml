@@ -1,0 +1,77 @@
+# Integración continua mínima (spec 016, QA-2026-10-26-03).
+# Corre los mismos comandos documentados en CLAUDE.md y AGENTS.md. Sin secretos:
+# Django usa core.test_settings, que no lee .env.
+name: CI
+
+on:
+  pull_request:
+    branches: [develop, main]
+  push:
+    branches: [develop]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web:
+    name: Django
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --require-hashes -r requirements.txt
+      - run: python manage.py check --settings=core.test_settings
+      - run: python manage.py makemigrations --check --dry-run --settings=core.test_settings
+      - run: python manage.py test UsuarioApp homeApp PlanesApp CuidadosApp PrivacidadApp --settings=core.test_settings
+
+  edge:
+    name: Edge
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # Las pruebas no cargan MediaPipe ni OpenCV (run.py los importa al abrir la cámara).
+      - run: python -m pip install requests==2.34.2
+      - run: python -m unittest edge.test_posture edge.test_fall edge.test_run
+
+  mobile:
+    name: Flutter
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.47.7"
+          channel: stable
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test
+
+  audit:
+    name: Dependencias (pip-audit)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install pip-audit==2.10.1
+      # Un archivo por paso: pip no mezcla requisitos con y sin hashes.
+      - run: python -m pip_audit -r web/requirements.txt --progress-spinner off
+      - run: python -m pip_audit -r web/requirements-dev.txt --progress-spinner off
+      - run: python -m pip_audit -r web/requirements-push.txt --progress-spinner off
+      - run: python -m pip_audit -r edge/requirements.txt --progress-spinner off

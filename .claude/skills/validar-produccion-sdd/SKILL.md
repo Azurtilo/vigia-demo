@@ -24,7 +24,7 @@ Copia adaptada de `.codex/skills/validar-produccion-sdd/`. Al cambiar los pasos 
 | Componente | Ruta | Comprobación |
 | --- | --- | --- |
 | Instrucciones | `CLAUDE.md`, `AGENTS.md`, `constitution.md` | Lectura inicial |
-| Backend Django | `web/` (settings en `web/core/`; `manage.py` raíz delega en `web/manage.py`) | `cd web && ../.venv/Scripts/python.exe manage.py check --settings=core.test_settings`, `makemigrations --check --dry-run --settings=core.test_settings`, `test UsuarioApp homeApp PlanesApp CuidadosApp --settings=core.test_settings` |
+| Backend Django | `web/` (settings en `web/core/`; `manage.py` raíz delega en `web/manage.py`) | `cd web && ../.venv/Scripts/python.exe manage.py check --settings=core.test_settings`, `makemigrations --check --dry-run --settings=core.test_settings`, `test UsuarioApp homeApp PlanesApp CuidadosApp PrivacidadApp --settings=core.test_settings` |
 | Dependencias web | `web/requirements.txt` (con hashes) | Inventario; `pip-audit` solo en entorno aislado |
 | Edge | `edge/`, `edge/requirements.txt`, modelo en `edge/models/` | `.venv-edge-win/Scripts/python.exe -m unittest edge.test_posture edge.test_fall edge.test_run` desde la raíz |
 | Móvil | `mobile/` (`pubspec.yaml`, plugin `plugins/vigia_pose`) | Desde `mobile/`: `flutter analyze` y `flutter test` (SDK y versión fijada según `CLAUDE.md`) |

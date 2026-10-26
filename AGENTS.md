@@ -69,7 +69,7 @@ Web, desde `web/`:
 ../.venv/Scripts/python.exe -m pip install --require-hashes -r requirements.txt
 ../.venv/Scripts/python.exe manage.py check --settings=core.test_settings
 ../.venv/Scripts/python.exe manage.py makemigrations --check --dry-run --settings=core.test_settings
-../.venv/Scripts/python.exe manage.py test UsuarioApp homeApp PlanesApp CuidadosApp --settings=core.test_settings
+../.venv/Scripts/python.exe manage.py test UsuarioApp homeApp PlanesApp CuidadosApp PrivacidadApp --settings=core.test_settings
 ```
 
 Usar siempre `--settings=core.test_settings`; no validar contra la base de desarrollo.

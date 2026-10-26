@@ -7,7 +7,7 @@ django-allauth[mfa,socialaccount]==65.19.7
 django-crispy-forms==2.7
 crispy-tailwind==1.0.3
 django-environ==0.14.0
-pillow==12.3.0
+pillow==13.0.0
 argon2-cffi==25.1.0
 bcrypt==5.0.0
 
@@ -18,17 +18,15 @@ django-preventconcurrentlogins==0.8.2
 # ConstrucciÃ³n Tailwind standalone y herramientas de desarrollo existentes
 django-tailwind==4.5.0
 pytailwindcss==0.3.1
-cookiecutter==2.7.1
-black==26.5.1
-ruff==0.16.10
-types-python-dateutil==2.9.0.20260807
+# Herramientas de desarrollo (cookiecutter, black, ruff, tipos): requirements-dev.in.
+# El servidor no las instala (spec 016, QA-2026-10-26-08).
 
 # Transitivas histÃ³ricas conservadas explÃ­citamente; no freeze global
 argon2-cffi-bindings==26.1.0
 arrow==1.4.0
 asgiref==3.12.1
 binaryornot==0.6.0
-certifi==2026.7.22
+certifi==2026.10.23
 cffi==2.1.1
 chardet==7.6.0
 charset-normalizer==3.5.2
