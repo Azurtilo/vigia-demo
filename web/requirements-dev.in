@@ -1,0 +1,8 @@
+# Herramientas de desarrollo (spec 016). No se instalan en el servidor.
+# Restringidas por el lock de producción para no cambiar sus versiones.
+-c requirements.txt
+
+cookiecutter==2.7.1
+black==26.10.1
+ruff==0.16.10
+types-python-dateutil==2.9.0.20260807

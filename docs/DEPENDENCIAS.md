@@ -4,6 +4,13 @@ Revisión: 2026-10-02. Verificado en Windows, Python 3.12.14 y Django 5.2.17 LTS
 
 ## Instalación reproducible
 
+**Actualización 2026-10-26 ([spec 016](../specs/016-correcciones-qa/spec.md)).**
+- Pillow pasa a 13.0.0 (37 avisos en 12.3.0) y certifi a 2026.10.23 (QA-2026-10-26-01 y 06).
+- Las herramientas de desarrollo (`cookiecutter`, `black`, `ruff`, `types-python-dateutil`) salen del lock de producción y pasan a `requirements-dev.in` / `requirements-dev.txt`, restringido por `requirements.txt` (QA-2026-10-26-08).
+- El servidor instala solo `requirements.txt`; en desarrollo se instala además `pip install --require-hashes -r requirements-dev.txt`.
+- `pip-audit` no reporta vulnerabilidades en ninguno de los dos locks. Las 235 pruebas pasan en un entorno limpio instalado con `--require-hashes`.
+
+
 `requirements.in` clasifica aplicación, opcionales, construcción/desarrollo y transitivas históricas conservadas. `requirements.txt` fija **52 paquetes**, incluidos bcrypt, las transitivas del extra oficial MFA y pip 26.2.1, con hashes SHA-256. Conserva los 47 paquetes anteriores; 38 cambian de versión. Nueve permanecen en la versión consultada, incluidos django-tailwind 4.5.0, crispy-tailwind 1.0.3 y preventconcurrentlogins 0.8.2. No retirar capacidades de otro proyecto por inferencia.
 
 El entorno normal `.venv` recibido apunta a un Python inexistente y se conservó intacto. Para esta entrega existe `.venv-actualizada`, sin paquetes globales. Usarlo desde PowerShell:
@@ -32,6 +39,7 @@ Cambiar versiones de entradas tras revisar soporte, avisos, notas y compatibilid
 py -3.12 -m venv .venv-lock
 & .\.venv-lock\Scripts\python.exe -m pip install pip==26.2.1 pip-tools==7.6.1
 & .\.venv-lock\Scripts\python.exe -m piptools compile --generate-hashes --allow-unsafe --strip-extras --output-file=requirements.txt requirements.in
+& .\.venv-lock\Scripts\python.exe -m piptools compile --generate-hashes --allow-unsafe --strip-extras --output-file=requirements-dev.txt requirements-dev.in
 ```
 
 `--allow-unsafe` incluye pip con hashes: es una clasificación del compilador para herramientas de instalación, no una afirmación de vulnerabilidad. pip-tools 7.5.3 falla con pip 26.2.1 por una API interna retirada; 7.6.1 fue la combinación que generó este lock. Registrar cambios/transitivas, instalar en otro entorno limpio, ejecutar suite/check/esquema/build y reconsultar avisos de **todo lo instalado**, también el instalador. No actualizar el lock sin verificar luego la instalación.
