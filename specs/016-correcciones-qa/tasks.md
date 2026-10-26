@@ -9,7 +9,7 @@ Estado: en implementación. Rama: `feature/016-correcciones-qa`, un commit por t
 - [ ] T-016-02 — Comando de pruebas completo e integración continua mínima.
   - RF: RF-016-03, 04. Hallazgos: QA-2026-10-26-02 y 03.
   - Hecho cuando: los documentos vigentes indican `PrivacidadApp` y el CI pasa en la PR.
-- [ ] T-016-03 — Guía para programar la purga y los avisos.
+- [x] T-016-03 — Guía para programar la purga y los avisos.
   - RF: RF-016-05. Hallazgo: QA-2026-10-26-04.
   - Hecho cuando: `docs/OPERACION.md` existe, está enlazada y sus comandos se probaron contra la demo. La configuración del servidor real queda pendiente del propietario.
 
@@ -22,9 +22,10 @@ Estado: en implementación. Rama: `feature/016-correcciones-qa`, un commit por t
 | 2026-10-26 | T-016-01 | `web/requirements.in`, `requirements.txt`, `requirements-dev.in`, `requirements-dev.txt` (pip-tools 7.6.1, pip 26.2.1, entorno aparte); `docs/DEPENDENCIAS.md` | Cambian solo Pillow 12.3.0 → 13.0.0 y certifi 2026.7.22 → 2026.10.23; salen `black`, `cookiecutter`, `ruff`, `types-python-dateutil` y `pytokens` (dependencia de `black`). Entorno limpio con `--require-hashes`: `check` sin problemas y Django 235 OK. `pip-audit`: sin vulnerabilidades en ambos locks. `.venv` actualizado |
 | 2026-10-26 | T-016-02 | Comando con `PrivacidadApp` en `CLAUDE.md`, `AGENTS.md`, `README.md`, `docs/ENTORNO_Y_VERIFICACION.md`, `docs/CUIDADOSAPP_DESARROLLO.md`, `prompts/04-implementar.md`, `.claude/agents/qa-vigia.md` y la skill `validar-produccion-sdd`; nuevo `.github/workflows/ci.yml` (Django, Edge, Flutter y `pip-audit`) | Sin documentos vigentes con el comando antiguo (las líneas fechadas de `ENTORNO_Y_VERIFICACION.md` se conservan). El CI se comprueba en la PR |
 | 2026-10-26 | T-016-02 (corrección) | `.github/workflows/ci.yml` | La auditoría combinada de los tres archivos falló en local (pip no mezcla requisitos con y sin hashes), aunque el commit anterior la daba por probada. Ahora se audita un archivo por paso, incluido `requirements-dev.txt`; los cuatro se probaron en local sin vulnerabilidades |
+| 2026-10-26 | T-016-03 | `docs/OPERACION.md` (nueva), enlaces en `docs/CUIDADOSAPP_DESARROLLO.md` y `README.md` | Contra la demo: `purge_expired_data --dry-run` informa cantidades sin borrar; `send_mobile_reminders` termina con «VIGIA_PUSH_ENABLED está desactivado»; el comando para ver la última purga responde `None` (nunca hubo una purga real). Hallado: `VIGIA_PUSH_ENABLED` no se define en ninguna configuración ni se lee del entorno. Pendiente del propietario: configurar las tareas en el servidor real |
 
 ## Reanudación
-2026-10-26: spec, plan y tareas creados; implementación en curso.
+2026-10-26: T-016-01..03 hechas. Siguiente paso: comprobar el CI en la PR y fusionar con autorización. Pendientes del propietario: tareas en el servidor y activación de `VIGIA_PUSH_ENABLED`.
 
 ## Aceptación del usuario
 Pendiente.

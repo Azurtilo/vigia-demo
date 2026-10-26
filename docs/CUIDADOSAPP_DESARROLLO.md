@@ -41,6 +41,6 @@ El dueño de un paciente es su titular. Desde la ficha («Personas con acceso»)
 - **Política.** Cada cuenta acepta la política vigente (`PRIVACY_POLICY_VERSION`) antes de usar el portal o la API.
 - **Consentimiento.** Cada paciente necesita un consentimiento registrado por el titular: del propio paciente o de un representante, con alcance «cuidado» (registros) o «detección» (cámara). Sin consentimiento, la ficha se ve pero no acepta datos nuevos y el nodo se detiene.
 - **Datos del titular.** El titular descarga los datos del paciente o lo elimina desde la ficha; cada persona descarga sus datos o elimina su cuenta desde el perfil. Archivar es la vía reversible.
-- **Purga.** `manage.py purge_expired_data [--dry-run]` aplica los plazos de D-064 y conviene programarla a diario en el servidor.
+- **Purga.** `manage.py purge_expired_data [--dry-run]` aplica los plazos de D-064 y debe programarse a diario en el servidor: ver [OPERACION.md](OPERACION.md).
 - **Política provisoria.** El texto en `/privacidad/` es un borrador pendiente de revisión legal (D-067).
 - **Pruebas.** `core.test_settings` desactiva las reglas (`PRIVACY_ENFORCED = False`) para las suites anteriores; `PrivacidadApp/tests.py` las activa.
