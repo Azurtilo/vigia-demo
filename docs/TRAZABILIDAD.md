@@ -330,3 +330,7 @@ RF-014-01..13 con prueba automática en `web/PrivacidadApp/tests.py` (16 pruebas
 | Marca VIGIA | 06 | 06 | Navegador claro/oscuro |
 | D-068: iOS en el alcance | 08–13 | 08–12 | Build de simulador, iPhone físico, avisos, cámara y push según P-015-01 |
 | RNF «sin video a la nube» en iOS | 12 | 10 | Observación `platform: "ios"` sin imagen |
+
+### 015 — Evidencia ejecutada, 2026-10-26
+
+RF-015-01: suites Django 235, Edge 22 y Flutter 43 OK y `git diff` sin archivos de la lista B. RF-015-02: `mobile/test/home_redesign_test.dart` (2) e `interface_details_test.dart`. RF-015-03: `web/CuidadosApp/test_mobile.py` (catálogo y 401 sin sesión). RF-015-04: `mobile/test/subscription_test.dart` (2). RF-015-05: `web/CuidadosApp/test_mobile_demo.py` (3) y el script ejecutado en Git Bash. RF-015-06: `web/homeApp/test_marca.py` (3); falta la revisión en navegador. RF-015-07..13 sin evidencia todavía. Detalle en [tasks.md](../specs/015-integracion-unificado/tasks.md#ejecución).
