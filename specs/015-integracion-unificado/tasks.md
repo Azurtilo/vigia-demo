@@ -10,7 +10,7 @@ No ejecutar tareas de código por el hecho de aparecer aquí. Rama prevista: `fe
   - RF: RF-015-01. Componente: repositorio.
   - Depende de: autorización y P-015-04.
   - Hecho cuando: existe la rama desde `develop`, el remoto `unificado` está descargado y las tres suites pasan sin cambios como línea base registrada.
-- [ ] T-015-02 — Catálogo de planes en la API (A7).
+- [x] T-015-02 — Catálogo de planes en la API (A7).
   - RF: RF-015-03. Componente: web.
   - Depende de: T-015-01.
   - Archivos previstos: `web/PlanesApp/entitlements.py`, `web/CuidadosApp/api/views.py`, `web/CuidadosApp/test_mobile.py`.
@@ -79,6 +79,7 @@ No ejecutar tareas de código por el hecho de aparecer aquí. Rama prevista: `fe
 | Fecha | Tarea | Archivos / comando | Resultado / pendiente |
 |---|---|---|---|
 | 2026-10-26 | T-015-01 | Rama `feature/015-integracion-unificado` (sobre `docs/015-integracion-unificado`, que parte de `develop` `ab9eab8`); `git remote add unificado` + `git fetch unificado` (`unificado/main` = `b4368e3`) | Línea base: `check` y `makemigrations --check` sin cambios; Django 227 OK (con PrivacidadApp); Edge 22 OK; `flutter analyze` sin problemas; Flutter 39 OK |
+| 2026-10-26 | T-015-02 | `web/PlanesApp/entitlements.py` (`mobile_catalog`, `mobile_capabilities`), `web/CuidadosApp/api/views.py`, `web/CuidadosApp/test_mobile.py` | Prueba portada del catálogo y nueva de 401 sin sesión; `manage.py test CuidadosApp.test_mobile PlanesApp`: 65 OK |
 
 ## Reanudación
 2026-10-26: spec, plan y tareas creados en fase DOCUMENTAR. Spec, plan y tareas en la rama `docs/015-integracion-unificado` (`a02a9cd`), sin código.

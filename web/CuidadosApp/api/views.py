@@ -12,7 +12,7 @@ from CuidadosApp.models import (
     Patient,
     PostureTimer,
 )
-from PlanesApp.entitlements import capabilities
+from PlanesApp.entitlements import capabilities, mobile_capabilities
 from PrivacidadApp.names import author_name
 
 from .base import MobileView
@@ -89,7 +89,7 @@ class MeView(MobileView):
             {
                 "username": request.user.username,
                 "name": request.user.get_full_name() or request.user.username,
-                "capabilities": capabilities(request.user),
+                "capabilities": mobile_capabilities(request.user),
                 "server_time": timezone.now(),
                 "timezone": "America/Santiago",
             }
@@ -98,7 +98,7 @@ class MeView(MobileView):
 
 class CapabilitiesView(MobileView):
     def get(self, request):
-        return JsonResponse(capabilities(request.user))
+        return JsonResponse(mobile_capabilities(request.user))
 
 
 class PatientsView(MobileView):
