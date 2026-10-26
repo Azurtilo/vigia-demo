@@ -1,12 +1,12 @@
 # Tareas — 015 / Integración de `vigia-unificado` e iOS
 
 Spec: [spec.md](spec.md). Plan: [plan.md](plan.md).
-Estado: propuestas. Implementación autorizada: NO.
+Estado: en implementación. Implementación autorizada: T-015-01..06 (2026-10-26); T-015-07 pendiente.
 No ejecutar tareas de código por el hecho de aparecer aquí. Rama prevista: `feature/015-integracion-unificado`, un commit por tarea (D-059).
 
 ## Integración (Windows)
 
-- [ ] T-015-01 — Preparar la rama y el remoto de solo lectura.
+- [x] T-015-01 — Preparar la rama y el remoto de solo lectura.
   - RF: RF-015-01. Componente: repositorio.
   - Depende de: autorización y P-015-04.
   - Hecho cuando: existe la rama desde `develop`, el remoto `unificado` está descargado y las tres suites pasan sin cambios como línea base registrada.
@@ -73,11 +73,12 @@ No ejecutar tareas de código por el hecho de aparecer aquí. Rama prevista: `fe
   - Hecho cuando: los resultados reales están en `validation.md` y la trazabilidad, el estado y el índice están actualizados; se quita el remoto `unificado`; queda la PR hacia `develop` sin fusionar.
 
 ## Autorización posterior
-Pendiente. Registrar mensaje, fecha y tareas autorizadas solo cuando ocurra. No confundir aprobación de requisitos con autorización de producción ni de publicación en tiendas.
+2026-10-26: «P-015-02 sandra compila iOS, y autorizo para T-015-01..06. la 07 dejala en pendiente». Autorizadas T-015-01..06; T-015-07 queda pendiente; T-015-08..13 sin autorizar. Sin merge, despliegue ni migración real. No confundir aprobación de requisitos con autorización de producción ni de publicación en tiendas.
 
 ## Ejecución
 | Fecha | Tarea | Archivos / comando | Resultado / pendiente |
 |---|---|---|---|
+| 2026-10-26 | T-015-01 | Rama `feature/015-integracion-unificado` (sobre `docs/015-integracion-unificado`, que parte de `develop` `ab9eab8`); `git remote add unificado` + `git fetch unificado` (`unificado/main` = `b4368e3`) | Línea base: `check` y `makemigrations --check` sin cambios; Django 227 OK (con PrivacidadApp); Edge 22 OK; `flutter analyze` sin problemas; Flutter 39 OK |
 
 ## Reanudación
 2026-10-26: spec, plan y tareas creados en fase DOCUMENTAR. Spec, plan y tareas en la rama `docs/015-integracion-unificado` (`a02a9cd`), sin código.
