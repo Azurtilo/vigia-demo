@@ -100,7 +100,7 @@ No ejecutar tareas de código por el hecho de aparecer aquí. Rama prevista: `fe
 ## Reanudación
 2026-10-26: spec, plan y tareas creados en fase DOCUMENTAR. Spec, plan y tareas en la rama `docs/015-integracion-unificado` (`a02a9cd`), sin código.
 2026-10-26: revisión con el propietario. Lista A completa y nada de la B; P-015-01 = A (D-069), P-015-03 = adoptar (D-070), P-015-04 = sí (D-071). Siguiente paso: P-015-02 (equipo macOS, bloquea T-015-08..11) y autorización explícita de implementación de T-015-01..07.
-2026-10-26: P-015-02 = Sandra (D-072). Implementadas en `feature/015-integracion-unificado` T-015-01..06 (T-015-06 revisada en navegador). Suites finales: Django 235, Edge 22 y Flutter 43 OK; `flutter analyze` sin problemas; `git diff` sin archivos de la lista B. T-015-07 hecha en el teléfono (ver [validation.md](validation.md)). Los dos hallazgos se corrigieron en T-015-14. Pendientes: T-015-08..11 (iOS, Sandra en macOS) y T-015-12..13 sin autorizar. El remoto `unificado` sigue configurado hasta T-015-13. Sin PR ni merge.
+2026-10-26: P-015-02 = Sandra (D-072). Implementadas en `feature/015-integracion-unificado` T-015-01..06 (T-015-06 revisada en navegador). Suites finales: Django 235, Edge 22 y Flutter 43 OK; `flutter analyze` sin problemas; `git diff` sin archivos de la lista B. T-015-07 hecha en el teléfono (ver [validation.md](validation.md)). Los dos hallazgos se corrigieron en T-015-14. Pendientes: T-015-08..11 (iOS, Sandra en macOS) y T-015-12..13 sin autorizar. El remoto `unificado` sigue configurado hasta T-015-13. [PR #8](https://github.com/Azurtilo/vigia-demo/pull/8) abierta hacia `develop`, sin merge.
 
 ## Aceptación del usuario
 Pendiente; no marcarla automáticamente después de ejecutar tests.

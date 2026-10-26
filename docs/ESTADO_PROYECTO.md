@@ -30,7 +30,8 @@ Trabajo futuro registrado (no comprometido): invitación por correo (D-050), tra
 - **Implementación.** P-015-02: Sandra compila iOS (D-072). Autorizadas T-015-01..06; T-015-07 queda pendiente. En `feature/015-integracion-unificado`: catálogo de planes en la API, panel de plan, rediseño de la app con roles (013) y privacidad (014), descarga estable del APK (`mobile/tool/build_android.sh`) y marca VIGIA en el portal. Django 235, Edge 22 y Flutter 43 OK.
 - **Android físico (T-015-07).** Recorrido completo en el ELI NX9: login, HU-03, HU-04, aviso con pantalla bloqueada, panel de plan, cierre de sesión, rol cuidador y puerta de privacidad, todo OK ([validation.md](../specs/015-integracion-unificado/validation.md)). Los dos hallazgos de interfaz («Registrar medicamento» cortaba la palabra y al cambiar de pestaña se conservaba la posición de desplazamiento) se corrigieron en T-015-14 y se repitieron en el teléfono. Flutter 45 OK.
 - **No comprobado.** iOS. La marca se revisó en navegador (claro y oscuro) el 2026-10-26.
-- **Siguiente paso seguro.** Abrir la PR hacia `develop` (sin merge). Las tareas iOS (T-015-08..11) quedan para Sandra en macOS, con autorización aparte.
+- **PR.** [PR #8](https://github.com/Azurtilo/vigia-demo/pull/8) hacia `develop`, abierta el 2026-10-26, sin fusionar.
+- **Siguiente paso seguro.** Revisar y fusionar la PR #8 (requiere autorización explícita). iOS (T-015-08..11) queda para Sandra en macOS. Las tareas iOS (T-015-08..11) quedan para Sandra en macOS, con autorización aparte.
 
 ## Antecedente — PR #5 y #6 fusionadas, 2026-10-25
 
