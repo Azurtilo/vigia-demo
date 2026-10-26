@@ -26,7 +26,7 @@ Estado: en implementación. Rama: `feature/016-correcciones-qa`, un commit por t
 | 2026-10-26 | T-016-02 (CI en GitHub) | [Ejecución 40415661262](https://github.com/Azurtilo/vigia-demo/actions/runs/40415661262) en la [PR #11](https://github.com/Azurtilo/vigia-demo/pull/11) | Los cuatro trabajos pasan: Django 235 pruebas (35 s), Edge 22 (16 s), Flutter `analyze` sin problemas y 46 pruebas (1 m 44 s), `pip-audit` sin vulnerabilidades en los cuatro archivos (47 s). El push necesitó agregar el permiso `workflow` a la credencial de `gh` |
 
 ## Reanudación
-2026-10-26: T-016-01..03 hechas y CI verde en la PR #11. Siguiente paso: fusionar con autorización. Pendientes del propietario: tareas en el servidor y activación de `VIGIA_PUSH_ENABLED`.
+2026-10-26: T-016-01..03 hechas y CI verde en la PR #11. Fusión autorizada: «fusiona 10 y 11 y registra los demas en pendientes». Pendientes registrados en `ESTADO_PROYECTO.md` (14–16). Pendientes del propietario: tareas en el servidor y activación de `VIGIA_PUSH_ENABLED`.
 
 ## Aceptación del usuario
 Pendiente.

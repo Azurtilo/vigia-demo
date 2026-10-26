@@ -2,7 +2,7 @@
 
 Fecha: 2026-10-26.
 
-## Pendientes abiertos — consolidado al 2026-10-25
+## Pendientes abiertos — consolidado al 2026-10-26
 
 Lista única de lo que falta. El detalle vive en cada spec y en DECISIONES. «Propietario» indica que requiere dispositivo, cuenta externa, voluntarios o una decisión suya.
 
@@ -14,13 +14,17 @@ Lista única de lo que falta. El detalle vive en cada spec y en DECISIONES. «Pr
 | 4 | Protocolo de caídas con voluntarios (20 caídas y 40 actividades normales), `bench.py` con ese video (p50/p95) y ajuste de umbrales | D-053, `edge/README.md` | Propietario + equipo |
 | 5 | Revisión legal del texto de la política antes de usar datos reales | D-067, `/privacidad/` | Propietario |
 | 6 | Política de sesiones de D-056 (vencimiento, cierre de sesión remoto, revocación de nodos desde el portal web): aprobada, sin spec ni código | D-056 | Equipo (DOCUMENTAR) |
-| 7 | Hallazgos QA sin abordar: QA-07 (confirmar con prueba que la inmovilidad se reintenta), QA-12/13 (refactor de validación duplicada y funciones largas), QA-17 (límite de tasa en `/api/v1/edge/*`), QA-18 (HSTS al tener dominio con HTTPS), QA-20 (IDs de decisiones ambiguos) | `docs/QA_2026-10-22.md` | Equipo |
+| 7 | Hallazgos de la QA del 2026-10-22 sin abordar: QA-12/13 (refactor de validación duplicada y funciones largas), QA-17 (límite de tasa en `/api/v1/edge/*`), QA-18 (HSTS al tener dominio con HTTPS), QA-20 (IDs de decisiones ambiguos). QA-07 se corrigió el 2026-10-22 (ver [QA_2026-10-26.md](QA_2026-10-26.md), sección 7) | `docs/QA_2026-10-22.md` | Equipo |
 | 8 | Aplicar las migraciones (CuidadosApp 0008/0009, PrivacidadApp 0001) en una base real, con respaldo y autorización | — | Propietario |
 | 9 | RNF de disponibilidad ≥ 99,5 %: declarado objetivo de diseño no medido; describir la arquitectura necesaria en el informe | D-060 | Equipo (informe) |
 | 10 | ~~Decidir si `.claude/skills/` se versiona~~ Versionada con ajustes ([PR #6](https://github.com/Azurtilo/vigia-demo/pull/6), `1f620a6`) | — | Hecho |
 | 11 | ~~Revisar y fusionar la [PR #5](https://github.com/Azurtilo/vigia-demo/pull/5)~~ Detalles de interfaz fusionados en `develop` (`f71d1be`) | — | Hecho |
 | 12 | ~~Revisar y fusionar la [PR #8](https://github.com/Azurtilo/vigia-demo/pull/8)~~ Spec 015 fusionada en `develop` el 2026-10-26 (`8d2be54`) | — | Hecho |
 | 13 | iOS: dependencias y build de simulador, iPhone físico, avisos locales y cámara (T-015-08..10); mensaje de push no disponible (T-015-11, D-069) | spec 015 | Sandra (macOS), con autorización aparte |
+| 14 | Programar en el servidor real `purge_expired_data` (diaria) y `send_mobile_reminders` (cada 5 min, propuesta; cadencia definitiva en P-012-01) y comprobar que corren | [OPERACION.md](OPERACION.md), QA-2026-10-26-04 | Propietario |
+| 15 | Decidir cómo se activa `VIGIA_PUSH_ENABLED` en producción: hoy no se define en ninguna configuración ni se lee del entorno, así que los avisos no pueden encenderse. Requiere un cambio de configuración con spec | `send_mobile_reminders`, `push.py`, D-054 | Propietario (decisión) + equipo |
+| 16 | Hallazgos de la QA del 2026-10-26 sin abordar: 07 (lock con hashes del Edge), 09 (contraseña demo en `MOVIL_DESARROLLO.md`), 10 (prueba de la API con la puerta de privacidad activa), 11 (logo con poco contraste en modo oscuro), 12 (dependencias de Flutter con versiones mayores), 13 (conteos repetidos en este estado). El 05 (push real y RNF) sigue en los pendientes 3, 4 y 9 | [QA_2026-10-26.md](QA_2026-10-26.md) | Equipo |
+| 17 | ~~Revisión de calidad y correcciones 01–04, 06 y 08~~ PR #10 (informe) y PR #11 (spec 016) fusionadas el 2026-10-26 | spec 016 | Hecho |
 
 Trabajo futuro registrado (no comprometido): invitación por correo (D-050), traspaso de titularidad, papelera de pacientes con «deshacer» (D-067), cifrado en reposo y PostgreSQL (014), registro de lecturas, push inmediato de inmovilidad (D-051). iOS pasó al alcance el 2026-10-26 (D-068, spec 015).
 
@@ -34,7 +38,8 @@ Trabajo futuro registrado (no comprometido): invitación por correo (D-050), tra
   - guía [OPERACION.md](OPERACION.md) para programar la purga y los avisos.
 - **Hallado de paso.** `VIGIA_PUSH_ENABLED` no está definido en la configuración ni se lee del entorno: en producción los avisos no pueden activarse sin decidir cómo se configura.
 - **CI.** Verde en la [PR #11](https://github.com/Azurtilo/vigia-demo/pull/11): Django 235, Edge 22, Flutter 46, `pip-audit` sin vulnerabilidades.
-- **Siguiente paso seguro.** Fusionar las PR #10 y #11 con autorización. Pendiente del propietario: programar las tareas en el servidor (OPERACION.md) y decidir la activación del push.
+- **PR.** [PR #10](https://github.com/Azurtilo/vigia-demo/pull/10) y [PR #11](https://github.com/Azurtilo/vigia-demo/pull/11) fusionadas en `develop` el 2026-10-26 por pedido del propietario («fusiona 10 y 11 y registra los demas en pendientes»).
+- **Siguiente paso seguro.** Pendientes 14 y 15 (servidor y activación del push) y 16 (hallazgos menores de la QA). Pendiente del propietario: programar las tareas en el servidor (OPERACION.md) y decidir la activación del push.
 
 ## Antecedente — spec 015 fusionada, 2026-10-26
 
