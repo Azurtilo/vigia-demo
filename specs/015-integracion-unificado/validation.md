@@ -9,7 +9,7 @@ Rama: `feature/015-integracion-unificado`. El detalle de cada tarea está en la 
 |---|---|---|
 | Django (`UsuarioApp homeApp PlanesApp CuidadosApp PrivacidadApp`) | 227 OK | 235 OK |
 | Edge | 22 OK | 22 OK |
-| Flutter | 39 OK | 43 OK; `flutter analyze` sin problemas |
+| Flutter | 39 OK | 45 OK (43 tras T-015-04..06 y 2 más en T-015-14); `flutter analyze` sin problemas |
 
 `git diff` contra `develop` sin archivos de la lista B (RF-015-01).
 
@@ -33,10 +33,12 @@ Teléfono ELI NX9, Android 16, por USB. APK debug de `feature/015-integracion-un
 | Rol cuidador (`demo_free`): tarjeta «Paciente activo · Cuidador»; Rosa no cuenta en su cupo («1 activos · VIGIA Free»); la ficha dice «Accedes como cuidador», sin Historial, Monitoreo, edición ni gestión de accesos, y ofrece «Dejar de acompañar» | 02 | OK |
 | Privacidad: cuenta ficticia temporal sin la política aceptada. Solo se ve el aviso «Acepta la política de privacidad», con «Cerrar sesión» debajo, que funciona. La cuenta se eliminó al terminar | 02 | OK |
 
-Hallazgos de interfaz (no corregidos; para decidir):
+Hallazgos de interfaz (**corregidos en T-015-14**, ver abajo):
 
 - En el inicio, la acción rápida «Registrar medicamento» corta la palabra en dos líneas («medicament / o») con la letra al 100 %.
 - Al cambiar de pestaña se conserva la posición de desplazamiento de la anterior: Posturas se abrió más abajo, con el título cortado.
+
+**T-015-14, mismo día.** La acción rápida reduce el texto en vez de cortar la palabra, y cada pestaña guarda su propia posición de desplazamiento. Dos pruebas nuevas en `mobile/test/home_redesign_test.dart` (fallan sin la corrección). Flutter 45 OK. Repetido en el teléfono: «Registrar medicamento» ocupa dos líneas enteras y, tras bajar en Inicio, Posturas abre desde arriba con su título.
 
 No comprobado en el teléfono: consentimiento por paciente (D-066), rol familiar, plan Free/Plus en el panel, servidor por la red local y reinicio del teléfono.
 

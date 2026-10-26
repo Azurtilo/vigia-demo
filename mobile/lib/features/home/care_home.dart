@@ -217,6 +217,9 @@ class _CareHomeState extends State<CareHome> with WidgetsBindingObserver {
         child: RefreshIndicator(
           onRefresh: reload,
           child: ListView(
+            // T-015-14: each tab keeps its own scroll offset, so a tab opens
+            // at its top instead of where the previous one was left.
+            key: PageStorageKey<String>('care-tab-$selected'),
             padding: const EdgeInsets.fromLTRB(24, 22, 24, 32),
             // T-014-12: nothing else loads until the policy is accepted.
             children: needsConsent

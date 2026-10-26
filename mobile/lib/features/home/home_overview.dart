@@ -168,13 +168,19 @@ class HomeOverview extends StatelessWidget {
                 child: Icon(icon, color: VigiaColors.brand, size: 21),
               ),
               const SizedBox(width: 10),
+              // T-015-14: on a ~369 dp phone «medicamento» did not fit and was
+              // split mid-word; shrinking keeps the two intended lines.
               Expanded(
-                child: Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    height: 1.4,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      height: 1.4,
+                    ),
                   ),
                 ),
               ),

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -133,5 +134,90 @@ void main() {
     expect(find.text('Cerrar sesión'), findsOneWidget);
     expect(find.text('ACCIONES RÁPIDAS'), findsNothing);
     expect(tester.takeException(), isNull);
+  });
+
+  group('T-015-14 details found on the phone', () {
+    MockClient busyAgenda() => MockClient((r) async {
+      final path = r.url.path;
+      if (path.endsWith('/me')) {
+        return json({
+          'name': 'Cuenta demo',
+          'capabilities': {'plan': 'pro', 'name': 'VIGIA Premium'},
+        });
+      }
+      if (path.endsWith('/patients')) {
+        return json({
+          'patients': [
+            {'id': 1, 'name': 'Rosa Demo', 'active': true, 'role': 'titular'},
+          ],
+          'capacity': {'pending': false, 'count': 1, 'limit': null},
+        });
+      }
+      return json({
+        'items': [
+          for (var i = 0; i < 8; i++)
+            {
+              'id': 'm$i',
+              'patient_id': 1,
+              'patient': 'Rosa Demo',
+              'kind': 'medication',
+              'label': 'Medicación $i',
+              'dose': '',
+              'status': 'pending',
+              'overdue': false,
+              'due': DateTime.now().toIso8601String(),
+            },
+        ],
+      });
+    });
+
+    testWidgets('Quick action labels keep whole words', (tester) async {
+      await openHome(tester, busyAgenda());
+      for (final label in [
+        'Registrar\nmedicamento',
+        'Registrar\npaciente',
+        'Unirme con\nun código',
+        'Analizar\npostura IA',
+      ]) {
+        final paragraph = tester.renderObject<RenderParagraph>(
+          find.text(label),
+        );
+        final tops = paragraph
+            .getBoxesForSelection(
+              TextSelection(baseOffset: 0, extentOffset: label.length),
+            )
+            .map((box) => box.top.round())
+            .toSet();
+        expect(tops.length, 2, reason: label);
+      }
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('A tab opens at its top, not where the last one was left', (
+      tester,
+    ) async {
+      await openHome(tester, busyAgenda());
+      final list = find.byType(Scrollable).first;
+      await tester.drag(list, const Offset(0, -1500));
+      await tester.pumpAndSettle();
+      expect(
+        tester.state<ScrollableState>(list).position.pixels,
+        greaterThan(0),
+      );
+      await tester.tap(find.text('Posturas'));
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .state<ScrollableState>(find.byType(Scrollable).first)
+            .position
+            .pixels,
+        0,
+      );
+      expect(find.text('Posturas y cuidados'), findsOneWidget);
+      expect(
+        tester.getTopLeft(find.text('Posturas y cuidados')).dy,
+        greaterThan(0),
+      );
+    });
   });
 }

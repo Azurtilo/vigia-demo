@@ -60,6 +60,14 @@ No ejecutar tareas de código por el hecho de aparecer aquí. Rama prevista: `fe
   - Depende de: T-015-09 y P-015-01.
   - Hecho cuando: con la opción B, una caída simulada produce un push en el iPhone con el texto genérico y el tiempo queda medido; con la opción A, la app muestra que el push no está disponible y la limitación queda registrada.
 
+## Ajustes hallados en Android, 2026-10-26
+
+- [x] T-015-14 — Detalles de interfaz de T-015-07.
+  - RF: RF-015-02. Componente: mobile.
+  - Origen: prueba en Android físico (T-015-07). Autorización: «corrige los detalles faltantes» (2026-10-26).
+  - Archivos: `mobile/lib/features/home/home_overview.dart`, `mobile/lib/features/home/care_home.dart`, `mobile/test/home_redesign_test.dart`.
+  - Hecho cuando: las acciones rápidas no cortan palabras a ~360 dp y cada pestaña abre desde arriba; las pruebas nuevas fallan sin la corrección y pasan con ella; repetido en el teléfono.
+
 ## Cierre
 
 - [ ] T-015-12 — Documentación de alcance e instalación.
@@ -87,11 +95,12 @@ No ejecutar tareas de código por el hecho de aparecer aquí. Rama prevista: `fe
 | 2026-10-26 | T-015-06 | `web/static/img/vigia.svg`; `logo.svg` → `vigia.svg` en `base.html` (favicon), `base_simple.html`, `login.html`, `navbar_desktop.html` («VIGIA · Tu espacio de cuidado»), `catalogo.html` («VIGIA · Planes») y `mobile_demo_download.html`; título «· VIGIA»; prueba nueva `web/homeApp/test_marca.py` | Prueba Django: 3 OK (login, catálogo público, portal y descarga con `vigia.svg` y sin `logo.svg`). **Pendiente:** revisión en navegador en claro y oscuro, que no se pudo hacer en esta sesión |
 | 2026-10-26 | T-015-06 (navegador) | `runserver` con `core.mobile_demo_settings` (base desechable en `.mobile-demo/`, superusuario ficticio) y Chrome sin interfaz controlado por Playwright (entorno temporal fuera del repositorio); 1280×800 y 390×844 | Login, catálogo público, descarga y portal muestran `vigia.svg`; el favicon responde 200 en todas; título «· VIGIA». Portal revisado en claro y oscuro, en escritorio y móvil. Las páginas sin sesión se ven siempre en claro porque el modo oscuro es una preferencia de cada usuario. Observación: en oscuro el trazo `#5057a0` del logo tiene poco contraste con el fondo (≈2,3:1), pero se distingue; los logotipos están exentos del criterio de contraste. Se pide la confirmación visual del propietario |
 | 2026-10-26 | T-015-07 | ELI NX9, Android 16, APK debug por USB (`adb reverse`), cuentas `demo_premium` y `demo_free` y una cuenta temporal sin política | Login, HU-03, HU-04, aviso con pantalla bloqueada, error de conexión informado, panel de plan, cierre de sesión sin alarmas, rol cuidador y puerta de privacidad: OK. Dos hallazgos de interfaz sin corregir. Detalle en [validation.md](validation.md#android-físico--t-015-07-2026-10-26) |
+| 2026-10-26 | T-015-14 | `home_overview.dart` (el texto de la acción rápida se reduce en vez de cortar la palabra), `care_home.dart` (`PageStorageKey` por pestaña), 2 pruebas nuevas en `home_redesign_test.dart` | Las 2 pruebas fallan sin la corrección y pasan con ella. `flutter analyze` sin problemas; Flutter 45 OK. Repetido en el ELI NX9: «Registrar medicamento» en dos líneas enteras y Posturas abre desde arriba tras bajar en Inicio |
 
 ## Reanudación
 2026-10-26: spec, plan y tareas creados en fase DOCUMENTAR. Spec, plan y tareas en la rama `docs/015-integracion-unificado` (`a02a9cd`), sin código.
 2026-10-26: revisión con el propietario. Lista A completa y nada de la B; P-015-01 = A (D-069), P-015-03 = adoptar (D-070), P-015-04 = sí (D-071). Siguiente paso: P-015-02 (equipo macOS, bloquea T-015-08..11) y autorización explícita de implementación de T-015-01..07.
-2026-10-26: P-015-02 = Sandra (D-072). Implementadas en `feature/015-integracion-unificado` T-015-01..06 (T-015-06 revisada en navegador). Suites finales: Django 235, Edge 22 y Flutter 43 OK; `flutter analyze` sin problemas; `git diff` sin archivos de la lista B. T-015-07 hecha en el teléfono (ver [validation.md](validation.md)). Pendientes: dos hallazgos de interfaz por decidir; T-015-08..11 (iOS, Sandra en macOS) y T-015-12..13 sin autorizar. El remoto `unificado` sigue configurado hasta T-015-13. Sin PR ni merge.
+2026-10-26: P-015-02 = Sandra (D-072). Implementadas en `feature/015-integracion-unificado` T-015-01..06 (T-015-06 revisada en navegador). Suites finales: Django 235, Edge 22 y Flutter 43 OK; `flutter analyze` sin problemas; `git diff` sin archivos de la lista B. T-015-07 hecha en el teléfono (ver [validation.md](validation.md)). Los dos hallazgos se corrigieron en T-015-14. Pendientes: T-015-08..11 (iOS, Sandra en macOS) y T-015-12..13 sin autorizar. El remoto `unificado` sigue configurado hasta T-015-13. Sin PR ni merge.
 
 ## Aceptación del usuario
 Pendiente; no marcarla automáticamente después de ejecutar tests.
