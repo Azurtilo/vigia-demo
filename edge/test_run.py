@@ -8,7 +8,9 @@ from datetime import datetime, timedelta, timezone
 
 import requests
 
+from edge import monitoring
 from edge.bed import BedZone
+from edge.monitoring import Camera, MonitorConfig, MonitorStatus
 from edge.posture import LABELS
 from edge.run import (
     LEASE_SECONDS,
@@ -18,8 +20,9 @@ from edge.run import (
     Uplink,
     args_parser,
     bed_from_args,
+    monitor_config_from_args,
 )
-from edge.test_fall import BED, FALL, FPS, SLIDE, STILL, body, sequence
+from edge.test_fall import BED, FALL, FLOOR_OUT, FPS, SLIDE, STILL, UP_OUT, body, sequence
 
 # Far from any synthetic body: the classifier answers "indeterminada".
 REFERENCES = {label: [float(10 + i)] * 24 for i, label in enumerate(LABELS)}
@@ -284,6 +287,156 @@ class BedMonitorTests(unittest.TestCase):
         self.assertIsNone(zone)
         self.assertEqual(config.lying_seconds, 5.0)
         self.assertIsInstance(BED, BedZone)
+
+
+def states(status, frames):
+    """frames: (now, person, brightness), or (now, None) for a tick; returns changes."""
+    out = []
+    for now, person, *light in frames:
+        if person is None:
+            changed = status.tick(now)
+        else:
+            changed = status.frame(now, person, light[0] if light else None)
+        if changed:
+            out.append((round(now, 2), changed))
+    return out
+
+
+def every(start, end, person, light=None):
+    return [(start + k / FPS, person, light) for k in range(round((end - start) * FPS))]
+
+
+class MonitorStatusTests(unittest.TestCase):
+    """Spec 017: the node says when it cannot watch, instead of failing silently."""
+
+    def test_person_lost_after_being_seen_and_back(self):
+        frames = every(0, 2, True) + every(2, 14, False) + every(14, 15, True)
+        changes = states(MonitorStatus(), frames)
+        self.assertEqual([s for _, s in changes], ["persona_no_visible", "normal"])
+        self.assertAlmostEqual(changes[0][0], 2 - 1 / FPS + 10, delta=0.05)
+
+    def test_never_seen_is_not_lost(self):
+        self.assertEqual(states(MonitorStatus(), every(0, 60, False)), [])
+
+    def test_no_image_while_frames_stop_and_recovery(self):
+        frames = every(0, 2, True) + [(2 + k * 0.2, None) for k in range(60)]
+        frames += every(14.5, 15, True)
+        changes = states(MonitorStatus(), frames)
+        self.assertEqual([s for _, s in changes], ["sin_imagen", "normal"])
+        self.assertAlmostEqual(changes[0][0], 2 - 1 / FPS + 10, delta=0.25)
+
+    def test_no_frame_at_all_from_start(self):
+        self.assertEqual(states(MonitorStatus(), [(t, None) for t in range(12)]),
+                         [(10, "sin_imagen")])
+
+    def test_low_light_with_hysteresis(self):
+        frames = every(0, 6, False, 0.05) + every(6, 12, False, 0.20)
+        self.assertEqual([s for _, s in states(MonitorStatus(), frames)], ["poca_luz", "normal"])
+        # Oscillating around the minimum never switches from normal...
+        wobble = [(k / FPS, False, 0.11 if k % 2 else 0.13) for k in range(20 * FPS)]
+        self.assertEqual(states(MonitorStatus(), wobble), [])
+        # ...and, once dark, 0.13 is not enough light to recover (needs 0.156).
+        status = MonitorStatus()
+        states(status, every(0, 6, False, 0.05))
+        self.assertEqual(states(status, every(6, 20, False, 0.13)), [])
+        self.assertEqual(status.state, "poca_luz")
+
+    def test_priority_no_image_then_low_light_then_lost(self):
+        status = MonitorStatus()
+        states(status, every(0, 1, True, 0.5))
+        changes = states(status, every(1, 13, False, 0.05))
+        self.assertEqual([s for _, s in changes], ["poca_luz"])  # lost is hidden by it
+        changes = states(status, [(13 + k, None) for k in range(12)])
+        self.assertEqual([s for _, s in changes], ["sin_imagen"])
+
+    def test_config_validation(self):
+        for bad in ({"lost_seconds": 0}, {"min_brightness": 0.9}, {"no_image_seconds": True}):
+            with self.subTest(bad), self.assertRaises((ValueError, TypeError)):
+                MonitorConfig(**bad)
+        args = args_parser().parse_args(["--references", "r", "--monitor-lost-seconds", "20"])
+        self.assertEqual(monitor_config_from_args(args).lost_seconds, 20)
+        with self.assertRaises(SystemExit):
+            monitor_config_from_args(
+                args_parser().parse_args(["--references", "r", "--monitor-min-brightness", "2"])
+            )
+
+
+class FakeCapture:
+    def __init__(self, frames):
+        self.frames, self.released = frames, False
+
+    def read(self):
+        return (True, "cuadro") if self.frames.pop(0) else (False, None)
+
+    def release(self):
+        self.released = True
+
+
+class CameraTests(unittest.TestCase):
+    def test_live_camera_is_reopened_with_backoff_and_never_ends(self):
+        clock, opened = Clock(), []
+        # First capture: 2 frames then failure; three opens fail; the fifth works.
+        script = [[1, 1, 0], [0], [0], [0], [1] * 10]
+
+        def opener(source):
+            opened.append(round(clock(), 1))
+            return FakeCapture(script.pop(0))
+
+        camera = Camera(0, opener, clock)
+        got = []
+        for _ in range(400):
+            got.append(camera.read())
+            clock.t += 0.25  # exact in binary: no float drift
+            if len(opened) == 5 and got[-1]:
+                break
+        self.assertFalse(camera.ended)
+        self.assertEqual(got[:2], ["cuadro", "cuadro"])
+        self.assertEqual(got[-1], "cuadro")
+        # Failure at 0.5 s, then waits of 1, 2, 4 and 8 s before each reopening.
+        self.assertEqual(opened, [0.0, 1.5, 3.5, 7.5, 15.5])
+        self.assertEqual(camera.backoff, 1.0)  # reset once frames come back
+
+    def test_video_file_ends(self):
+        camera = Camera("video.mp4", lambda s: FakeCapture([1, 0]), Clock())
+        self.assertEqual(camera.read(), "cuadro")
+        self.assertIsNone(camera.read())
+        self.assertTrue(camera.ended)
+
+
+class MonitorStateTests(unittest.TestCase):
+    def monitor(self, zone=None):
+        uplink = Uplink("https://vigia.test", "token", session=Server())
+        return Monitor(REFERENCES, 3600, None, uplink, bed_zone=zone)
+
+    def test_two_people_in_view_are_not_lost(self):
+        monitor = self.monitor()
+        feed(monitor, sequence((1, STILL), start=UP_OUT))
+        for k in range(15 * FPS):
+            monitor.process([], [], 1 + k / FPS, 1.0, people=2)
+        self.assertEqual(monitor.status.state, "normal")
+        with self.assertLogs("vigia.edge", "WARNING") as logs:
+            for k in range(11 * FPS):
+                monitor.process([], [], 17 + k / FPS, 1.0, people=0)
+        self.assertEqual(monitor.status.state, "persona_no_visible")
+        self.assertIn("Estado de monitoreo: persona_no_visible", logs.output[-1])
+
+    def test_sheet_on_the_floor_counts_as_no_person(self):
+        monitor = self.monitor(zone=BED)
+        now = feed(monitor, sequence((1, STILL), start=UP_OUT))
+        # The person vanishes and a "lying" shape appears without a track.
+        feed(monitor, [None] * (2 * FPS) + sequence((12, STILL), start=FLOOR_OUT), now)
+        self.assertEqual(monitor.status.state, "persona_no_visible")
+        self.assertEqual(falls(monitor.uplink), [])
+
+    def test_lease_pause_is_not_a_blind_camera(self):
+        monitor = self.monitor()
+        now = feed(monitor, sequence((1, STILL), start=UP_OUT))
+        monitor.reset()  # what main() does when the lease is denied
+        monitor.tick(now + 20)
+        monitor.tick(now + 25)
+        self.assertEqual(monitor.status.state, "normal")
+        monitor.tick(now + 31)
+        self.assertEqual(monitor.status.state, monitoring.NO_IMAGE)
 
 
 if __name__ == "__main__":

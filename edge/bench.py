@@ -8,7 +8,7 @@ import argparse
 import json
 import time
 
-from . import bed
+from . import bed, monitoring
 from .fall import FallDetector, add_arguments, config_from_args
 from .metrics import LatencyStats
 from .run import DEFAULT_MODEL, as_dicts, bed_from_args
@@ -45,7 +45,7 @@ def bench_video(path, model, config, bed_zone=None, bed_config=None):
         min_tracking_confidence=0.7,
     )
     stats, events, fall = LatencyStats(), [], None
-    # Spec 017: cost of the rules added after inference, measured apart.
+    # Spec 017: brightness and bed rule cost after inference, measured apart.
     extra, bed_rule, bed_events = LatencyStats(), None, []
     frames = with_person = 0
     started = time.perf_counter()
@@ -76,6 +76,7 @@ def bench_video(path, model, config, bed_zone=None, bed_config=None):
                     {"impact_s": round(fall.impact_at, 2), "confirmed_s": round(now, 2)}
                 )
             t0 = time.perf_counter()
+            monitoring.frame_brightness(frame)
             if bed_rule and bed_rule.observe(landmarks, now) == "fall":
                 bed_events.append(
                     {"lying_s": round(bed_rule.lying_since, 2), "confirmed_s": round(now, 2)}
@@ -126,7 +127,7 @@ def main():
         if r["extra_rules"]:
             ex = r["extra_rules"]
             print(
-                f"  reglas añadidas (spec 017): promedio {ex['mean_ms']} ms, p95 {ex['p95_ms']} ms; "
+                f"  brillo y regla de cama (spec 017): promedio {ex['mean_ms']} ms, p95 {ex['p95_ms']} ms; "
                 f"caídas de cama {r['bed_falls']} {r['bed_events']}"
             )
     print(

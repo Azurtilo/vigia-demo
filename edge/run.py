@@ -12,7 +12,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from urllib.parse import urlparse
 
-from . import bed
+from . import bed, monitoring
 from .fall import FallDetector, add_arguments, config_from_args
 from .metrics import LatencyStats
 from .posture import CalibratedClassifier, ImmobilityRule, features
@@ -57,6 +57,7 @@ def args_parser():
     )
     add_arguments(p)
     bed.add_arguments(p)
+    monitoring.add_arguments(p)
     return p
 
 
@@ -67,6 +68,13 @@ def bed_from_args(a):
         return zone, bed.config_from_args(a)
     except (OSError, ValueError, TypeError) as exc:
         raise SystemExit(f"Configuración de cama inválida: {exc}")
+
+
+def monitor_config_from_args(a):
+    try:
+        return monitoring.config_from_args(a)
+    except (OSError, ValueError, TypeError) as exc:
+        raise SystemExit(f"Configuración del estado de monitoreo inválida: {exc}")
 
 
 def setup_logging(log_file=None):
@@ -254,14 +262,16 @@ class Monitor:
     With a bed zone (spec 017) a second fall rule runs beside the impact rule;
     a shared latch sends one fall per event until the person is back in bed or
     upright again. Without a bed zone the behaviour is that of spec 012.
+    The monitoring state (spec 017) says when the camera cannot really watch.
     """
 
     def __init__(self, references, immobility_seconds, fall_config, uplink,
                  wall_clock=lambda: datetime.now(timezone.utc),
-                 bed_zone=None, bed_config=None):
+                 bed_zone=None, bed_config=None, monitor_config=None):
         self.references, self.immobility_seconds = references, immobility_seconds
         self.fall_config, self.uplink, self.wall_clock = fall_config, uplink, wall_clock
         self.bed_zone, self.bed_config = bed_zone, bed_config
+        self.status = monitoring.MonitorStatus(monitor_config)
         self.reset()
 
     def reset(self):
@@ -270,6 +280,19 @@ class Monitor:
         self.fall = None  # created on the first frame, when its aspect ratio is known
         self.bed, self.bed_result, self.fall_latched = None, "", False
         self.last_posture, self.sent_at = None, None
+        # A lease pause is a deliberate stop, not a blind camera: start over.
+        self.status.reset()
+
+    def tick(self, now):
+        """No frame this time (camera lost); keeps the monitoring state current."""
+        self.state_changed(self.status.tick(now))
+
+    def state_changed(self, state):
+        if state is None:
+            return
+        (log.info if state == monitoring.NORMAL else log.warning)(
+            "Estado de monitoreo: %s", state
+        )
 
     def send_fall(self, rule_version, started, posture, confidence, now):
         confirmed = self.wall_clock()
@@ -296,7 +319,9 @@ class Monitor:
             "risk": risk,
         }
 
-    def process(self, landmarks, image_landmarks, now, frame_aspect):
+    def process(self, landmarks, image_landmarks, now, frame_aspect,
+                brightness=None, people=None):
+        """`people`: persons detected (the rules only run with exactly one)."""
         if self.fall is None:
             self.fall = FallDetector(self.fall_config, frame_aspect)
             if self.bed_zone:
@@ -318,6 +343,14 @@ class Monitor:
                 continue
             self.fall_latched = self.bed is not None
             self.send_fall(rule_version, started, posture, confidence, now)
+        if people is None:
+            people = 1 if image_landmarks else 0
+        if self.bed:
+            usable = self.bed_result != "no_person"
+        else:
+            usable = bed.body_reference(image_landmarks, frame_aspect) is not None
+        # Two people in view: someone is there (often the caregiver), not "lost".
+        self.state_changed(self.status.frame(now, people >= 2 or usable, brightness))
         if (
             posture != self.last_posture
             or risk
@@ -386,6 +419,7 @@ def main():
     except (OSError, ValueError, TypeError) as exc:
         raise SystemExit(f"Configuración de caídas inválida: {exc}")
     bed_zone, bed_config = bed_from_args(a)
+    monitor_config = monitor_config_from_args(a)
     import cv2
     import mediapipe as mp
     from mediapipe.tasks import python
@@ -400,7 +434,7 @@ def main():
     uplink = None if a.calibrate else Uplink(a.server, token)
     monitor = None if a.calibrate else Monitor(
         references, a.immobility_minutes * 60, fall_config, uplink,
-        bed_zone=bed_zone, bed_config=bed_config,
+        bed_zone=bed_zone, bed_config=bed_config, monitor_config=monitor_config,
     )
     source = int(a.camera) if a.camera.isdigit() else a.camera
     options = vision.PoseLandmarkerOptions(
@@ -413,7 +447,7 @@ def main():
     )
     samples, paused = [], False
     stats, metrics_since = LatencyStats(), time.monotonic()
-    capture = None
+    camera = None
     if uplink:
         uplink.start()
     try:
@@ -422,9 +456,9 @@ def main():
                 now = time.monotonic()
                 if uplink and not uplink.lease_active(now):
                     # Fail closed; pending observations stay queued for later.
-                    if capture:
-                        capture.release()
-                        capture = None
+                    if camera:
+                        camera.release()
+                        camera = None
                     if not paused:
                         monitor.reset()
                         paused = True
@@ -436,12 +470,18 @@ def main():
                 if paused:
                     paused = False
                     log.info("Monitoreo reanudado.")
-                if capture is None:
-                    capture = cv2.VideoCapture(source)
-                ok, frame = capture.read()
-                if not ok:
-                    log.warning("Sin imagen de cámara. No se infiere inmovilidad.")
-                    break
+                if camera is None:
+                    camera = monitoring.Camera(source, cv2.VideoCapture, time.monotonic)
+                frame = camera.read()
+                if frame is None:
+                    if camera.ended:
+                        log.info("Fin del video local.")
+                        break
+                    # A live camera is reopened; no immobility is inferred meanwhile.
+                    if monitor:
+                        monitor.tick(now)
+                    time.sleep(0.2)
+                    continue
                 rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 started = time.perf_counter()
                 result = detector.detect_for_video(
@@ -464,12 +504,14 @@ def main():
                         break
                     continue
                 monitor.process(
-                    landmarks, image_landmarks, now, frame.shape[1] / frame.shape[0]
+                    landmarks, image_landmarks, now, frame.shape[1] / frame.shape[0],
+                    brightness=monitoring.frame_brightness(frame),
+                    people=len(result.pose_world_landmarks),
                 )
                 time.sleep(0.05)
     finally:
-        if capture:
-            capture.release()
+        if camera:
+            camera.release()
         if uplink:
             uplink.stop()
 
