@@ -279,7 +279,7 @@ RF-011-01→T09/10 instalación;02→T01/02 reloj (relacionado RF-010-04/10);03�
 | RF-012-09 | T-012-05 | `edge/bench.py` | Ejecutado con video sintético sin personas; KPI no medido |
 | RF-012-10 | T-012-02 | `edge/test_fall.py` | Sentarse, sentadilla, inclinarse, cama lento/rápido sin alerta. Sintético |
 
-RT-03 → RF-012-01..05; HU-05 → RF-012-07; HU-06 → RF-012-06. Los RNF de caídas (≥ 90 % / ≤ 5 %, ≤ 10 s, < 100 ms) siguen sin medir: protocolo en [edge/README.md](../edge/README.md#protocolo-de-prueba-20-caídas-simuladas).
+RT-03 → RF-012-01..05; HU-05 → RF-012-07; HU-06 → RF-012-06. Los RNF de caídas (≥ 90 % / ≤ 5 %, ≤ 10 s, < 100 ms) siguen sin medir: protocolo en [edge/README.md](../edge/README.md#protocolo-de-prueba-de-caídas-simuladas).
 
 ## 013 — Cuidado delegado, trazabilidad prevista 2026-10-25
 
