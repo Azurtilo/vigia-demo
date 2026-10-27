@@ -172,7 +172,7 @@ No ejecutar tareas de código por el hecho de aparecer aquí. Rama prevista: `fe
 | 2026-10-27 | T-017-09 | `89c956a` `camera_state.dart`, `patient_screen.dart`, `camera_state_test.dart` | Flutter 50 OK |
 | 2026-10-27 | T-017-10 | `4768ae8` `api/views.py`, `api/detection.py`, `test_access.py`, `patient_screen.dart`, `patient_roles_test.dart` | Django 246, Flutter 51 OK |
 | 2026-10-27 | T-017-11 | `0c5e26b` `edge/README.md` | Protocolo ampliado a 25 caídas y 60 actividades; corregidos el texto del push y el comando de verificación |
-| 2026-10-27 | T-017-12 | `validation.md`, índice, estado, trazabilidad; PR hacia `develop` | Django 246, Edge 56, Flutter 51 OK; sin merge |
+| 2026-10-27 | T-017-12 | `validation.md`, índice, estado, trazabilidad; [PR #12](https://github.com/Azurtilo/vigia-demo/pull/12) hacia `develop` | Django 246, Edge 56, Flutter 51 OK; sin merge |
 
 ## Reanudación
 
