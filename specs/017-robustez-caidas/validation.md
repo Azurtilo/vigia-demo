@@ -100,6 +100,15 @@ A pedido del usuario («haz prueba de funciones, para ver que nada se caiga»). 
 
 Límites: sin persona real frente a una cámara, sin calibración con ventana y sin push real (siguen en T-017-13). La app queda instalada en el teléfono con este build de prueba.
 
+## Ajustes de optimización (T-017-14/15), 2026-10-27
+
+| Cambio | Prueba | Resultado |
+|---|---|---|
+| Contrato de estados nodo ↔ servidor | `test_mobile.test_node_and_server_share_the_monitor_states` | OK; con un estado extra en el servidor, la prueba falla |
+| Avisos de nodo una vez por paciente y ejecución | `test_access.test_blind_camera_alert_reaches_every_role` (3 teléfonos, 2 ejecuciones) | `allowed()` llamado 2 veces (antes, 6); los tres roles reciben el aviso. Sin la caché, la prueba falla |
+
+Suite Django: **247 OK**. Sin cambios en Edge ni Flutter.
+
 ## Aplicación y reversión
 
 Migración aditiva `0010_detectionnode_monitor_state` (dos `AddField` con valores por defecto). Reversión: `migrate CuidadosApp 0009`, que pierde solo el último estado informado; la siguiente renovación lo regenera.

@@ -153,7 +153,24 @@ No ejecutar tareas de código por el hecho de aparecer aquí. Rama prevista: `fe
 
     Las cifras de precisión siguen en el protocolo (D-053).
 
+## Ajustes 2026-10-27 — revisión de optimización
+
+A partir de la revisión «¿el código es óptimo?» del 2026-10-27.
+
+- [x] T-017-14 — Prueba de contrato entre la lista de estados del nodo y la del servidor.
+  - RF: RF-017-09.
+  - Motivo: si las listas difieren, el servidor responde 400 a la renovación, el nodo pierde el lease y deja de vigilar.
+  - Archivos: `web/CuidadosApp/test_mobile.py` (`test_node_and_server_share_the_monitor_states`, importa `edge.monitoring.STATES`).
+  - Hecho cuando: la prueba falla si el servidor agrega o quita un estado (mutación comprobada).
+- [x] T-017-15 — Avisos de nodo calculados una vez por paciente y por ejecución.
+  - RF: RF-017-11, RF-017-12.
+  - Motivo: `send_mobile_reminders` repetía la consulta de nodos y la comprobación de plan, cupo y consentimiento por cada teléfono; el costo crecía con teléfonos × nodos.
+  - Archivos: `web/CuidadosApp/management/commands/send_mobile_reminders.py` (caché `node_cache` por ejecución), `web/CuidadosApp/test_access.py`.
+  - Hecho cuando: con tres teléfonos (titular, familiar y cuidador), `allowed()` se llama una vez por nodo y ejecución, no una por teléfono (mutación sin caché comprobada), y los avisos llegan igual.
+
 ## Autorización posterior
+
+2026-10-27 (posterior): «hazlo», sobre la propuesta de corregir el contrato de estados y el cálculo de avisos por teléfono (T-017-14 y T-017-15), en la misma rama y PR.
 
 2026-10-27: «Autorizo T-017-01 a T-017-12, sin merge, migración real ni despliegue». Autoriza implementar T-017-01..12 en `feature/017-robustez-caidas` y abrir la PR hacia `develop`. No autoriza merge, migraciones en bases reales ni despliegue. T-017-13 sigue a cargo del propietario.
 
@@ -172,6 +189,7 @@ No ejecutar tareas de código por el hecho de aparecer aquí. Rama prevista: `fe
 | 2026-10-27 | T-017-09 | `89c956a` `camera_state.dart`, `patient_screen.dart`, `camera_state_test.dart` | Flutter 50 OK |
 | 2026-10-27 | T-017-10 | `4768ae8` `api/views.py`, `api/detection.py`, `test_access.py`, `patient_screen.dart`, `patient_roles_test.dart` | Django 246, Flutter 51 OK |
 | 2026-10-27 | T-017-11 | `0c5e26b` `edge/README.md` | Protocolo ampliado a 25 caídas y 60 actividades; corregidos el texto del push y el comando de verificación |
+| 2026-10-27 | T-017-14/15 | `send_mobile_reminders.py`, `test_mobile.py`, `test_access.py` | Django 247 OK; dos mutaciones detectadas |
 | 2026-10-27 | T-017-12 | `validation.md`, índice, estado, trazabilidad; [PR #12](https://github.com/Azurtilo/vigia-demo/pull/12) hacia `develop` | Django 246, Edge 56, Flutter 51 OK; sin merge |
 
 ## Reanudación

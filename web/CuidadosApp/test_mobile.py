@@ -287,6 +287,23 @@ class MobileTests(TestCase):
         self.assertEqual(DetectionNode.objects.get(pk=node["id"]).monitor_state, "sin_imagen")
         self.assertEqual(self.get(f"patients/{self.foreign.pk}/nodes").status_code, 404)
 
+    def test_node_and_server_share_the_monitor_states(self):
+        """A value the server rejects makes the node lose its lease and stop watching."""
+        import importlib
+        import sys
+
+        from django.conf import settings
+
+        from .api.detection import MONITOR_VALUES
+
+        sys.path.insert(0, str(settings.REPO_DIR))
+        try:
+            edge_states = importlib.import_module("edge.monitoring").STATES
+        finally:
+            sys.path.remove(str(settings.REPO_DIR))
+        self.assertEqual(set(edge_states), MONITOR_VALUES)
+        self.assertEqual(len(edge_states), len(set(edge_states)))
+
     def test_edge_fall_is_stored_in_history_with_reception_time(self):
         send = self.edge_node()
         with self.assertLogs("vigia.edge", "WARNING") as logs:

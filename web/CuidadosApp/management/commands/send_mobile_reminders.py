@@ -33,6 +33,11 @@ CARE_TEXT = "Tienes un cuidado pendiente. Abre VIGIA para revisarlo."
 class Command(BaseCommand):
     help = "Send generic mobile reminders using configured Firebase credentials."
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Patient id -> node alerts, shared by every device in this run.
+        self.node_cache = {}
+
     def handle(self, *args, **options):
         if not getattr(settings, "VIGIA_PUSH_ENABLED", False):
             raise CommandError(
@@ -96,6 +101,15 @@ class Command(BaseCommand):
         return [c for c in risks + care if c[0] not in done]
 
     def node_alerts(self, patient_ids):
+        missing = [pk for pk in patient_ids if pk not in self.node_cache]
+        if missing:
+            for pk in missing:
+                self.node_cache[pk] = []
+            for node, alert in self.compute_node_alerts(missing):
+                self.node_cache[node.patient_id].append(alert)
+        return [alert for pk in patient_ids for alert in self.node_cache[pk]]
+
+    def compute_node_alerts(self, patient_ids):
         now = timezone.now()
         alerts = []
         for node in DetectionNode.objects.filter(
@@ -116,5 +130,5 @@ class Command(BaseCommand):
                 allowed(node.patient.owner, node.patient)
             except PermissionDenied:
                 continue
-            alerts.append((key, push.MONITOR_TEXT, "monitor"))
+            alerts.append((node, (key, push.MONITOR_TEXT, "monitor")))
         return alerts

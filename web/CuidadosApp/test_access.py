@@ -571,9 +571,16 @@ class RecipientTests(DelegatedCareBase):
             "firebase_admin.messaging": messaging,
             "firebase_admin.exceptions": types.SimpleNamespace(FirebaseError=Exception),
         }
-        with patch.dict(sys.modules, modules):
+        from .api import detection
+
+        with patch.dict(sys.modules, modules), patch(
+            "CuidadosApp.management.commands.send_mobile_reminders.allowed",
+            wraps=detection.allowed,
+        ) as checked:
             for _ in range(2):
                 call_command("send_mobile_reminders", stdout=StringIO(), stderr=StringIO())
+        # T-017-15: one check per node and run, not one per device (3 devices).
+        self.assertEqual(checked.call_count, 2)
         reached = sorted(
             m["token"].rsplit("-", 1)[1] for m in sent if m["notification"]["body"] == MONITOR_TEXT
         )
