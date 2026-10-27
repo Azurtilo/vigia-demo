@@ -86,6 +86,20 @@ La corrida de 16,90 ms se hizo mientras corrían en paralelo las suites de Djang
 - Un 400 en la renovación detiene la captura del nodo al vencer el lease. El nodo solo envía valores de su lista cerrada (`test_only_known_states_are_sent`), igual a la del backend.
 - La migración `0010` no se aplicó en ninguna base real.
 
+## Prueba funcional de punta a punta, 2026-10-27
+
+A pedido del usuario («haz prueba de funciones, para ver que nada se caiga»). Servidor demo (`core.mobile_demo_settings`) sobre una **copia desechable** de `.mobile-demo/demo.sqlite3` en el scratchpad de la sesión, con la migración `0010` aplicada solo a la copia; la base de la demo original no se modificó. Cuenta ficticia `demo_premium`.
+
+| Fase | Qué se hizo | Resultado |
+|---|---|---|
+| 1. Flujos existentes | Portal sin sesión (login, privacidad, `/mobile/`, redirecciones), login de la app y API `me`, `capabilities`, `patients`, `agenda`, `reminders`, `guides`, ficha, resumen, medicamentos, historial, observaciones y nodos | **20/20 OK**; la ficha trae `camera_state` (`null` sin nodos) |
+| 2. Nodo real | Vincular nodo: primero rechazado por falta de consentimiento de detección (spec 014, correcto); con el consentimiento registrado, 201 y estado `desconocido`. `python -m edge.run` real contra el servidor con un video de 4 s con imagen y 16 s en negro, `--bed-config` y referencias ficticias | El nodo informó `normal` y luego `poca_luz` en la renovación (visto en el log del servidor); inferencia 11,5–11,8 ms; terminó limpio al acabar el video (salida 0) |
+| 3. Servidor | Estado del nodo y de la ficha, renovación sin parámetro, con valor inválido, parámetro ajeno y repetido, `sin_imagen`, caída `fall-bed-v1`, reenvío y caída con coordenadas extra, dispositivo ficticio | **16/16 OK** (400 en los inválidos; duplicado deduplicado; caída en el historial) |
+| 4. Avisos | Candidatos de `send_mobile_reminders` para el dispositivo ficticio, sin Firebase | Caída primero y luego el aviso de cámara `sin_imagen`. Tras 123 s sin renovar: aviso `offline`, ficha `sin_senal` y tarjeta sin «Conectado». El comando, sin push activado, termina con el error esperado |
+| 5. App en Android | APK debug de esta rama en ELI NX9 (Android 16), servidor por USB con `adb reverse` | Login, inicio y ficha cargan. Ficha: «Cámara: Poca luz: el monitoreo no es confiable» con advertencia. Monitoreo: tarjeta «Conectado · Última señal … / Poca luz…» con advertencia y «Posible caída» en el historial |
+
+Límites: sin persona real frente a una cámara, sin calibración con ventana y sin push real (siguen en T-017-13). La app queda instalada en el teléfono con este build de prueba.
+
 ## Aplicación y reversión
 
 Migración aditiva `0010_detectionnode_monitor_state` (dos `AddField` con valores por defecto). Reversión: `migrate CuidadosApp 0009`, que pierde solo el último estado informado; la siguiente renovación lo regenera.
