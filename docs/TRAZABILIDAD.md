@@ -4,7 +4,7 @@ La matriz siguiente es la vista vigente de los requerimientos del informe. Las s
 
 ## Matriz HU/RT/RNF vigente
 
-Actualizada el 2026-10-25 (tras implementar la 013). Estados: **Cubierto** (implementado y probado), **Parcial** (implementado con un límite declarado), **Sin evidencia** (implementado o decidido, sin medición o sin prueba en dispositivo). Pruebas automáticas: Django 210, Edge 22 y Flutter 23 OK en Windows (2026-10-25, rama del paso 3).
+Actualizada el 2026-10-25 (tras implementar la 013); el 2026-10-27 se agregan los RF de la 017 sin cambiar estados. Estados: **Cubierto** (implementado y probado), **Parcial** (implementado con un límite declarado), **Sin evidencia** (implementado o decidido, sin medición o sin prueba en dispositivo). Pruebas automáticas: Django 246, Edge 56 y Flutter 51 OK en Windows (2026-10-27, rama `feature/017-robustez-caidas`).
 
 | Req. | RF | Prueba / evidencia | Estado y límite |
 |---|---|---|---|
@@ -12,16 +12,16 @@ Actualizada el 2026-10-25 (tras implementar la 013). Estados: **Cubierto** (impl
 | HU-02 Cuidador ve agenda diaria | RF-010-03, RF-013-08/14 | `test_lists_include_patients_of_two_titulars`, matriz API (`summary`), `patient_roles_test.dart` | **Cubierto** en pruebas automáticas. Sin prueba en dispositivo |
 | HU-03 Cuidador confirma medicamento (auditable) | RF-009, RF-010-03/05, RF-013-09 | `test_caregiver_is_the_author_and_occurrence_is_recorded_once` | **Cubierto**: autor = cuidador y ocurrencia única entre titular y cuidador |
 | HU-04 Cuidador registra cambio de posición | RF-010-04, RF-011-02 | `test_start_clock_without_fabricating_care_and_reject_replay`, `clock_panel_test.dart` | **Parcial**: el cuidador registra con autor propio (013); falta prueba en Android físico (T-011-09) |
-| HU-05 Familiar recibe push ante riesgo | RF-010-07, RF-011-03, RF-012-07/13/14 | `test_push.py` (push de caída inmediato, reservas fuera de transacción), `test_fall_push_uses_existing_channel_once_and_first`, `test_push_command_sends_fall_to_family_and_caregiver` (Firebase simulado) | **Sin evidencia** real: push inmediato, texto genérico y destinatarios implementados y probados con Firebase simulado; falta Firebase de prueba en un Android físico (D-054) |
+| HU-05 Familiar recibe push ante riesgo | RF-010-07, RF-011-03, RF-012-07/13/14, RF-017-11/12 | `test_push.py` (push de caída inmediato, reservas fuera de transacción), `test_fall_push_uses_existing_channel_once_and_first`, `test_push_command_sends_fall_to_family_and_caregiver` (Firebase simulado) | **Sin evidencia** real: push inmediato, texto genérico y destinatarios implementados y probados con Firebase simulado; falta Firebase de prueba en un Android físico (D-054) |
 | HU-06 Familiar ve historial | RF-010-05, RF-012-06 | `test_edge_fall_is_stored_in_history_with_reception_time` | **Parcial**: delegación y autoría cubiertas (013, `test_revocation_stops_actions_and_keeps_authorship`); la caída aparece como «Indeterminada» en el historial móvil (QA-16) |
 | HU-07 Familiar gestiona suscripción en el portal | RF-007, RF-010-06/11 | Suite Django PlanesApp; [validación 007](../specs/007-planes-app/validation.md) | **Parcial**: pagos simulados; ensayo web ↔ app pendiente (T-011-05) |
 | RT-01 Postura con MediaPipe | RF-010-09 | `edge.test_posture`, `edge.smoke` en Windows | **Parcial**: pruebas sintéticas; sin ejecución en vivo con cámara |
 | RT-02 Inmovilidad por tiempo configurable | RF-010-09 | `test_immobility_once_and_reset_on_gap_or_position`, `test_missing_signal_never_generates_immobility` | **Parcial**: pruebas sintéticas; sin ejecución en vivo |
-| RT-03 Caídas | RF-012-01..05, 10..12 | `edge.test_fall`, `edge.test_run` | **Parcial**: pruebas sintéticas; protocolo de caídas sin ejecutar (D-053) |
+| RT-03 Caídas | RF-012-01..05, 10..12, RF-017-01..09 | `edge.test_fall`, `edge.test_run` (regla de impacto, regla de cama `fall-bed-v1`, estado de monitoreo) | **Parcial**: pruebas sintéticas; protocolo de caídas sin ejecutar (D-053, ampliado a 25/60 por RF-017-15) |
 | RNF sin video a la nube | RF-012-05, contrato de 7 claves de 010 | `test_edge_plan_revocation_dedup_and_no_clinical_event` (rechaza un campo `image` con 400) | **Cubierto** por contrato cerrado y prueba de regresión |
 | RNF alerta de caída ≤ 10 s | RF-012-07/08/13 | Sin medición de punta a punta (QA-15) | **Sin evidencia**: el push ya sale al recibir la caída (D-051); falta medir con Firebase real (D-054) |
 | RNF inferencia < 100 ms por cuadro | RF-012-08/09 | `edge/bench.py` solo con video sintético sin personas (no válido) | **Sin evidencia**: medir con el video del protocolo |
-| RNF caídas ≥ 90 % y FP ≤ 5 % | RF-012-01..03 | Protocolo escrito en [edge/README.md](../edge/README.md) | **Sin evidencia**: protocolo sin ejecutar (D-053) |
+| RNF caídas ≥ 90 % y FP ≤ 5 % | RF-012-01..03, RF-017-02..05, 15 | Protocolo escrito en [edge/README.md](../edge/README.md) | **Sin evidencia**: protocolo sin ejecutar (D-053) |
 | RNF disponibilidad ≥ 99,5 % | — | — | Objetivo de diseño **no medido** (D-060) |
 
 Pendientes que cambian estados: prueba en dispositivo de la [spec 013](../specs/013-cuidado-delegado/validation.md) (HU-01/02/03/04/06), D-051/D-054/D-058 (HU-05 y alerta ≤ 10 s), D-053 (RT-03 y precisión), T-011-05/09 (dispositivo).
@@ -279,7 +279,7 @@ RF-011-01→T09/10 instalación;02→T01/02 reloj (relacionado RF-010-04/10);03�
 | RF-012-09 | T-012-05 | `edge/bench.py` | Ejecutado con video sintético sin personas; KPI no medido |
 | RF-012-10 | T-012-02 | `edge/test_fall.py` | Sentarse, sentadilla, inclinarse, cama lento/rápido sin alerta. Sintético |
 
-RT-03 → RF-012-01..05; HU-05 → RF-012-07; HU-06 → RF-012-06. Los RNF de caídas (≥ 90 % / ≤ 5 %, ≤ 10 s, < 100 ms) siguen sin medir: protocolo en [edge/README.md](../edge/README.md#protocolo-de-prueba-20-caídas-simuladas).
+RT-03 → RF-012-01..05; HU-05 → RF-012-07; HU-06 → RF-012-06. Los RNF de caídas (≥ 90 % / ≤ 5 %, ≤ 10 s, < 100 ms) siguen sin medir: protocolo en [edge/README.md](../edge/README.md#protocolo-de-prueba-de-caídas-simuladas).
 
 ## 013 — Cuidado delegado, trazabilidad prevista 2026-10-25
 
@@ -334,3 +334,21 @@ RF-014-01..13 con prueba automática en `web/PrivacidadApp/tests.py` (16 pruebas
 ### 015 — Evidencia ejecutada, 2026-10-26
 
 RF-015-01: suites Django 235, Edge 22 y Flutter 43 OK y `git diff` sin archivos de la lista B. RF-015-02: `mobile/test/home_redesign_test.dart` (2) e `interface_details_test.dart`. RF-015-03: `web/CuidadosApp/test_mobile.py` (catálogo y 401 sin sesión). RF-015-04: `mobile/test/subscription_test.dart` (2). RF-015-05: `web/CuidadosApp/test_mobile_demo.py` (3) y el script ejecutado en Git Bash. RF-015-06: `web/homeApp/test_marca.py` (3) y revisión en Chrome en claro y oscuro. Android físico (ELI NX9) para RF-015-01, 02 y 04 en [validation.md](../specs/015-integracion-unificado/validation.md). RF-015-07: [INSTALACION_CELULAR.md](INSTALACION_CELULAR.md). RF-015-08: documentos vigentes actualizados (T-015-12). RF-015-09..13 (iOS) sin evidencia todavía. Detalle en [tasks.md](../specs/015-integracion-unificado/tasks.md#ejecución).
+
+## 017 — Robustez de la detección de caídas, trazabilidad prevista 2026-10-27
+
+[Spec](../specs/017-robustez-caidas/spec.md), [plan](../specs/017-robustez-caidas/plan.md), [tareas](../specs/017-robustez-caidas/tasks.md), [validación](../specs/017-robustez-caidas/validation.md). Implementada el 2026-10-27; la matriz vigente cita los RF-017, pero no cambia ningún estado: todo es sintético o simulado.
+
+| Fuente | RF-017 | Tareas T-017 | Evidencia prevista |
+|---|---|---|---|
+| RT-03: caída lenta desde la cama (zona de cama, `fall-bed-v1`) | 01–05 | 02, 03, 04 | `edge.test_fall`, `edge.test_run` (sintéticas); en vivo en T-017-13 |
+| RT-03: monitoreo ciego (persona no visible, sin imagen, poca luz) | 06–09, 13 | 05, 06, 07 | `edge.test_run`, `CuidadosApp.test_mobile` |
+| HU-05: aviso de monitoreo ciego y de nodo sin señal | 11, 12 | 08 | `CuidadosApp.test_push` con Firebase simulado; push real con D-054 |
+| HU-06: estado de la cámara en la app | 10 | 09, 10 (D-077) | Prueba Flutter; `test_access` por rol |
+| RNF caídas ≥ 90 % y FP ≤ 5 % | 15 | 11 | Protocolo ampliado de D-053, sin ejecutar |
+| RNF inferencia < 100 ms | — | 04, 05 | `edge.bench` antes y después (sintético, no mide el KPI) |
+| RNF sin video a la nube | 01, 09 | 02, 06, 07 | Polígono y brillo no salen del nodo; parámetro de estado con lista cerrada (400 ante otro valor) |
+
+### 017 — Evidencia ejecutada, 2026-10-27
+
+Django 246, Edge 56 y Flutter 51 OK (desde 235, 22 y 46). RF-017-01..05: `edge.test_fall` (`BedZoneTests`, `BedFallTests`) y `edge.test_run.BedMonitorTests`. RF-017-06..08: `MonitorStatusTests`, `CameraTests`, `MonitorStateTests`. RF-017-09: `MonitorStateUplinkTests` y `test_mobile.test_node_reports_monitor_state_on_renewal`. RF-017-10: `test_access.CameraStateTests`, `camera_state_test.dart` y `patient_roles_test.dart`. RF-017-11/12: `test_push.NodeAlertTests` y `test_access.test_blind_camera_alert_reaches_every_role` (Firebase simulado). RF-017-13..15: revisión del log y de `edge/README.md`. Doce mutaciones detectadas; sin evidencia en vivo (T-017-13). Detalle en [validation.md](../specs/017-robustez-caidas/validation.md).

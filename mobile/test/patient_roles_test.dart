@@ -27,8 +27,9 @@ const titularActions = [
 class RoleServer {
   final String role;
   final List<String> actions;
+  final String? cameraState;
   final requested = <String>[];
-  RoleServer(this.role, this.actions);
+  RoleServer(this.role, this.actions, {this.cameraState});
 
   MockClient client() => MockClient((r) async {
     final path = r.url.path;
@@ -45,6 +46,7 @@ class RoleServer {
         'allowed_actions': actions,
         'tokens': {'timer': 't', 'posture': 'p'},
         'timer': null,
+        'camera_state': cameraState,
       };
     } else if (path.endsWith('/patients/1/observations')) {
       body = {
@@ -79,9 +81,10 @@ void main() {
   Future<RoleServer> open(
     WidgetTester tester,
     String role,
-    List<String> actions,
-  ) async {
-    final server = RoleServer(role, actions);
+    List<String> actions, {
+    String? cameraState,
+  }) async {
+    final server = RoleServer(role, actions, cameraState: cameraState);
     final api = VigiaApi(client: server.client())..token = 'session';
     await tester.pumpWidget(MaterialApp(home: PatientScreen(api: api, id: 1)));
     await tester.pumpAndSettle();
@@ -109,6 +112,47 @@ void main() {
     expect(server.requested.where((p) => p.contains('/history')), isEmpty);
     expect(server.requested.where((p) => p.contains('/observations')), isEmpty);
     expect(server.requested.where((p) => p.contains('/nodes')), isEmpty);
+  });
+
+  testWidgets('Every role sees the camera state read-only (D-077)', (
+    tester,
+  ) async {
+    const familiarActions = ['configure', 'detection', 'history', 'view'];
+    for (final (role, actions) in [
+      ('titular', titularActions),
+      ('familiar', familiarActions),
+      ('cuidador', caregiverActions),
+    ]) {
+      await tester.pumpWidget(const SizedBox()); // a fresh screen per role
+      final server = await open(
+        tester,
+        role,
+        actions,
+        cameraState: 'sin_imagen',
+      );
+      expect(
+        find.text('Cámara: La cámara no entrega imagen'),
+        findsOneWidget,
+        reason: role,
+      );
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('camera-state')),
+          matching: find.byIcon(Icons.warning_amber),
+        ),
+        findsOneWidget,
+      );
+      expect(find.byTooltip('Revocar nodo'), findsNothing);
+      if (role == 'cuidador') {
+        expect(server.requested.where((p) => p.contains('/nodes')), isEmpty);
+      }
+    }
+    await tester.pumpWidget(const SizedBox());
+    await open(tester, 'cuidador', caregiverActions);
+    expect(find.byKey(const Key('camera-state')), findsNothing);
+    await tester.pumpWidget(const SizedBox());
+    await open(tester, 'cuidador', caregiverActions, cameraState: 'normal');
+    expect(find.text('Cámara: Monitoreo activo'), findsOneWidget);
   });
 
   testWidgets('Titular manages access and keeps every section', (tester) async {

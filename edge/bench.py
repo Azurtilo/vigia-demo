@@ -8,9 +8,10 @@ import argparse
 import json
 import time
 
+from . import bed, monitoring
 from .fall import FallDetector, add_arguments, config_from_args
 from .metrics import LatencyStats
-from .run import DEFAULT_MODEL, as_dicts
+from .run import DEFAULT_MODEL, as_dicts, bed_from_args
 
 
 def args_parser():
@@ -21,10 +22,11 @@ def args_parser():
     p.add_argument("--model", default=str(DEFAULT_MODEL))
     p.add_argument("--json", action="store_true", help="Salida JSON")
     add_arguments(p)
+    bed.add_arguments(p)
     return p
 
 
-def bench_video(path, model, config):
+def bench_video(path, model, config, bed_zone=None, bed_config=None):
     import cv2
     import mediapipe as mp
     from mediapipe.tasks import python
@@ -43,6 +45,8 @@ def bench_video(path, model, config):
         min_tracking_confidence=0.7,
     )
     stats, events, fall = LatencyStats(), [], None
+    # Spec 017: brightness and bed rule cost after inference, measured apart.
+    extra, bed_rule, bed_events = LatencyStats(), None, []
     frames = with_person = 0
     started = time.perf_counter()
     # A fresh landmarker per video: VIDEO mode needs increasing timestamps.
@@ -65,10 +69,19 @@ def bench_video(path, model, config):
                 landmarks = as_dicts(result.pose_landmarks[0])
             if fall is None:
                 fall = FallDetector(config, frame.shape[1] / frame.shape[0])
+                if bed_zone:
+                    bed_rule = bed.BedFallRule(bed_zone, bed_config, frame.shape[1] / frame.shape[0])
             if fall.observe(landmarks, now) == "fall":
                 events.append(
                     {"impact_s": round(fall.impact_at, 2), "confirmed_s": round(now, 2)}
                 )
+            t0 = time.perf_counter()
+            monitoring.frame_brightness(frame)
+            if bed_rule and bed_rule.observe(landmarks, now) == "fall":
+                bed_events.append(
+                    {"lying_s": round(bed_rule.lying_since, 2), "confirmed_s": round(now, 2)}
+                )
+            extra.add((time.perf_counter() - t0) * 1000)
     capture.release()
     elapsed = time.perf_counter() - started
     return {
@@ -77,9 +90,12 @@ def bench_video(path, model, config):
         "frames_with_one_person": with_person,
         "video_seconds": round(frames / video_fps, 2),
         "inference": stats.summary(),
+        "extra_rules": extra.summary(),
         "processing_fps": round(frames / elapsed, 2) if elapsed else None,
         "falls": len(events),
         "events": events,
+        "bed_falls": len(bed_events),
+        "bed_events": bed_events,
     }
 
 
@@ -89,14 +105,16 @@ def main():
         config = config_from_args(a)
     except (OSError, ValueError, TypeError) as exc:
         raise SystemExit(f"Configuración de caídas inválida: {exc}")
-    reports = [bench_video(v, a.model, config) for v in a.videos]
+    bed_zone, bed_config = bed_from_args(a)
+    reports = [bench_video(v, a.model, config, bed_zone, bed_config) for v in a.videos]
     totals = {
         "videos": len(reports),
         "videos_with_fall": sum(1 for r in reports if r["falls"]),
         "falls": sum(r["falls"] for r in reports),
     }
     if a.json:
-        print(json.dumps({"config": vars(config), "reports": reports, "totals": totals}, indent=2))
+        print(json.dumps({"config": vars(config), "bed_config": vars(bed_config),
+                          "reports": reports, "totals": totals}, indent=2))
         return
     for r in reports:
         inf = r["inference"] or {"mean_ms": 0, "p95_ms": 0, "max_ms": 0}
@@ -106,6 +124,12 @@ def main():
             f"{inf['mean_ms']} ms, p95 {inf['p95_ms']} ms, máx {inf['max_ms']} ms; "
             f"{r['processing_fps']} FPS; caídas {r['falls']} {r['events']}"
         )
+        if r["extra_rules"]:
+            ex = r["extra_rules"]
+            print(
+                f"  brillo y regla de cama (spec 017): promedio {ex['mean_ms']} ms, p95 {ex['p95_ms']} ms; "
+                f"caídas de cama {r['bed_falls']} {r['bed_events']}"
+            )
     print(
         f"Total: {totals['videos']} videos, {totals['videos_with_fall']} con caída, "
         f"{totals['falls']} caídas detectadas."

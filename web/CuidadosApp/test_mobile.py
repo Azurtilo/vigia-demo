@@ -15,7 +15,14 @@ from django.utils import timezone
 from PlanesApp.models import Plan, Subscription
 
 from .management.commands.send_mobile_reminders import RISK_MESSAGES
-from .models import CareEvent, MobileDevice, Patient, PostureObservation, PostureTimer
+from .models import (
+    CareEvent,
+    DetectionNode,
+    MobileDevice,
+    Patient,
+    PostureObservation,
+    PostureTimer,
+)
 
 
 class MobileTests(TestCase):
@@ -231,6 +238,71 @@ class MobileTests(TestCase):
             )
 
         return send
+
+    def test_node_reports_monitor_state_on_renewal(self):
+        """Spec 017 (D-073): the state rides on GET edge/status, closed list only."""
+        self.premium()
+        node = self.post(f"patients/{self.patient.pk}/nodes", {"name": "Cámara demo"}).json()
+        auth = {"HTTP_AUTHORIZATION": "Bearer " + node["credential"]}
+
+        def renew(query=""):
+            return self.client.get("/api/v1/edge/status" + query, **auth)
+
+        def listed():
+            return self.get(f"patients/{self.patient.pk}/nodes").json()["items"][0]
+
+        self.assertEqual(renew().status_code, 200)  # node from before spec 017
+        self.assertEqual(listed()["monitor_state"], "desconocido")
+        self.assertIsNone(listed()["monitor_since"])
+        self.assertEqual(renew("?monitor_state=normal").status_code, 200)
+        first = DetectionNode.objects.get(pk=node["id"])
+        self.assertEqual(first.monitor_state, "normal")
+        self.assertEqual(renew("?monitor_state=normal").status_code, 200)
+        again = DetectionNode.objects.get(pk=node["id"])
+        self.assertEqual(again.monitor_since, first.monitor_since)  # same episode
+        self.assertGreater(again.last_seen_at, first.last_seen_at)
+        self.assertEqual(renew("?monitor_state=sin_imagen").status_code, 200)
+        item = listed()
+        self.assertEqual(item["monitor_state"], "sin_imagen")
+        self.assertNotEqual(item["monitor_since"], first.monitor_since)
+        before = DetectionNode.objects.get(pk=node["id"])
+        for query in ("?monitor_state=caida", "?monitor_state=", "?foto=1",
+                      "?monitor_state=normal&monitor_state=poca_luz",
+                      "?monitor_state=normal&lat=1"):
+            with self.subTest(query):
+                self.assertEqual(renew(query).status_code, 400)
+        after = DetectionNode.objects.get(pk=node["id"])
+        self.assertEqual(
+            (after.monitor_state, after.monitor_since, after.last_seen_at),
+            (before.monitor_state, before.monitor_since, before.last_seen_at),
+        )
+        # A node stopped by plan or revocation changes nothing.
+        Subscription.objects.filter(user=self.user).update(
+            end=timezone.now() - timedelta(seconds=1)
+        )
+        self.assertEqual(renew("?monitor_state=normal").status_code, 403)
+        self.premium()
+        self.assertEqual(self.post(f"nodes/{node['id']}/revoke", {}).status_code, 200)
+        self.assertEqual(renew("?monitor_state=normal").status_code, 401)
+        self.assertEqual(DetectionNode.objects.get(pk=node["id"]).monitor_state, "sin_imagen")
+        self.assertEqual(self.get(f"patients/{self.foreign.pk}/nodes").status_code, 404)
+
+    def test_node_and_server_share_the_monitor_states(self):
+        """A value the server rejects makes the node lose its lease and stop watching."""
+        import importlib
+        import sys
+
+        from django.conf import settings
+
+        from .api.detection import MONITOR_VALUES
+
+        sys.path.insert(0, str(settings.REPO_DIR))
+        try:
+            edge_states = importlib.import_module("edge.monitoring").STATES
+        finally:
+            sys.path.remove(str(settings.REPO_DIR))
+        self.assertEqual(set(edge_states), MONITOR_VALUES)
+        self.assertEqual(len(edge_states), len(set(edge_states)))
 
     def test_edge_fall_is_stored_in_history_with_reception_time(self):
         send = self.edge_node()

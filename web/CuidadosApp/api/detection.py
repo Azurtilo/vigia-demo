@@ -18,6 +18,7 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
 from CuidadosApp.capacity import capacity_state
+from CuidadosApp.mobile_models import MONITOR_STATES
 from CuidadosApp.models import DetectionNode, PostureObservation
 from CuidadosApp import push
 from CuidadosApp.access import patient_for
@@ -31,6 +32,20 @@ from .base import MobileView, error
 log = logging.getLogger("vigia.edge")
 # Risk events keep their original time when delivered late; the node stops at 55 min.
 RISK_MAX_AGE = timedelta(hours=1)
+CONNECTED_FOR = timedelta(seconds=90)
+MONITOR_VALUES = {value for value, _ in MONITOR_STATES}
+
+
+def monitor_state_param(request):
+    """Spec 017 (D-073): optional ?monitor_state= on the renewal; None if absent."""
+    if set(request.GET) - {"monitor_state"}:
+        raise ValidationError("Parámetro no admitido en la renovación del nodo.")
+    values = request.GET.getlist("monitor_state")
+    if not values:
+        return None
+    if len(values) > 1 or values[0] not in MONITOR_VALUES:
+        raise ValidationError("Estado de monitoreo inválido.")
+    return values[0]
 
 
 def allowed(user, patient):
@@ -53,9 +68,30 @@ def node_data(node):
         "connected": bool(
             node.active
             and node.last_seen_at
-            and node.last_seen_at > timezone.now() - timedelta(seconds=90)
+            and node.last_seen_at > timezone.now() - CONNECTED_FOR
         ),
+        "monitor_state": node.monitor_state or "desconocido",
+        "monitor_since": node.monitor_since,
     }
+
+
+# Spec 017 (D-077): worst state first when a patient has several nodes.
+CAMERA_PRIORITY = ["sin_senal", "sin_imagen", "poca_luz", "persona_no_visible", "normal"]
+
+
+def camera_state(patient):
+    """Aggregated, read-only state for every role with `view`; no node details.
+
+    None without active nodes, without detection in the titular's plan, or when
+    no node ever reported a state (versions before spec 017).
+    """
+    if not capabilities(patient.owner)["features"]["posture_detection"]:
+        return None
+    states = set()
+    for node in patient.detection_nodes.filter(active=True):
+        data = node_data(node)
+        states.add(data["monitor_state"] if data["connected"] else "sin_senal")
+    return next((s for s in CAMERA_PRIORITY if s in states), None)
 
 
 class NodesView(MobileView):
@@ -158,9 +194,11 @@ class EdgeView(View):
                     raise PermissionDenied
                 allowed(user, node.patient)
                 if request.method == "GET":
-                    DetectionNode.objects.filter(pk=node.pk).update(
-                        last_seen_at=timezone.now()
-                    )
+                    state, now = monitor_state_param(request), timezone.now()
+                    fields = {"last_seen_at": now}
+                    if state is not None and state != node.monitor_state:
+                        fields.update(monitor_state=state, monitor_since=now)
+                    DetectionNode.objects.filter(pk=node.pk).update(**fields)
                     return JsonResponse(
                         {
                             "enabled": True,

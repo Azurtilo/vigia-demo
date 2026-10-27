@@ -12,6 +12,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from urllib.parse import urlparse
 
+from . import bed, monitoring
 from .fall import FallDetector, add_arguments, config_from_args
 from .metrics import LatencyStats
 from .posture import CalibratedClassifier, ImmobilityRule, features
@@ -55,7 +56,25 @@ def args_parser():
         help="Intervalo del resumen de inferencia en el log (por defecto 60 s)",
     )
     add_arguments(p)
+    bed.add_arguments(p)
+    monitoring.add_arguments(p)
     return p
+
+
+def bed_from_args(a):
+    """(zone or None, BedConfig); exits with a clear message when invalid."""
+    try:
+        zone = bed.BedZone.from_file(a.bed_config) if a.bed_config else None
+        return zone, bed.config_from_args(a)
+    except (OSError, ValueError, TypeError) as exc:
+        raise SystemExit(f"Configuración de cama inválida: {exc}")
+
+
+def monitor_config_from_args(a):
+    try:
+        return monitoring.config_from_args(a)
+    except (OSError, ValueError, TypeError) as exc:
+        raise SystemExit(f"Configuración del estado de monitoreo inválida: {exc}")
 
 
 def setup_logging(log_file=None):
@@ -88,6 +107,8 @@ class Uplink:
     Pending observations keep their original event_id and observed_at, so a
     retry after a timeout is deduplicated by the server. The lease is the only
     signal the frame loop reads; it fails closed when it expires or is denied.
+    Each renewal also reports the monitoring state (spec 017, D-073); a server
+    without that support ignores the parameter.
     """
 
     def __init__(self, server, token, session=None, clock=time.monotonic):
@@ -100,6 +121,7 @@ class Uplink:
         self.pending = []  # [monotonic created, payload]
         self.lease_until, self.next_lease = 0.0, 0.0
         self.failures, self.retry_at = 0, 0.0
+        self.monitor_state = monitoring.NORMAL
         self.lock, self.wake, self.stopped = (
             threading.Lock(),
             threading.Event(),
@@ -109,6 +131,16 @@ class Uplink:
 
     def lease_active(self, now):
         return now < self.lease_until
+
+    def set_monitor_state(self, state):
+        """A change is reported at once instead of waiting for the next renewal."""
+        if state not in monitoring.STATES:
+            raise ValueError(f"Estado de monitoreo desconocido: {state}")
+        with self.lock:
+            if state == self.monitor_state:
+                return
+            self.monitor_state, self.next_lease = state, 0.0
+        self.wake.set()
 
     def enqueue(self, payload):
         with self.lock:
@@ -150,7 +182,12 @@ class Uplink:
 
     def _renew(self, now):
         try:
-            response = self.session.get(self.status_url, headers=self.headers, timeout=5)
+            response = self.session.get(
+                self.status_url,
+                headers=self.headers,
+                params={"monitor_state": self.monitor_state},
+                timeout=5,
+            )
             if response.status_code in (401, 403):
                 self.lease_until = 0.0  # explicit denial stops capture at once
             response.raise_for_status()
@@ -238,19 +275,59 @@ class Uplink:
 
 
 class Monitor:
-    """Per-frame rules. Never touches the network: payloads go to the uplink."""
+    """Per-frame rules. Never touches the network: payloads go to the uplink.
+
+    With a bed zone (spec 017) a second fall rule runs beside the impact rule;
+    a shared latch sends one fall per event until the person is back in bed or
+    upright again. Without a bed zone the behaviour is that of spec 012.
+    The monitoring state (spec 017) says when the camera cannot really watch.
+    """
 
     def __init__(self, references, immobility_seconds, fall_config, uplink,
-                 wall_clock=lambda: datetime.now(timezone.utc)):
+                 wall_clock=lambda: datetime.now(timezone.utc),
+                 bed_zone=None, bed_config=None, monitor_config=None):
         self.references, self.immobility_seconds = references, immobility_seconds
         self.fall_config, self.uplink, self.wall_clock = fall_config, uplink, wall_clock
+        self.bed_zone, self.bed_config = bed_zone, bed_config
+        self.status = monitoring.MonitorStatus(monitor_config)
         self.reset()
 
     def reset(self):
         self.classifier = CalibratedClassifier(self.references)
         self.rule = ImmobilityRule(self.immobility_seconds)
         self.fall = None  # created on the first frame, when its aspect ratio is known
+        self.bed, self.bed_result, self.fall_latched = None, "", False
         self.last_posture, self.sent_at = None, None
+        # A lease pause is a deliberate stop, not a blind camera: start over.
+        self.status.reset()
+        if self.uplink:
+            self.uplink.set_monitor_state(monitoring.NORMAL)
+
+    def tick(self, now):
+        """No frame this time (camera lost); keeps the monitoring state current."""
+        self.state_changed(self.status.tick(now))
+
+    def state_changed(self, state):
+        if state is None:
+            return
+        (log.info if state == monitoring.NORMAL else log.warning)(
+            "Estado de monitoreo: %s", state
+        )
+        self.uplink.set_monitor_state(state)
+
+    def send_fall(self, rule_version, started, posture, confidence, now):
+        confirmed = self.wall_clock()
+        payload = self.payload(confirmed, posture, confidence, rule_version, "fall")
+        self.uplink.enqueue(payload)
+        # Impact for fall-v1; start of "lying outside the bed" for fall-bed-v1.
+        log.warning(
+            "Caída confirmada (%s): event_id=%s inicio=%s confirmada=%s confirmación=%.2f s",
+            rule_version,
+            payload["event_id"],
+            (confirmed - timedelta(seconds=now - started)).isoformat(),
+            confirmed.isoformat(),
+            now - started,
+        )
 
     def payload(self, observed, posture, confidence, rule_version, risk):
         return {
@@ -263,23 +340,38 @@ class Monitor:
             "risk": risk,
         }
 
-    def process(self, landmarks, image_landmarks, now, frame_aspect):
+    def process(self, landmarks, image_landmarks, now, frame_aspect,
+                brightness=None, people=None):
+        """`people`: persons detected (the rules only run with exactly one)."""
         if self.fall is None:
             self.fall = FallDetector(self.fall_config, frame_aspect)
+            if self.bed_zone:
+                self.bed = bed.BedFallRule(self.bed_zone, self.bed_config, frame_aspect)
         posture, confidence = self.classifier.classify(landmarks, now)
         risk = self.rule.observe(posture, now)
-        if self.fall.observe(image_landmarks, now) == "fall":
-            confirmed = self.wall_clock()
-            impact = confirmed - timedelta(seconds=now - self.fall.impact_at)
-            payload = self.payload(confirmed, posture, confidence, "fall-v1", "fall")
-            self.uplink.enqueue(payload)
-            log.warning(
-                "Caída confirmada: event_id=%s impacto=%s confirmada=%s confirmación=%.2f s",
-                payload["event_id"],
-                impact.isoformat(),
-                confirmed.isoformat(),
-                now - self.fall.impact_at,
-            )
+        impact = self.fall.observe(image_landmarks, now) == "fall"
+        self.bed_result = self.bed.observe(image_landmarks, now) if self.bed else ""
+        if self.fall_latched and self.bed.rearmed(now):
+            self.fall_latched = False
+        for rule_version, started, emitted in (
+            ("fall-v1", self.fall.impact_at, impact),
+            ("fall-bed-v1", self.bed and self.bed.lying_since, self.bed_result == "fall"),
+        ):
+            if not emitted:
+                continue
+            if self.fall_latched:
+                log.info("Caída ya avisada para este evento (%s).", rule_version)
+                continue
+            self.fall_latched = self.bed is not None
+            self.send_fall(rule_version, started, posture, confidence, now)
+        if people is None:
+            people = 1 if image_landmarks else 0
+        if self.bed:
+            usable = self.bed_result != "no_person"
+        else:
+            usable = bed.body_reference(image_landmarks, frame_aspect) is not None
+        # Two people in view: someone is there (often the caregiver), not "lost".
+        self.state_changed(self.status.frame(now, people >= 2 or usable, brightness))
         if (
             posture != self.last_posture
             or risk
@@ -347,6 +439,8 @@ def main():
         fall_config = config_from_args(a)
     except (OSError, ValueError, TypeError) as exc:
         raise SystemExit(f"Configuración de caídas inválida: {exc}")
+    bed_zone, bed_config = bed_from_args(a)
+    monitor_config = monitor_config_from_args(a)
     import cv2
     import mediapipe as mp
     from mediapipe.tasks import python
@@ -360,7 +454,8 @@ def main():
     )
     uplink = None if a.calibrate else Uplink(a.server, token)
     monitor = None if a.calibrate else Monitor(
-        references, a.immobility_minutes * 60, fall_config, uplink
+        references, a.immobility_minutes * 60, fall_config, uplink,
+        bed_zone=bed_zone, bed_config=bed_config, monitor_config=monitor_config,
     )
     source = int(a.camera) if a.camera.isdigit() else a.camera
     options = vision.PoseLandmarkerOptions(
@@ -373,7 +468,7 @@ def main():
     )
     samples, paused = [], False
     stats, metrics_since = LatencyStats(), time.monotonic()
-    capture = None
+    camera = None
     if uplink:
         uplink.start()
     try:
@@ -382,9 +477,9 @@ def main():
                 now = time.monotonic()
                 if uplink and not uplink.lease_active(now):
                     # Fail closed; pending observations stay queued for later.
-                    if capture:
-                        capture.release()
-                        capture = None
+                    if camera:
+                        camera.release()
+                        camera = None
                     if not paused:
                         monitor.reset()
                         paused = True
@@ -396,12 +491,18 @@ def main():
                 if paused:
                     paused = False
                     log.info("Monitoreo reanudado.")
-                if capture is None:
-                    capture = cv2.VideoCapture(source)
-                ok, frame = capture.read()
-                if not ok:
-                    log.warning("Sin imagen de cámara. No se infiere inmovilidad.")
-                    break
+                if camera is None:
+                    camera = monitoring.Camera(source, cv2.VideoCapture, time.monotonic)
+                frame = camera.read()
+                if frame is None:
+                    if camera.ended:
+                        log.info("Fin del video local.")
+                        break
+                    # A live camera is reopened; no immobility is inferred meanwhile.
+                    if monitor:
+                        monitor.tick(now)
+                    time.sleep(0.2)
+                    continue
                 rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 started = time.perf_counter()
                 result = detector.detect_for_video(
@@ -424,12 +525,14 @@ def main():
                         break
                     continue
                 monitor.process(
-                    landmarks, image_landmarks, now, frame.shape[1] / frame.shape[0]
+                    landmarks, image_landmarks, now, frame.shape[1] / frame.shape[0],
+                    brightness=monitoring.frame_brightness(frame),
+                    people=len(result.pose_world_landmarks),
                 )
                 time.sleep(0.05)
     finally:
-        if capture:
-            capture.release()
+        if camera:
+            camera.release()
         if uplink:
             uplink.stop()
 

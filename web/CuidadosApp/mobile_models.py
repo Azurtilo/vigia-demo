@@ -5,6 +5,15 @@ import uuid
 from django.conf import settings
 from django.db import models
 
+# Spec 017 (D-073): what the node can actually watch. Technical state, not a
+# clinical observation; only the latest value is kept. "" = node never reported.
+MONITOR_STATES = [
+    ("normal", "Monitoreo activo"),
+    ("persona_no_visible", "No se ve a la persona"),
+    ("sin_imagen", "La cámara no entrega imagen"),
+    ("poca_luz", "Poca luz"),
+]
+
 
 class DetectionNode(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -15,6 +24,8 @@ class DetectionNode(models.Model):
     credential_hash = models.CharField(max_length=64, unique=True)
     active = models.BooleanField(default=True)
     last_seen_at = models.DateTimeField(null=True, blank=True)
+    monitor_state = models.CharField(max_length=24, blank=True, default="", choices=MONITOR_STATES)
+    monitor_since = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
 

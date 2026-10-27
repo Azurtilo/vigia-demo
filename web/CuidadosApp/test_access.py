@@ -221,6 +221,54 @@ class AccessMatrixTests(DelegatedCareBase):
         self.assertContains(page, "Paciente demo")
 
 
+class CameraStateTests(DelegatedCareBase):
+    """Spec 017 (D-077): every role sees the camera state, never node details."""
+
+    def node(self, **fields):
+        defaults = {"patient": self.patient, "name": "Cámara del dormitorio",
+                    "credential_hash": uuid.uuid4().hex * 2, "last_seen_at": timezone.now()}
+        return DetectionNode.objects.create(**{**defaults, **fields})
+
+    def camera(self, user):
+        response = Client().get(
+            f"/api/v1/patients/{self.patient.pk}", HTTP_X_SESSION_TOKEN=self.api_token(user)
+        )
+        return response.status_code, response.json()
+
+    def test_every_role_sees_the_state_without_node_details(self):
+        self.premium(self.titular)
+        node = self.node(monitor_state="sin_imagen", monitor_since=timezone.now())
+        for user in (self.titular, self.familiar, self.cuidador):
+            with self.subTest(user=user.username):
+                status, data = self.camera(user)
+                self.assertEqual((status, data["camera_state"]), (200, "sin_imagen"))
+                text = json.dumps(data, ensure_ascii=False, default=str)
+                for detail in (str(node.pk), node.name, "last_seen_at", "monitor_since"):
+                    self.assertNotIn(detail, text)
+        for user in (self.stranger, self.root):
+            self.assertEqual(self.camera(user)[0], 404)
+
+    def test_no_active_node_unknown_state_or_plan_gives_null(self):
+        self.premium(self.titular)
+        self.assertIsNone(self.camera(self.cuidador)[1]["camera_state"])
+        self.node(active=False, monitor_state="sin_imagen")
+        self.assertIsNone(self.camera(self.cuidador)[1]["camera_state"])
+        self.node(monitor_state="")  # node from before spec 017
+        self.assertIsNone(self.camera(self.cuidador)[1]["camera_state"])
+        DetectionNode.objects.update(monitor_state="normal")
+        self.assertEqual(self.camera(self.cuidador)[1]["camera_state"], "normal")
+        Subscription.objects.update(end=timezone.now() - timedelta(seconds=1))
+        self.assertIsNone(self.camera(self.cuidador)[1]["camera_state"])
+
+    def test_worst_state_wins_and_a_silent_node_is_no_signal(self):
+        self.premium(self.titular)
+        self.node(monitor_state="normal")
+        self.node(monitor_state="poca_luz")
+        self.assertEqual(self.camera(self.familiar)[1]["camera_state"], "poca_luz")
+        self.node(monitor_state="normal", last_seen_at=timezone.now() - timedelta(minutes=5))
+        self.assertEqual(self.camera(self.familiar)[1]["camera_state"], "sin_senal")
+
+
 class DelegatedRecordTests(DelegatedCareBase):
     def setUp(self):
         super().setUp()
@@ -491,3 +539,49 @@ class RecipientTests(DelegatedCareBase):
         self.assertEqual(
             falls, ["cuidador", "familiar", "titular"]
         )
+
+    @override_settings(VIGIA_PUSH_ENABLED=True)
+    def test_blind_camera_alert_reaches_every_role(self):
+        """Spec 017 (D-074): same recipients as the fall push."""
+        from .push import MONITOR_TEXT
+
+        self.premium(self.titular)
+        DetectionNode.objects.create(
+            patient=self.patient, name="Cámara", credential_hash="w" * 64,
+            last_seen_at=timezone.now(), monitor_state="sin_imagen",
+            monitor_since=timezone.now(),
+        )
+        for user in (self.titular, self.familiar, self.cuidador, self.stranger):
+            Client().post(
+                "/api/v1/devices",
+                data=json.dumps({"installation_id": str(uuid.uuid4()),
+                                 "token": f"device-token-not-real-{user.username}",
+                                 "platform": "android", "enabled": True}),
+                content_type="application/json",
+                HTTP_X_SESSION_TOKEN=self.api_token(user),
+            )
+        sent = []
+        messaging = types.SimpleNamespace(
+            Message=lambda **kw: kw, Notification=lambda **kw: kw,
+            AndroidConfig=lambda **kw: kw, AndroidNotification=lambda **kw: kw,
+            send=sent.append,
+        )
+        modules = {
+            "firebase_admin": types.SimpleNamespace(_apps=[object()], messaging=messaging),
+            "firebase_admin.messaging": messaging,
+            "firebase_admin.exceptions": types.SimpleNamespace(FirebaseError=Exception),
+        }
+        from .api import detection
+
+        with patch.dict(sys.modules, modules), patch(
+            "CuidadosApp.management.commands.send_mobile_reminders.allowed",
+            wraps=detection.allowed,
+        ) as checked:
+            for _ in range(2):
+                call_command("send_mobile_reminders", stdout=StringIO(), stderr=StringIO())
+        # T-017-15: one check per node and run, not one per device (3 devices).
+        self.assertEqual(checked.call_count, 2)
+        reached = sorted(
+            m["token"].rsplit("-", 1)[1] for m in sent if m["notification"]["body"] == MONITOR_TEXT
+        )
+        self.assertEqual(reached, ["cuidador", "familiar", "titular"])

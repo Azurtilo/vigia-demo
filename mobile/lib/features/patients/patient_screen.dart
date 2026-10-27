@@ -9,6 +9,7 @@ import '../../core/api.dart';
 import '../../shared/care_widgets.dart';
 import '../detection/phone_pose.dart';
 import 'access.dart';
+import 'camera_state.dart';
 
 class PatientScreen extends StatefulWidget {
   final VigiaApi api;
@@ -36,6 +37,7 @@ class _PatientScreenState extends State<PatientScreen> {
   int tab = 0;
   int? nextHistoryPage;
   bool can(String action) => allows(patient, action);
+  bool get detectionOn => caps?['features']?['posture_detection'] == true;
   Future<void> load({bool quiet = false}) async {
     if (busy) return;
     setState(() {
@@ -342,6 +344,24 @@ class _PatientScreenState extends State<PatientScreen> {
               fontWeight: FontWeight.w600,
             ),
           ),
+          // D-077: read-only for every role, so whoever got the alert sees why.
+          if (cameraStateLabel(patient!['camera_state']) case final label?)
+            Padding(
+              key: const Key('camera-state'),
+              padding: const EdgeInsets.only(top: 8),
+              child: Row(
+                children: [
+                  Icon(
+                    cameraWarning(patient!['camera_state'])
+                        ? Icons.warning_amber
+                        : Icons.videocam_outlined,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(child: Text('Cámara: $label')),
+                ],
+              ),
+            ),
           const SizedBox(height: 16),
           // T-011-12: chips wrap on narrow phones instead of hiding sections.
           Wrap(
@@ -647,20 +667,19 @@ class _PatientScreenState extends State<PatientScreen> {
               Card(
                 child: ListTile(
                   leading: Icon(
-                    n['connected'] == true &&
-                            caps?['features']?['posture_detection'] == true
+                    nodeWarning(n, detectionEnabled: detectionOn)
+                        ? Icons.warning_amber
+                        : n['connected'] == true && detectionOn
                         ? Icons.sensors
                         : Icons.sensors_off,
                   ),
                   title: Text(n['name']),
                   subtitle: Text(
-                    n['active'] != true
-                        ? 'Revocado'
-                        : caps?['features']?['posture_detection'] != true
-                        ? 'No activo por plan'
-                        : n['connected'] == true
-                        ? 'Conectado · Última señal ${when(n['last_seen_at'])}'
-                        : 'Sin señal reciente · No hay monitoreo confirmado',
+                    nodeSubtitle(
+                      n,
+                      detectionEnabled: detectionOn,
+                      lastSeen: when(n['last_seen_at']),
+                    ),
                   ),
                   trailing: n['active'] == true
                       ? IconButton(

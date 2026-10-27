@@ -16,6 +16,7 @@ from PlanesApp.entitlements import capabilities, mobile_capabilities
 from PrivacidadApp.names import author_name
 
 from .base import MobileView
+from .detection import camera_state
 
 
 def patient_data(p):
@@ -157,6 +158,7 @@ class PatientView(MobileView):
             else None
         )
         data["server_time"] = timezone.now()
+        data["camera_state"] = camera_state(p)
         return JsonResponse(data)
 
     def post(self, request, pk):

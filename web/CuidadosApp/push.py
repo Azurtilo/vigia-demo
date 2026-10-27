@@ -21,6 +21,8 @@ log = logging.getLogger("vigia.push")
 
 # D-058: one generic text; the lock screen never reveals a health event.
 RISK_TEXT = "VIGIA: alerta de riesgo, abre la app."
+# Spec 017 (D-074): the camera cannot watch; generic as well, never high priority.
+MONITOR_TEXT = "VIGIA: revisa la cámara de monitoreo, abre la app."
 RESERVATION_TTL = timedelta(minutes=2)
 
 
