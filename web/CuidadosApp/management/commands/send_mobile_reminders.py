@@ -4,13 +4,15 @@ from datetime import timedelta
 
 from allauth.headless.internal.sessionkit import authenticate_by_x_session_token
 from django.conf import settings
+from django.core.exceptions import PermissionDenied
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from django.utils import timezone
 
 from CuidadosApp import push
 from CuidadosApp.access import risk_patient_ids
-from CuidadosApp.models import MobileDevice, PostureObservation, PushReceipt
+from CuidadosApp.api.detection import allowed
+from CuidadosApp.models import DetectionNode, MobileDevice, PostureObservation, PushReceipt
 from CuidadosApp.scheduling import reminders
 from PlanesApp.services import locked_user
 
@@ -20,6 +22,11 @@ from PlanesApp.services import locked_user
 # lost immediate push (D-051) is retried on the next run instead of lost.
 RISK_PUSH_MAX_AGE = timedelta(hours=1)
 RISK_MESSAGES = {"fall": push.RISK_TEXT, "immobility": push.RISK_TEXT}
+# Spec 017 (D-074, D-075): a blind camera or a silent node, once per episode.
+# "poca_luz" is shown in the app only. The key names the episode, so the
+# receipt stops repeats and a new episode gets a new key.
+BLIND_STATES = ("persona_no_visible", "sin_imagen")
+NODE_OFFLINE_AFTER = timedelta(seconds=60)
 CARE_TEXT = "Tienes un cuidado pendiente. Abre VIGIA para revisarlo."
 
 
@@ -79,9 +86,35 @@ class Command(BaseCommand):
                 (f"edge:{r.pk}", RISK_MESSAGES[r.risk], r.risk)
                 for r in sorted(rows, key=lambda r: (r.risk != "fall", r.received_at))
             ]
+            falls = [r for r in risks if r[2] == "fall"]
+            risks = falls + self.node_alerts(ids) + risks[len(falls):]
         done = set(
             PushReceipt.objects.filter(device=device, confirmed=True).values_list(
                 "key", flat=True
             )
         )
         return [c for c in risks + care if c[0] not in done]
+
+    def node_alerts(self, patient_ids):
+        now = timezone.now()
+        alerts = []
+        for node in DetectionNode.objects.filter(
+            patient_id__in=patient_ids, active=True, last_seen_at__isnull=False
+        ).select_related("patient__owner"):
+            silent = node.last_seen_at < now - NODE_OFFLINE_AFTER
+            if silent:
+                key, since = f"node:{node.pk}:offline:{node.last_seen_at.isoformat()}", node.last_seen_at
+            elif node.monitor_state in BLIND_STATES and node.monitor_since:
+                key = f"node:{node.pk}:{node.monitor_state}:{node.monitor_since.isoformat()}"
+                since = node.monitor_since
+            else:
+                continue
+            if since < now - RISK_PUSH_MAX_AGE:
+                continue  # an old episode is not announced to a new device
+            try:
+                # Stopped on purpose (plan, capacity, consent): not a failure.
+                allowed(node.patient.owner, node.patient)
+            except PermissionDenied:
+                continue
+            alerts.append((key, push.MONITOR_TEXT, "monitor"))
+        return alerts

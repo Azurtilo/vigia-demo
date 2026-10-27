@@ -491,3 +491,42 @@ class RecipientTests(DelegatedCareBase):
         self.assertEqual(
             falls, ["cuidador", "familiar", "titular"]
         )
+
+    @override_settings(VIGIA_PUSH_ENABLED=True)
+    def test_blind_camera_alert_reaches_every_role(self):
+        """Spec 017 (D-074): same recipients as the fall push."""
+        from .push import MONITOR_TEXT
+
+        self.premium(self.titular)
+        DetectionNode.objects.create(
+            patient=self.patient, name="Cámara", credential_hash="w" * 64,
+            last_seen_at=timezone.now(), monitor_state="sin_imagen",
+            monitor_since=timezone.now(),
+        )
+        for user in (self.titular, self.familiar, self.cuidador, self.stranger):
+            Client().post(
+                "/api/v1/devices",
+                data=json.dumps({"installation_id": str(uuid.uuid4()),
+                                 "token": f"device-token-not-real-{user.username}",
+                                 "platform": "android", "enabled": True}),
+                content_type="application/json",
+                HTTP_X_SESSION_TOKEN=self.api_token(user),
+            )
+        sent = []
+        messaging = types.SimpleNamespace(
+            Message=lambda **kw: kw, Notification=lambda **kw: kw,
+            AndroidConfig=lambda **kw: kw, AndroidNotification=lambda **kw: kw,
+            send=sent.append,
+        )
+        modules = {
+            "firebase_admin": types.SimpleNamespace(_apps=[object()], messaging=messaging),
+            "firebase_admin.messaging": messaging,
+            "firebase_admin.exceptions": types.SimpleNamespace(FirebaseError=Exception),
+        }
+        with patch.dict(sys.modules, modules):
+            for _ in range(2):
+                call_command("send_mobile_reminders", stdout=StringIO(), stderr=StringIO())
+        reached = sorted(
+            m["token"].rsplit("-", 1)[1] for m in sent if m["notification"]["body"] == MONITOR_TEXT
+        )
+        self.assertEqual(reached, ["cuidador", "familiar", "titular"])

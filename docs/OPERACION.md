@@ -5,9 +5,11 @@ Guía para quien administra el servidor de VIGIA. Hay dos tareas que dependen de
 | Tarea | Comando | Frecuencia | Qué pasa si no corre |
 |---|---|---|---|
 | Purga de datos vencidos | `manage.py purge_expired_data` | Una vez al día | No se cumplen los plazos de conservación de la política de privacidad (D-064, spec 014) |
-| Avisos al teléfono | `manage.py send_mobile_reminders` | Cada 5 minutos (propuesta; P-012-01 sigue abierta) | No llegan los avisos de inmovilidad ni de cuidados pendientes, ni el reintento de una caída cuyo push inmediato falló (D-051) |
+| Avisos al teléfono | `manage.py send_mobile_reminders` | Cada 5 minutos (propuesta; P-012-01 sigue abierta) | No llegan los avisos de inmovilidad, de cuidados pendientes ni de la cámara (spec 017), ni el reintento de una caída cuyo push inmediato falló (D-051) |
 
 La caída se avisa de inmediato al recibirla (D-051); esta tarea no la reemplaza, la respalda.
+
+Desde la spec 017, la misma tarea avisa también cuando la cámara no puede vigilar: el nodo informa «persona no visible» o «sin imagen» (D-074), o deja de renovar su autorización por más de 60 s (D-075). Estos avisos **solo** salen con esta tarea, sin push inmediato: la demora real es de hasta 10 s en el nodo, más 60 s para el nodo sin señal, más el intervalo de la tarea. Con 5 minutos, un nodo apagado puede tardar hasta unos 6 minutos en avisarse. Se avisa una vez por episodio y por teléfono; un nodo detenido a propósito (plan, cupo, consentimiento o revocación) no genera aviso.
 
 Los ejemplos usan marcadores: `<ruta-del-proyecto>` (carpeta raíz de VIGIA en el servidor) y `<ruta-de-logs>`. Los comandos usan la configuración de producción (`core.settings`, por defecto en `manage.py`). Nunca programes estas tareas con `core.mobile_demo_settings` ni con `core.test_settings`.
 
