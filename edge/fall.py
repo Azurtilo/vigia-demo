@@ -8,7 +8,8 @@ import dataclasses
 import json
 import math
 from collections import deque
-from pathlib import Path
+
+from . import options
 
 SHOULDERS, HIPS = (11, 12), (23, 24)
 
@@ -32,14 +33,7 @@ class FallConfig:
     floor_hip_y: float | None = None
 
     def __post_init__(self):
-        for f in dataclasses.fields(self):
-            value = getattr(self, f.name)
-            if value is None and f.name == "floor_hip_y":
-                continue
-            if isinstance(value, bool) or not isinstance(value, (int, float)):
-                raise TypeError(f"{f.name} debe ser numérico.")
-            if not math.isfinite(value) or value <= 0:
-                raise ValueError(f"{f.name} debe ser finito y mayor que cero.")
+        options.check_positive(self, optional=("floor_hip_y",))
         if self.min_interval_seconds >= self.window_seconds:
             raise ValueError("min_interval_seconds debe ser menor que window_seconds.")
         if not self.recover_angle < self.trunk_angle <= 90:
@@ -55,36 +49,19 @@ class FallConfig:
 
     @classmethod
     def from_file(cls, path):
-        data = json.loads(Path(path).read_text(encoding="utf-8"))
-        names = {f.name for f in dataclasses.fields(cls)}
-        if not isinstance(data, dict) or set(data) - names:
-            raise ValueError(
-                f"Configuración de caídas inválida; claves admitidas: {sorted(names)}."
-            )
-        return cls(**data)
+        return options.from_file(cls, path, "caídas")
 
 
 def add_arguments(parser):
-    group = parser.add_argument_group("detección de caídas")
-    group.add_argument("--fall-config", help="JSON local con umbrales de caída")
-    for f in dataclasses.fields(FallConfig):
-        group.add_argument(
-            "--fall-" + f.name.replace("_", "-"),
-            dest="fall_" + f.name,
-            type=float,
-            help=f"por defecto {f.default}",
-        )
+    options.add_arguments(
+        parser, FallConfig, "fall", "detección de caídas",
+        "JSON local con umbrales de caída", settings_option="config",
+    )
 
 
 def config_from_args(args):
     """File values first, then explicit --fall-* arguments; validation re-runs."""
-    base = FallConfig.from_file(args.fall_config) if args.fall_config else FallConfig()
-    overrides = {
-        f.name: getattr(args, "fall_" + f.name)
-        for f in dataclasses.fields(FallConfig)
-        if getattr(args, "fall_" + f.name) is not None
-    }
-    return dataclasses.replace(base, **overrides)
+    return options.config_from_args(args, FallConfig, "fall", "caídas", settings_option="config")
 
 
 def frame_features(landmarks, frame_aspect=1.0, min_visibility=0.5):

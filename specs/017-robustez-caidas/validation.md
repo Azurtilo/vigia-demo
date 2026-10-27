@@ -109,6 +109,17 @@ Límites: sin persona real frente a una cámara, sin calibración con ventana y 
 
 Suite Django: **247 OK**. Sin cambios en Edge ni Flutter.
 
+## Configuración unificada (T-017-16), 2026-10-27
+
+`edge/fall.py` pasa a usar `edge/options.py`. Comprobación de que nada cambia para quien usa el nodo:
+
+| Comprobación | Resultado |
+|---|---|
+| `python -m edge.run --help`, `python -m edge.bench --help` y `python -m edge.fall` antes y después | Idénticos byte a byte |
+| 17 configuraciones (válidas, negativas, NaN, infinito, `True`, texto, `floor_hip_y` nulo, 0, 1,5 y `True`, reglas cruzadas) y 4 archivos JSON (válido, clave desconocida, lista, con `floor_hip_y`) contra la versión de `develop` | Mismo tipo de error y mismo mensaje en los 21 casos |
+| `python -m unittest edge.test_posture edge.test_fall edge.test_run` | **56 OK** |
+| `ruff check` en `edge/fall.py`, `edge/options.py`, `edge/bed.py`, `edge/monitoring.py` | Sin hallazgos |
+
 ## Aplicación y reversión
 
 Migración aditiva `0010_detectionnode_monitor_state` (dos `AddField` con valores por defecto). Reversión: `migrate CuidadosApp 0009`, que pierde solo el último estado informado; la siguiente renovación lo regenera.

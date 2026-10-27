@@ -25,7 +25,7 @@ Lista única de lo que falta. El detalle vive en cada spec y en DECISIONES. «Pr
 | 15 | Decidir cómo se activa `VIGIA_PUSH_ENABLED` en producción: hoy no se define en ninguna configuración ni se lee del entorno, así que los avisos no pueden encenderse. Requiere un cambio de configuración con spec | `send_mobile_reminders`, `push.py`, D-054 | Propietario (decisión) + equipo |
 | 16 | Hallazgos de la QA del 2026-10-26 sin abordar: 07 (lock con hashes del Edge), 09 (contraseña demo en `MOVIL_DESARROLLO.md`), 10 (prueba de la API con la puerta de privacidad activa), 11 (logo con poco contraste en modo oscuro), 12 (dependencias de Flutter con versiones mayores), 13 (conteos repetidos en este estado). El 05 (push real y RNF) sigue en los pendientes 3, 4 y 9 | [QA_2026-10-26.md](QA_2026-10-26.md) | Equipo |
 | 17 | ~~Revisión de calidad y correcciones 01–04, 06 y 08~~ PR #10 (informe) y PR #11 (spec 016) fusionadas el 2026-10-26 | spec 016 | Hecho |
-| 18 | Revisar y fusionar la [PR #12](https://github.com/Azurtilo/vigia-demo/pull/12) de la spec 017 (`feature/017-robustez-caidas`) | spec 017 | Propietario |
+| 18 | ~~Revisar y fusionar la [PR #12](https://github.com/Azurtilo/vigia-demo/pull/12) de la spec 017~~ Fusionada en `develop` el 2026-10-27 (`2bf9c53`) | spec 017 | Hecho |
 | 19 | Pruebas en vivo de la 017: calibración con ventana, deslizamiento simulado, tapar o desconectar la cámara, apagar la luz, cortar la red del nodo y recepción de los avisos | T-017-13 | Propietario |
 
 Trabajo futuro registrado (no comprometido): invitación por correo (D-050), traspaso de titularidad, papelera de pacientes con «deshacer» (D-067), cifrado en reposo y PostgreSQL (014), registro de lecturas, push inmediato de inmovilidad (D-051). iOS pasó al alcance el 2026-10-26 (D-068, spec 015).
@@ -40,7 +40,9 @@ Trabajo futuro registrado (no comprometido): invitación por correo (D-050), tra
   - Documentación: guía de instalación, casos difíciles y protocolo ampliado a 25 caídas y 60 actividades normales en [edge/README.md](../edge/README.md).
 - **Evidencia (Windows, sintética).** Django **246**, Edge **56** y Flutter **51** OK; check y `makemigrations --check` sin cambios; `0010` probada en avance y reversión; 12 mutaciones detectadas. Brillo + regla de cama ≈ 0,5 ms por cuadro con video sin personas. Detalle en [validation.md](../specs/017-robustez-caidas/validation.md).
 - **No hecho.** Sin cámara real, `edge.run` en vivo, calibración con ventana ni Firebase real (T-017-13). Sin merge, migración real ni despliegue.
-- **Siguiente paso seguro.** Revisión de la [PR #12](https://github.com/Azurtilo/vigia-demo/pull/12) por el propietario; luego T-017-13 junto con el protocolo ampliado (pendiente 4).
+- **Fusión.** [PR #12](https://github.com/Azurtilo/vigia-demo/pull/12) fusionada en `develop` el 2026-10-27 (`2bf9c53`), con autorización del usuario («haz merge»). Incluye T-017-14/15 (contrato de estados nodo ↔ servidor y avisos de nodo una vez por ejecución). Sin migración real ni despliegue.
+- **Después.** T-017-16 en `feature/017-config-caidas`: `edge/fall.py` usa `edge/options.py` como la cama y el monitoreo, sin cambiar su comportamiento.
+- **Siguiente paso seguro.** T-017-13 junto con el protocolo ampliado (pendiente 4).
 
 ## Antecedente — spec 016 en implementación, 2026-10-26
 
