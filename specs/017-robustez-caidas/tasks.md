@@ -1,22 +1,22 @@
 # Tareas — 017 / Robustez de la detección de caídas
 
 Spec: [spec.md](spec.md). Plan: [plan.md](plan.md).
-Estado: en implementación. Implementación autorizada: SÍ, T-017-01..12 (2026-10-27).
+Estado: T-017-01..12 hechas el 2026-10-27; T-017-13 pendiente (propietario). Implementación autorizada: SÍ, T-017-01..12 (2026-10-27).
 No ejecutar tareas de código por el hecho de aparecer aquí. Rama prevista: `feature/017-robustez-caidas` desde `develop`, un commit por tarea y PR hacia `develop` (D-059).
 
 ## Edge
 
-- [ ] T-017-01 — Rama y línea base.
+- [x] T-017-01 — Rama y línea base.
   - RF: todos (regresión).
   - Depende de: autorización.
   - Archivos previstos: ninguno.
   - Hecho cuando: la rama existe desde `develop`, y las suites Django, Edge y Flutter pasan sin cambios. Se registran los conteos y un `edge.bench` de referencia con el mismo video sintético en `validation.md`.
-- [ ] T-017-02 — Zona de cama y calibración local.
+- [x] T-017-02 — Zona de cama y calibración local.
   - RF: RF-017-01.
   - Depende de: T-017-01.
   - Archivos previstos: `edge/bed.py` (nuevo: `BedZone`, `python -m edge.bed --calibrate`), `edge/test_fall.py`.
   - Hecho cuando: las pruebas cubren JSON con menos de 3 vértices, vértice fuera de 0–1, clave desconocida, polígono degenerado, esquinas en cualquier orden y punto sobre el borde. Además, la calibración no escribe imágenes, cosa que se comprueba revisando el código. La prueba con ventana y cámara queda en T-017-13.
-- [ ] T-017-03 — Punto de referencia y regla «acostado fuera de la cama».
+- [x] T-017-03 — Punto de referencia y regla «acostado fuera de la cama».
   - RF: RF-017-02, RF-017-03, RF-017-04.
   - Depende de: T-017-02.
   - Archivos previstos: `edge/bed.py` (`BedConfig`, `body_reference`, `BedFallRule`), `edge/test_fall.py`.
@@ -30,7 +30,7 @@ No ejecutar tareas de código por el hecho de aparecer aquí. Rama prevista: `fe
     - cambio de punto de referencia sin salto.
 
     Las pruebas de 012 pasan sin modificarse.
-- [ ] T-017-04 — Integración en `Monitor`, cerrojo común y argumentos.
+- [x] T-017-04 — Integración en `Monitor`, cerrojo común y argumentos.
   - RF: RF-017-05, RF-017-13 (caídas).
   - Depende de: T-017-03.
   - Archivos previstos: `edge/run.py`, `edge/bench.py`, `edge/test_run.py`.
@@ -43,7 +43,7 @@ No ejecutar tareas de código por el hecho de aparecer aquí. Rama prevista: `fe
     - sin `--bed-config`, la misma secuencia de observaciones que hoy.
 
     `--bed-*` inválidos detienen el inicio con un mensaje en es-CL, y `edge.bench --bed-config` reporta la latencia.
-- [ ] T-017-05 — Estado de monitoreo: persona no visible, sin imagen y poca luz.
+- [x] T-017-05 — Estado de monitoreo: persona no visible, sin imagen y poca luz.
   - RF: RF-017-06, RF-017-07, RF-017-08, RF-017-13 (estados).
   - Depende de: T-017-01 (independiente de T-017-02..04).
   - Archivos previstos: `edge/monitoring.py` (nuevo), `edge/run.py`, `edge/test_run.py`.
@@ -57,7 +57,7 @@ No ejecutar tareas de código por el hecho de aparecer aquí. Rama prevista: `fe
     - prioridad entre estados.
 
     `edge.bench` muestra el costo del cálculo de brillo.
-- [ ] T-017-06 — Envío del estado en la renovación.
+- [x] T-017-06 — Envío del estado en la renovación.
   - RF: RF-017-09 (nodo).
   - Depende de: T-017-05.
   - Archivos previstos: `edge/run.py` (`Uplink`), `edge/test_run.py`.
@@ -71,7 +71,7 @@ No ejecutar tareas de código por el hecho de aparecer aquí. Rama prevista: `fe
 
 ## Backend
 
-- [ ] T-017-07 — Estado del nodo en el backend.
+- [x] T-017-07 — Estado del nodo en el backend.
   - RF: RF-017-09 (servidor), RF-017-10 (API).
   - Depende de: T-017-01.
   - Archivos previstos: `web/CuidadosApp/mobile_models.py`, `web/CuidadosApp/migrations/0010_detectionnode_monitor_state.py` (nueva, aditiva), `web/CuidadosApp/api/detection.py`, `web/CuidadosApp/test_mobile.py`, `web/CuidadosApp/test_access.py`.
@@ -83,7 +83,7 @@ No ejecutar tareas de código por el hecho de aparecer aquí. Rama prevista: `fe
     - `nodes` devuelve `monitor_state` (`desconocido` si vacío) solo al titular, y otro usuario recibe 404.
 
     `makemigrations --check` queda sin cambios tras crear `0010`, y la migración se prueba en avance y reversión.
-- [ ] T-017-08 — Avisos de monitoreo ciego y de nodo sin señal.
+- [x] T-017-08 — Avisos de monitoreo ciego y de nodo sin señal.
   - RF: RF-017-11, RF-017-12.
   - Depende de: T-017-07.
   - Archivos previstos: `web/CuidadosApp/push.py`, `web/CuidadosApp/management/commands/send_mobile_reminders.py`, `web/CuidadosApp/test_push.py`, `docs/OPERACION.md`.
@@ -100,12 +100,12 @@ No ejecutar tareas de código por el hecho de aparecer aquí. Rama prevista: `fe
 
 ## App
 
-- [ ] T-017-09 — Estado en la tarjeta del nodo (titular).
+- [x] T-017-09 — Estado en la tarjeta del nodo (titular).
   - RF: RF-017-10.
   - Depende de: T-017-07.
   - Archivos previstos: `mobile/lib/features/patients/patient_screen.dart` (función pura de texto e icono), prueba en `mobile/test/`.
   - Hecho cuando: la prueba cubre los cinco estados (incluido `desconocido`) y los casos revocado, sin plan y sin señal, que tienen prioridad. `flutter analyze` queda sin problemas y `flutter test` pasa completo.
-- [ ] T-017-10 — Estado de la cámara para titular, familiar y cuidador (D-077).
+- [x] T-017-10 — Estado de la cámara para titular, familiar y cuidador (D-077).
   - RF: RF-017-10 (ficha del paciente).
   - Depende de: T-017-07, T-017-09.
   - Archivos previstos: `web/CuidadosApp/api/views.py` (`PatientView`, campo `camera_state`), `web/CuidadosApp/test_access.py`, `mobile/lib/features/patients/patient_screen.dart`, prueba Flutter.
@@ -117,7 +117,7 @@ No ejecutar tareas de código por el hecho de aparecer aquí. Rama prevista: `fe
 
 ## Documentación y cierre
 
-- [ ] T-017-11 — Guía de instalación, calibración y protocolo ampliado.
+- [x] T-017-11 — Guía de instalación, calibración y protocolo ampliado.
   - RF: RF-017-14, RF-017-15.
   - Depende de: T-017-02, T-017-05 (para documentar los comandos y estados reales).
   - Archivos previstos: `edge/README.md`.
@@ -130,7 +130,7 @@ No ejecutar tareas de código por el hecho de aparecer aquí. Rama prevista: `fe
     - protocolo con los casos nuevos y el denominador fijado de nuevo antes de ejecutarlo.
 
     Además, los enlaces son válidos.
-- [ ] T-017-12 — Validación y cierre documental.
+- [x] T-017-12 — Validación y cierre documental.
   - RF: RF-017-01..15.
   - Depende de: T-017-02..11.
   - Archivos previstos: `specs/017-robustez-caidas/validation.md` (nuevo), `specs/README.md`, `docs/ESTADO_PROYECTO.md`, `docs/TRAZABILIDAD.md`.
@@ -161,10 +161,22 @@ No ejecutar tareas de código por el hecho de aparecer aquí. Rama prevista: `fe
 
 | Fecha | Tarea | Archivos / comando | Resultado / pendiente |
 |---|---|---|---|
+| 2026-10-27 | Docs | `4917c25` spec, plan y tareas | Commit en la rama |
+| 2026-10-27 | T-017-01 | `469fb4a` línea base | Django 235, Edge 22, Flutter 46; bench sintético 12,31 ms |
+| 2026-10-27 | T-017-02/03 | `f62b13b` `edge/bed.py`, `edge/options.py`, `edge/test_fall.py` | Un solo commit para las dos tareas: comparten `bed.py`. 11 pruebas nuevas; mutaciones de salto, hueco y respaldo detectadas |
+| 2026-10-27 | T-017-04 | `09fa341` `edge/run.py`, `edge/bench.py`, `edge/test_run.py` | Cerrojo común y `--bed-*`; mutaciones de cerrojo y rearme detectadas |
+| 2026-10-27 | T-017-05 | `86d5f29` `edge/monitoring.py`, `edge/run.py`, `edge/bench.py` | Estado de monitoreo y reapertura de cámara; brillo + regla de cama ≈ 0,5 ms |
+| 2026-10-27 | T-017-06 | `c99b64c` `edge/run.py`, `edge/test_run.py` | Estado en la renovación; Edge 56 OK |
+| 2026-10-27 | T-017-07 | `b195e93` modelo, migración `0010`, `api/detection.py`, `test_mobile.py` | Avance y reversión de `0010` probados |
+| 2026-10-27 | T-017-08 | `818f6c3` `push.py`, `send_mobile_reminders.py`, `test_push.py`, `test_access.py`, `docs/OPERACION.md` | Cuatro mutaciones detectadas; Django 243 OK |
+| 2026-10-27 | T-017-09 | `89c956a` `camera_state.dart`, `patient_screen.dart`, `camera_state_test.dart` | Flutter 50 OK |
+| 2026-10-27 | T-017-10 | `4768ae8` `api/views.py`, `api/detection.py`, `test_access.py`, `patient_screen.dart`, `patient_roles_test.dart` | Django 246, Flutter 51 OK |
+| 2026-10-27 | T-017-11 | `0c5e26b` `edge/README.md` | Protocolo ampliado a 25 caídas y 60 actividades; corregidos el texto del push y el comando de verificación |
+| 2026-10-27 | T-017-12 | `validation.md`, índice, estado, trazabilidad; PR hacia `develop` | Django 246, Edge 56, Flutter 51 OK; sin merge |
 
 ## Reanudación
 
-Última acción real: spec, plan y tareas redactados el 2026-10-27 (fase DOCUMENTAR), con D-073..D-077. Siguiente paso: autorizar las tareas que corresponda. Fase permitida: solo documentación. Bloqueos: T-017-13 por cámara, servidor de prueba y Firebase.
+Última acción real: T-017-01..12 implementadas y verificadas en `feature/017-robustez-caidas` el 2026-10-27; PR hacia `develop` sin merge. Siguiente paso: revisión de la PR por el propietario y T-017-13 (pruebas en vivo). Fase permitida: no hay más tareas autorizadas; merge, migración real y despliegue requieren autorización aparte. Bloqueos: T-017-13 por cámara, servidor de prueba y Firebase.
 
 ## Aceptación del usuario
 

@@ -1,8 +1,8 @@
 # Estado y reanudación
 
-Fecha: 2026-10-26.
+Fecha: 2026-10-27.
 
-## Pendientes abiertos — consolidado al 2026-10-26
+## Pendientes abiertos — consolidado al 2026-10-27
 
 Lista única de lo que falta. El detalle vive en cada spec y en DECISIONES. «Propietario» indica que requiere dispositivo, cuenta externa, voluntarios o una decisión suya.
 
@@ -11,11 +11,11 @@ Lista única de lo que falta. El detalle vive en cada spec y en DECISIONES. «Pr
 | 1 | ~~Revisar y fusionar la [PR #4](https://github.com/Azurtilo/vigia-demo/pull/4)~~ Fusionada en `develop` el 2026-10-25 (`0da7eda`) | — | Hecho |
 | 2 | Prueba en Android físico. **Hecho el 2026-10-25** (ELI NX9, Android 16, servidor por USB con `adb reverse`): instalación y login (T-011-09), HU-03, HU-04, permisos y aviso local con pantalla bloqueada (T-011-03), cierre de sesión sin alarmas (T-011-04), cupo Plus y bloqueo de cámara (T-011-05, parcial), flujo titular/cuidador de la 013, aceptación de política en el portal y consentimiento por paciente de la 014. Ver validaciones [011](../specs/011-ecosistema-instalable/validation.md#android-físico--2026-10-25), [013](../specs/013-cuidado-delegado/validation.md#límites-y-fallos) y [014](../specs/014-privacidad/validation.md#android-físico). **Falta:** servidor por la red local, T-011-05 con Free/Premium y reducción de cupo, revisión visual (T-011-06), validación integrada (T-011-11) | specs 011, 013, 014 | Propietario |
 | 3 | Firebase de prueba con credenciales fuera del repositorio; push real con la app cerrada; medir caída → teléfono (≤ 10 s) | D-054, T-011-04, QA-15 | Propietario |
-| 4 | Protocolo de caídas con voluntarios (20 caídas y 40 actividades normales), `bench.py` con ese video (p50/p95) y ajuste de umbrales | D-053, `edge/README.md` | Propietario + equipo |
+| 4 | Protocolo de caídas con voluntarios (25 caídas y 60 actividades normales desde la spec 017, que agrega deslizamientos de la cama y casos de sábanas, persona tapada y penumbra), `bench.py` con ese video (p50/p95) y ajuste de umbrales de ambas reglas | D-053, RF-017-15, `edge/README.md` | Propietario + equipo |
 | 5 | Revisión legal del texto de la política antes de usar datos reales | D-067, `/privacidad/` | Propietario |
 | 6 | Política de sesiones de D-056 (vencimiento, cierre de sesión remoto, revocación de nodos desde el portal web): aprobada, sin spec ni código | D-056 | Equipo (DOCUMENTAR) |
 | 7 | Hallazgos de la QA del 2026-10-22 sin abordar: QA-12/13 (refactor de validación duplicada y funciones largas), QA-17 (límite de tasa en `/api/v1/edge/*`), QA-18 (HSTS al tener dominio con HTTPS), QA-20 (IDs de decisiones ambiguos). QA-07 se corrigió el 2026-10-22 (ver [QA_2026-10-26.md](QA_2026-10-26.md), sección 7) | `docs/QA_2026-10-22.md` | Equipo |
-| 8 | Aplicar las migraciones (CuidadosApp 0008/0009, PrivacidadApp 0001) en una base real, con respaldo y autorización | — | Propietario |
+| 8 | Aplicar las migraciones (CuidadosApp 0008/0009/0010, PrivacidadApp 0001) en una base real, con respaldo y autorización | — | Propietario |
 | 9 | RNF de disponibilidad ≥ 99,5 %: declarado objetivo de diseño no medido; describir la arquitectura necesaria en el informe | D-060 | Equipo (informe) |
 | 10 | ~~Decidir si `.claude/skills/` se versiona~~ Versionada con ajustes ([PR #6](https://github.com/Azurtilo/vigia-demo/pull/6), `1f620a6`) | — | Hecho |
 | 11 | ~~Revisar y fusionar la [PR #5](https://github.com/Azurtilo/vigia-demo/pull/5)~~ Detalles de interfaz fusionados en `develop` (`f71d1be`) | — | Hecho |
@@ -25,19 +25,24 @@ Lista única de lo que falta. El detalle vive en cada spec y en DECISIONES. «Pr
 | 15 | Decidir cómo se activa `VIGIA_PUSH_ENABLED` en producción: hoy no se define en ninguna configuración ni se lee del entorno, así que los avisos no pueden encenderse. Requiere un cambio de configuración con spec | `send_mobile_reminders`, `push.py`, D-054 | Propietario (decisión) + equipo |
 | 16 | Hallazgos de la QA del 2026-10-26 sin abordar: 07 (lock con hashes del Edge), 09 (contraseña demo en `MOVIL_DESARROLLO.md`), 10 (prueba de la API con la puerta de privacidad activa), 11 (logo con poco contraste en modo oscuro), 12 (dependencias de Flutter con versiones mayores), 13 (conteos repetidos en este estado). El 05 (push real y RNF) sigue en los pendientes 3, 4 y 9 | [QA_2026-10-26.md](QA_2026-10-26.md) | Equipo |
 | 17 | ~~Revisión de calidad y correcciones 01–04, 06 y 08~~ PR #10 (informe) y PR #11 (spec 016) fusionadas el 2026-10-26 | spec 016 | Hecho |
+| 18 | Revisar y fusionar la PR de la spec 017 (`feature/017-robustez-caidas`) | spec 017 | Propietario |
+| 19 | Pruebas en vivo de la 017: calibración con ventana, deslizamiento simulado, tapar o desconectar la cámara, apagar la luz, cortar la red del nodo y recepción de los avisos | T-017-13 | Propietario |
 
 Trabajo futuro registrado (no comprometido): invitación por correo (D-050), traspaso de titularidad, papelera de pacientes con «deshacer» (D-067), cifrado en reposo y PostgreSQL (014), registro de lecturas, push inmediato de inmovilidad (D-051). iOS pasó al alcance el 2026-10-26 (D-068, spec 015).
 
-## Spec 017 robustez de caídas — DOCUMENTAR, 2026-10-27
+## Estado vigente — spec 017 implementada, 2026-10-27
 
-- **Pedido.** Revisar el prototipo `pose_app` (detector de caídas de la cama en Kotlin) y luego «redacta la spec 017» con lo que conviene traer a VIGIA.
-- **Hecho.** [specs/017-robustez-caidas/spec.md](../specs/017-robustez-caidas/spec.md): zona de cama y regla «acostado fuera de la cama» (`fall-bed-v1`), seguimiento contra sábanas, puntos de respaldo, avisos de monitoreo ciego (persona no visible, sin imagen sin terminar el proceso, poca luz, nodo sin señal) y guía de instalación y casos nuevos del protocolo D-053. Solo Markdown; sin código.
-- **Decisiones.** El usuario aceptó las recomendaciones: D-073 (estado en la renovación de `edge/status`, guardado en el nodo), D-074 (push genérico para persona no visible y sin imagen; poca luz solo en la app), D-075 (nodo sin señal a los 60 s en `send_mobile_reminders`) y D-076 (sin inmóvil fuera de la cama).
-- **Plan y tareas.** [plan.md](../specs/017-robustez-caidas/plan.md) y [tasks.md](../specs/017-robustez-caidas/tasks.md): T-017-01..13. Módulos Edge nuevos `edge/bed.py` y `edge/monitoring.py`, migración aditiva `0010` y pruebas en los módulos existentes, para no cambiar el comando de pruebas.
-- **P-017-05 → D-077 (opción A).** Titular, familiar y cuidador ven una línea de solo lectura «Cámara: <estado>» en la ficha del paciente, sin datos del nodo (T-017-10).
-- **Pendiente.** Autorización de T-017-01..12. T-017-13 (pruebas en vivo) requiere cámara, servidor de prueba y Firebase.
+- **Pedido.** Revisar el prototipo `pose_app` (detector de caídas de la cama en Kotlin), redactar la spec 017 con lo que conviene traer a VIGIA y, tras las decisiones D-073..D-077, «Autorizo T-017-01 a T-017-12, sin merge, migración real ni despliegue».
+- **Hecho** en `feature/017-robustez-caidas` ([spec 017](../specs/017-robustez-caidas/spec.md), [tareas](../specs/017-robustez-caidas/tasks.md)):
+  - Edge: zona de cama calibrada en local y regla «acostado fuera de la cama» (`fall-bed-v1`) con seguimiento contra sábanas, puntos de respaldo y un aviso por evento junto a la regla de impacto; estado de monitoreo (persona no visible, sin imagen, poca luz) informado en la renovación; el nodo ya no termina si la cámara deja de entregar cuadros.
+  - Backend: estado del nodo con migración aditiva `0010`; avisos de cámara ciega y de nodo sin señal (60 s) por `send_mobile_reminders`, una vez por episodio.
+  - App: estado en la tarjeta del nodo (titular) y línea «Cámara: …» de solo lectura para los tres roles.
+  - Documentación: guía de instalación, casos difíciles y protocolo ampliado a 25 caídas y 60 actividades normales en [edge/README.md](../edge/README.md).
+- **Evidencia (Windows, sintética).** Django **246**, Edge **56** y Flutter **51** OK; check y `makemigrations --check` sin cambios; `0010` probada en avance y reversión; 12 mutaciones detectadas. Brillo + regla de cama ≈ 0,5 ms por cuadro con video sin personas. Detalle en [validation.md](../specs/017-robustez-caidas/validation.md).
+- **No hecho.** Sin cámara real, `edge.run` en vivo, calibración con ventana ni Firebase real (T-017-13). Sin merge, migración real ni despliegue.
+- **Siguiente paso seguro.** Revisión de la PR por el propietario; luego T-017-13 junto con el protocolo ampliado (pendiente 4).
 
-## Estado vigente — spec 016 en implementación, 2026-10-26
+## Antecedente — spec 016 en implementación, 2026-10-26
 
 - **Pedido.** Revisión de calidad general ([QA_2026-10-26.md](QA_2026-10-26.md), [PR #10](https://github.com/Azurtilo/vigia-demo/pull/10)) y corrección de los hallazgos 01–04, 06 y 08.
 - **Hecho** en `feature/016-correcciones-qa` ([spec 016](../specs/016-correcciones-qa/spec.md)):

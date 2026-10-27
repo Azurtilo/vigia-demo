@@ -134,7 +134,7 @@ El icono pasa a advertencia en los tres estados ciegos. Los textos se extraen a 
 Sin permisos nuevos:
 
 - El estado del nodo sigue `patient_for(user, pk, "manage_nodes")` en `NodesView`: en la tarjeta del nodo solo lo ve el titular, como hoy.
-- **D-077 (P-017-05 A):** la respuesta del paciente (`patients/<id>`, permiso `view`, que ya tienen los tres roles) agrega `camera_state`. Es el estado agregado de sus nodos activos: el de mayor prioridad entre `sin_señal`, `sin_imagen`, `poca_luz`, `persona_no_visible` y `normal`, o `null` sin nodos activos. No incluye nombre, id ni `last_seen_at`. La ficha muestra una línea de solo lectura «Cámara: <estado>» a titular, familiar y cuidador (T-017-10).
+- **D-077 (P-017-05 A):** la respuesta del paciente (`patients/<id>`, permiso `view`, que ya tienen los tres roles) agrega `camera_state`. Es el estado agregado de sus nodos activos: el de mayor prioridad entre `sin_senal` (algún nodo sin renovar en 90 s, el mismo límite de «Conectado»), `sin_imagen`, `poca_luz`, `persona_no_visible` y `normal`, o `null` sin nodos activos. No incluye nombre, id ni `last_seen_at`. La ficha muestra una línea de solo lectura «Cámara: <estado>» a titular, familiar y cuidador (T-017-10).
 - Los avisos usan `risk_patient_ids()` (titular, familiar y cuidador con acceso vigente, y el plan del titular con `risk_alerts`) y, para nodo sin señal, también `allowed()`.
 
 El superusuario no recibe excepción en la API del nodo. La interfaz solo cambia el texto de la tarjeta.
@@ -195,6 +195,14 @@ Las pruebas Edge nuevas van en `edge/test_fall.py` (zona y regla de cama) y `edg
   - [docs/OPERACION.md](../../docs/OPERACION.md): `send_mobile_reminders` también avisa del estado de los nodos; efecto de la cadencia.
   - `validation.md` (nuevo, con resultados reales).
 - **Al cerrar:** `specs/README.md`, [ESTADO_PROYECTO.md](../../docs/ESTADO_PROYECTO.md) y [TRAZABILIDAD.md](../../docs/TRAZABILIDAD.md) (RT-03 y HU-05 siguen «Parcial» o «Sin evidencia» hasta el protocolo y Firebase). La política de privacidad no cambia: no se agregan datos personales nuevos.
+
+## Ajustes durante la implementación (2026-10-27)
+
+- `edge/options.py` (nuevo, no previsto): reúne la validación, el JSON y los argumentos `--prefijo-*` de `BedConfig` y `MonitorConfig`, para no repetir el patrón de `fall.py`. Los umbrales de cama van en `--bed-settings` y los del estado en `--monitor-settings`; la zona, en `--bed-config`.
+- `Camera` (reapertura con espera creciente) vive en `edge/monitoring.py` con el abridor inyectado, para probarla sin cámara.
+- Valor de API `sin_senal` (sin «ñ»), igual en el backend y en la app.
+- T-017-02 y T-017-03 quedaron en un solo commit: comparten `edge/bed.py`.
+- El 400 de la renovación usa el mensaje genérico existente de `EdgeView`.
 
 ## Decisiones para implementar
 

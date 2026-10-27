@@ -1,6 +1,6 @@
 # 017 — Robustez de la detección de caídas: zona de cama y avisos de monitoreo ciego
 
-Estado: borrador documental. Fecha: 2026-10-27.
+Estado: implementada en `feature/017-robustez-caidas` (T-017-01..12); verificación técnica sintética en [validation.md](validation.md). Fecha: 2026-10-27.
 Módulo: nodo `edge/` + `CuidadosApp` (API del nodo, historial, avisos) + app móvil (tarjeta del nodo). Fuente: pedido del usuario 2026-10-27, tras revisar el prototipo `pose_app` (`C:\Users\josea\Downloads\pose_app`, módulo «Vigía · detector de caídas de la cama» en Kotlin): «redacta la spec 017», sobre la propuesta de traer a VIGIA (1) avisos de detector ciego, (2) zona de cama con regla secundaria, (3) heurísticas de robustez y (4) documentación de instalación y casos difíciles.
 Implementación autorizada: SÍ, T-017-01..12 el 2026-10-27, sin merge, migración real ni despliegue. Revisión del usuario: decisiones P-017-01..05 aceptadas el 2026-10-27 (D-073..D-077). Plan y tareas: [plan.md](plan.md), [tasks.md](tasks.md).
 
@@ -183,3 +183,5 @@ Detectada al planificar (2026-10-27) y resuelta el mismo día («para P-017-05 o
 2026-10-27 (posterior): el usuario acepta las recomendaciones de P-017-01..04 (D-073..D-076) y pide plan y tareas. RF-017-09/11/12 precisados con esas decisiones. Implementación no autorizada.
 
 2026-10-27 (posterior): el usuario elige la opción A de P-017-05 (D-077). RF-017-10 y la matriz de permisos se precisan. Implementación no autorizada.
+
+2026-10-27 (posterior): «Autorizo T-017-01 a T-017-12, sin merge, migración real ni despliegue». Implementadas y verificadas con pruebas sintéticas; PR hacia `develop` sin merge. RF-017-15 fija el denominador del protocolo en 25 caídas y 60 actividades normales (sustituye la propuesta 20/40 de D-053). Aceptación funcional pendiente.
