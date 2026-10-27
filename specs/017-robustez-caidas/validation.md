@@ -25,6 +25,7 @@ Estado: verificación técnica **sintética**. Sin cámara real, servidor en viv
 | `flutter analyze` / `flutter test` | Sin problemas / **51 OK** (+5) |
 | `dart format --set-exit-if-changed` en los archivos Dart tocados | Sin cambios |
 | `ruff check` en los archivos Python nuevos (`edge/bed.py`, `edge/monitoring.py`, `edge/options.py`) | Sin hallazgos. En los archivos existentes tocados, los mismos hallazgos que antes (I001, SIM117, F401 previos); ninguno nuevo |
+| CI de la [PR #12](https://github.com/Azurtilo/vigia-demo/pull/12) (GitHub Actions) | Verde: Django, Edge, Flutter y `pip-audit` |
 | Migración `0010_detectionnode_monitor_state` con `core.test_settings` | Avance: columnas creadas; reversión a `0009`: columnas eliminadas; avance otra vez: OK |
 
 ## Evidencia por requisito
