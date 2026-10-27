@@ -22,7 +22,17 @@ from edge.run import (
     bed_from_args,
     monitor_config_from_args,
 )
-from edge.test_fall import BED, FALL, FLOOR_OUT, FPS, SLIDE, STILL, UP_OUT, body, sequence
+from edge.test_fall import (
+    BED,
+    FALL,
+    FLOOR_OUT,
+    FPS,
+    SLIDE,
+    STILL,
+    UP_OUT,
+    body,
+    sequence,
+)
 
 # Far from any synthetic body: the classifier answers "indeterminada".
 REFERENCES = {label: [float(10 + i)] * 24 for i, label in enumerate(LABELS)}
@@ -58,10 +68,11 @@ class Server:
 
     def __init__(self, script=(), down_gets=0, hold=0.0):
         self.script, self.down_gets, self.hold = list(script), down_gets, hold
-        self.rows, self.posts = {}, []
+        self.rows, self.posts, self.renewals = {}, [], []
         self.in_flight, self.answered = threading.Event(), threading.Event()
 
-    def get(self, url, headers, timeout):
+    def get(self, url, headers, timeout, params=None):
+        self.renewals.append(params)
         if self.down_gets:
             self.down_gets -= 1
             raise requests.ConnectionError("sin red")
@@ -437,6 +448,43 @@ class MonitorStateTests(unittest.TestCase):
         self.assertEqual(monitor.status.state, "normal")
         monitor.tick(now + 31)
         self.assertEqual(monitor.status.state, monitoring.NO_IMAGE)
+
+
+class MonitorStateUplinkTests(unittest.TestCase):
+    """Spec 017, D-073: the state rides on the lease renewal."""
+
+    def test_every_renewal_reports_the_state_and_a_change_goes_at_once(self):
+        clock, server = Clock(), Server()
+        uplink = Uplink("https://vigia.test", "token", session=server, clock=clock)
+        uplink.step()
+        self.assertEqual(server.renewals, [{"monitor_state": "normal"}])
+        clock.t = 2.0  # well before the next scheduled renewal (10 s)
+        uplink.set_monitor_state("sin_imagen")
+        uplink.step()
+        self.assertEqual(server.renewals[-1], {"monitor_state": "sin_imagen"})
+        uplink.set_monitor_state("sin_imagen")  # unchanged: no extra renewal
+        clock.t = 3.0
+        uplink.step()
+        self.assertEqual(len(server.renewals), 2)
+        self.assertTrue(uplink.lease_active(clock()))  # an old server ignores it
+
+    def test_only_known_states_are_sent(self):
+        uplink = Uplink("https://vigia.test", "token", session=Server())
+        for bad in ("caida", "", None, "Normal"):
+            with self.subTest(bad), self.assertRaises(ValueError):
+                uplink.set_monitor_state(bad)
+        self.assertEqual(set(monitoring.STATES),
+                         {"normal", "persona_no_visible", "sin_imagen", "poca_luz"})
+
+    def test_monitor_passes_changes_and_a_pause_returns_to_normal(self):
+        uplink = Uplink("https://vigia.test", "token", session=Server())
+        monitor = Monitor(REFERENCES, 3600, None, uplink)
+        now = feed(monitor, sequence((1, STILL), start=UP_OUT))
+        with self.assertLogs("vigia.edge", "WARNING"):
+            monitor.tick(now + 11)
+        self.assertEqual(uplink.monitor_state, "sin_imagen")
+        monitor.reset()
+        self.assertEqual(uplink.monitor_state, "normal")
 
 
 if __name__ == "__main__":

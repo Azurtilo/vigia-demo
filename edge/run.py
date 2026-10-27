@@ -107,6 +107,8 @@ class Uplink:
     Pending observations keep their original event_id and observed_at, so a
     retry after a timeout is deduplicated by the server. The lease is the only
     signal the frame loop reads; it fails closed when it expires or is denied.
+    Each renewal also reports the monitoring state (spec 017, D-073); a server
+    without that support ignores the parameter.
     """
 
     def __init__(self, server, token, session=None, clock=time.monotonic):
@@ -119,6 +121,7 @@ class Uplink:
         self.pending = []  # [monotonic created, payload]
         self.lease_until, self.next_lease = 0.0, 0.0
         self.failures, self.retry_at = 0, 0.0
+        self.monitor_state = monitoring.NORMAL
         self.lock, self.wake, self.stopped = (
             threading.Lock(),
             threading.Event(),
@@ -128,6 +131,16 @@ class Uplink:
 
     def lease_active(self, now):
         return now < self.lease_until
+
+    def set_monitor_state(self, state):
+        """A change is reported at once instead of waiting for the next renewal."""
+        if state not in monitoring.STATES:
+            raise ValueError(f"Estado de monitoreo desconocido: {state}")
+        with self.lock:
+            if state == self.monitor_state:
+                return
+            self.monitor_state, self.next_lease = state, 0.0
+        self.wake.set()
 
     def enqueue(self, payload):
         with self.lock:
@@ -169,7 +182,12 @@ class Uplink:
 
     def _renew(self, now):
         try:
-            response = self.session.get(self.status_url, headers=self.headers, timeout=5)
+            response = self.session.get(
+                self.status_url,
+                headers=self.headers,
+                params={"monitor_state": self.monitor_state},
+                timeout=5,
+            )
             if response.status_code in (401, 403):
                 self.lease_until = 0.0  # explicit denial stops capture at once
             response.raise_for_status()
@@ -282,6 +300,8 @@ class Monitor:
         self.last_posture, self.sent_at = None, None
         # A lease pause is a deliberate stop, not a blind camera: start over.
         self.status.reset()
+        if self.uplink:
+            self.uplink.set_monitor_state(monitoring.NORMAL)
 
     def tick(self, now):
         """No frame this time (camera lost); keeps the monitoring state current."""
@@ -293,6 +313,7 @@ class Monitor:
         (log.info if state == monitoring.NORMAL else log.warning)(
             "Estado de monitoreo: %s", state
         )
+        self.uplink.set_monitor_state(state)
 
     def send_fall(self, rule_version, started, posture, confidence, now):
         confirmed = self.wall_clock()
