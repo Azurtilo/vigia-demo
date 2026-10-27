@@ -255,3 +255,16 @@ Fuente: respuesta explícita en la sesión del 2026-10-26 a las propuestas de la
 
 Autorización: «P-015-02 sandra compila iOS, y autorizo para T-015-01..06. la 07 dejala en pendiente» (sesión del 2026-10-26). Autoriza implementar T-015-01..06 en `feature/015-integracion-unificado`; T-015-07 (Android físico) queda pendiente. No autoriza merge, despliegue ni migración real.
 
+## Respuestas del propietario a la spec 017 — 2026-10-27
+
+Fuente: «estoy de acuerdo con las recomendaciones, sigue con plan.md y tasks.md» (sesión del 2026-10-27), sobre las decisiones pendientes de la [spec 017](../specs/017-robustez-caidas/spec.md).
+
+| ID | Decisión | Efecto |
+|---|---|---|
+| D-073 | **P-017-01 A** — El estado de monitoreo del nodo (`normal`, `persona_no_visible`, `sin_imagen`, `poca_luz`) viaja como parámetro de la renovación `GET /api/v1/edge/status` y se guarda en `DetectionNode` (último estado y desde cuándo). No es una observación clínica: `risk` y el contrato de 7 claves no cambian | RF-017-09/10. Migración aditiva en `CuidadosApp` |
+| D-074 | **P-017-02** — Push genérico, sin prioridad alta y con visibilidad privada para `persona_no_visible` y `sin_imagen`, a los destinatarios de riesgo de la 013 con `risk_alerts` en el plan del titular. `poca_luz` solo se muestra en la app | RF-017-11 |
+| D-075 | **P-017-03** — El aviso de nodo sin señal entra en la 017: nodo activo y con permiso que lleva más de 60 s sin renovar, revisado por `send_mobile_reminders` | RF-017-12. La demora real depende de la cadencia del comando (P-012-01, pendiente 14 del estado) |
+| D-076 | **P-017-04** — No se incluye la alerta «inmóvil fuera de la cama» de `pose_app`; la caída en línea con la cámara queda como limitación documentada y se reevalúa con el protocolo (D-053) | S-017-03 |
+| D-077 | **P-017-05 A** — Titular, familiar y cuidador ven en la ficha del paciente una línea de solo lectura «Cámara: <estado>» con el estado agregado de los nodos activos, sin nombre, id ni última señal del nodo. La tarjeta del nodo y la revocación siguen solo para el titular (`manage_nodes`). Fuente: «para P-017-05 opcion A» (2026-10-27) | RF-017-10, T-017-10 |
+
+Sin autorización de implementación.

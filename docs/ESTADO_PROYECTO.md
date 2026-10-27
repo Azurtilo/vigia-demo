@@ -28,6 +28,15 @@ Lista única de lo que falta. El detalle vive en cada spec y en DECISIONES. «Pr
 
 Trabajo futuro registrado (no comprometido): invitación por correo (D-050), traspaso de titularidad, papelera de pacientes con «deshacer» (D-067), cifrado en reposo y PostgreSQL (014), registro de lecturas, push inmediato de inmovilidad (D-051). iOS pasó al alcance el 2026-10-26 (D-068, spec 015).
 
+## Spec 017 robustez de caídas — DOCUMENTAR, 2026-10-27
+
+- **Pedido.** Revisar el prototipo `pose_app` (detector de caídas de la cama en Kotlin) y luego «redacta la spec 017» con lo que conviene traer a VIGIA.
+- **Hecho.** [specs/017-robustez-caidas/spec.md](../specs/017-robustez-caidas/spec.md): zona de cama y regla «acostado fuera de la cama» (`fall-bed-v1`), seguimiento contra sábanas, puntos de respaldo, avisos de monitoreo ciego (persona no visible, sin imagen sin terminar el proceso, poca luz, nodo sin señal) y guía de instalación y casos nuevos del protocolo D-053. Solo Markdown; sin código.
+- **Decisiones.** El usuario aceptó las recomendaciones: D-073 (estado en la renovación de `edge/status`, guardado en el nodo), D-074 (push genérico para persona no visible y sin imagen; poca luz solo en la app), D-075 (nodo sin señal a los 60 s en `send_mobile_reminders`) y D-076 (sin inmóvil fuera de la cama).
+- **Plan y tareas.** [plan.md](../specs/017-robustez-caidas/plan.md) y [tasks.md](../specs/017-robustez-caidas/tasks.md): T-017-01..13. Módulos Edge nuevos `edge/bed.py` y `edge/monitoring.py`, migración aditiva `0010` y pruebas en los módulos existentes, para no cambiar el comando de pruebas.
+- **P-017-05 → D-077 (opción A).** Titular, familiar y cuidador ven una línea de solo lectura «Cámara: <estado>» en la ficha del paciente, sin datos del nodo (T-017-10).
+- **Pendiente.** Autorización de T-017-01..12. T-017-13 (pruebas en vivo) requiere cámara, servidor de prueba y Firebase.
+
 ## Estado vigente — spec 016 en implementación, 2026-10-26
 
 - **Pedido.** Revisión de calidad general ([QA_2026-10-26.md](QA_2026-10-26.md), [PR #10](https://github.com/Azurtilo/vigia-demo/pull/10)) y corrección de los hallazgos 01–04, 06 y 08.

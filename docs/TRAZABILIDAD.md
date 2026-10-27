@@ -334,3 +334,17 @@ RF-014-01..13 con prueba automática en `web/PrivacidadApp/tests.py` (16 pruebas
 ### 015 — Evidencia ejecutada, 2026-10-26
 
 RF-015-01: suites Django 235, Edge 22 y Flutter 43 OK y `git diff` sin archivos de la lista B. RF-015-02: `mobile/test/home_redesign_test.dart` (2) e `interface_details_test.dart`. RF-015-03: `web/CuidadosApp/test_mobile.py` (catálogo y 401 sin sesión). RF-015-04: `mobile/test/subscription_test.dart` (2). RF-015-05: `web/CuidadosApp/test_mobile_demo.py` (3) y el script ejecutado en Git Bash. RF-015-06: `web/homeApp/test_marca.py` (3) y revisión en Chrome en claro y oscuro. Android físico (ELI NX9) para RF-015-01, 02 y 04 en [validation.md](../specs/015-integracion-unificado/validation.md). RF-015-07: [INSTALACION_CELULAR.md](INSTALACION_CELULAR.md). RF-015-08: documentos vigentes actualizados (T-015-12). RF-015-09..13 (iOS) sin evidencia todavía. Detalle en [tasks.md](../specs/015-integracion-unificado/tasks.md#ejecución).
+
+## 017 — Robustez de la detección de caídas, trazabilidad prevista 2026-10-27
+
+[Spec](../specs/017-robustez-caidas/spec.md), [plan](../specs/017-robustez-caidas/plan.md), [tareas](../specs/017-robustez-caidas/tasks.md). Propuesta: sin implementación ni pruebas ejecutadas. No cambia el estado de la matriz vigente.
+
+| Fuente | RF-017 | Tareas T-017 | Evidencia prevista |
+|---|---|---|---|
+| RT-03: caída lenta desde la cama (zona de cama, `fall-bed-v1`) | 01–05 | 02, 03, 04 | `edge.test_fall`, `edge.test_run` (sintéticas); en vivo en T-017-13 |
+| RT-03: monitoreo ciego (persona no visible, sin imagen, poca luz) | 06–09, 13 | 05, 06, 07 | `edge.test_run`, `CuidadosApp.test_mobile` |
+| HU-05: aviso de monitoreo ciego y de nodo sin señal | 11, 12 | 08 | `CuidadosApp.test_push` con Firebase simulado; push real con D-054 |
+| HU-06: estado de la cámara en la app | 10 | 09, 10 (D-077) | Prueba Flutter; `test_access` por rol |
+| RNF caídas ≥ 90 % y FP ≤ 5 % | 15 | 11 | Protocolo ampliado de D-053, sin ejecutar |
+| RNF inferencia < 100 ms | — | 04, 05 | `edge.bench` antes y después (sintético, no mide el KPI) |
+| RNF sin video a la nube | 01, 09 | 02, 06, 07 | Polígono y brillo no salen del nodo; parámetro de estado con lista cerrada (400 ante otro valor) |
