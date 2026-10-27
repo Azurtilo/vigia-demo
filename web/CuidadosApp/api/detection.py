@@ -75,6 +75,25 @@ def node_data(node):
     }
 
 
+# Spec 017 (D-077): worst state first when a patient has several nodes.
+CAMERA_PRIORITY = ["sin_senal", "sin_imagen", "poca_luz", "persona_no_visible", "normal"]
+
+
+def camera_state(patient):
+    """Aggregated, read-only state for every role with `view`; no node details.
+
+    None without active nodes, without detection in the titular's plan, or when
+    no node ever reported a state (versions before spec 017).
+    """
+    if not capabilities(patient.owner)["features"]["posture_detection"]:
+        return None
+    states = set()
+    for node in patient.detection_nodes.filter(active=True):
+        data = node_data(node)
+        states.add(data["monitor_state"] if data["connected"] else "sin_senal")
+    return next((s for s in CAMERA_PRIORITY if s in states), None)
+
+
 class NodesView(MobileView):
     def get(self, request, pk):
         p, _ = patient_for(request.user, pk, "manage_nodes")

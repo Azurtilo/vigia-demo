@@ -344,6 +344,24 @@ class _PatientScreenState extends State<PatientScreen> {
               fontWeight: FontWeight.w600,
             ),
           ),
+          // D-077: read-only for every role, so whoever got the alert sees why.
+          if (cameraStateLabel(patient!['camera_state']) case final label?)
+            Padding(
+              key: const Key('camera-state'),
+              padding: const EdgeInsets.only(top: 8),
+              child: Row(
+                children: [
+                  Icon(
+                    cameraWarning(patient!['camera_state'])
+                        ? Icons.warning_amber
+                        : Icons.videocam_outlined,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(child: Text('Cámara: $label')),
+                ],
+              ),
+            ),
           const SizedBox(height: 16),
           // T-011-12: chips wrap on narrow phones instead of hiding sections.
           Wrap(
