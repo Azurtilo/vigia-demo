@@ -8,6 +8,7 @@ from datetime import datetime, timedelta, timezone
 
 import requests
 
+from edge.bed import BedZone
 from edge.posture import LABELS
 from edge.run import (
     LEASE_SECONDS,
@@ -15,8 +16,10 @@ from edge.run import (
     RISK_RETRY_SECONDS,
     Monitor,
     Uplink,
+    args_parser,
+    bed_from_args,
 )
-from edge.test_fall import FALL, FPS, body
+from edge.test_fall import BED, FALL, FPS, SLIDE, STILL, body, sequence
 
 # Far from any synthetic body: the classifier answers "indeterminada".
 REFERENCES = {label: [float(10 + i)] * 24 for i, label in enumerate(LABELS)}
@@ -208,6 +211,79 @@ class RetryTests(unittest.TestCase):
         self.assertEqual(len(server.posts), 3)
         self.assertTrue(all(p == fall for p in server.posts))
         self.assertEqual(list(server.rows), [fall["event_id"]])
+
+
+def feed(monitor, frames, start=0.0):
+    """Frames at 30 fps through Monitor.process; returns the next time."""
+    now = start
+    for pose in frames:
+        points = body(**pose) if pose else []
+        monitor.process(points, points, now, 1.0)
+        now += 1 / FPS
+    return now
+
+
+def falls(uplink):
+    return [p["rule_version"] for _, p in uplink.pending if p["risk"] == "fall"]
+
+
+class BedMonitorTests(unittest.TestCase):
+    """Spec 017: two fall rules, one alert per event."""
+
+    def monitor(self, zone=BED):
+        uplink = Uplink("https://vigia.test", "token", session=Server())
+        return Monitor(REFERENCES, 3600, None, uplink, bed_zone=zone), uplink
+
+    def test_without_bed_zone_spec_012_is_unchanged(self):
+        monitor, uplink = self.monitor(zone=None)
+        feed(monitor, FALL)
+        self.assertIsNone(monitor.bed)
+        self.assertEqual(falls(uplink), ["fall-v1"])
+        monitor, uplink = self.monitor(zone=None)
+        feed(monitor, SLIDE)
+        self.assertEqual(falls(uplink), [])  # the slow slide needs the bed zone
+
+    def test_fall_meeting_both_rules_is_sent_once(self):
+        monitor, uplink = self.monitor()
+        with self.assertLogs("vigia.edge", "INFO") as logs:
+            feed(monitor, FALL + sequence((20, STILL), start=FALL[-1]))
+        self.assertEqual(falls(uplink), ["fall-v1"])
+        self.assertTrue(any("ya avisada" in line and "fall-bed-v1" in line for line in logs.output))
+
+    def test_slow_slide_is_sent_by_the_bed_rule_without_coordinates_in_the_log(self):
+        monitor, uplink = self.monitor()
+        with self.assertLogs("vigia.edge", "WARNING") as logs:
+            feed(monitor, SLIDE)
+        self.assertEqual(falls(uplink), ["fall-bed-v1"])
+        line = next(line for line in logs.output if "fall-bed-v1" in line)
+        self.assertIn("event_id=", line)
+        self.assertNotIn("'x'", line)
+        self.assertNotIn("0.6", line)
+
+    def test_two_falls_with_three_seconds_upright_between(self):
+        monitor, uplink = self.monitor()
+        upright = sequence((1.5, FALL[0]), (4, STILL), start=FALL[-1])
+        feed(monitor, FALL + upright + FALL)
+        self.assertEqual(len(falls(uplink)), 2)
+
+    def test_lying_again_without_rearm_is_the_same_event(self):
+        monitor, uplink = self.monitor()
+        now = feed(monitor, FALL)
+        # Upright for single frames between empty ones, then down again.
+        flicker = [FALL[0] if k % 10 == 0 else None for k in range(5 * FPS)]
+        feed(monitor, flicker + sequence((1, FALL[-1]), (8, STILL), start=FALL[0]), now)
+        self.assertEqual(len(falls(uplink)), 1)
+
+    def test_invalid_bed_arguments_stop_at_start(self):
+        parser = args_parser()
+        for argv in (["--bed-lying-angle", "120"], ["--bed-config", "no-existe.json"]):
+            with self.subTest(argv), self.assertRaises(SystemExit) as stop:
+                bed_from_args(parser.parse_args(["--references", "r.json", *argv]))
+            self.assertIn("Configuración de cama inválida", str(stop.exception))
+        zone, config = bed_from_args(parser.parse_args(["--references", "r.json"]))
+        self.assertIsNone(zone)
+        self.assertEqual(config.lying_seconds, 5.0)
+        self.assertIsInstance(BED, BedZone)
 
 
 if __name__ == "__main__":

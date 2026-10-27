@@ -12,6 +12,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from urllib.parse import urlparse
 
+from . import bed
 from .fall import FallDetector, add_arguments, config_from_args
 from .metrics import LatencyStats
 from .posture import CalibratedClassifier, ImmobilityRule, features
@@ -55,7 +56,17 @@ def args_parser():
         help="Intervalo del resumen de inferencia en el log (por defecto 60 s)",
     )
     add_arguments(p)
+    bed.add_arguments(p)
     return p
+
+
+def bed_from_args(a):
+    """(zone or None, BedConfig); exits with a clear message when invalid."""
+    try:
+        zone = bed.BedZone.from_file(a.bed_config) if a.bed_config else None
+        return zone, bed.config_from_args(a)
+    except (OSError, ValueError, TypeError) as exc:
+        raise SystemExit(f"Configuración de cama inválida: {exc}")
 
 
 def setup_logging(log_file=None):
@@ -238,19 +249,41 @@ class Uplink:
 
 
 class Monitor:
-    """Per-frame rules. Never touches the network: payloads go to the uplink."""
+    """Per-frame rules. Never touches the network: payloads go to the uplink.
+
+    With a bed zone (spec 017) a second fall rule runs beside the impact rule;
+    a shared latch sends one fall per event until the person is back in bed or
+    upright again. Without a bed zone the behaviour is that of spec 012.
+    """
 
     def __init__(self, references, immobility_seconds, fall_config, uplink,
-                 wall_clock=lambda: datetime.now(timezone.utc)):
+                 wall_clock=lambda: datetime.now(timezone.utc),
+                 bed_zone=None, bed_config=None):
         self.references, self.immobility_seconds = references, immobility_seconds
         self.fall_config, self.uplink, self.wall_clock = fall_config, uplink, wall_clock
+        self.bed_zone, self.bed_config = bed_zone, bed_config
         self.reset()
 
     def reset(self):
         self.classifier = CalibratedClassifier(self.references)
         self.rule = ImmobilityRule(self.immobility_seconds)
         self.fall = None  # created on the first frame, when its aspect ratio is known
+        self.bed, self.bed_result, self.fall_latched = None, "", False
         self.last_posture, self.sent_at = None, None
+
+    def send_fall(self, rule_version, started, posture, confidence, now):
+        confirmed = self.wall_clock()
+        payload = self.payload(confirmed, posture, confidence, rule_version, "fall")
+        self.uplink.enqueue(payload)
+        # Impact for fall-v1; start of "lying outside the bed" for fall-bed-v1.
+        log.warning(
+            "Caída confirmada (%s): event_id=%s inicio=%s confirmada=%s confirmación=%.2f s",
+            rule_version,
+            payload["event_id"],
+            (confirmed - timedelta(seconds=now - started)).isoformat(),
+            confirmed.isoformat(),
+            now - started,
+        )
 
     def payload(self, observed, posture, confidence, rule_version, risk):
         return {
@@ -266,20 +299,25 @@ class Monitor:
     def process(self, landmarks, image_landmarks, now, frame_aspect):
         if self.fall is None:
             self.fall = FallDetector(self.fall_config, frame_aspect)
+            if self.bed_zone:
+                self.bed = bed.BedFallRule(self.bed_zone, self.bed_config, frame_aspect)
         posture, confidence = self.classifier.classify(landmarks, now)
         risk = self.rule.observe(posture, now)
-        if self.fall.observe(image_landmarks, now) == "fall":
-            confirmed = self.wall_clock()
-            impact = confirmed - timedelta(seconds=now - self.fall.impact_at)
-            payload = self.payload(confirmed, posture, confidence, "fall-v1", "fall")
-            self.uplink.enqueue(payload)
-            log.warning(
-                "Caída confirmada: event_id=%s impacto=%s confirmada=%s confirmación=%.2f s",
-                payload["event_id"],
-                impact.isoformat(),
-                confirmed.isoformat(),
-                now - self.fall.impact_at,
-            )
+        impact = self.fall.observe(image_landmarks, now) == "fall"
+        self.bed_result = self.bed.observe(image_landmarks, now) if self.bed else ""
+        if self.fall_latched and self.bed.rearmed(now):
+            self.fall_latched = False
+        for rule_version, started, emitted in (
+            ("fall-v1", self.fall.impact_at, impact),
+            ("fall-bed-v1", self.bed and self.bed.lying_since, self.bed_result == "fall"),
+        ):
+            if not emitted:
+                continue
+            if self.fall_latched:
+                log.info("Caída ya avisada para este evento (%s).", rule_version)
+                continue
+            self.fall_latched = self.bed is not None
+            self.send_fall(rule_version, started, posture, confidence, now)
         if (
             posture != self.last_posture
             or risk
@@ -347,6 +385,7 @@ def main():
         fall_config = config_from_args(a)
     except (OSError, ValueError, TypeError) as exc:
         raise SystemExit(f"Configuración de caídas inválida: {exc}")
+    bed_zone, bed_config = bed_from_args(a)
     import cv2
     import mediapipe as mp
     from mediapipe.tasks import python
@@ -360,7 +399,8 @@ def main():
     )
     uplink = None if a.calibrate else Uplink(a.server, token)
     monitor = None if a.calibrate else Monitor(
-        references, a.immobility_minutes * 60, fall_config, uplink
+        references, a.immobility_minutes * 60, fall_config, uplink,
+        bed_zone=bed_zone, bed_config=bed_config,
     )
     source = int(a.camera) if a.camera.isdigit() else a.camera
     options = vision.PoseLandmarkerOptions(
