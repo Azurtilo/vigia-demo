@@ -10,6 +10,24 @@ VIGIA apoya el cuidado domiciliario de personas con dependencia (Proyecto de Tí
 | `mobile/` | App Flutter, Android primero e iOS en el alcance (D-068; compilación iOS solo en macOS). Funciones en `lib/features/*`; plugin `plugins/vigia_pose` |
 | `edge/` | Nodo Python con MediaPipe Pose Landmarker: postura, inmovilidad y caídas. Solo envía metadatos, nunca video |
 
+### Rama `feature/019-migracion-firebase` (D-081..D-097)
+
+En esta rama el producto migra a **FastAPI + Firebase** ([spec 019](specs/019-migracion-firebase/spec.md)). `develop` sigue con Django hasta que el propietario autorice la fusión; hasta entonces, las reglas de Django de este archivo siguen vigentes para `web/`, que no se modifica en esta rama.
+
+| Carpeta | Componente en esta rama |
+|---|---|
+| `backend/` | API FastAPI (`app/api`, `app/services`, `app/models`, `app/core`) sobre Firebase Auth, Firestore y FCM. Base: proyecto `vigia 26` (commit `518792263c44`), con sus ADR en `docs/base-fastapi/` |
+| `firebase/`, `firebase.json` | Reglas (sin acceso directo de clientes), índices y emuladores (`demo-vigia`; pruebas en `demo-vigia-test`) |
+| `portal/` | Portal React mínimo (HU-07) |
+| `mobile/` | App con Riverpod y go_router (D-094) |
+
+- Todas las escrituras pasan por FastAPI. Las reglas de negocio viven en `app/services`.
+- El contrato Edge (`/api/v1/edge/*`) no cambia (D-086).
+- No usar Cloud Run, Cloud Scheduler ni Cloud Functions: Firebase Spark, sin facturación (D-084).
+- Cuidar la cuota de Firestore (D-095).
+- Credenciales solo fuera del repositorio. Nunca copiar `backend/.env` del proyecto base.
+- Pruebas del backend, desde `backend/` con su entorno `.venv-backend`: `python -m pytest`. Las de integración necesitan los emuladores (`firebase emulators:start`, JDK 21 y Node); sin ellos quedan **omitidas** y así se informa.
+
 Las historias HU-01..07, los requerimientos técnicos RT-01..03 y los no funcionales del informe están en `CLAUDE.md` y en la matriz de `docs/TRAZABILIDAD.md`. Las cifras de los no funcionales son objetivos: no declararlas cumplidas sin medición registrada en `validation.md`. «NuevaAPP» es un ejemplo de nombre, no una app a crear automáticamente.
 
 1. Lee `constitution.md`, `README.md`, `CLAUDE.md`, `docs/PROYECTO.md`, `docs/ESTADO_PROYECTO.md` y `specs/README.md`.

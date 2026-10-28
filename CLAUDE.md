@@ -13,7 +13,9 @@ VIGIA (Proyecto de Título, INACAP): apoyo al cuidado domiciliario de personas c
 | `edge/` | Nodo Python con MediaPipe Pose Landmarker |
 | `docs/`, `specs/` | Documentación y trazabilidad SDD |
 
-Antes de trabajar lee `README.md`, `docs/ESTADO_PROYECTO.md`, `specs/README.md` y la spec relacionada (vigente: `specs/011-ecosistema-instalable/`).
+En la rama `feature/019-migracion-firebase` se agregan `backend/` (FastAPI + Firebase), `firebase/` y `portal/` (React). Django en `web/` queda intacto hasta la fusión. Ver la sección de esa rama en [AGENTS.md](AGENTS.md) y la [spec 019](specs/019-migracion-firebase/spec.md).
+
+Antes de trabajar lee `README.md`, `docs/ESTADO_PROYECTO.md`, `specs/README.md` y la spec relacionada (vigente: `specs/019-migracion-firebase/`).
 
 ## Requerimientos del informe
 
@@ -58,4 +60,5 @@ cd web
 ```
 
 - Edge (entorno separado `.venv-edge-win`, `edge/requirements.txt`): `python -m unittest edge.test_posture edge.test_fall edge.test_run` desde la raíz.
+- Backend FastAPI (rama 019), desde `backend/` con `.venv-backend` (Python 3.12): `../.venv-backend/Scripts/python.exe -m pytest`. Las pruebas de integración necesitan los emuladores de Firebase (JDK 21, Node y `firebase-tools`); sin ellos se omiten.
 - Flutter, desde `mobile/`: `flutter analyze` y `flutter test`. `pubspec.yaml` exige Dart ^3.13.5; el SDK local está fijado en Flutter 3.47.7 (`C:\Users\josea\flutter`).

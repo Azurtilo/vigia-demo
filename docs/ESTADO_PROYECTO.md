@@ -1,8 +1,8 @@
 # Estado y reanudación
 
-Fecha: 2026-10-27.
+Fecha: 2026-10-28.
 
-## Pendientes abiertos — consolidado al 2026-10-27
+## Pendientes abiertos — consolidado al 2026-10-28
 
 Lista única de lo que falta. El detalle vive en cada spec y en DECISIONES. «Propietario» indica que requiere dispositivo, cuenta externa, voluntarios o una decisión suya.
 
@@ -27,10 +27,24 @@ Lista única de lo que falta. El detalle vive en cada spec y en DECISIONES. «Pr
 | 17 | ~~Revisión de calidad y correcciones 01–04, 06 y 08~~ PR #10 (informe) y PR #11 (spec 016) fusionadas el 2026-10-26 | spec 016 | Hecho |
 | 18 | ~~Revisar y fusionar la [PR #12](https://github.com/Azurtilo/vigia-demo/pull/12) de la spec 017~~ Fusionada en `develop` el 2026-10-27 (`2bf9c53`) | spec 017 | Hecho |
 | 19 | Pruebas en vivo de la 017: calibración con ventana, deslizamiento simulado, tapar o desconectar la cámara, apagar la luz, cortar la red del nodo y recepción de los avisos | T-017-13 | Propietario |
+| 22 | Instalar JDK 21, Node LTS y `firebase-tools` para los emuladores de Firebase (o autorizar la instalación). Sin ellos, las pruebas de integración del backend quedan omitidas | P-019-01, T-019-03 | Propietario |
+| 23 | Confirmar las diferencias de reglas del plan 019; las 4 (purga de la 014) y 5 (exportar datos y eliminar cuenta) bloquean T-019-06 | P-019-02 | Propietario (decisión) |
+| 24 | Crear el proyecto Firebase real (Spark), el servicio en Render y la tarea en cron-job.org, confirmando sus condiciones gratuitas | P-019-03, T-019-07 | Propietario |
+| 25 | Punto de control de la 019 el 2026-11-04: nodo real → caída → push en Android. Si falla, decidir si se entrega con Django | D-081 | Propietario + equipo |
+
+Los números 20 y 21 los usa la rama de la 018, sin fusionar.
 
 Trabajo futuro registrado (no comprometido): invitación por correo (D-050), traspaso de titularidad, papelera de pacientes con «deshacer» (D-067), cifrado en reposo y PostgreSQL (014), registro de lecturas, push inmediato de inmovilidad (D-051). iOS pasó al alcance el 2026-10-26 (D-068, spec 015).
 
-## Estado vigente — spec 017 implementada, 2026-10-27
+## Estado vigente — spec 019 migración a FastAPI + Firebase, 2026-10-28
+
+- **Pedido.** Revisar el proyecto `vigia 26` de otro integrante (FastAPI + Firebase, hecho sin specs) para traer su frontend móvil. Después, el propietario decidió migrar el producto a FastAPI + Firebase antes de la entrega y autorizó: «concuerdo con tus decisiones, dejamos develop con django y probamos los cambios en una nueva rama, autorizo que cambies codigo pero antes registra todo».
+- **Hecho.** Rama `feature/019-migracion-firebase` desde `origin/develop` (`73fb6a1`); [spec](../specs/019-migracion-firebase/spec.md), [plan](../specs/019-migracion-firebase/plan.md) y [tareas](../specs/019-migracion-firebase/tasks.md); decisiones D-081..D-097.
+- **Hallazgos.** El backend base ya cubre pacientes, permisos, invitaciones, medicamentos, tareas, agenda, historial y planes; le faltan Edge, alertas, push, recordatorios y consentimiento. Su portal React es solo un esqueleto. Con un nodo renovando cada 10 s, Firestore gratis se agotaría sin caché (D-095).
+- **Siguiente.** Cerrar T-019-01 (AGENTS y CLAUDE) y seguir con T-019-02 (importación). Bloqueos en los pendientes 22–24.
+- **No hecho.** Sin código, merge, despliegue ni cuentas.
+
+## Estado anterior — spec 017 implementada, 2026-10-27
 
 - **Pedido.** Revisar el prototipo `pose_app` (detector de caídas de la cama en Kotlin), redactar la spec 017 con lo que conviene traer a VIGIA y, tras las decisiones D-073..D-077, «Autorizo T-017-01 a T-017-12, sin merge, migración real ni despliegue».
 - **Hecho** en `feature/017-robustez-caidas` ([spec 017](../specs/017-robustez-caidas/spec.md), [tareas](../specs/017-robustez-caidas/tasks.md)):
