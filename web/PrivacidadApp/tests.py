@@ -88,6 +88,33 @@ class PrivacyBase(TestCase):
         )
 
 
+class PolicyReadingTests(PrivacyBase):
+    """Spec 018, RF-018-05..07: sections, index and exits by session."""
+
+    SECTIONS = ("datos", "usos", "video", "acceso", "conservacion", "derechos", "cambios")
+
+    def test_index_links_every_section(self):
+        page = Client().get(reverse("PrivacidadApp:policy"))
+        for section in self.SECTIONS:
+            with self.subTest(section=section):
+                self.assertContains(page, f'href="#{section}"', count=1)
+                self.assertContains(page, f'<section id="{section}">', count=1)
+        self.assertContains(page, 'class="privacy-draft"')
+
+    def test_exits_depend_on_the_session(self):
+        anonymous = Client().get(reverse("PrivacidadApp:policy"))
+        self.assertContains(anonymous, f'href="{reverse("account_signup")}"')
+        self.assertContains(anonymous, f'href="{reverse("account_login")}"')
+        self.assertNotContains(anonymous, "Volver a mi panel")
+        signed_in = self.web(self.person("lectora")).get(reverse("PrivacidadApp:policy"))
+        self.assertContains(signed_in, f'href="{reverse("CuidadosApp:panel")}">Volver a mi panel')
+        self.assertNotContains(signed_in, f'href="{reverse("account_signup")}"')
+
+    def test_signup_still_opens_the_policy_in_another_tab(self):
+        page = Client().get(reverse("account_signup"))
+        self.assertContains(page, f'href="{reverse("PrivacidadApp:policy")}" target="_blank" rel="noopener"')
+
+
 class PolicyGateTests(PrivacyBase):
     def test_policy_is_public_and_versioned(self):
         page = Client().get(reverse("PrivacidadApp:policy"))
