@@ -1600,3 +1600,73 @@ class SalidasCuentaTests(BaseUsuariosTestCase):
         html = render_to_string("account/verified_email_required.html", request=request)
         self.assertIn(f'<a class="button" href="{reverse("account_email")}">Ir a mis correos</a>', html)
         self.assertIn(f'href="{reverse("Home")}">Ir a mi panel</a>', html)
+
+
+class HistorialNavegacionTests(BaseUsuariosTestCase):
+    """Spec 018, RF-018-11..13 (D-080): marked forms replace their history entry."""
+
+    REPLACE = {"HTTP_X_VIGIA_NAVIGATION": "replace"}
+
+    def setUp(self):
+        self.actor = self.create_actor("historial", position=self.restricted_position)
+        self.actor.email = "historial@example.test"
+        self.actor.save(update_fields=["email"])
+        EmailAddress.objects.create(user=self.actor, email=self.actor.email, verified=True, primary=True)
+        self.client.force_login(self.actor)
+
+    def test_redireccion_interna_vuelve_como_json_y_conserva_el_mensaje(self):
+        url = reverse("account_email")
+        response = self.client.post(url, {"action_primary": "", "email": self.actor.email}, **self.REPLACE)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"location": url})
+        self.assertEqual(response["Cache-Control"], "no-store")
+        self.assertContains(self.client.get(url), "toast")
+
+    def test_sin_cabecera_get_o_errores_no_cambian(self):
+        url = reverse("account_email")
+        plain = self.client.post(url, {"action_primary": "", "email": self.actor.email})
+        self.assertRedirects(plain, url, fetch_redirect_response=False)
+        self.assertEqual(self.client.get(url, **self.REPLACE).status_code, 200)
+        invalid = self.client.post(url, {"action_add": "", "email": "no-es-correo"}, **self.REPLACE)
+        self.assertEqual(invalid.status_code, 200)
+        self.assertTrue(invalid["Content-Type"].startswith("text/html"))
+
+    def test_redireccion_externa_no_se_convierte(self):
+        from django.http import HttpResponseRedirect
+
+        from core.navigation import ReplaceNavigationMiddleware
+
+        request = RequestFactory().post("/", **self.REPLACE)
+        for target in ("https://evil.example/", "//evil.example/"):
+            with self.subTest(target=target):
+                middleware = ReplaceNavigationMiddleware(lambda _request, t=target: HttpResponseRedirect(t))
+                self.assertEqual(middleware(request).status_code, 302)
+
+    def test_modo_visual_vuelve_a_la_pagina_interna(self):
+        url, page = reverse("VisualMode"), reverse("Profile") + "?tab=1"
+        response = self.client.post(url, {"mode": "dark", "next": page})
+        self.assertRedirects(response, page, fetch_redirect_response=False)
+        replaced = self.client.post(url, {"mode": "light", "next": page}, **self.REPLACE)
+        self.assertEqual(replaced.json(), {"location": page})
+        for bad in ("https://evil.example/", "//evil.example/", "", "javascript:alert(1)"):
+            with self.subTest(next=bad):
+                response = self.client.post(url, {"mode": "dark", "next": bad})
+                self.assertRedirects(response, reverse("Home"), fetch_redirect_response=False)
+
+    def test_las_exportaciones_no_se_marcan(self):
+        import re
+
+        html = self.client.get(reverse("Profile")).content.decode()
+        forms = re.findall(r"<form[^>]*>", html)
+        export = [tag for tag in forms if reverse("PrivacidadApp:export_account") in tag]
+        self.assertEqual(len(export), 1)
+        self.assertNotIn("data-replace-history", export[0])
+        self.assertTrue(any("data-replace-history" in tag and "multipart" in tag for tag in forms))
+
+    def test_el_selector_de_modo_envia_la_pagina_actual(self):
+        from PrivacidadApp.consent import accept_account
+
+        accept_account(self.actor)
+        panel = self.client.get(reverse("CuidadosApp:panel"))
+        self.assertContains(panel, 'class="visual-mode-form" data-replace-history')
+        self.assertContains(panel, f'name="next" value="{reverse("CuidadosApp:panel")}"')

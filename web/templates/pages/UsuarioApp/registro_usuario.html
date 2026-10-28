@@ -3,7 +3,7 @@
 {% block head_title %}Registrar usuario{% endblock %}
 {% block content_pages %}
 <h1>Registrar usuario</h1><p class="lede">Crea una cuenta y asigna su cargo de acceso.</p>
-<form method="post" enctype="multipart/form-data">
+<form method="post" enctype="multipart/form-data" data-replace-history>
   {% csrf_token %}
   {% include 'components/input_perfil.html' %}
   {{ profile_form.non_field_errors }}

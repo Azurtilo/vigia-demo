@@ -15,8 +15,7 @@
 
     {% url 'account_email' as email_url %}
 
-    {% element form form=form action=email_url method='post' %}
-      {% slot body %}
+    <form method="post" action="{{ email_url }}" data-replace-history>
         {% csrf_token %}
         {% for radio in emailaddress_radios %}
           {% with emailaddress=radio.emailaddress %}
@@ -43,8 +42,6 @@
           </div>  
           {% endwith %}
         {% endfor %}
-      {% endslot %}
-      {% slot actions %}
         <div class="buttonHolder flex gap-2 py-3">
 
           {% include "components/btn/button.html" with button_name="action_primary" button_text="Hacer primario" %}
@@ -52,8 +49,7 @@
           {% include "components/btn/button.html" with button_name="action_remove" button_text="Eliminar" button_class="danger delete" %}
 
         </div>
-      {% endslot %}
-    {% endelement %}
+    </form>
   {% else %}
     {% include 'account/snippets/warn_no_email.html' %}
   {% endif %}
@@ -62,15 +58,11 @@
 
     {% url 'account_email' as action_url %}
 
-    {% element form form=form method='post' action=action_url %}
-      {% slot body %}
+    <form method="post" action="{{ action_url }}" data-replace-history>
         {% csrf_token %}
         {{ form|crispy }}
-      {% endslot %}
-      {% slot actions %}
         {% include "components/btn/button.html" with button_name="action_add" button_text="Agregar email" button_type="submit" button_class="" %}
-      {% endslot %}
-    {% endelement %}
+    </form>
   {% endif %}
 
 {% endblock %}
