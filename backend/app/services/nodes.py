@@ -12,7 +12,9 @@ import logging
 import math
 import secrets
 import uuid
+from collections.abc import Callable
 from datetime import UTC, datetime, timedelta
+from functools import partial
 
 from fastapi import status
 from google.api_core.exceptions import AlreadyExists
@@ -22,7 +24,7 @@ from google.cloud.firestore_v1.base_query import FieldFilter
 from app.core.errors import AppError
 from app.core.firebase import get_db
 from app.models.nodes import CameraState, Node, NodeCreated, NodeList, Observation, ObservationPage
-from app.services import consent, edge_cache, plans
+from app.services import alerts, consent, edge_cache, plans
 from app.services.audit import audit_entry, audit_ref
 from app.services.care_common import owner_features, require_active_patient, require_feature
 from app.services.patients import PATIENTS, Access, get_access, run_transaction
@@ -320,10 +322,15 @@ def _validate(d: dict, *, max_age: timedelta, stale: str, confidence_label: str)
     }
 
 
-def _store(patient_id: str, doc_id: str, record: dict) -> tuple[int, dict]:
+def _store(patient_id: str, doc_id: str, record: dict, alert: tuple[str, dict] | None = None) -> tuple[int, dict]:
+    """Guarda la observación y, si tiene riesgo, su alerta en el mismo lote."""
     ref = observations(patient_id).document(doc_id)
+    batch = get_db().batch()
+    batch.create(ref, record)
+    if alert is not None:
+        batch.create(alerts.alerts_of(patient_id).document(alert[0]), alert[1])
     try:
-        ref.create(record)
+        batch.commit()
     except AlreadyExists:
         # El mismo event_id con el mismo contenido es un reintento; con otro contenido, un error.
         if ref.get().get("payloadHash") == record["payloadHash"]:
@@ -332,8 +339,11 @@ def _store(patient_id: str, doc_id: str, record: dict) -> tuple[int, dict]:
     return status.HTTP_201_CREATED, {"id": doc_id, "duplicate": False}
 
 
-def edge_observation(header: str, content_type: str, body: bytes) -> tuple[int, dict]:
-    """Observación del nodo (`POST /api/v1/edge/observations`): exactamente 7 claves."""
+def edge_observation(header: str, content_type: str, body: bytes) -> tuple[int, dict, Callable[[], None] | None]:
+    """Observación del nodo (`POST /api/v1/edge/observations`): exactamente 7 claves.
+
+    Devuelve además, para una caída nueva, el envío del push a ejecutar después de responder.
+    """
     entry = authorize(header)
     if content_type.split(";")[0].strip().lower() != "application/json" or len(body) > MAX_BODY:
         raise _bad("Envía metadatos JSON de hasta 4 KB.")
@@ -362,8 +372,13 @@ def edge_observation(header: str, content_type: str, body: bytes) -> tuple[int, 
         "receivedAt": received,
         "payloadHash": digest(d),
     }
-    code, result = _store(entry.patient_id, f"{entry.node_id}_{values['eventId']}", record)
+    doc_id = f"{entry.node_id}_{values['eventId']}"
+    alert = alerts.observation_alert(doc_id, d["risk"], values["observedAt"], entry.node_id) if d["risk"] else None
+    code, result = _store(entry.patient_id, doc_id, record, alert)
     _touch(entry, None)
+    followup = None
+    if code == status.HTTP_201_CREATED and d["risk"] == "fall":
+        followup = partial(alerts.push_fall_now, entry.patient_id, alert[0])
     if code == status.HTTP_201_CREATED and d["risk"]:
         # Hora de recepción para medir la demora de la alerta; sin datos del paciente.
         log.warning(
@@ -374,7 +389,7 @@ def edge_observation(header: str, content_type: str, body: bytes) -> tuple[int, 
             received.isoformat(),
             (received - values["observedAt"]).total_seconds(),
         )
-    return code, result
+    return code, result, followup
 
 
 # ---------- Cámara del teléfono y consulta ----------

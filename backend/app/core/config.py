@@ -21,6 +21,10 @@ class Settings(BaseSettings):
     auth_emulator_host: str = ""
     firestore_emulator_host: str = ""
 
+    # Push con Firebase Cloud Messaging (VIGIA_PUSH_ENABLED). Apagado, las alertas se guardan
+    # igual y quedan pendientes de envío; los emuladores no entregan push a teléfonos.
+    push_enabled: bool = False
+
     @property
     def cors_origin_list(self) -> list[str]:
         return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]
