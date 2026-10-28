@@ -23,6 +23,11 @@ Solo se registra lo ejecutado. Ningún RNF del informe se declara cumplido aquí
 | 2026-10-28 | T-019-06 | `python -m pytest` con emuladores | **316 aprobadas** (34 nuevas en `test_privacy.py`, `test_timer.py` y `test_tick.py`) |
 | 2026-10-28 | T-019-06 | Mutaciones temporales | 9/10 detectadas: no exigir la política; no exigir el consentimiento de cuidado; revocar detección sin vaciar la caché; un cambio de posición que crea el reloj; un cambio tardío que lo retrocede; sin control de `generation`; la familia recibe recordatorios; recordar tomas ya registradas; ignorar los avisos locales del reloj. La décima (quitar `not secret` en el tick) es equivalente: con el secreto vacío la comparación igual falla con 401 |
 
+| 2026-10-28 | T-019-16 | `python -m pytest` con emuladores | **327 aprobadas** (11 nuevas en `test_privacy_rights.py`) |
+| 2026-10-28 | T-019-16 | Mutaciones temporales en `export.py`, `erase.py` y `retention.py` | 11/11 detectadas: exportar el token y el hash del nodo; exportar la huella del código de invitación; omitir los registros en pacientes ajenos; borrar sin confirmar el nombre; dejar nodos, invitaciones y membresías; nodo autorizado tras borrar el paciente; borrar la cuenta sin inicio de sesión reciente; no borrar la cuenta de Firebase; borrar riesgos antes de 1 año; purgar archivados recientes; purgar en cada tick |
+
+Plazos de D-064 en este backend: los intentos de código (24 h) no aplican, porque el backend base no los guarda. Las alertas se conservan 1 año, como las observaciones con riesgo. El borrado no es transaccional (Firestore no borra cientos de documentos en una transacción): avanza por partes y se puede repetir hasta terminar.
+
 Lo que comprueban las pruebas de T-019-05:
 - **Caída:** la alerta (`obs_<observación>`) se crea con la observación; el push sale una vez a dueña, familiar y cuidadora, y no a la miembro sin `alerts.handle`, con texto genérico, prioridad alta y visibilidad privada.
 - **Reintentos:** un reintento del nodo no duplica la alerta ni el push.
@@ -42,6 +47,6 @@ Lo que comprueban las pruebas de T-019-05:
 
 - Push real: FCM está simulado; la entrega en un teléfono requiere el proyecto Firebase (D-100).
 - El tick con un cron real (cron-job.org) y Render (D-100); los recordatorios en un teléfono.
-- Privacidad: purga, exportación y eliminación (T-019-16).
+- Las pantallas de exportar y eliminar en la app y el portal (T-019-12, T-019-13). La revisión legal de la política sigue pendiente (D-067).
 - Nodo con cámara real contra este backend y push en Android: punto de control (T-019-07), que necesita el proyecto Firebase (D-100).
 - La demora de 0,029 s es la recepción en una red local con emuladores; no mide la alerta de caída en ≤ 10 s.

@@ -12,7 +12,7 @@ from fastapi import APIRouter, Header, status
 
 from app.core.config import get_settings
 from app.core.errors import AppError
-from app.services import alerts, reminders
+from app.services import alerts, reminders, retention
 
 router = APIRouter(prefix="/internal", include_in_schema=False)
 
@@ -23,4 +23,4 @@ def tick(x_cron_secret: Annotated[str | None, Header()] = None) -> dict:
     if not secret or not x_cron_secret or not hmac.compare_digest(secret.encode(), x_cron_secret.encode()):
         raise AppError(status.HTTP_401_UNAUTHORIZED, "cron_unauthorized", "No autorizado.")
     now = datetime.now(UTC)
-    return {**alerts.run_cycle(now), "reminders_sent": reminders.run(now)}
+    return {**alerts.run_cycle(now), "reminders_sent": reminders.run(now), "purge": retention.run_daily(now)}

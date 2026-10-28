@@ -4,10 +4,12 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
 
-from app.core.security import get_current_user, get_registered_user
-from app.models.privacy import ConsentCreate, PatientConsent, PatientConsents, PolicyStatus, Scope
+from app.core.security import Identity, get_current_user, get_identity, get_registered_user
+from app.models.privacy import ConsentCreate, PatientConsent, PatientConsents, PatientDeletion, PolicyStatus, Scope
 from app.models.user import UserProfile
 from app.services import consent as consent_service
+from app.services import erase as erase_service
+from app.services import export as export_service
 
 router = APIRouter(tags=["privacidad"])
 
@@ -55,3 +57,30 @@ def register_consent(patient_id: str, body: ConsentCreate, user: CurrentUser) ->
 def revoke_consent(patient_id: str, scope: Scope, user: CurrentUser) -> PatientConsent:
     """Revoca el consentimiento. Sin el de detección, la cámara se detiene al instante."""
     return consent_service.revoke(patient_id, user.uid, scope)
+
+
+# ---------- Derechos sobre los datos (RF-019-25..27) ----------
+
+
+@router.get("/me/export")
+def export_account(user: RegisteredUser) -> dict:
+    """Tus datos en JSON: cuenta, consentimientos y lo que registraste en pacientes ajenos."""
+    return export_service.account_data(user.uid)
+
+
+@router.get("/patients/{patient_id}/export", responses=_errors)
+def export_patient(patient_id: str, user: CurrentUser) -> dict:
+    """Todos los datos del paciente en JSON. Solo el responsable."""
+    return export_service.patient_data(patient_id, user.uid)
+
+
+@router.post("/patients/{patient_id}/delete", responses={**_errors, 422: {"description": "El nombre no coincide"}})
+def delete_patient(patient_id: str, body: PatientDeletion, user: CurrentUser) -> dict:
+    """Elimina al paciente y todos sus datos. Se confirma escribiendo su nombre. No se puede deshacer."""
+    return erase_service.delete_patient(patient_id, user.uid, body.confirm_name)
+
+
+@router.delete("/me", responses={401: {"description": "`reauth_required`: inicia sesión de nuevo (5 minutos)"}})
+def delete_account(identity: Annotated[Identity, Depends(get_identity)]) -> dict:
+    """Elimina tu cuenta y los pacientes de los que eres responsable. Exige un inicio de sesión reciente."""
+    return erase_service.erase_account(identity)

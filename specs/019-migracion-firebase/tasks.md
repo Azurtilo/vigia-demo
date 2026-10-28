@@ -1,7 +1,7 @@
 # Tareas — 019 / Migración a FastAPI + Firebase
 
 Spec: [spec.md](spec.md). Plan: [plan.md](plan.md).
-Estado: T-019-01..06 hechas; el resto, pendientes. Implementación autorizada: SÍ, T-019-01..15 (2026-10-28), sin merge, despliegue ni cuentas reales; cada una de esas acciones necesita autorización aparte.
+Estado: T-019-01..06 y T-019-16 hechas (backend completo salvo el despliegue); el resto, pendientes. Implementación autorizada: SÍ, T-019-01..15 (2026-10-28), sin merge, despliegue ni cuentas reales; cada una de esas acciones necesita autorización aparte.
 Rama: `feature/019-migracion-firebase` desde `origin/develop` (`73fb6a1`), un commit por tarea y PR hacia `develop` (D-059).
 
 ## Semana 1 — backend (punto de control 2026-11-04)
@@ -66,7 +66,7 @@ Rama: `feature/019-migracion-firebase` desde `origin/develop` (`73fb6a1`), un co
   - Depende de: T-019-08 y T-019-06.
   - Hecho cuando: las pruebas portadas de `privacy_test` y `login_consent_test` pasan.
 
-- [ ] T-019-16 — Privacidad en el backend: purga, exportación y eliminación (D-098).
+- [x] T-019-16 — Privacidad en el backend: purga, exportación y eliminación (D-098). Hecha la parte del backend; las pantallas siguen en T-019-12 y T-019-13.
   - RF: RF-019-24, RF-019-25, RF-019-26, RF-019-27.
   - Depende de: T-019-06 (tick y consentimiento).
   - Archivos previstos: `services/retention.py`, `services/export.py`, `services/erase.py`, `api/v1/privacy.py`, pruebas; pantallas de exportar y eliminar en la app (T-019-12) y en el portal (T-019-13).
@@ -106,9 +106,11 @@ Rama: `feature/019-migracion-firebase` desde `origin/develop` (`73fb6a1`), un co
 | 2026-10-28 | T-019-05 | `services/alerts.py`, `services/push.py`, `services/devices.py`, `models/alerts.py`, `api/v1/alerts.py`; `VIGIA_PUSH_ENABLED` en la configuración; la caída y su alerta en el mismo lote con push después de responder al nodo; inmovilidad, cámara ciega y nodo sin señal por `alerts.run_cycle()` (lo llamará el tick, T-019-06); índice de grupo `alerts.pushPending`. Backend **282 OK** (19 nuevas con FCM simulado), 6/6 mutaciones detectadas |
 | 2026-10-28 | T-019-06 | Política de la cuenta (`get_registered_user` / `get_current_user`, `/v1/privacy`), consentimiento por finalidad con historial (`/v1/patients/{id}/consents`), consentimiento de cuidado exigido en las 9 escrituras de `care.py` y `medications.py`; reloj (`/timer`, `/me/timer-schedule`) reiniciado por ambos registros de posición; recordatorios de tomas y del reloj (`services/reminders.py`, cada 5 min como máximo) y `POST /internal/tick` con `X-Cron-Secret`; opciones `VIGIA_PRIVACY_ENFORCED`, `VIGIA_PRIVACY_POLICY_VERSION` y `VIGIA_CRON_SECRET`; índice de grupo `medications.active`. Backend **316 OK** (34 nuevas), 9/10 mutaciones detectadas (la décima es equivalente). Diferencias 10 y 11 en el plan |
 
+| 2026-10-28 | T-019-16 | `services/erase.py` (paciente con confirmación de nombre; cuenta con inicio de sesión de hace 5 minutos o menos, pacientes propios borrados (D-065), autor anónimo en pacientes ajenos y borrado en Firebase Auth), `services/export.py` (cuenta y paciente, sin tokens, hashes ni códigos), `services/retention.py` (plazos de D-064, una vez al día desde el tick), rutas en `api/v1/privacy.py`; `archivedAt` al archivar; estado de cuenta `deleted`; `auth_time` en la identidad; índices de grupo `observations.observedAt` y `alerts.occurredAt`. Backend **327 OK** (11 nuevas), 11/11 mutaciones detectadas |
+
 ## Reanudación
 
-Última acción: T-019-06 cerrada. Siguiente: T-019-16 (privacidad: purga, exportación y eliminación) para terminar el backend, o T-019-07 si el proyecto Firebase ya existe (D-100). Pendiente del propietario: P-019-04 (reloj solo en Plus y Premium), registrado el 2026-10-28 a su pedido. Para probar, primero levantar los emuladores (ver `docs/ENTORNO_Y_VERIFICACION.md`). Bloqueos: P-019-01 (Java y Node) para la integración; P-019-02 (diferencias 4 y 5) antes de T-019-06; P-019-03 antes de T-019-07.
+Última acción: T-019-16 cerrada; el backend queda completo salvo el despliegue. Siguiente: T-019-08 (base de la app dentro de `mobile/`), o T-019-07 si el proyecto Firebase ya existe (D-100). Pendiente del propietario: P-019-04 (reloj solo en Plus y Premium), registrado el 2026-10-28 a su pedido. Para probar, primero levantar los emuladores (ver `docs/ENTORNO_Y_VERIFICACION.md`). Bloqueos: P-019-01 (Java y Node) para la integración; P-019-02 (diferencias 4 y 5) antes de T-019-06; P-019-03 antes de T-019-07.
 
 ## Aceptación del usuario
 

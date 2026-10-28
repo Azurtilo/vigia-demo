@@ -80,7 +80,7 @@ def test_the_tick_runs_alerts_and_reminders(client, ctx, monkeypatch):
     response = client.post("/internal/tick", headers={"X-Cron-Secret": "secreto-del-cron"})
 
     assert response.status_code == 200
-    assert set(response.json()) == {"camera_alerts", "pending_reviewed", "reminders_sent"}
+    assert set(response.json()) == {"camera_alerts", "pending_reviewed", "reminders_sent", "purge"}
 
 
 # ---------- Tomas ----------

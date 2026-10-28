@@ -237,7 +237,15 @@ def set_patient_status(patient_id: str, uid: str, new_status: PatientStatus) -> 
             _, plan = plans.read_plan_for_user(uid, transaction)
             if plan.get("maxPatients") is not None and active >= plan["maxPatients"]:
                 raise _limit_error(plan)
-        transaction.update(patient_ref, {"status": new_status, "updatedAt": firestore.SERVER_TIMESTAMP})
+        transaction.update(
+            patient_ref,
+            {
+                "status": new_status,
+                "updatedAt": firestore.SERVER_TIMESTAMP,
+                # Desde cuándo está archivado: a los 2 años se purga (D-064, spec 019).
+                "archivedAt": firestore.SERVER_TIMESTAMP if new_status == "archived" else None,
+            },
+        )
         transaction.update(
             user_ref, {"activePatientCount": firestore.Increment(1 if new_status == "active" else -1)}
         )

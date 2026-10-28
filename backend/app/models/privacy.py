@@ -53,3 +53,9 @@ class PatientConsent(ApiModel):
 
 class PatientConsents(ApiModel):
     items: list[PatientConsent]
+
+
+class PatientDeletion(ApiModel):
+    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True, extra="forbid")
+
+    confirm_name: str = Field(max_length=120, description="Nombre del paciente, escrito para confirmar")

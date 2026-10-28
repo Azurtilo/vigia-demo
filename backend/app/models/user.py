@@ -7,7 +7,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
 
 Role = Literal["client", "admin"]
-AccountStatus = Literal["active", "suspended"]
+AccountStatus = Literal["active", "suspended", "deleted"]
 
 
 class ApiModel(BaseModel):

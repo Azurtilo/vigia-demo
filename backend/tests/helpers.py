@@ -27,6 +27,7 @@ def make_token(
     email: str | None = None,
     project: str = PROJECT,
     expires_in: int = 3600,
+    auth_age: int = 0,
 ) -> str:
     """ID token sin firma (formato del emulador). Permite fabricar casos válidos e inválidos."""
 
@@ -40,7 +41,7 @@ def make_token(
         "aud": project,
         "sub": uid,
         "user_id": uid,
-        "auth_time": now,
+        "auth_time": now - auth_age,  # hace cuánto inició sesión (reautenticación, spec 019)
         "iat": now,
         "exp": now + expires_in,
         "firebase": {"sign_in_provider": "password", "identities": {}},

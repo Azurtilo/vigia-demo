@@ -27,6 +27,7 @@ class Identity:
     uid: str
     email: str | None
     email_verified: bool
+    auth_time: int | None = None  # cuándo inició sesión (segundos Unix); sirve para pedir reautenticación
 
 
 def _unauthorized(code: str, message: str) -> AppError:
@@ -55,6 +56,7 @@ def get_identity(
         uid=decoded["uid"],
         email=decoded.get("email"),
         email_verified=bool(decoded.get("email_verified", False)),
+        auth_time=decoded.get("auth_time"),
     )
 
 
@@ -63,6 +65,8 @@ def get_registered_user(identity: Annotated[Identity, Depends(get_identity)]) ->
     profile = users_service.get_profile(identity.uid)
     if profile is None:
         raise AppError(status.HTTP_403_FORBIDDEN, "profile_missing", "Debes completar tu registro en VIGIA.")
+    if profile.status == "deleted":
+        raise AppError(status.HTTP_403_FORBIDDEN, "account_deleted", "Esta cuenta fue eliminada.")
     if profile.status != "active":
         raise AppError(status.HTTP_403_FORBIDDEN, "account_suspended", "Tu cuenta está suspendida.")
     return profile
