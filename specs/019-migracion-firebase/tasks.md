@@ -1,7 +1,7 @@
 # Tareas — 019 / Migración a FastAPI + Firebase
 
 Spec: [spec.md](spec.md). Plan: [plan.md](plan.md).
-Estado: T-019-01 hecha; el resto, pendientes. Implementación autorizada: SÍ, T-019-01..15 (2026-10-28), sin merge, despliegue ni cuentas reales; cada una de esas acciones necesita autorización aparte.
+Estado: T-019-01 y T-019-02 hechas; el resto, pendientes. Implementación autorizada: SÍ, T-019-01..15 (2026-10-28), sin merge, despliegue ni cuentas reales; cada una de esas acciones necesita autorización aparte.
 Rama: `feature/019-migracion-firebase` desde `origin/develop` (`73fb6a1`), un commit por tarea y PR hacia `develop` (D-059).
 
 ## Semana 1 — backend (punto de control 2026-11-04)
@@ -11,7 +11,7 @@ Rama: `feature/019-migracion-firebase` desde `origin/develop` (`73fb6a1`), un co
   - Depende de: autorización.
   - Archivos previstos: `specs/019-migracion-firebase/*`, `specs/README.md`, `docs/DECISIONES.md` (D-081..D-097), `docs/ESTADO_PROYECTO.md`, `AGENTS.md` y `CLAUDE.md` (D-083).
   - Hecho cuando: spec, plan y tareas están en la rama; las decisiones citan la fuente; AGENTS y CLAUDE describen el backend FastAPI de esta rama sin borrar las reglas de Django que siguen vigentes en `develop`.
-- [ ] T-019-02 — Importar el proyecto base.
+- [x] T-019-02 — Importar el proyecto base.
   - RF: RF-019-01, RF-019-20 (solo copia).
   - Depende de: T-019-01.
   - Archivos previstos: `backend/`, `firebase/`, `firebase.json`, `.firebaserc`, `portal/` (desde `web/` del base), `docs/base-fastapi/`, `.gitignore`.
@@ -92,10 +92,11 @@ Rama: `feature/019-migracion-firebase` desde `origin/develop` (`73fb6a1`), un co
 | Fecha | Tarea | Resultado |
 |---|---|---|
 | 2026-10-28 | T-019-01 | Spec, plan y tareas; D-081..D-097 en DECISIONES; índice de specs; estado con los pendientes 22–25; sección de la rama en AGENTS y CLAUDE. Comprobado con metadatos de Git que `backend/.env` del base nunca se versionó (D-097). Sin código |
+| 2026-10-28 | T-019-02 | `git archive` del commit `518792263c44`: 97 archivos versionados (sin `.env`, entornos ni compilados) en `backend/`, `firebase/`, `firebase.json`, `.firebaserc`, `portal/` (su `web/`), `docs/base-fastapi/` y `backend/scripts/dev-api.ps1`. `.gitignore` ampliado. `.venv-backend` con Python 3.12.4 y `requirements-dev.txt`. `python -m pytest`: **22 aprobadas, 186 omitidas** (integración sin emuladores, P-019-01) en 96 s |
 
 ## Reanudación
 
-Última acción: T-019-01 cerrada. Siguiente: T-019-02 (importación). Bloqueos: P-019-01 (Java y Node) para la integración; P-019-02 (diferencias 4 y 5) antes de T-019-06; P-019-03 antes de T-019-07.
+Última acción: T-019-02 cerrada. Siguiente: T-019-04 (nodos y contrato Edge), que puede avanzar con pruebas unitarias; T-019-03 espera P-019-01. Bloqueos: P-019-01 (Java y Node) para la integración; P-019-02 (diferencias 4 y 5) antes de T-019-06; P-019-03 antes de T-019-07.
 
 ## Aceptación del usuario
 

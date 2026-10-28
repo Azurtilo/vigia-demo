@@ -1,0 +1,60 @@
+/* Paleta oficial de VIGIA */
+:root {
+  --vigia-azul: #4054a8;
+  --vigia-lavanda: #8e7cc3;
+  --vigia-celeste: #b9ddf2;
+  --vigia-rosa: #e9a6c5;
+  --vigia-verde: #a8d8c8;
+
+  --texto: #1f2433;
+  --texto-suave: #4a5068;
+  --fondo: #f7f8fc;
+
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: var(--texto);
+  background: var(--fondo);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 48px 16px;
+}
+
+h1 {
+  color: var(--vigia-azul);
+  margin: 0;
+}
+
+.subtitle {
+  color: var(--texto-suave);
+  margin-top: 4px;
+}
+
+.status {
+  margin-top: 24px;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+}
+
+.status--loading {
+  background: var(--vigia-celeste);
+}
+
+.status--ok {
+  background: var(--vigia-verde);
+}
+
+.status--error {
+  background: #fde8ef;
+  border-color: var(--vigia-rosa);
+}
