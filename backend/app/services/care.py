@@ -24,8 +24,10 @@ from app.models.care import (
     TaskLogCreate,
 )
 from app.services import patients as patients_service
+from app.services import timer as timer_service
 from app.services.activity import activity_entry, activity_ref
 from app.services.audit import audit_entry, audit_ref
+from app.services.consent import require_care
 from app.services.care_common import (
     CLOCK_SKEW,
     patient_tz,
@@ -163,6 +165,7 @@ def _validate_merged(d: dict) -> None:
 def create_task(patient_id: str, uid: str, body: CareTaskCreate) -> CareTask:
     access = patients_service.get_access(patient_id, uid, "care.manage")
     require_active_patient(access)
+    require_care(access)
     if body.kind == "position_change":
         require_feature(access, POSITIONS, "Las tareas de cambio de posición")
     if body.assigned_to:
@@ -208,6 +211,7 @@ def list_tasks(patient_id: str, uid: str, include_inactive: bool) -> list[CareTa
 def update_task(patient_id: str, uid: str, task_id: str, body: CareTaskUpdate) -> CareTask:
     access = patients_service.get_access(patient_id, uid, "care.manage")
     require_active_patient(access)
+    require_care(access)
     changes = _task_fields(body, only_sent=True)
     if not changes:
         return get_task(patient_id, uid, task_id)
@@ -266,6 +270,7 @@ def _activity_type(kind: str, status_: str) -> str:
 def log_task(patient_id: str, uid: str, task_id: str, body: TaskLogCreate) -> TaskLog:
     access = patients_service.get_access(patient_id, uid, "care.record")
     require_active_patient(access)
+    require_care(access)
     snap = tasks_collection(patient_id).document(task_id).get()
     if not snap.exists:
         raise _not_found()
@@ -326,6 +331,8 @@ def log_task(patient_id: str, uid: str, task_id: str, body: TaskLogCreate) -> Ta
         ),
     )
     _commit_log(batch, ref, "Esta tarea ya fue registrada en ese horario. Si hubo un error, corrígela.")
+    if task.kind == "position_change" and body.status == "done":
+        timer_service.restart_after_position(patient_id, done_at, uid)  # HU-04
     return to_task_log(ref.id, ref.get().to_dict())
 
 
@@ -333,6 +340,7 @@ def record_position_change(patient_id: str, uid: str, body: PositionChangeCreate
     """Cambio de posición sin una tarea programada (p. ej. cuando el paciente lo necesitó)."""
     access = patients_service.get_access(patient_id, uid, "care.record")
     require_active_patient(access)
+    require_care(access)
     note = _clean(body.note)
     require_feature(access, POSITIONS, "El registro de cambios de posición")
     if note:
@@ -365,6 +373,7 @@ def record_position_change(patient_id: str, uid: str, body: PositionChangeCreate
         activity_entry("position.changed", uid, at, {"taskId": None, "logId": ref.id, "position": body.position}),
     )
     batch.commit()
+    timer_service.restart_after_position(patient_id, at, uid)  # HU-04
     return to_task_log(ref.id, ref.get().to_dict())
 
 
@@ -372,6 +381,7 @@ def correct_task_log(patient_id: str, uid: str, log_id: str, body: TaskLogCorrec
     """Corrige un registro. Quien lo registró (si conserva care.record) o el dueño. Guarda el valor anterior."""
     access = patients_service.get_access(patient_id, uid, "patient.view")
     require_active_patient(access)
+    require_care(access)
     ref = task_logs_collection(patient_id).document(log_id)
     now = datetime.now(UTC)
     if body.done_at and body.done_at > now + CLOCK_SKEW:

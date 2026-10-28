@@ -29,3 +29,4 @@ class UserProfile(ApiModel):
     status: AccountStatus
     active_patient_count: int = 0
     created_at: datetime | None = None
+    policy_accepted_version: str | None = None

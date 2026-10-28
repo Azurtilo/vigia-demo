@@ -3,8 +3,20 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import edge
-from app.api.v1 import admin, alerts, care, medications, members, nodes, patients, subscriptions, users
+from app.api import edge, internal
+from app.api.v1 import (
+    admin,
+    alerts,
+    care,
+    medications,
+    members,
+    nodes,
+    patients,
+    privacy,
+    subscriptions,
+    timer,
+    users,
+)
 from app.core.config import get_settings
 from app.core.errors import UTF8JSONResponse, register_error_handlers
 
@@ -35,6 +47,9 @@ app.include_router(subscriptions.router, prefix="/v1")
 app.include_router(admin.router, prefix="/v1")
 app.include_router(nodes.router, prefix="/v1")
 app.include_router(alerts.router, prefix="/v1")
+app.include_router(privacy.router, prefix="/v1")
+app.include_router(timer.router, prefix="/v1")
+app.include_router(internal.router)
 # El nodo Edge conserva la ruta de la API Django para no cambiar su código (D-086).
 app.include_router(edge.router)
 

@@ -4,7 +4,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
 
-from app.core.security import Identity, get_current_user, get_identity
+from app.core.security import Identity, get_current_user, get_identity, get_registered_user
 from app.models.patient import PlanUsage
 from app.models.user import RegisterRequest, UserProfile
 from app.services import patients as patients_service
@@ -36,8 +36,8 @@ def register(
 
 
 @router.get("/me", response_model=UserProfile, responses=_auth_errors)
-def me(user: Annotated[UserProfile, Depends(get_current_user)]) -> UserProfile:
-    """Perfil de la persona que hace la solicitud."""
+def me(user: Annotated[UserProfile, Depends(get_registered_user)]) -> UserProfile:
+    """Perfil de la persona que hace la solicitud. No exige la política: la app ve aquí si falta aceptarla."""
     return user
 
 

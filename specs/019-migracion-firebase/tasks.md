@@ -1,7 +1,7 @@
 # Tareas — 019 / Migración a FastAPI + Firebase
 
 Spec: [spec.md](spec.md). Plan: [plan.md](plan.md).
-Estado: T-019-01..05 hechas; el resto, pendientes. Implementación autorizada: SÍ, T-019-01..15 (2026-10-28), sin merge, despliegue ni cuentas reales; cada una de esas acciones necesita autorización aparte.
+Estado: T-019-01..06 hechas; el resto, pendientes. Implementación autorizada: SÍ, T-019-01..15 (2026-10-28), sin merge, despliegue ni cuentas reales; cada una de esas acciones necesita autorización aparte.
 Rama: `feature/019-migracion-firebase` desde `origin/develop` (`73fb6a1`), un commit por tarea y PR hacia `develop` (D-059).
 
 ## Semana 1 — backend (punto de control 2026-11-04)
@@ -31,7 +31,7 @@ Rama: `feature/019-migracion-firebase` desde `origin/develop` (`73fb6a1`), un co
   - Depende de: T-019-04.
   - Archivos previstos: `services/alerts.py`, `services/push.py`, `api/v1/alerts.py`, `api/v1/devices.py`, pruebas con FCM simulado.
   - Hecho cuando: una caída crea la alerta y solicita el push solo a los destinatarios con permiso y plan; los avisos de cámara salen una vez por episodio; el texto no contiene datos clínicos.
-- [ ] T-019-06 — Consentimiento, reloj y tick del cron.
+- [x] T-019-06 — Consentimiento, reloj y tick del cron.
   - RF: RF-019-06, RF-019-07, RF-019-08.
   - Depende de: T-019-04.
   - Archivos previstos: `api/v1/consent.py`, `services/consent.py`, `api/v1/timer.py`, `api/internal.py`, `services/reminders.py`, pruebas.
@@ -104,10 +104,11 @@ Rama: `feature/019-migracion-firebase` desde `origin/develop` (`73fb6a1`), un co
 | 2026-10-28 | T-019-03 | `winget`: Temurin JDK 21.0.12.1 y Node.js 24.22.1; `npm i -g firebase-tools` 15.34.1. Emuladores Auth y Firestore (`demo-vigia-test`) listos. Backend: **208 aprobadas, 0 omitidas** en 52 s. Reglas de Firestore (`firebase/`, vitest): **7/7**. Comandos en `docs/ENTORNO_Y_VERIFICACION.md` |
 | 2026-10-28 | T-019-04 | `models/nodes.py`, `services/nodes.py`, `services/edge_cache.py` (D-095), `services/consent.py` (consulta, falla cerrado), `api/v1/nodes.py`, `api/edge.py` en `/api/v1/edge`; la caché se vacía al revocar, cambiar el plan, editar planes (admin) y archivar. Backend **263 OK** (55 nuevas), 4/4 mutaciones detectadas, Edge 56 OK sin cambios y prueba de punta a punta con `edge.run.Uplink` real (caída entregada). Diferencias 8 y 9 en el plan. [Validación](validation.md) |
 | 2026-10-28 | T-019-05 | `services/alerts.py`, `services/push.py`, `services/devices.py`, `models/alerts.py`, `api/v1/alerts.py`; `VIGIA_PUSH_ENABLED` en la configuración; la caída y su alerta en el mismo lote con push después de responder al nodo; inmovilidad, cámara ciega y nodo sin señal por `alerts.run_cycle()` (lo llamará el tick, T-019-06); índice de grupo `alerts.pushPending`. Backend **282 OK** (19 nuevas con FCM simulado), 6/6 mutaciones detectadas |
+| 2026-10-28 | T-019-06 | Política de la cuenta (`get_registered_user` / `get_current_user`, `/v1/privacy`), consentimiento por finalidad con historial (`/v1/patients/{id}/consents`), consentimiento de cuidado exigido en las 9 escrituras de `care.py` y `medications.py`; reloj (`/timer`, `/me/timer-schedule`) reiniciado por ambos registros de posición; recordatorios de tomas y del reloj (`services/reminders.py`, cada 5 min como máximo) y `POST /internal/tick` con `X-Cron-Secret`; opciones `VIGIA_PRIVACY_ENFORCED`, `VIGIA_PRIVACY_POLICY_VERSION` y `VIGIA_CRON_SECRET`; índice de grupo `medications.active`. Backend **316 OK** (34 nuevas), 9/10 mutaciones detectadas (la décima es equivalente). Diferencias 10 y 11 en el plan |
 
 ## Reanudación
 
-Última acción: T-019-05 cerrada. Siguiente: T-019-06 (consentimiento, reloj y tick, que llamará a `alerts.run_cycle()`). Para probar, primero levantar los emuladores (ver `docs/ENTORNO_Y_VERIFICACION.md`). Bloqueos: P-019-01 (Java y Node) para la integración; P-019-02 (diferencias 4 y 5) antes de T-019-06; P-019-03 antes de T-019-07.
+Última acción: T-019-06 cerrada. Siguiente: T-019-16 (privacidad: purga, exportación y eliminación) para terminar el backend, o T-019-07 si el proyecto Firebase ya existe (D-100). Pendiente del propietario: diferencia 10 del plan (reloj solo en Plus y Premium). Para probar, primero levantar los emuladores (ver `docs/ENTORNO_Y_VERIFICACION.md`). Bloqueos: P-019-01 (Java y Node) para la integración; P-019-02 (diferencias 4 y 5) antes de T-019-06; P-019-03 antes de T-019-07.
 
 ## Aceptación del usuario
 

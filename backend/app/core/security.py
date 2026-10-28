@@ -1,7 +1,8 @@
 """Autenticación (¿quién eres?) y autorización base (¿tu cuenta puede operar?).
 
 - `get_identity`: valida el token de Firebase. No exige perfil en VIGIA (sirve para registrarse).
-- `get_current_user`: además exige perfil registrado y cuenta activa.
+- `get_registered_user`: además exige perfil registrado y cuenta activa.
+- `get_current_user`: además exige la política de privacidad vigente aceptada (si está activada).
 - `require_admin`: además exige rol de administrador.
 """
 
@@ -12,6 +13,7 @@ from fastapi import Depends, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from firebase_admin import auth
 
+from app.core.config import get_settings
 from app.core.errors import AppError
 from app.core.firebase import init_firebase
 from app.models.user import UserProfile
@@ -56,13 +58,24 @@ def get_identity(
     )
 
 
-def get_current_user(identity: Annotated[Identity, Depends(get_identity)]) -> UserProfile:
+def get_registered_user(identity: Annotated[Identity, Depends(get_identity)]) -> UserProfile:
+    """Perfil registrado y cuenta activa, sin exigir la política (sirve para consultarla y aceptarla)."""
     profile = users_service.get_profile(identity.uid)
     if profile is None:
         raise AppError(status.HTTP_403_FORBIDDEN, "profile_missing", "Debes completar tu registro en VIGIA.")
     if profile.status != "active":
         raise AppError(status.HTTP_403_FORBIDDEN, "account_suspended", "Tu cuenta está suspendida.")
     return profile
+
+
+def get_current_user(user: Annotated[UserProfile, Depends(get_registered_user)]) -> UserProfile:
+    """Además exige la política de privacidad vigente aceptada (spec 014), si está activada."""
+    settings = get_settings()
+    if settings.privacy_enforced and user.policy_accepted_version != settings.privacy_policy_version:
+        raise AppError(
+            status.HTTP_403_FORBIDDEN, "policy_not_accepted", "Acepta la política de privacidad para continuar."
+        )
+    return user
 
 
 def require_admin(user: Annotated[UserProfile, Depends(get_current_user)]) -> UserProfile:

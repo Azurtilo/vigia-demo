@@ -25,6 +25,14 @@ class Settings(BaseSettings):
     # igual y quedan pendientes de envío; los emuladores no entregan push a teléfonos.
     push_enabled: bool = False
 
+    # Privacidad (spec 014). Activada, la API exige aceptar la política vigente y el consentimiento
+    # de cuidado del paciente para registrar datos. El consentimiento de detección se exige siempre.
+    privacy_enforced: bool = True
+    privacy_policy_version: str = "2026-10-25"
+
+    # Secreto del cron externo para POST /internal/tick (VIGIA_CRON_SECRET). Vacío = tick desactivado.
+    cron_secret: str = ""
+
     @property
     def cors_origin_list(self) -> list[str]:
         return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]

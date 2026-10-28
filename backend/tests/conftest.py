@@ -13,6 +13,9 @@ os.environ["VIGIA_ENVIRONMENT"] = "test"
 os.environ["VIGIA_FIREBASE_PROJECT_ID"] = "demo-vigia-test"
 os.environ.setdefault("VIGIA_AUTH_EMULATOR_HOST", "127.0.0.1:9099")
 os.environ.setdefault("VIGIA_FIRESTORE_EMULATOR_HOST", "127.0.0.1:8080")
+# Como en Django (PRIVACY_ENFORCED=False en test_settings): las pruebas de privacidad la activan
+# explícitamente (tests/test_privacy.py). El consentimiento de detección se exige siempre.
+os.environ["VIGIA_PRIVACY_ENFORCED"] = "false"
 
 import pytest  # noqa: E402
 import requests  # noqa: E402

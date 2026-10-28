@@ -20,6 +20,9 @@ Solo se registra lo ejecutado. Ningún RNF del informe se declara cumplido aquí
 | 2026-10-28 | T-019-05 | `python -m pytest` con emuladores | **282 aprobadas** (19 nuevas en `test_alerts.py`, con FCM simulado en `push.transport`) |
 | 2026-10-28 | T-019-05 | Mutaciones temporales en `alerts.py` y `push.py` | 6/6 detectadas: destinatarios sin `alerts.handle`, todo con prioridad alta, sin recibo (push duplicado), una falla de FCM que no queda pendiente, anunciar episodios de más de 1 hora e ignorar `advancedAlerts` del plan |
 
+| 2026-10-28 | T-019-06 | `python -m pytest` con emuladores | **316 aprobadas** (34 nuevas en `test_privacy.py`, `test_timer.py` y `test_tick.py`) |
+| 2026-10-28 | T-019-06 | Mutaciones temporales | 9/10 detectadas: no exigir la política; no exigir el consentimiento de cuidado; revocar detección sin vaciar la caché; un cambio de posición que crea el reloj; un cambio tardío que lo retrocede; sin control de `generation`; la familia recibe recordatorios; recordar tomas ya registradas; ignorar los avisos locales del reloj. La décima (quitar `not secret` en el tick) es equivalente: con el secreto vacío la comparación igual falla con 401 |
+
 Lo que comprueban las pruebas de T-019-05:
 - **Caída:** la alerta (`obs_<observación>`) se crea con la observación; el push sale una vez a dueña, familiar y cuidadora, y no a la miembro sin `alerts.handle`, con texto genérico, prioridad alta y visibilidad privada.
 - **Reintentos:** un reintento del nodo no duplica la alerta ni el push.
@@ -38,6 +41,7 @@ Lo que comprueban las pruebas de T-019-05:
 ## No comprobado
 
 - Push real: FCM está simulado; la entrega en un teléfono requiere el proyecto Firebase (D-100).
-- Consentimiento por API, reloj y tick (T-019-06); privacidad (T-019-16).
+- El tick con un cron real (cron-job.org) y Render (D-100); los recordatorios en un teléfono.
+- Privacidad: purga, exportación y eliminación (T-019-16).
 - Nodo con cámara real contra este backend y push en Android: punto de control (T-019-07), que necesita el proyecto Firebase (D-100).
 - La demora de 0,029 s es la recepción en una red local con emuladores; no mide la alerta de caída en ≤ 10 s.

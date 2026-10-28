@@ -23,6 +23,7 @@ def _to_profile(snapshot: firestore.DocumentSnapshot) -> UserProfile:
         status=data.get("status", "active"),
         active_patient_count=data.get("activePatientCount", 0),
         created_at=data.get("createdAt"),
+        policy_accepted_version=data.get("policyAcceptedVersion"),
     )
 
 

@@ -26,6 +26,7 @@ from app.models.medication import (
 from app.services import patients as patients_service
 from app.services.activity import activity_entry, activity_ref
 from app.services.audit import audit_entry, audit_ref
+from app.services.consent import require_care
 from app.services.care_common import (
     CLOCK_SKEW,
     patient_tz,
@@ -119,6 +120,7 @@ def _validate_merged(d: dict) -> None:
 def create_medication(patient_id: str, uid: str, body: MedicationCreate) -> Medication:
     access = patients_service.get_access(patient_id, uid, "meds.manage")
     require_active_patient(access)
+    require_care(access)
     db = get_db()
     ref = meds_collection(patient_id).document()
     data = {
@@ -157,6 +159,7 @@ def list_medications(patient_id: str, uid: str, include_inactive: bool) -> list[
 def update_medication(patient_id: str, uid: str, med_id: str, body: MedicationUpdate) -> Medication:
     access = patients_service.get_access(patient_id, uid, "meds.manage")
     require_active_patient(access)
+    require_care(access)
     changes = _med_fields(body, only_sent=True)
     if not changes:
         return get_medication(patient_id, uid, med_id)
@@ -205,6 +208,7 @@ def update_medication(patient_id: str, uid: str, med_id: str, body: MedicationUp
 def log_dose(patient_id: str, uid: str, med_id: str, body: DoseLogCreate) -> DoseLog:
     access = patients_service.get_access(patient_id, uid, "meds.administer")
     require_active_patient(access)
+    require_care(access)
     med_snap = meds_collection(patient_id).document(med_id).get()
     if not med_snap.exists:
         raise AppError(status.HTTP_404_NOT_FOUND, "medication_not_found", "Medicamento no encontrado.")
@@ -280,6 +284,7 @@ def correct_dose(patient_id: str, uid: str, log_id: str, body: DoseLogCorrection
     """Corrige un registro. Puede hacerlo quien lo registró (si conserva meds.administer) o el dueño."""
     access = patients_service.get_access(patient_id, uid, "patient.view")
     require_active_patient(access)
+    require_care(access)
     ref = logs_collection(patient_id).document(log_id)
     now = datetime.now(UTC)
     if body.actual_at and body.actual_at > now + CLOCK_SKEW:
