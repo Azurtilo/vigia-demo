@@ -108,7 +108,7 @@ Rama: `feature/019-migracion-firebase` desde `origin/develop` (`73fb6a1`), un co
 
 ## Reanudación
 
-Última acción: T-019-06 cerrada. Siguiente: T-019-16 (privacidad: purga, exportación y eliminación) para terminar el backend, o T-019-07 si el proyecto Firebase ya existe (D-100). Pendiente del propietario: diferencia 10 del plan (reloj solo en Plus y Premium). Para probar, primero levantar los emuladores (ver `docs/ENTORNO_Y_VERIFICACION.md`). Bloqueos: P-019-01 (Java y Node) para la integración; P-019-02 (diferencias 4 y 5) antes de T-019-06; P-019-03 antes de T-019-07.
+Última acción: T-019-06 cerrada. Siguiente: T-019-16 (privacidad: purga, exportación y eliminación) para terminar el backend, o T-019-07 si el proyecto Firebase ya existe (D-100). Pendiente del propietario: P-019-04 (reloj solo en Plus y Premium), registrado el 2026-10-28 a su pedido. Para probar, primero levantar los emuladores (ver `docs/ENTORNO_Y_VERIFICACION.md`). Bloqueos: P-019-01 (Java y Node) para la integración; P-019-02 (diferencias 4 y 5) antes de T-019-06; P-019-03 antes de T-019-07.
 
 ## Aceptación del usuario
 

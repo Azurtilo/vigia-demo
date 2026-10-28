@@ -124,6 +124,7 @@ Sin acceso a un paciente se responde 404 (regla del backend base). Una cuenta su
 - P-019-01 — **Herramientas locales:** resuelta con D-099 (instalación con `winget` autorizada).
 - P-019-02 — **Revisión de reglas del backend base (D-087):** las diferencias 4 y 5 del plan (purga, exportación y eliminación) se resolvieron con D-098: se portan (RF-019-24..27). Las diferencias 1, 2, 3, 6 y 7 se aplican con su valor por defecto mientras el propietario no indique otra cosa.
 - P-019-03 — **Cuentas externas:** pendiente por decisión del propietario (D-100). Proyecto Firebase real, Render y cron-job.org los crea el propietario más adelante. El punto de control (RF-019-22) necesita al menos el proyecto Firebase, porque los emuladores no entregan push a un teléfono.
+- P-019-04 — **Reloj de cambio de posición en el plan Gratis (diferencia 10 del plan):** en el backend base, registrar cambios de posición solo existe en Plus y Premium (`positionChanges`), así que el reloj sigue la misma regla y en el plan Gratis no hay HU-04. Llevarlo a todos los planes es un cambio pequeño. **Pendiente del propietario** (2026-10-28); mientras tanto rige la regla del base.
 - Supuesto técnico reversible: un solo proceso del backend en Render (la caché en memoria de RF-019-11 depende de eso).
 
 ## Revisión y cambios

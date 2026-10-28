@@ -31,6 +31,7 @@ Lista única de lo que falta. El detalle vive en cada spec y en DECISIONES. «Pr
 | 23 | ~~Confirmar las diferencias 4 y 5 del plan 019~~ Se porta la privacidad de la 014 (D-098, T-019-16); las demás diferencias, con su valor por defecto | P-019-02 | Hecho (decisión) |
 | 24 | Crear el proyecto Firebase real (Spark), el servicio en Render y la tarea en cron-job.org, confirmando sus condiciones gratuitas. **Pendiente por decisión del propietario (D-100)**; el punto de control del 2026-11-04 necesita al menos el proyecto Firebase | P-019-03, T-019-07 | Propietario |
 | 25 | Punto de control de la 019 el 2026-11-04: nodo real → caída → push en Android. Si falla, decidir si se entrega con Django | D-081 | Propietario + equipo |
+| 26 | Decidir si el reloj de cambio de posición (HU-04) llega al plan Gratis: hoy, como en el backend base, solo existe en Plus y Premium (`positionChanges`). Llevarlo a todos los planes es un cambio pequeño | P-019-04, diferencia 10 del plan 019 | Propietario (decisión) |
 
 Los números 20 y 21 los usa la rama de la 018, sin fusionar.
 
