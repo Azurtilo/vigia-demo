@@ -1,7 +1,7 @@
 # Tareas — 018 / Usabilidad del portal
 
 Spec: [spec.md](spec.md). Plan: [plan.md](plan.md).
-Estado: T-018-01 hecha; T-018-02..07 pendientes. Implementación autorizada: SÍ, T-018-01..07 (2026-10-27), sin despliegue; el merge de la PR requiere autorización aparte.
+Estado: T-018-01..02 hechas; T-018-03..07 pendientes. Implementación autorizada: SÍ, T-018-01..07 (2026-10-27), sin despliegue; el merge de la PR requiere autorización aparte.
 Rama: `feature/018-usabilidad-portal` desde `develop`, un commit por tarea y PR hacia `develop` (D-059).
 
 - [x] T-018-01 — Documentos y línea base.
@@ -9,7 +9,7 @@ Rama: `feature/018-usabilidad-portal` desde `develop`, un commit por tarea y PR 
   - Depende de: autorización.
   - Archivos previstos: `specs/018-usabilidad-portal/*`, `specs/README.md`, `docs/DECISIONES.md` (D-078..D-080).
   - Hecho cuando: spec, plan y tareas están en la rama; la suite Django pasa sin cambios de código y su conteo queda en `validation.md`.
-- [ ] T-018-02 — Indicadores de contraseña.
+- [x] T-018-02 — Indicadores de contraseña.
   - RF: RF-018-01, RF-018-02, RF-018-03, RF-018-04.
   - Depende de: T-018-01.
   - Archivos previstos: `UsuarioApp/password_rules.py`, `UsuarioApp/account_forms.py`, `UsuarioApp/signup_forms.py`, `UsuarioApp/forms.py`, `core/common_settings.py`, `templates/components/password_checklist.html`, las seis plantillas, `static/js/contrasena.js`, `static/css/styles.css`, `components/Layout/base.html`, `UsuarioApp/tests.py`.
@@ -45,3 +45,4 @@ Rama: `feature/018-usabilidad-portal` desde `develop`, un commit por tarea y PR 
 | Fecha | Tarea | Resultado |
 |---|---|---|
 | 2026-10-27 | T-018-01 | Spec, plan, tareas y D-078..D-080. Django 247 OK sin cambios de código |
+| 2026-10-27 | T-018-02 | `PasswordRulesMixin` en los seis formularios, lista en vivo y mensaje único de coincidencia. 6 pruebas nuevas, 4 mutaciones detectadas. Django 253 OK. JavaScript sin verificar en navegador (T-018-07) |

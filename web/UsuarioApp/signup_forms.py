@@ -4,8 +4,9 @@ from django.db import transaction
 from django.urls import reverse_lazy
 from django.utils.functional import lazy
 from django.utils.html import format_html
-
 from PrivacidadApp.consent import accept_account
+
+from .password_rules import PasswordRulesMixin
 
 policy_label = lazy(
     lambda: format_html(
@@ -16,7 +17,7 @@ policy_label = lazy(
 )
 
 
-class PublicSignupForm(SignupForm):
+class PublicSignupForm(PasswordRulesMixin, SignupForm):
     accept_privacy = forms.BooleanField(
         label=policy_label(),
         error_messages={"required": "Debes aceptar la política de privacidad."},

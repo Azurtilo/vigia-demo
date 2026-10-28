@@ -2,11 +2,11 @@ from django import forms
 from django.contrib.auth.forms import SetPasswordForm, UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
-from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import UploadedFile
 from django.views.decorators.debug import sensitive_variables
 
 from .models import Position, Profile, UserVisualPreference
+from .password_rules import PasswordRulesMixin
 from .permissions import cargos_asignables
 
 
@@ -14,22 +14,20 @@ class VisualModeForm(forms.Form):
     mode = forms.ChoiceField(choices=UserVisualPreference.Mode.choices)
 
 
-class AdministrativePasswordForm(SetPasswordForm):
+class AdministrativePasswordForm(PasswordRulesMixin, SetPasswordForm):
     admin_password = forms.CharField(
         label="Tu contraseña de administrador",
         strip=False,
         widget=forms.PasswordInput(attrs={"autocomplete": "current-password"}),
     )
     field_order = ["admin_password", "new_password1", "new_password2"]
+    password_field, confirm_field, personal_fields = "new_password1", "new_password2", ()
 
     def __init__(self, user, *args, actor, **kwargs):
         self.actor = actor
         super().__init__(user, *args, **kwargs)
         self.fields["new_password1"].label = "Nueva contraseña del usuario"
         self.fields["new_password2"].label = "Repite la nueva contraseña"
-        self.fields[
-            "new_password2"
-        ].help_text = "Escribe la misma contraseña para confirmar."
         for name in ("new_password1", "new_password2"):
             self.fields[name].required = True
 
@@ -54,7 +52,7 @@ class UserUpdateForm(forms.ModelForm):
         ]
 
 
-class UserCreateForm(UserCreationForm, UserUpdateForm):
+class UserCreateForm(PasswordRulesMixin, UserCreationForm, UserUpdateForm):
     password1 = forms.PasswordInput()
     password2 = forms.PasswordInput()
 
@@ -66,16 +64,6 @@ class UserCreateForm(UserCreationForm, UserUpdateForm):
         password1 = self.cleaned_data.get("password1")
         validate_password(password1)
         return password1
-
-    def clean(self):
-        cleaned_data = super().clean()
-        password1 = cleaned_data.get("password1")
-        password2 = cleaned_data.get("password2")
-
-        if password1 and password2 and password1 != password2:
-            raise ValidationError("Passwords do not match")
-
-        return cleaned_data
 
 
 class ProfileUpdateForm(forms.ModelForm):

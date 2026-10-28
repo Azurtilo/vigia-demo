@@ -1420,3 +1420,113 @@ class ListadoConsultasTests(BaseUsuariosTestCase):
             self.create_actor(f"lista_extra_{n}", position=self.restricted_position)
         many, _ = self.page_queries()
         self.assertEqual(few, many)
+
+
+class IndicadoresContrasenaTests(BaseUsuariosTestCase):
+    """Spec 018, RF-018-01..04: live checklist instead of Django's static list."""
+
+    DJANGO_HELP = "no puede ser una clave utilizada comúnmente"
+
+    def rule_state(self, response, rule):
+        import re
+
+        match = re.search(rf'data-rule="{rule}" data-state="(\w+)"', response.content.decode())
+        return match and match.group(1)
+
+    def signup(self, password, confirm=None):
+        return self.client.post(
+            reverse("account_signup"),
+            {
+                "username": "indicadores",
+                "email": "indicadores@example.test",
+                "password1": password,
+                "password2": password if confirm is None else confirm,
+                "accept_privacy": "on",
+            },
+        )
+
+    def test_las_seis_pantallas_muestran_la_lista_sin_la_ayuda_de_django(self):
+        from allauth.account.forms import default_token_generator
+        from allauth.account.utils import user_pk_to_url_str
+
+        admin = self.create_actor("indicador_admin", position=self.admin_position)
+        target = self.create_actor("indicador_destino", position=self.restricted_position)
+        sin_clave = self.create_actor("indicador_google", position=self.restricted_position)
+        sin_clave.set_unusable_password()
+        sin_clave.save()
+        key = default_token_generator.make_token(target)
+        reset = reverse("account_reset_password_from_key", args=[user_pk_to_url_str(target), key])
+        screens = [
+            (None, reverse("account_signup")),
+            (None, reset),
+            (target, reverse("account_change_password")),
+            (sin_clave, reverse("account_set_password")),
+            (admin, reverse("Register")),
+            (admin, reverse("UserPasswordReset", args=[target.pk])),
+        ]
+        for actor, url in screens:
+            with self.subTest(url=url):
+                self.client.logout()
+                if actor:
+                    self.client.force_login(actor)
+                response = self.client.get(url, follow=True)
+                self.assertContains(response, "data-password-checklist")
+                self.assertContains(response, "Tu contraseña debe cumplir:")
+                self.assertEqual(self.rule_state(response, "length"), "pending")
+                self.assertEqual(self.rule_state(response, "match"), "pending")
+                self.assertNotContains(response, self.DJANGO_HELP)
+
+    @override_settings(AUTH_PASSWORD_VALIDATORS=[{
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {"min_length": 12},
+    }])
+    def test_las_reglas_salen_de_los_validadores_configurados(self):
+        response = self.client.get(reverse("account_signup"))
+        self.assertContains(response, "Al menos 12 caracteres")
+        self.assertContains(response, 'data-min="12"')
+        self.assertIsNone(self.rule_state(response, "numeric"))
+        self.assertIsNone(self.rule_state(response, "server"))
+
+    def test_las_reglas_rechazadas_por_el_servidor_quedan_en_rojo(self):
+        response = self.signup("12345678")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.rule_state(response, "numeric"), "fail")
+        self.assertEqual(self.rule_state(response, "server"), "fail")
+        self.assertEqual(self.rule_state(response, "length"), "pending")
+        self.assertFalse(User.objects.filter(username="indicadores").exists())
+
+    def test_confirmacion_distinta_usa_un_solo_mensaje_tuteado(self):
+        response = self.signup("Vigia-Prueba-2026!", confirm="Vigia-Prueba-2027!")
+        self.assertEqual(self.rule_state(response, "match"), "fail")
+        self.assertContains(response, "Las contraseñas no coinciden.")
+        self.assertNotContains(response, "misma contraseña cada vez")
+        self.assertNotContains(response, "Vigia-Prueba-2026!")
+        self.assertNotContains(response, "Vigia-Prueba-2027!")
+
+    def test_restablecimiento_administrativo_marca_lo_rechazado(self):
+        admin = self.create_actor("indicador_admin2", position=self.admin_position)
+        target = self.create_actor("indicador_destino2", position=self.restricted_position)
+        self.client.force_login(admin)
+        response = self.client.post(
+            reverse("UserPasswordReset", args=[target.pk]),
+            {"admin_password": PASSWORD, "new_password1": "corta", "new_password2": "cortas"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.rule_state(response, "match"), "fail")
+        self.assertContains(response, "Las contraseñas no coinciden.")
+        # Django files validator errors under the confirmation field.
+        response = self.client.post(
+            reverse("UserPasswordReset", args=[target.pk]),
+            {"admin_password": PASSWORD, "new_password1": "corta", "new_password2": "corta"},
+        )
+        self.assertEqual(self.rule_state(response, "length"), "fail")
+        self.assertEqual(self.rule_state(response, "match"), "pending")
+        self.assertTrue(User.objects.get(pk=target.pk).check_password(PASSWORD))
+
+    def test_cambiar_contrasena_compara_con_el_usuario_propio(self):
+        actor = self.create_actor("indicador_propio", position=self.restricted_position)
+        actor.email = "propio.correo@example.test"
+        actor.save(update_fields=["email"])
+        self.client.force_login(actor)
+        response = self.client.get(reverse("account_change_password"))
+        self.assertContains(response, '["indicador_propio", "propio.correo"]')
