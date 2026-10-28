@@ -255,3 +255,7 @@ a { text-underline-offset: .2em; }
 .privacy-index a { color: var(--brand); text-decoration: underline; text-underline-offset: 3px; }
 .privacy-footnote { margin-top: 32px; color: var(--muted); font-size: 14px; }
 @media (min-width: 768px) { .privacy-policy { padding: 40px 24px 64px; } .privacy-policy h1 { font-size: 32px; } }
+
+/* Spec 018: salidas explícitas en las páginas de cuenta. */
+.account-exits { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+.account-exits > :is(a, button) { width: auto; }

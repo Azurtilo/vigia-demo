@@ -1,7 +1,7 @@
 # Tareas — 018 / Usabilidad del portal
 
 Spec: [spec.md](spec.md). Plan: [plan.md](plan.md).
-Estado: T-018-01..03 hechas; T-018-04..07 pendientes. Implementación autorizada: SÍ, T-018-01..07 (2026-10-27), sin despliegue; el merge de la PR requiere autorización aparte.
+Estado: T-018-01..04 hechas; T-018-05..07 pendientes. Implementación autorizada: SÍ, T-018-01..07 (2026-10-27), sin despliegue; el merge de la PR requiere autorización aparte.
 Rama: `feature/018-usabilidad-portal` desde `develop`, un commit por tarea y PR hacia `develop` (D-059).
 
 - [x] T-018-01 — Documentos y línea base.
@@ -19,7 +19,7 @@ Rama: `feature/018-usabilidad-portal` desde `develop`, un commit por tarea y PR 
   - Depende de: T-018-01.
   - Archivos previstos: `templates/pages/PrivacidadApp/politica.html`, `static/css/styles.css`, `PrivacidadApp/tests.py`.
   - Hecho cuando: las pruebas comprueban el índice con enlaces a cada sección y las salidas con y sin sesión; el contenido y la versión no cambian.
-- [ ] T-018-04 — Páginas de cuenta con salida.
+- [x] T-018-04 — Páginas de cuenta con salida.
   - RF: RF-018-08, RF-018-09, RF-018-10.
   - Depende de: T-018-01.
   - Archivos previstos: `templates/account/Layout/base_simple.html`, `templates/account/{email,logout,verification_sent,email_confirm,verified_email_required,password_reset_done,password_reset_from_key,password_reset_from_key_done,account_inactive}.html`, `UsuarioApp/tests.py`.
@@ -47,3 +47,4 @@ Rama: `feature/018-usabilidad-portal` desde `develop`, un commit por tarea y PR 
 | 2026-10-27 | T-018-01 | Spec, plan, tareas y D-078..D-080. Django 247 OK sin cambios de código |
 | 2026-10-27 | T-018-02 | `PasswordRulesMixin` en los seis formularios, lista en vivo y mensaje único de coincidencia. 6 pruebas nuevas, 4 mutaciones detectadas. Django 253 OK. JavaScript sin verificar en navegador (T-018-07) |
 | 2026-10-27 | T-018-03 | Política con secciones, índice, aviso destacado y salidas según la sesión; texto original intacto (comparado párrafo a párrafo). 3 pruebas nuevas |
+| 2026-10-27 | T-018-04 | Menú en correos y cerrar sesión, salidas en las 9 páginas terminales y logo según la sesión. 4 pruebas nuevas. Django 260 OK |

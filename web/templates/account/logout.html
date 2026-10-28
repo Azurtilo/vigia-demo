@@ -1,5 +1,4 @@
-<!-- NO USADA -->
-{% extends 'account/Layout/base_simple.html' %}
+{% extends user.is_authenticated|yesno:'account/Layout/base_account.html,account/Layout/base_simple.html' %}
 {% load allauth i18n %}
 {% block head_title %}
   {% trans 'Sign Out' %}
@@ -20,9 +19,12 @@
         {{ redirect_field }}
       {% endslot %}
       {% slot actions %}
-        {% element button type='submit' %}
-          {% trans 'Sign Out' %}
-        {% endelement %}
+        <div class="account-exits">
+          {% element button type='submit' %}
+            {% trans 'Sign Out' %}
+          {% endelement %}
+          <a class="button secondary" href="{% url 'Home' %}">Cancelar</a>
+        </div>
       {% endslot %}
     {% endelement %}
 {% endblock %}

@@ -25,19 +25,24 @@
           {% slot actions %}
             {% csrf_token %}
             {{ redirect_field }}
-            {% include "components/btn/button_size.html" with button_name="confirm" button_type="submit" button_text="Confirmar" %}
+            <div class="account-exits">
+              {% include "components/btn/button_size.html" with button_name="confirm" button_type="submit" button_text="Confirmar" %}
+              {% if user.is_authenticated %}<a class="button secondary" href="{% url 'Home' %}">Cancelar</a>{% else %}<a class="button secondary" href="{% url 'account_login' %}">Cancelar</a>{% endif %}
+            </div>
           {% endslot %}
         {% endelement %}
       {% else %}
         <p class="max-w-2xl text-ink pt-6">
           {% blocktrans %}Unable to confirm {{ email }} because it is already confirmed by a different account.{% endblocktrans %}
         </p>
+        <div class="account-exits">{% if user.is_authenticated %}<a class="button secondary" href="{% url 'Home' %}">Ir a mi panel</a>{% else %}<a class="button secondary" href="{% url 'account_login' %}">Volver a iniciar sesión</a>{% endif %}</div>
       {% endif %}
   {% else %}
       {% url 'account_email' as email_url %}
       <p class="max-w-2xl text-ink pt-6">
         Este enlace de confirmación por correo electrónico expiró o no es válido. Por favor <a class="text-brand" href="{{ email_url }}">emitir una nueva solicitud de confirmación por correo electrónico</a>.
       </p>
+      <div class="account-exits"><a class="button" href="{{ email_url }}">Pedir otro correo</a>{% if user.is_authenticated %}<a class="button secondary" href="{% url 'Home' %}">Ir a mi panel</a>{% else %}<a class="button secondary" href="{% url 'account_login' %}">Volver a iniciar sesión</a>{% endif %}</div>
     </div>
   {% endif %}
 

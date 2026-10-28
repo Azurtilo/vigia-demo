@@ -1530,3 +1530,73 @@ class IndicadoresContrasenaTests(BaseUsuariosTestCase):
         self.client.force_login(actor)
         response = self.client.get(reverse("account_change_password"))
         self.assertContains(response, '["indicador_propio", "propio.correo"]')
+
+
+class SalidasCuentaTests(BaseUsuariosTestCase):
+    """Spec 018, RF-018-08..10: no account page leaves the person without a way out."""
+
+    NAV = 'class="desktop-sidebar"'
+
+    def setUp(self):
+        self.actor = self.create_actor("salidas", position=self.restricted_position)
+        self.actor.email = "salidas@example.test"
+        self.actor.save(update_fields=["email"])
+        self.address = EmailAddress.objects.create(
+            user=self.actor, email=self.actor.email, verified=False, primary=True
+        )
+
+    def exits(self, response):
+        import re
+
+        blocks = re.findall(r'(?s)<div class="account-exits">(.*?)</div>', response.content.decode())
+        self.assertTrue(blocks, "sin bloque de salidas")
+        return re.findall(r'href="([^"]+)"', "".join(blocks))
+
+    def test_correos_y_cerrar_sesion_muestran_el_menu_con_sesion(self):
+        self.client.force_login(self.actor)
+        self.assertContains(self.client.get(reverse("account_email")), self.NAV)
+        logout = self.client.get(reverse("account_logout"))
+        self.assertContains(logout, self.NAV)
+        self.assertEqual(self.exits(logout), [reverse("Home")])
+
+    def test_logo_lleva_al_panel_con_sesion_y_a_iniciar_sesion_sin_ella(self):
+        page = reverse("account_email_verification_sent")
+        anonymous = self.client.get(page).content.decode()
+        self.assertIn(f'<a href="{reverse("account_login")}" aria-label="Volver a iniciar sesión">', anonymous)
+        self.client.force_login(self.actor)
+        signed_in = self.client.get(page).content.decode()
+        self.assertIn(f'<a href="{reverse("Home")}" aria-label="Ir a mi panel">', signed_in)
+
+    def test_cada_pagina_terminal_tiene_sus_salidas(self):
+        from allauth.account.models import EmailConfirmationHMAC
+
+        login, home = reverse("account_login"), reverse("Home")
+        valid = reverse("account_confirm_email", args=[EmailConfirmationHMAC(self.address).key])
+        cases = [
+            (False, reverse("account_email_verification_sent"), [reverse("PlanesApp:catalogo"), login]),
+            (True, reverse("account_email_verification_sent"), [reverse("PlanesApp:catalogo"), home]),
+            (False, valid, [login]),
+            (True, valid, [home]),
+            (False, reverse("account_confirm_email", args=["clave-invalida"]), [reverse("account_email"), login]),
+            (False, reverse("account_reset_password_done"), [login]),
+            (False, reverse("account_reset_password_from_key", args=["1", "x-x"]), [reverse("account_reset_password"), login]),
+            (False, reverse("account_reset_password_from_key_done"), [login]),
+            (False, reverse("account_inactive"), [login]),
+        ]
+        for signed_in, url, expected in cases:
+            with self.subTest(url=url, signed_in=signed_in):
+                self.client.logout()
+                if signed_in:
+                    self.client.force_login(self.actor)
+                response = self.client.get(url, follow=True)
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(self.exits(response), expected)
+
+    def test_verificacion_obligatoria_ofrece_correos_y_volver(self):
+        from django.template.loader import render_to_string
+
+        request = RequestFactory().get("/")
+        request.user = self.actor
+        html = render_to_string("account/verified_email_required.html", request=request)
+        self.assertIn(f'<a class="button" href="{reverse("account_email")}">Ir a mis correos</a>', html)
+        self.assertIn(f'href="{reverse("Home")}">Ir a mi panel</a>', html)
