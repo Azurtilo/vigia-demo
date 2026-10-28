@@ -13,6 +13,17 @@ Rigen sobre los comandos históricos del resto de este documento, escritos cuand
 | mobile | Flutter 3.47.7 en `C:\Users\josea\flutter` | Desde `mobile/`: `flutter analyze` y `flutter test` |
 | mobile/ios | Mac con Xcode y CocoaPods (D-068; no se compila en Windows) | Desde `mobile/`: `pod install` en `ios/` y `flutter build ios --simulator --debug`; ver [INSTALACION_CELULAR.md](INSTALACION_CELULAR.md) |
 
+### Rama 019: backend FastAPI y emuladores de Firebase (2026-10-28)
+
+Instalado con `winget` y npm (D-099): Temurin JDK 21.0.12.1, Node.js 24.22.1 LTS (`C:\Program Files\nodejs`) y `firebase-tools` 15.34.1 (global, `%APPDATA%\npm`). Si una terminal abierta antes de la instalación no los encuentra, hay que abrir una nueva.
+
+| Componente | Entorno | Verificación |
+|---|---|---|
+| emuladores | `firebase.json` en la raíz | Desde la raíz: `firebase emulators:start --only auth,firestore --project demo-vigia-test` (Auth 9099, Firestore 8080, interfaz 4000) |
+| backend | `.venv-backend` (Python 3.12); `pip install -r backend/requirements-dev.txt` | Desde `backend/`: `../.venv-backend/Scripts/python.exe -m pytest`. Sin emuladores, las pruebas de integración aparecen **omitidas** |
+| reglas | `firebase/` con `npm ci` | Desde `firebase/`, con los emuladores activos: `npm test` |
+| portal | `portal/` con `npm ci` | Desde `portal/`: `npm test` y `npm run build` |
+
 ## Al desarrollar una copia nueva
 
 Trabajar con entorno virtual propio y datos ficticios. La configuración carga .env en la raíz. SECRET_KEY es obligatoria; DEBUG, ALLOWED_HOSTS, CSRF_TRUSTED_ORIGINS e INTERNAL_IPS son configurables. También lo son las opciones HTTPS del archivo settings.py.
