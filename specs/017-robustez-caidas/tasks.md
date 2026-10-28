@@ -168,7 +168,15 @@ A partir de la revisión «¿el código es óptimo?» del 2026-10-27.
   - Archivos: `web/CuidadosApp/management/commands/send_mobile_reminders.py` (caché `node_cache` por ejecución), `web/CuidadosApp/test_access.py`.
   - Hecho cuando: con tres teléfonos (titular, familiar y cuidador), `allowed()` se llama una vez por nodo y ejecución, no una por teléfono (mutación sin caché comprobada), y los avisos llegan igual.
 
+- [x] T-017-16 — Configuración de caídas con `edge/options.py`.
+  - RF: RF-012-04 (sin cambio de comportamiento).
+  - Motivo: `fall.py` (spec 012) repetía la validación, el JSON y los argumentos que `options.py` ya resuelve para la cama y el monitoreo.
+  - Archivos: `edge/fall.py`, `edge/options.py` (campo opcional y nombre del archivo, para conservar `--fall-config` y `floor_hip_y = null`).
+  - Hecho cuando: la ayuda de `edge.run` y `edge.bench` y los defectos de `python -m edge.fall` quedan idénticos; 21 configuraciones válidas e inválidas dan el mismo resultado y mensaje que antes; Edge 56 OK.
+
 ## Autorización posterior
+
+2026-10-27 (posterior): «haz merge y luego puedes unificar la configuración de fall.py con options.py». PR #12 fusionada (`2bf9c53`); T-017-16 en `feature/017-config-caidas`, con PR aparte.
 
 2026-10-27 (posterior): «hazlo», sobre la propuesta de corregir el contrato de estados y el cálculo de avisos por teléfono (T-017-14 y T-017-15), en la misma rama y PR.
 
@@ -189,6 +197,7 @@ A partir de la revisión «¿el código es óptimo?» del 2026-10-27.
 | 2026-10-27 | T-017-09 | `89c956a` `camera_state.dart`, `patient_screen.dart`, `camera_state_test.dart` | Flutter 50 OK |
 | 2026-10-27 | T-017-10 | `4768ae8` `api/views.py`, `api/detection.py`, `test_access.py`, `patient_screen.dart`, `patient_roles_test.dart` | Django 246, Flutter 51 OK |
 | 2026-10-27 | T-017-11 | `0c5e26b` `edge/README.md` | Protocolo ampliado a 25 caídas y 60 actividades; corregidos el texto del push y el comando de verificación |
+| 2026-10-27 | T-017-16 | `edge/fall.py`, `edge/options.py` | Ayuda y defectos idénticos; 21/21 casos iguales a la versión anterior; Edge 56 OK |
 | 2026-10-27 | T-017-14/15 | `send_mobile_reminders.py`, `test_mobile.py`, `test_access.py` | Django 247 OK; dos mutaciones detectadas |
 | 2026-10-27 | T-017-12 | `validation.md`, índice, estado, trazabilidad; [PR #12](https://github.com/Azurtilo/vigia-demo/pull/12) hacia `develop` | Django 246, Edge 56, Flutter 51 OK; sin merge |
 
