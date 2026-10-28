@@ -23,6 +23,14 @@ Instalado con `winget` y npm (D-099): Temurin JDK 21.0.12.1, Node.js 24.22.1 LTS
 | backend | `.venv-backend` (Python 3.12); `pip install -r backend/requirements-dev.txt` | Desde `backend/`: `../.venv-backend/Scripts/python.exe -m pytest`. Sin emuladores, las pruebas de integración aparecen **omitidas** |
 | reglas | `firebase/` con `npm ci` | Desde `firebase/`, con los emuladores activos: `npm test` |
 | portal | `portal/` con `npm ci` | Desde `portal/`: `npm test` y `npm run build` |
+| app en un teléfono por USB | Emuladores con `--project demo-vigia` (el proyecto fijo de la app) y backend en `:8000` con `VIGIA_FIREBASE_PROJECT_ID=demo-vigia` | Ver la lista de abajo |
+
+App de la rama 019 en un teléfono físico:
+
+1. Redirigir los puertos: `adb reverse tcp:8000 tcp:8000` y `adb reverse tcp:9099 tcp:9099`.
+2. Desde `mobile/`, compilar **en Git Bash**: `flutter build apk --debug --dart-define=API_URL=http://127.0.0.1:8000 --dart-define=AUTH_EMULATOR_HOST=127.0.0.2`. PowerShell corta los argumentos con puntos, así que el valor no llega a la app.
+3. Usar `127.0.0.2` para Auth: en Android, FlutterFire cambia `127.0.0.1` y `localhost` por `10.0.2.2`, la dirección del emulador de Android, y en un teléfono físico eso no llega al PC.
+4. Instalar con `adb install -r` y forzar el cierre (`am force-stop`) antes de abrir la app, para no seguir usando el proceso anterior.
 
 ## Al desarrollar una copia nueva
 
