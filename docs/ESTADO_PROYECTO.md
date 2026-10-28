@@ -45,8 +45,9 @@ Trabajo futuro registrado (no comprometido): invitación por correo (D-050), tra
 - **Avance.**
   - T-019-01..06 y T-019-16: backend con Edge, alertas y push simulado, consentimiento, reloj, tick y privacidad.
   - T-019-08: la app del base en `mobile/`, con nuestro identificador, plugin y assets.
-  - Evidencia: backend 327, reglas 7, Edge 56 y Flutter 67 OK; recorrido en vivo 52/52. Nuestras funciones de la app se portan en T-019-09..12.
-- **Siguiente.** T-019-09 (cinco secciones y Alertas). T-019-07 espera el proyecto Firebase (pendiente 24, D-100); P-019-04 (pendiente 26) espera al propietario.
+  - T-019-09 y T-019-12: alertas, política (D-101), consentimientos, descarga (D-102) y eliminación en la app.
+  - Evidencia: backend 327, reglas 7, Edge 56 y Flutter 92 OK; recorrido en vivo 52/52; app en el ELI NX9. Faltan Posturas (T-019-10) y el push (T-019-11).
+- **Siguiente.** T-019-10 y T-019-11. T-019-07 espera el proyecto Firebase (pendiente 24, D-100); P-019-04 (pendiente 26) espera al propietario.
 - **No hecho.** Merge, despliegue, cuentas reales ni pruebas en un teléfono.
 
 ## Estado anterior — spec 017 implementada, 2026-10-27

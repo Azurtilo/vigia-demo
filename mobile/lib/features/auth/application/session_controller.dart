@@ -27,6 +27,13 @@ class NeedsProfile extends SessionState {
   final String? email;
 }
 
+/// Tiene perfil, pero debe aceptar la versión vigente de la política antes de usar VIGIA (D-101).
+class NeedsPolicy extends SessionState {
+  const NeedsPolicy(this.profile, this.policyVersion);
+  final UserProfile profile;
+  final String policyVersion;
+}
+
 class SessionReady extends SessionState {
   const SessionReady(this.profile);
   final UserProfile profile;
@@ -69,9 +76,11 @@ class SessionController extends Notifier<SessionState> {
     final generation = ++_generation;
     state = const SessionLoading();
     try {
-      final profile = await ref.read(profileApiProvider).me();
+      final api = ref.read(profileApiProvider);
+      final profile = await api.me();
+      final policy = await api.policy();
       if (!ref.mounted || generation != _generation) return;
-      state = SessionReady(profile);
+      state = policy.pending ? NeedsPolicy(profile, policy.policyVersion) : SessionReady(profile);
     } on ApiException catch (e) {
       if (!ref.mounted || generation != _generation) return;
       state = _stateForError(e);
@@ -108,8 +117,8 @@ class SessionController extends Notifier<SessionState> {
   /// Completa el registro en VIGIA. Devuelve un mensaje de error para mostrar, o null si salió bien.
   Future<String?> completeProfile(String displayName) async {
     try {
-      final profile = await ref.read(profileApiProvider).register(displayName);
-      if (ref.mounted) state = SessionReady(profile);
+      await ref.read(profileApiProvider).register(displayName);
+      await _loadProfile(); // una cuenta nueva aún no aceptó la política
       return null;
     } on ApiException catch (e) {
       if (e.code == 'already_registered') {
@@ -118,6 +127,34 @@ class SessionController extends Notifier<SessionState> {
       }
       return e.message;
     }
+  }
+
+  /// Acepta la política vigente. Devuelve un mensaje de error para mostrar, o null si salió bien.
+  Future<String?> acceptPolicy() async {
+    final current = state;
+    if (current is! NeedsPolicy) return null;
+    try {
+      await ref.read(profileApiProvider).acceptPolicy();
+      if (ref.mounted) state = SessionReady(current.profile);
+      return null;
+    } on ApiException catch (e) {
+      return e.message;
+    }
+  }
+
+  /// Elimina la cuenta tras confirmar la contraseña (RF-019-27). Devuelve un mensaje de error, o null.
+  Future<String?> deleteAccount(String password) async {
+    final auth = ref.read(authRepositoryProvider);
+    try {
+      await auth.reauthenticate(password);
+      await ref.read(profileApiProvider).deleteAccount();
+    } on AuthFailure catch (e) {
+      return e.message;
+    } on ApiException catch (e) {
+      return e.message;
+    }
+    await auth.signOut(); // la cuenta ya no existe en Firebase: se limpia la sesión local
+    return null;
   }
 
   Future<void> signOut() => ref.read(authRepositoryProvider).signOut();

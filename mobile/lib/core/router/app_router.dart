@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/account/plan_screen.dart';
+import '../../features/alerts/alerts_screen.dart';
 import '../../features/account/presentation/account_screen.dart';
 import '../../features/auth/application/session_controller.dart';
 import '../../features/auth/presentation/complete_profile_screen.dart';
@@ -20,6 +21,8 @@ import '../../features/patients/presentation/join_patient_screen.dart';
 import '../../features/patients/presentation/patient_detail_screen.dart';
 import '../../features/patients/presentation/patient_form_screen.dart';
 import '../../features/patients/presentation/patients_screen.dart';
+import '../../features/privacy/patient_privacy_screen.dart';
+import '../../features/privacy/privacy_screens.dart';
 import '../../features/shell/presentation/home_shell.dart';
 import '../../features/shell/presentation/pending_section_screen.dart';
 import '../../features/today/presentation/today_screen.dart';
@@ -31,9 +34,11 @@ abstract final class Routes {
   static const forgotPassword = '/recuperar-contrasena';
   static const completeProfile = '/completar-perfil';
   static const problem = '/sin-acceso';
+  static const acceptPolicy = '/aceptar-politica';
   static const today = '/hoy';
   static const patients = '/pacientes';
   static const alerts = '/alertas';
+  static const posture = '/posturas';
   static const account = '/cuenta';
   static const newPatient = '/pacientes/nuevo';
   static const joinPatient = '/pacientes/unirse';
@@ -46,6 +51,11 @@ abstract final class Routes {
   static String patientHistory(String id) => '/pacientes/$id/historial';
   static String patientMembers(String id) => '/pacientes/$id/personas';
   static const plan = '/cuenta/plan';
+  static const privacy = '/cuenta/privacidad';
+  static const policy = '/cuenta/privacidad/politica';
+  static const myData = '/cuenta/privacidad/mis-datos';
+  static String patientPrivacy(String id) => '/pacientes/$id/privacidad';
+  static String patientExport(String id) => '/pacientes/$id/privacidad/exportar';
   static String editTask(String id, String taskId) => '/pacientes/$id/tareas/$taskId';
 
   static const public = {login, createAccount, forgotPassword};
@@ -60,9 +70,11 @@ String? redirectFor(SessionState session, String location) {
     SessionUnavailable() || SessionBlocked() => goTo(Routes.problem),
     SignedOut() => Routes.public.contains(location) ? null : Routes.login,
     NeedsProfile() => goTo(Routes.completeProfile),
+    NeedsPolicy() => goTo(Routes.acceptPolicy),
     SessionReady() => (Routes.public.contains(location) ||
             location == Routes.loading ||
             location == Routes.completeProfile ||
+            location == Routes.acceptPolicy ||
             location == Routes.problem)
         ? Routes.today
         : null,
@@ -85,6 +97,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: Routes.forgotPassword, builder: (_, _) => const ForgotPasswordScreen()),
       GoRoute(path: Routes.completeProfile, builder: (_, _) => const CompleteProfileScreen()),
       GoRoute(path: Routes.problem, builder: (_, _) => const SessionProblemScreen()),
+      GoRoute(path: Routes.acceptPolicy, builder: (_, _) => const AcceptPolicyScreen()),
       StatefulShellRoute.indexedStack(
         builder: (context, state, shell) => HomeShell(shell: shell),
         branches: [
@@ -124,6 +137,19 @@ final routerProvider = Provider<GoRouter>((ref) {
                       builder: (_, state) => HistoryScreen(patientId: state.pathParameters['id']!),
                     ),
                     GoRoute(
+                      path: 'privacidad',
+                      builder: (_, state) => PatientPrivacyScreen(patientId: state.pathParameters['id']!),
+                      routes: [
+                        GoRoute(
+                          path: 'exportar',
+                          builder: (_, state) => ExportScreen(
+                            title: 'Datos del paciente',
+                            provider: patientExportProvider(state.pathParameters['id']!),
+                          ),
+                        ),
+                      ],
+                    ),
+                    GoRoute(
                       path: 'personas',
                       builder: (_, state) => MembersScreen(patientId: state.pathParameters['id']!),
                     ),
@@ -144,16 +170,32 @@ final routerProvider = Provider<GoRouter>((ref) {
             ),
           ]),
           StatefulShellBranch(routes: [
+            GoRoute(path: Routes.alerts, builder: (_, _) => const AlertsScreen()),
+          ]),
+          StatefulShellBranch(routes: [
             GoRoute(
-              path: Routes.alerts,
-              builder: (_, _) => const PendingSectionScreen(title: 'Alertas', phase: 'la Fase 8'),
+              path: Routes.posture,
+              builder: (_, _) => const PendingSectionScreen(title: 'Posturas'),
             ),
           ]),
           StatefulShellBranch(routes: [
             GoRoute(
               path: Routes.account,
               builder: (_, _) => const AccountScreen(),
-              routes: [GoRoute(path: 'plan', builder: (_, _) => const PlanScreen())],
+              routes: [
+                GoRoute(path: 'plan', builder: (_, _) => const PlanScreen()),
+                GoRoute(
+                  path: 'privacidad',
+                  builder: (_, _) => const PrivacyScreen(),
+                  routes: [
+                    GoRoute(path: 'politica', builder: (_, _) => const PolicyScreen()),
+                    GoRoute(
+                      path: 'mis-datos',
+                      builder: (_, _) => ExportScreen(title: 'Mis datos', provider: myDataProvider),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ]),
         ],

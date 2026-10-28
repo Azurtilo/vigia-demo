@@ -71,7 +71,7 @@ void main() {
     expect(find.text('Correo o contraseña incorrectos.'), findsOneWidget);
   });
 
-  testWidgets('ingreso correcto lleva a Hoy con la barra de 4 secciones', (tester) async {
+  testWidgets('ingreso correcto lleva a Hoy con la barra de 5 secciones', (tester) async {
     auth.accounts['marta@example.com'] = 'clave1234';
     api.currentUid = 'uid-marta@example.com';
     api.profiles[api.currentUid!] = profileFor(api.currentUid!);
@@ -82,7 +82,7 @@ void main() {
     await tester.tap(find.text('Ingresar'));
     await tester.pumpAndSettle();
 
-    for (final label in ['Hoy', 'Pacientes', 'Alertas', 'Cuenta']) {
+    for (final label in ['Hoy', 'Pacientes', 'Alertas', 'Posturas', 'Cuenta']) {
       expect(find.text(label), findsWidgets);
     }
     expect(find.text('Aún no hay pacientes'), findsOneWidget); // Hoy sin pacientes: estado vacío honesto

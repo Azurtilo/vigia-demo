@@ -26,6 +26,10 @@ abstract class AuthRepository {
   Future<void> createAccount({required String email, required String password});
   Future<void> sendPasswordReset(String email);
   Future<void> signOut();
+
+  /// Vuelve a pedir la contraseña antes de una acción sensible (eliminar la cuenta) y renueva el token,
+  /// para que el backend vea un inicio de sesión reciente (`auth_time`).
+  Future<void> reauthenticate(String password);
 }
 
 class FirebaseAuthRepository implements AuthRepository {
@@ -58,6 +62,14 @@ class FirebaseAuthRepository implements AuthRepository {
 
   @override
   Future<void> signOut() => _auth.signOut();
+
+  @override
+  Future<void> reauthenticate(String password) => _guard(() async {
+        final user = _auth.currentUser;
+        if (user == null || user.email == null) throw FirebaseAuthException(code: 'user-not-found');
+        await user.reauthenticateWithCredential(EmailAuthProvider.credential(email: user.email!, password: password));
+        return user.getIdToken(true);
+      });
 
   Future<void> _guard(Future<Object?> Function() action) async {
     try {

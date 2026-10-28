@@ -70,6 +70,13 @@ class AccountScreen extends ConsumerWidget {
             onTap: () => context.push(Routes.plan),
           ),
           ListTile(
+            leading: const Icon(Icons.privacy_tip_outlined),
+            title: const Text('Privacidad'),
+            subtitle: const Text('Política, descargar mis datos y eliminar la cuenta'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push(Routes.privacy),
+          ),
+          ListTile(
             leading: const Icon(Icons.key_outlined),
             title: const Text('Unirse con código de invitación'),
             trailing: const Icon(Icons.chevron_right),

@@ -1,6 +1,7 @@
 import 'package:vigia_mobile/core/network/api_exception.dart';
 import 'package:vigia_mobile/features/patients/data/patients_api.dart';
 import 'package:vigia_mobile/features/patients/domain/patient.dart';
+import 'package:vigia_mobile/features/privacy/privacy.dart';
 
 const _ownerPermissions = [
   'patient.view', 'patient.edit', 'meds.manage', 'meds.administer',
@@ -106,6 +107,55 @@ class FakePatientsApi implements PatientsApi {
     }
     _store[target['id'] as String] = target;
     return Patient.fromJson(target);
+  }
+
+  /// Consentimientos por paciente; por defecto, el de cuidado activo (como un paciente ya configurado).
+  final Map<String, Map<String, Map<String, dynamic>>> consentStore = {};
+  final List<String> deleted = [];
+
+  Map<String, Map<String, dynamic>> _consentsOf(String id) =>
+      consentStore.putIfAbsent(id, () => {'cuidado': {'scope': 'cuidado', 'active': true, 'basis': 'titular'}});
+
+  void _ownerOnly(String id) {
+    if (_store[id]?['myRelation'] != 'owner') {
+      throw const ApiException(kind: ApiErrorKind.api, statusCode: 403, code: 'owner_only', message: 'Solo el responsable del paciente puede hacer esto.');
+    }
+  }
+
+  @override
+  Future<List<PatientConsent>> consents(String id) async =>
+      [for (final scope in consentScopes) PatientConsent.fromJson(_consentsOf(id)[scope] ?? {'scope': scope, 'active': false})];
+
+  @override
+  Future<PatientConsent> registerConsent(String id, String scope, ConsentDraft draft) async {
+    _ownerOnly(id);
+    final json = {...draft.toJson(scope), 'active': true};
+    _consentsOf(id)[scope] = json;
+    return PatientConsent.fromJson(json);
+  }
+
+  @override
+  Future<PatientConsent> revokeConsent(String id, String scope) async {
+    _ownerOnly(id);
+    final json = {...?_consentsOf(id)[scope], 'scope': scope, 'active': false, 'revokedAt': '2026-10-28T23:00:00Z'};
+    _consentsOf(id)[scope] = json;
+    return PatientConsent.fromJson(json);
+  }
+
+  @override
+  Future<Map<String, dynamic>> exportPatient(String id) async {
+    _ownerOnly(id);
+    return {'kind': 'patient', 'patient': {'displayName': _store[id]!['displayName']}};
+  }
+
+  @override
+  Future<void> deletePatient(String id, String confirmName) async {
+    _ownerOnly(id);
+    if (!sameName(confirmName, _store[id]!['displayName'] as String)) {
+      throw const ApiException(kind: ApiErrorKind.api, statusCode: 422, code: 'name_mismatch', message: 'El nombre no coincide.');
+    }
+    _store.remove(id);
+    deleted.add(id);
   }
 
   @override

@@ -7,6 +7,7 @@ import '../../../core/router/app_router.dart';
 import '../../../core/theme/vigia_colors.dart';
 import '../../../core/widgets/async_view.dart';
 import '../../care/presentation/care_tabs.dart';
+import '../../privacy/patient_privacy_screen.dart';
 import '../application/patients_providers.dart';
 import '../data/patients_api.dart';
 import '../domain/patient.dart';
@@ -49,6 +50,8 @@ class PatientDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final patient = ref.watch(patientProvider(patientId));
     final p = patient.value;
+    // null mientras carga o si falla: entonces no se muestra el aviso.
+    final careConsent = consentActive(ref.watch(patientConsentsProvider(patientId)), 'cuidado');
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -82,7 +85,7 @@ class PatientDetailScreen extends ConsumerWidget {
           onRetry: () => ref.invalidate(patientProvider(patientId)),
           builder: (p) => TabBarView(
             children: [
-              _summary(context, p),
+              _summary(context, p, careConsent),
               MedicationsTab(patient: p),
               CareTasksTab(patient: p),
             ],
@@ -92,11 +95,37 @@ class PatientDetailScreen extends ConsumerWidget {
     );
   }
 
-  Widget _summary(BuildContext context, Patient p) => ListView(
+  Widget _summary(BuildContext context, Patient p, bool? careConsent) => ListView(
     padding: const EdgeInsets.all(16),
     children: [
       Text(p.relationLabel, style: const TextStyle(color: VigiaColors.inkMuted)),
       const SizedBox(height: 12),
+      if (careConsent == false && !p.isArchived)
+        _Card(
+          color: VigiaColors.attentionSoft,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Falta el consentimiento de datos de cuidado',
+                style: TextStyle(color: VigiaColors.attention, fontSize: 17, fontWeight: FontWeight.w800),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                p.isOwner
+                    ? 'Sin él no se pueden registrar medicamentos, tomas, tareas ni cambios de posición.'
+                    : 'La persona responsable debe registrarlo antes de que se puedan anotar tomas y cuidados.',
+              ),
+              if (p.isOwner) ...[
+                const SizedBox(height: 10),
+                FilledButton(
+                  onPressed: () => context.push(Routes.patientPrivacy(p.id)),
+                  child: const Text('Registrar consentimiento'),
+                ),
+              ],
+            ],
+          ),
+        ),
       _LinkCard(
         icon: Icons.history,
         title: 'Historial',
@@ -108,6 +137,12 @@ class PatientDetailScreen extends ConsumerWidget {
         title: 'Personas con acceso',
         subtitle: p.isOwner ? 'Invitar, ajustar permisos o quitar acceso' : 'Quiénes cuidan a ${p.displayName}',
         onTap: () => context.push(Routes.patientMembers(p.id)),
+      ),
+      _LinkCard(
+        icon: Icons.privacy_tip_outlined,
+        title: 'Privacidad',
+        subtitle: p.isOwner ? 'Consentimientos, descargar o eliminar los datos' : 'Consentimientos registrados',
+        onTap: () => context.push(Routes.patientPrivacy(p.id)),
       ),
       const SizedBox(height: 4),
       if (p.isArchived)

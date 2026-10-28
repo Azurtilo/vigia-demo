@@ -304,3 +304,12 @@ Fuente: «1. autorizo a instalarlos con winget, 2. las privacidad sobre todo, y 
 | D-098 | **P-019-02, diferencias 4 y 5** — La privacidad de la 014 se porta al nuevo backend: purga diaria con los plazos de D-064, exportación JSON de cuenta y paciente, eliminación del paciente y de la cuenta (D-065), con reautenticación por `auth_time` reciente de Firebase | RF-019-24..27, T-019-16. Las diferencias 1, 2, 3, 6 y 7 quedan con su valor por defecto |
 | D-099 | **P-019-01** — Se autoriza instalar en este equipo, con `winget`, el JDK 21 y Node LTS, y `firebase-tools` con npm, para los emuladores | T-019-03. Software de desarrollo local; no se usa en producción |
 | D-100 | **P-019-03** — Quedan pendientes el proyecto Firebase real, el servicio en Render y la tarea en cron-job.org | Bloquea T-019-07. El punto de control del 2026-11-04 necesita al menos el proyecto Firebase, porque los emuladores no entregan push a un teléfono |
+
+### Alertas y privacidad en la app de la rama 019 — 2026-10-28
+
+Fuente: «puedes agregar alertas y privacidad? y el detector de caidas funciona?» (2026-10-28). Se ejecutan T-019-09 y T-019-12, ya autorizadas.
+
+| ID | Decisión | Efecto |
+|---|---|---|
+| D-101 | La política se lee y se acepta **dentro de la app** (`POST /v1/privacy/accept`), en lugar de abrir el portal como en `develop`: el portal React aún no tiene esa pantalla (T-019-13) y el backend ya registra la aceptación con su versión | T-019-12. La sesión pasa por «aceptar la política» antes de Hoy. El texto es el de la política vigente de la 014, ajustado a los datos que guarda el backend nuevo; la revisión legal sigue pendiente (D-067) |
+| D-102 | La exportación JSON se muestra en la app con un botón «Copiar», sin agregar dependencias para guardar archivos. La descarga como archivo queda para el portal (T-019-13) | T-019-12. Si se pide un archivo en el teléfono, se suma `share_plus` o `path_provider` en una tarea aparte |

@@ -4,6 +4,7 @@ import 'package:vigia_mobile/core/network/api_exception.dart';
 import 'package:vigia_mobile/features/auth/data/auth_repository.dart';
 import 'package:vigia_mobile/features/auth/data/profile_api.dart';
 import 'package:vigia_mobile/features/auth/domain/user_profile.dart';
+import 'package:vigia_mobile/features/privacy/privacy.dart';
 
 /// Firebase Auth falso: la prueba decide qué pasa al iniciar sesión o crear cuenta.
 class FakeAuthRepository implements AuthRepository {
@@ -58,6 +59,14 @@ class FakeAuthRepository implements AuthRepository {
     signOutCalls++;
     emit(null);
   }
+
+  int reauthCalls = 0;
+
+  @override
+  Future<void> reauthenticate(String password) async {
+    reauthCalls++;
+    if (accounts[current?.email] != password) throw const AuthFailure('Correo o contraseña incorrectos.');
+  }
 }
 
 /// Backend falso para el perfil (GET /me y POST /auth/register).
@@ -92,6 +101,34 @@ class FakeProfileApi implements ProfileApi {
     final profile = UserProfile(uid: currentUid!, displayName: displayName.trim(), role: 'client', status: 'active');
     profiles[currentUid!] = profile;
     return profile;
+  }
+
+  /// Por defecto la política ya está aceptada, para que las demás pruebas lleguen a Hoy.
+  bool policyAccepted = true;
+  int acceptCalls = 0;
+  int deleteCalls = 0;
+
+  @override
+  Future<PolicyStatus> policy() async =>
+      PolicyStatus(policyVersion: '2026-10-25', accepted: policyAccepted, enforced: true);
+
+  @override
+  Future<PolicyStatus> acceptPolicy() async {
+    acceptCalls++;
+    policyAccepted = true;
+    return policy();
+  }
+
+  @override
+  Future<Map<String, dynamic>> exportAccount() async => {
+        'kind': 'account',
+        'account': {'displayName': profiles[currentUid]?.displayName},
+      };
+
+  @override
+  Future<void> deleteAccount() async {
+    deleteCalls++;
+    profiles.remove(currentUid);
   }
 }
 
