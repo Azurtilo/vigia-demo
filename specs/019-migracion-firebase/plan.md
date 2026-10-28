@@ -42,6 +42,7 @@ Módulos nuevos, con el mismo estilo del proyecto base (`api/v1/*.py` delgados, 
 | Consentimiento | `PrivacidadApp/consent.py` | `api/v1/consent.py`, `services/consent.py` |
 | Dispositivos FCM | `api/devices.py` | `api/v1/devices.py` |
 | Tick del cron | `send_mobile_reminders` | `api/internal.py` `POST /internal/tick` con cabecera `X-Cron-Secret` (comparación en tiempo constante) |
+| Purga, exportación y eliminación (D-098) | `PrivacidadApp/retention.py`, `export.py`, `erase.py`, `purge_expired_data` | `services/retention.py` (la llama el tick una vez al día, marcada en `privacyOperations`), `services/export.py`, `services/erase.py`, `api/v1/privacy.py` |
 
 **Autorización del nodo (D-086):** al vincular se generan `secrets.token_urlsafe(32)` y su SHA-256, y se crea `edgeNodes/{nodeId}` con `credentialHash`. En cada solicitud se busca por igualdad sobre el hash. Las reglas de 403 son las mismas de `allowed()`: plan del dueño con cámara, paciente dentro de la capacidad, consentimiento de detección y nodo activo.
 
@@ -88,8 +89,8 @@ Por defecto se adopta la regla del proyecto base; el propietario puede cambiar c
 | 1 | Unirse a un paciente | Código de la 013 con vista previa y aceptación | Código de 20 caracteres, 7 días, **exige el mismo correo invitado** | Base, conservando la vista previa de la 013 |
 | 2 | Estados de toma | Realizada / omitida con motivo | A tiempo / con retraso con hora real / no dada con motivo, más correcciones | Base (D-087) |
 | 3 | Historial por plan | Sin límite por plan | 30 / 365 / sin límite días visibles | Base |
-| 4 | Conservación y purga (014) | Plazos y purga diaria | No borra nunca | **Pendiente:** portar la purga de la 014 o declararla trabajo futuro |
-| 5 | Exportar datos y eliminar cuenta (014) | Implementados | No existen | **Pendiente:** riesgo de cumplimiento (Ley 21.719) si se pierden |
+| 4 | Conservación y purga (014) | Plazos y purga diaria | No borra nunca | **Se porta (D-098):** RF-019-24, purga diaria desde el tick. El archivado del base se conserva y los archivados se purgan a los 2 años |
+| 5 | Exportar datos y eliminar cuenta (014) | Implementados | No existen | **Se porta (D-098):** RF-019-25..27. Para eliminar, se reautentica con el `auth_time` del token de Firebase en lugar de la contraseña |
 | 6 | Planes y precios | Planes de PlanesApp | Gratis / Plus $4.990 / Premium $9.990 (prueba) | Base |
 | 7 | Guías de cuidado postural | Endpoint `guides` | No existen | Se sirven desde los assets de la app, sin backend |
 
@@ -117,7 +118,7 @@ No hay migración de datos (D-085). La reversión es volver a `develop` (Django)
 | Semana | Tareas |
 |---|---|
 | 1 (al 2026-11-04) | T-019-01..07: documentos, importación, herramientas, contrato Edge, alertas y push, consentimiento, tick, despliegue de prueba y punto de control |
-| 2 (al 2026-11-11) | T-019-08..12: app con base importada y nuestras funciones |
+| 2 (al 2026-11-11) | T-019-08..12: app con base importada y nuestras funciones; T-019-16: privacidad en el backend |
 | 3 (al 2026-11-18) | T-019-13..15: portal mínimo, revalidación y documentos |
 
 ## Documentos afectados
@@ -126,4 +127,4 @@ No hay migración de datos (D-085). La reversión es volver a `develop` (Django)
 
 ## Decisiones para implementar
 
-Ninguna bloquea T-019-01..03. Las diferencias 4 y 5 (P-019-02) deben resolverse antes de T-019-06. P-019-01 bloquea la ejecución de las pruebas de integración.
+P-019-01 y las diferencias 4 y 5 de P-019-02 se resolvieron el 2026-10-28 (D-098, D-099). Queda P-019-03 (D-100), que solo bloquea T-019-07.

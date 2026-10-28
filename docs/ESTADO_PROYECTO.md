@@ -27,9 +27,9 @@ Lista única de lo que falta. El detalle vive en cada spec y en DECISIONES. «Pr
 | 17 | ~~Revisión de calidad y correcciones 01–04, 06 y 08~~ PR #10 (informe) y PR #11 (spec 016) fusionadas el 2026-10-26 | spec 016 | Hecho |
 | 18 | ~~Revisar y fusionar la [PR #12](https://github.com/Azurtilo/vigia-demo/pull/12) de la spec 017~~ Fusionada en `develop` el 2026-10-27 (`2bf9c53`) | spec 017 | Hecho |
 | 19 | Pruebas en vivo de la 017: calibración con ventana, deslizamiento simulado, tapar o desconectar la cámara, apagar la luz, cortar la red del nodo y recepción de los avisos | T-017-13 | Propietario |
-| 22 | Instalar JDK 21, Node LTS y `firebase-tools` para los emuladores de Firebase (o autorizar la instalación). Sin ellos, las pruebas de integración del backend quedan omitidas | P-019-01, T-019-03 | Propietario |
-| 23 | Confirmar las diferencias de reglas del plan 019; las 4 (purga de la 014) y 5 (exportar datos y eliminar cuenta) bloquean T-019-06 | P-019-02 | Propietario (decisión) |
-| 24 | Crear el proyecto Firebase real (Spark), el servicio en Render y la tarea en cron-job.org, confirmando sus condiciones gratuitas | P-019-03, T-019-07 | Propietario |
+| 22 | Instalar JDK 21, Node LTS y `firebase-tools` para los emuladores de Firebase: **autorizado con `winget` el 2026-10-28 (D-099)** | T-019-03 | Equipo |
+| 23 | ~~Confirmar las diferencias 4 y 5 del plan 019~~ Se porta la privacidad de la 014 (D-098, T-019-16); las demás diferencias, con su valor por defecto | P-019-02 | Hecho (decisión) |
+| 24 | Crear el proyecto Firebase real (Spark), el servicio en Render y la tarea en cron-job.org, confirmando sus condiciones gratuitas. **Pendiente por decisión del propietario (D-100)**; el punto de control del 2026-11-04 necesita al menos el proyecto Firebase | P-019-03, T-019-07 | Propietario |
 | 25 | Punto de control de la 019 el 2026-11-04: nodo real → caída → push en Android. Si falla, decidir si se entrega con Django | D-081 | Propietario + equipo |
 
 Los números 20 y 21 los usa la rama de la 018, sin fusionar.

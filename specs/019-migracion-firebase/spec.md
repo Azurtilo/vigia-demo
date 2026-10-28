@@ -77,6 +77,13 @@ Sin acceso a un paciente se responde 404 (regla del backend base). Una cuenta su
 - RF-019-22: El nodo Edge funciona contra el nuevo backend cambiando solo la URL del servidor; `edge.test_*` pasan sin cambios.
 - RF-019-23: `validation.md` registra la evidencia de las HU-01..07, RT-01..03 y los RNF con el nuevo backend; lo que no se mida queda «sin evidencia».
 
+### Privacidad (D-098, spec 014)
+
+- RF-019-24: Una vez al día, desde el tick del cron, EL SISTEMA purga lo vencido según los plazos de D-064: intentos de código, 24 h; invitaciones cerradas, 90 días; recibos de recordatorio y de push, 30 días; observaciones sin riesgo, 30 días; con riesgo, 1 año; pacientes archivados, 2 años con todos sus datos. Los registros de cuidado de un paciente activo se conservan. Cada purga deja una operación con conteos, sin datos personales.
+- RF-019-25: CUANDO una persona pide sus datos, EL SISTEMA entrega un JSON con su cuenta, consentimientos y lo que registró en pacientes ajenos; el dueño puede exportar además el JSON completo de un paciente. Nunca incluye tokens FCM, hashes de credenciales de nodos ni códigos de invitación.
+- RF-019-26: CUANDO el dueño elimina un paciente, escribiendo su nombre para confirmar, EL SISTEMA borra el paciente y todas sus subcolecciones, nodos, invitaciones y membresías.
+- RF-019-27: CUANDO una persona elimina su cuenta con un inicio de sesión reciente (`auth_time` de hasta 5 minutos), EL SISTEMA borra sus pacientes como dueño (D-065), retira sus membresías, borra tokens FCM, consentimientos y suscripción, elimina el usuario de Firebase Auth y deja `users/{uid}` solo como autor anónimo de los registros en pacientes ajenos. Sin inicio de sesión reciente responde 401 y no borra nada.
+
 ## Datos y reglas
 
 - Se adoptan las colecciones de `docs/modelo-datos.md` del backend base. Se agregan: `edgeNodes/{nodeId}` (dueño, `patientId`, nombre, `credentialHash`, `active`, `lastSeenAt`, `monitorState`, `monitorSince`, avisos enviados por episodio); `patients/{id}/observations/{nodeId|phone}_{eventId}` (ID determinista para deduplicar, 7 claves más la recepción y el hash del contenido); `patients/{id}/alerts/{id}`; `patients/{id}/timer`; `consents` de cuenta y de paciente con versión de la política; `users/{uid}/fcmTokens/{id}`; `reminderDeliveries/{patientId}_{medId}_{instanteUTC}` para no repetir avisos.
@@ -95,6 +102,9 @@ Sin acceso a un paciente se responde 404 (regla del backend base). Una cuenta su
 | RF-019-08 | El cron llama dos veces en el mismo minuto | Un solo recordatorio por toma; sin secreto, 401 |
 | RF-019-11 | Un día con 1 nodo renovando cada 10 s | Lecturas estimadas por la prueba de presupuesto bajo 50.000 y escrituras bajo 20.000 |
 | RF-019-13 | La app en un teléfono de ~360 dp | 5 secciones visibles sin cortar etiquetas |
+| RF-019-24 | Una observación sin riesgo de hace 31 días y otra con riesgo de hace 31 días | La primera se purga, la segunda se conserva |
+| RF-019-25 | Exportación de un familiar | Incluye sus registros en el paciente ajeno, no la ficha de ese paciente; sin tokens ni hashes |
+| RF-019-27 | Eliminar la cuenta con un inicio de sesión de hace 10 minutos | 401 y nada borrado; con uno reciente, pacientes propios borrados y registros en pacientes ajenos con autor anónimo |
 | RF-019-22 | **Punto de control de la semana 1** | Nodo real → caída → push recibido en Android. Si no se cumple el 2026-11-04, se informa al propietario para volver a Django en la entrega (D-081) |
 
 ## No funcionales
@@ -111,11 +121,12 @@ Sin acceso a un paciente se responde 404 (regla del backend base). Una cuenta su
 
 ## Supuestos y decisiones pendientes
 
-- P-019-01 — **Herramientas locales:** los emuladores de Firebase necesitan Java (JDK 21) y Node.js con `firebase-tools`; este equipo no los tiene. Sin ellos, las pruebas de integración del backend quedan **omitidas**, no aprobadas. Requiere que el propietario las instale o autorice instalarlas.
-- P-019-02 — **Revisión de reglas del backend base (D-087):** se adoptan por defecto las ADR 001–027 del backend base, salvo las sustituidas por esta spec (auth del nodo, recordatorios, alertas). Las diferencias con nuestras reglas (por ejemplo, roles y textos de la 013, plazos de la 014) se listan en el plan para que el propietario confirme cada una.
-- P-019-03 — **Cuentas externas:** proyecto Firebase real, Render y cron-job.org los crea el propietario; las condiciones gratuitas deben confirmarse en sus páginas antes del despliegue.
+- P-019-01 — **Herramientas locales:** resuelta con D-099 (instalación con `winget` autorizada).
+- P-019-02 — **Revisión de reglas del backend base (D-087):** las diferencias 4 y 5 del plan (purga, exportación y eliminación) se resolvieron con D-098: se portan (RF-019-24..27). Las diferencias 1, 2, 3, 6 y 7 se aplican con su valor por defecto mientras el propietario no indique otra cosa.
+- P-019-03 — **Cuentas externas:** pendiente por decisión del propietario (D-100). Proyecto Firebase real, Render y cron-job.org los crea el propietario más adelante. El punto de control (RF-019-22) necesita al menos el proyecto Firebase, porque los emuladores no entregan push a un teléfono.
 - Supuesto técnico reversible: un solo proceso del backend en Render (la caché en memoria de RF-019-11 depende de eso).
 
 ## Revisión y cambios
 
 - 2026-10-28: creada con las decisiones D-081..D-097 tras revisar `vigia 26`. Aprobación e implementación autorizadas en la misma sesión.
+- 2026-10-28: «1. autorizo a instalarlos con winget, 2. las privacidad sobre todo, y 3. deja pendiente el crear el proyecto firebase, el servicio en Render y la tarea en cron-job.org. puedes seguir con T-019-04 si lo demas esta listo». Se agregan RF-019-24..27 (D-098), D-099 y D-100.

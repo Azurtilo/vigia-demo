@@ -18,7 +18,7 @@ Rama: `feature/019-migracion-firebase` desde `origin/develop` (`73fb6a1`), un co
   - Hecho cuando: los archivos están copiados desde el commit `518792263c44`, sin `.env`, entornos, cachés ni compilados. Las pruebas del backend que no usan emuladores pasan y las demás aparecen como omitidas, con el conteo registrado.
 - [ ] T-019-03 — Herramientas y emuladores.
   - RF: RF-019-01.
-  - Depende de: T-019-02 y P-019-01 (instalación de JDK 21, Node LTS y `firebase-tools`).
+  - Depende de: T-019-02 y D-099 (instalación de JDK 21, Node LTS y `firebase-tools` con `winget`, autorizada).
   - Archivos previstos: `docs/ENTORNO_Y_VERIFICACION.md`, `.venv-backend` (local, no versionado).
   - Hecho cuando: `firebase emulators:start` funciona y la suite completa del backend pasa sin omisiones.
 - [ ] T-019-04 — Nodos y contrato Edge.
@@ -33,12 +33,12 @@ Rama: `feature/019-migracion-firebase` desde `origin/develop` (`73fb6a1`), un co
   - Hecho cuando: una caída crea la alerta y solicita el push solo a los destinatarios con permiso y plan; los avisos de cámara salen una vez por episodio; el texto no contiene datos clínicos.
 - [ ] T-019-06 — Consentimiento, reloj y tick del cron.
   - RF: RF-019-06, RF-019-07, RF-019-08.
-  - Depende de: T-019-04 y la respuesta a P-019-02 (diferencias 4 y 5).
+  - Depende de: T-019-04.
   - Archivos previstos: `api/v1/consent.py`, `services/consent.py`, `api/v1/timer.py`, `api/internal.py`, `services/reminders.py`, pruebas.
   - Hecho cuando: sin consentimiento de detección el nodo recibe 403; el cambio de posición reinicia el reloj; el tick sin secreto da 401 y dos ticks seguidos envían un solo recordatorio por toma.
 - [ ] T-019-07 — Despliegue de prueba y punto de control.
   - RF: RF-019-21, RF-019-22.
-  - Depende de: T-019-05, T-019-06 y P-019-03 (cuentas del propietario). **El despliegue requiere autorización aparte.**
+  - Depende de: T-019-05, T-019-06 y P-019-03, **pendiente por D-100** (cuentas del propietario). Para el punto de control basta el proyecto Firebase, con el backend en este PC; Render y el cron pueden esperar. **El despliegue requiere autorización aparte.**
   - Archivos previstos: `docs/OPERACION.md`, `render.yaml` si corresponde, `validation.md`.
   - Hecho cuando: el nodo real envía una caída, el push llega a un Android y la demora queda medida. Si no ocurre al 2026-11-04, se informa al propietario (D-081).
 
@@ -66,6 +66,12 @@ Rama: `feature/019-migracion-firebase` desde `origin/develop` (`73fb6a1`), un co
   - Depende de: T-019-08 y T-019-06.
   - Hecho cuando: las pruebas portadas de `privacy_test` y `login_consent_test` pasan.
 
+- [ ] T-019-16 — Privacidad en el backend: purga, exportación y eliminación (D-098).
+  - RF: RF-019-24, RF-019-25, RF-019-26, RF-019-27.
+  - Depende de: T-019-06 (tick y consentimiento).
+  - Archivos previstos: `services/retention.py`, `services/export.py`, `services/erase.py`, `api/v1/privacy.py`, pruebas; pantallas de exportar y eliminar en la app (T-019-12) y en el portal (T-019-13).
+  - Hecho cuando: hay pruebas de cada plazo (justo antes y después del límite), de que la exportación no lleva tokens, hashes ni códigos, del borrado completo del paciente, y del rechazo de la eliminación de cuenta sin inicio de sesión reciente, con autor anónimo en pacientes ajenos.
+
 ## Semana 3 — portal, validación y cierre
 
 - [ ] T-019-13 — Portal mínimo de suscripción.
@@ -85,7 +91,9 @@ Rama: `feature/019-migracion-firebase` desde `origin/develop` (`73fb6a1`), un co
 
 ## Autorización posterior
 
-«concuerdo con tus decisiones, dejamos develop con django y probamos los cambios en una nueva rama, autorizo que cambies codigo pero antes registra todo» (sesión del 2026-10-28). Autoriza T-019-01..15 en `feature/019-migracion-firebase`. No autoriza merge, despliegue, creación de cuentas ni instalar software en el equipo (P-019-01).
+«concuerdo con tus decisiones, dejamos develop con django y probamos los cambios en una nueva rama, autorizo que cambies codigo pero antes registra todo» (sesión del 2026-10-28). Autoriza T-019-01..15 en `feature/019-migracion-firebase`. No autoriza merge, despliegue ni creación de cuentas.
+
+«1. autorizo a instalarlos con winget, 2. las privacidad sobre todo, y 3. deja pendiente el crear el proyecto firebase, el servicio en Render y la tarea en cron-job.org. puedes seguir con T-019-04 si lo demas esta listo» (2026-10-28). Autoriza instalar JDK 21, Node LTS y `firebase-tools` (D-099) y agrega T-019-16 (D-098).
 
 ## Registro de ejecución
 

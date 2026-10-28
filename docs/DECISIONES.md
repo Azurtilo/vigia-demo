@@ -294,3 +294,13 @@ Fuente: revisión del proyecto `vigia 26` de otro integrante del equipo (commit 
 | D-097 | **24.A** — Revisar `backend/.env` del proyecto base. Comprobado el 2026-10-28 sin abrirlo: está en `.gitignore` y ningún commit lo incluye, pero sí viaja dentro del zip compartido (`vigia 26 - copia.zip`). Si contiene credenciales reales (no solo los emuladores `demo-*`), su autor debe rotarlas | No se lee ni se copia a este repositorio |
 
 Autorización: «concuerdo con tus decisiones, dejamos develop con django y probamos los cambios en una nueva rama, autorizo que cambies codigo pero antes registra todo» (2026-10-28). Autoriza T-019-01..15. No autoriza merge, despliegue, creación de cuentas ni instalación de software.
+
+### Respuestas del propietario sobre la spec 019 — 2026-10-28
+
+Fuente: «1. autorizo a instalarlos con winget, 2. las privacidad sobre todo, y 3. deja pendiente el crear el proyecto firebase, el servicio en Render y la tarea en cron-job.org. puedes seguir con T-019-04 si lo demas esta listo».
+
+| ID | Decisión | Efecto |
+|---|---|---|
+| D-098 | **P-019-02, diferencias 4 y 5** — La privacidad de la 014 se porta al nuevo backend: purga diaria con los plazos de D-064, exportación JSON de cuenta y paciente, eliminación del paciente y de la cuenta (D-065), con reautenticación por `auth_time` reciente de Firebase | RF-019-24..27, T-019-16. Las diferencias 1, 2, 3, 6 y 7 quedan con su valor por defecto |
+| D-099 | **P-019-01** — Se autoriza instalar en este equipo, con `winget`, el JDK 21 y Node LTS, y `firebase-tools` con npm, para los emuladores | T-019-03. Software de desarrollo local; no se usa en producción |
+| D-100 | **P-019-03** — Quedan pendientes el proyecto Firebase real, el servicio en Render y la tarea en cron-job.org | Bloquea T-019-07. El punto de control del 2026-11-04 necesita al menos el proyecto Firebase, porque los emuladores no entregan push a un teléfono |
