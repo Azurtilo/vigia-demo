@@ -113,6 +113,8 @@ Rama: `feature/019-migracion-firebase` desde `origin/develop` (`73fb6a1`), un co
 
 «detenlo y autorizo T-019-08» (2026-10-28, después del recorrido en vivo). Confirma T-019-08.
 
+«no por ahora deten el servidor y haz commit y push para que puedan acceder los otros miembros del equipo» (2026-10-28). Autoriza subir `feature/019-migracion-firebase` a `origin` para el equipo. No autoriza merge, PR ni despliegue. La prueba en vivo del detector de caídas con la cámara del PC queda para más adelante.
+
 ## Registro de ejecución
 
 | Fecha | Tarea | Resultado |
