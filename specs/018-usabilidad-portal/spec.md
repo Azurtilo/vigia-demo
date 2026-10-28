@@ -1,6 +1,6 @@
 # 018 — Usabilidad del portal: contraseñas, política de privacidad, páginas sin salida e historial del navegador
 
-Estado: aprobada para implementar T-018-01..07. Fecha: 2026-10-27.
+Estado: implementada en `feature/018-usabilidad-portal` (T-018-01..07); verificación en [validation.md](validation.md). Fecha: 2026-10-27.
 Módulo: portal web (`web/templates`, `web/static`, vistas de `UsuarioApp`, `CuidadosApp`, `PlanesApp` y `PrivacidadApp`, plantillas de allauth). No toca la API, la app móvil ni el nodo. Fuente: prueba del propietario en el teléfono por wifi el 2026-10-27, con cuatro observaciones: (1) los requisitos de la contraseña no indican si se cumplen, (2) la política de privacidad se ve como un solo bloque de texto, (3) al verificar el correo no hay forma de volver a los planes, (4) tras un mensaje como «Dirección principal de correo electrónico establecida», «atrás» repite la página tantas veces como se mostró el mensaje. Después pidió revisar si había más casos del mismo tipo; los hallazgos de esa revisión están incluidos aquí.
 Implementación autorizada: SÍ, «fusiona la 13, autorizo para que luego hagas los cambios en el codigo» (2026-10-27), sin despliegue. Decisiones: P-018-01..03 no se eligieron expresamente; se aplican las recomendadas (D-078..D-080), reversibles. Plan y tareas: [plan.md](plan.md), [tasks.md](tasks.md).
 

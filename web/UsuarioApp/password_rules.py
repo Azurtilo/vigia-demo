@@ -10,6 +10,7 @@ from django.utils.translation import gettext
 SIMILAR_MIN = 3  # shorter personal values match too much to be useful (D-078)
 LATER = "se revisa al guardar"
 MISMATCH = "Las contraseñas no coinciden."
+ORDER = ("length", "numeric", "similar", "server")
 
 
 def rules():
@@ -42,7 +43,8 @@ def rules():
             })
         else:
             result.append({"code": "", "text": validator.get_help_text(), "check": "server", "note": LATER})
-    return result
+    # What the browser checks exactly first, what only the server decides last.
+    return sorted(result, key=lambda rule: ORDER.index(rule["check"]))
 
 
 def is_mismatch(error):
