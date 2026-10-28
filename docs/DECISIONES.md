@@ -268,3 +268,14 @@ Fuente: «estoy de acuerdo con las recomendaciones, sigue con plan.md y tasks.md
 | D-077 | **P-017-05 A** — Titular, familiar y cuidador ven en la ficha del paciente una línea de solo lectura «Cámara: <estado>» con el estado agregado de los nodos activos, sin nombre, id ni última señal del nodo. La tarjeta del nodo y la revocación siguen solo para el titular (`manage_nodes`). Fuente: «para P-017-05 opcion A» (2026-10-27) | RF-017-10, T-017-10 |
 
 Sin autorización de implementación.
+
+## Spec 018 — Usabilidad del portal (2026-10-27)
+
+Fuente: «fusiona la 13, autorizo para que luego hagas los cambios en el codigo» (sesión del 2026-10-27). El propietario autorizó la implementación sin elegir entre las opciones de la [spec 018](../specs/018-usabilidad-portal/spec.md); se aplican las recomendadas. Son reversibles: si el propietario elige otra, se reemplaza la decisión y se conserva su ID.
+
+| ID | Decisión | Efecto |
+|---|---|---|
+| D-078 | **P-018-01 A** — La regla «que no se parezca a tu usuario ni a tu correo» se aproxima en el navegador: rojo si la contraseña contiene el usuario o la parte del correo antes de la @ (desde 3 caracteres); si no, neutra con «se revisa al guardar». El servidor sigue decidiendo | RF-018-02, T-018-02 |
+| D-079 | **P-018-02 A** — La regla «que no sea una contraseña común» queda neutra con «se revisa al guardar». No se incluye la lista en el navegador ni se consulta al servidor mientras se escribe | RF-018-02, T-018-02 |
+| D-080 | **P-018-03 A** — JavaScript propio en los formularios marcados: envío con `fetch`, el servidor responde la redirección interna como JSON (middleware con cabecera propia) y el navegador reemplaza la entrada del historial. Sin JavaScript, el envío de siempre | RF-018-11..13, T-018-05 |
+
