@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'core/api.dart';
-import 'app/vigia_app.dart';
-export 'app/vigia_app.dart';
-export 'features/auth/login_screen.dart';
-export 'features/auth/session_gate.dart';
+import 'app.dart';
+import 'core/config/app_config.dart';
+import 'core/firebase/firebase_setup.dart';
+import 'core/network/api_client.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(VigiaApp(api: VigiaApi()));
+  final config = AppConfig.fromEnvironment();
+  await initFirebase(config);
+  runApp(
+    ProviderScope(
+      overrides: [appConfigProvider.overrideWithValue(config)],
+      retry: retryOnlyConnectivity,
+      child: const VigiaApp(),
+    ),
+  );
 }

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 560" width="560" height="560">
+  <defs><clipPath id="c"><rect width="560" height="560" rx="124"/></clipPath>
+    <linearGradient id="pH" x1="0.2" y1="0" x2="0.8" y2="1"><stop offset="0" stop-color="#C6B2EC"/><stop offset="1" stop-color="#A68BDB"/></linearGradient>
+    <linearGradient id="pB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#C9BBEE"/><stop offset="1" stop-color="#B7A5E6"/></linearGradient>
+    <linearGradient id="gH" x1="0.2" y1="0" x2="0.8" y2="1"><stop offset="0" stop-color="#A9E6CC"/><stop offset="1" stop-color="#86D5B3"/></linearGradient>
+    <linearGradient id="gB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9DE0C4"/><stop offset="1" stop-color="#7FD0AE"/></linearGradient>
+  </defs><g clip-path="url(#c)"><rect width="560" height="560" fill="#F4F0FC"/><g transform="translate(280 280) scale(.86) translate(-290 -285)">
+  
+  <circle cx="233" cy="160" r="79" fill="url(#pH)"/>
+  <circle cx="427" cy="252" r="66" fill="url(#gH)"/>
+  <!-- green body -->
+  <path d="M300 395 C315 360 345 338 395 334 C440 332 470 350 478 378 C440 415 360 428 300 395Z" fill="url(#gB)"/>
+  <!-- purple body + arm -->
+  <path d="M97 466 C72 430 68 340 102 290 C128 250 180 234 212 242 C246 251 254 292 268 328 C288 376 330 408 410 420 C380 432 330 436 300 430 C270 424 240 400 215 385 C190 368 160 358 138 380 C118 400 108 440 105 468 C103 472 99 471 97 466Z" fill="url(#pB)"/>
+  <!-- hand -->
+  <path d="M250 447 C335 440 420 420 470 376 C490 356 500 336 504 322 C507 346 499 386 470 416 C425 456 330 466 250 447Z" fill="#BDAEE9" opacity="0.95"/>
+
+</g></g></svg>

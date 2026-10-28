@@ -1,7 +1,7 @@
 # Tareas — 019 / Migración a FastAPI + Firebase
 
 Spec: [spec.md](spec.md). Plan: [plan.md](plan.md).
-Estado: T-019-01..06 y T-019-16 hechas (backend completo salvo el despliegue); el resto, pendientes. Implementación autorizada: SÍ, T-019-01..15 (2026-10-28), sin merge, despliegue ni cuentas reales; cada una de esas acciones necesita autorización aparte.
+Estado: T-019-01..06, T-019-08 y T-019-16 hechas (backend completo salvo el despliegue; base de la app importada); el resto, pendientes. Implementación autorizada: SÍ, T-019-01..15 (2026-10-28), sin merge, despliegue ni cuentas reales; cada una de esas acciones necesita autorización aparte.
 Rama: `feature/019-migracion-firebase` desde `origin/develop` (`73fb6a1`), un commit por tarea y PR hacia `develop` (D-059).
 
 ## Semana 1 — backend (punto de control 2026-11-04)
@@ -44,11 +44,17 @@ Rama: `feature/019-migracion-firebase` desde `origin/develop` (`73fb6a1`), un co
 
 ## Semana 2 — app móvil
 
-- [ ] T-019-08 — Base de la app dentro de `mobile/`.
+- [x] T-019-08 — Base de la app dentro de `mobile/`.
   - RF: RF-019-12, RF-019-18.
   - Depende de: T-019-02.
   - Archivos previstos: `mobile/lib/**`, `mobile/test/**`, `mobile/pubspec.yaml`, `mobile/assets/branding`, `mobile/assets/fonts`.
   - Hecho cuando: la app del base compila con nuestro identificador, plugin y assets; las versiones de FlutterFire son compatibles entre sí; `flutter analyze` está limpio y `flutter test` pasa.
+  - Cómo (2026-10-28, antes del código):
+    - `lib/` y `test/` se reemplazan por los del commit `518792263c44`.
+    - Se mantiene el paquete de Dart `vigia_mobile`, cambiando `package:vigia/` en los `import` del base. Así `android/`, `ios/`, `web/`, `tool/` y el identificador `cl.vigia.vigia_mobile` no cambian.
+    - Se suman `assets/branding` y `assets/fonts` del base a `assets/guides` y `assets/models`.
+    - Las dependencias del base se unen con las nuestras del plan (`camera`, `vigia_pose`, `flutter_local_notifications`, `timezone`, `firebase_messaging`, `url_launcher`, `google_sign_in`), con FlutterFire en una sola versión mayor de `firebase_core`. Salen `http` y `flutter_secure_storage`: solo los usaba la app anterior y vuelven si una tarea de portado los necesita.
+    - Nuestras pantallas y pruebas salen de `lib/` y `test/` y se portan desde `develop` en T-019-09..12. Mientras tanto, la app de esta rama no tiene detección, reloj, avisos locales ni pantallas de privacidad.
 - [ ] T-019-09 — Cinco secciones y Alertas.
   - RF: RF-019-13, RF-019-14.
   - Depende de: T-019-08 y T-019-05.
@@ -95,6 +101,8 @@ Rama: `feature/019-migracion-firebase` desde `origin/develop` (`73fb6a1`), un co
 
 «1. autorizo a instalarlos con winget, 2. las privacidad sobre todo, y 3. deja pendiente el crear el proyecto firebase, el servicio en Render y la tarea en cron-job.org. puedes seguir con T-019-04 si lo demas esta listo» (2026-10-28). Autoriza instalar JDK 21, Node LTS y `firebase-tools` (D-099) y agrega T-019-16 (D-098).
 
+«detenlo y autorizo T-019-08» (2026-10-28, después del recorrido en vivo). Confirma T-019-08.
+
 ## Registro de ejecución
 
 | Fecha | Tarea | Resultado |
@@ -107,10 +115,11 @@ Rama: `feature/019-migracion-firebase` desde `origin/develop` (`73fb6a1`), un co
 | 2026-10-28 | T-019-06 | Política de la cuenta (`get_registered_user` / `get_current_user`, `/v1/privacy`), consentimiento por finalidad con historial (`/v1/patients/{id}/consents`), consentimiento de cuidado exigido en las 9 escrituras de `care.py` y `medications.py`; reloj (`/timer`, `/me/timer-schedule`) reiniciado por ambos registros de posición; recordatorios de tomas y del reloj (`services/reminders.py`, cada 5 min como máximo) y `POST /internal/tick` con `X-Cron-Secret`; opciones `VIGIA_PRIVACY_ENFORCED`, `VIGIA_PRIVACY_POLICY_VERSION` y `VIGIA_CRON_SECRET`; índice de grupo `medications.active`. Backend **316 OK** (34 nuevas), 9/10 mutaciones detectadas (la décima es equivalente). Diferencias 10 y 11 en el plan |
 
 | 2026-10-28 | T-019-16 | `services/erase.py` (paciente con confirmación de nombre; cuenta con inicio de sesión de hace 5 minutos o menos, pacientes propios borrados (D-065), autor anónimo en pacientes ajenos y borrado en Firebase Auth), `services/export.py` (cuenta y paciente, sin tokens, hashes ni códigos), `services/retention.py` (plazos de D-064, una vez al día desde el tick), rutas en `api/v1/privacy.py`; `archivedAt` al archivar; estado de cuenta `deleted`; `auth_time` en la identidad; índices de grupo `observations.observedAt` y `alerts.occurredAt`. Backend **327 OK** (11 nuevas), 11/11 mutaciones detectadas |
+| 2026-10-28 | T-019-08 | `lib/` (50 archivos) y `test/` (14) desde `518792263c44` con `git archive`; `package:vigia/` → `package:vigia_mobile/`; `assets/branding` y `assets/fonts` (Nunito, OFL) junto a `guides` y `models`; `pubspec.yaml` con Riverpod, go_router, dio, `firebase_core` ^5.1.0, `firebase_auth` ^7.0.1 y `firebase_messaging` ^17.0.1 (resuelto por `flutter pub add`), más `camera`, `vigia_pose`, avisos locales, `timezone`, `url_launcher`, `google_sign_in` y `mocktail`; sin `http` ni `flutter_secure_storage`. `flutter analyze` limpio, `flutter test` **67/67**, `flutter build apk --debug` OK con `VigiaPosePlugin` registrado y los assets dentro. Nuestras pantallas se portan en T-019-09..12 |
 
 ## Reanudación
 
-Última acción: T-019-16 cerrada; el backend queda completo salvo el despliegue. Siguiente: T-019-08 (base de la app dentro de `mobile/`), o T-019-07 si el proyecto Firebase ya existe (D-100). Pendiente del propietario: P-019-04 (reloj solo en Plus y Premium), registrado el 2026-10-28 a su pedido. Para probar, primero levantar los emuladores (ver `docs/ENTORNO_Y_VERIFICACION.md`). Bloqueos: P-019-01 (Java y Node) para la integración; P-019-02 (diferencias 4 y 5) antes de T-019-06; P-019-03 antes de T-019-07.
+Última acción: T-019-08 cerrada; la app de la rama es la del base (4 secciones, Alertas como marcador) sin nuestras funciones todavía. Siguiente: T-019-09 (cinco secciones y Alertas), o T-019-07 si el proyecto Firebase ya existe (D-100). Pendiente del propietario: P-019-04 (reloj solo en Plus y Premium), registrado el 2026-10-28 a su pedido. Para probar, primero levantar los emuladores (ver `docs/ENTORNO_Y_VERIFICACION.md`). Bloqueos: P-019-01 (Java y Node) para la integración; P-019-02 (diferencias 4 y 5) antes de T-019-06; P-019-03 antes de T-019-07.
 
 ## Aceptación del usuario
 

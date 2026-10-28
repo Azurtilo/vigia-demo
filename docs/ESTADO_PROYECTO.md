@@ -42,8 +42,12 @@ Trabajo futuro registrado (no comprometido): invitación por correo (D-050), tra
 - **Pedido.** Revisar el proyecto `vigia 26` de otro integrante (FastAPI + Firebase, hecho sin specs) para traer su frontend móvil. Después, el propietario decidió migrar el producto a FastAPI + Firebase antes de la entrega y autorizó: «concuerdo con tus decisiones, dejamos develop con django y probamos los cambios en una nueva rama, autorizo que cambies codigo pero antes registra todo».
 - **Hecho.** Rama `feature/019-migracion-firebase` desde `origin/develop` (`73fb6a1`); [spec](../specs/019-migracion-firebase/spec.md), [plan](../specs/019-migracion-firebase/plan.md) y [tareas](../specs/019-migracion-firebase/tasks.md); decisiones D-081..D-097.
 - **Hallazgos.** El backend base ya cubre pacientes, permisos, invitaciones, medicamentos, tareas, agenda, historial y planes; le faltan Edge, alertas, push, recordatorios y consentimiento. Su portal React es solo un esqueleto. Con un nodo renovando cada 10 s, Firestore gratis se agotaría sin caché (D-095).
-- **Siguiente.** Cerrar T-019-01 (AGENTS y CLAUDE) y seguir con T-019-02 (importación). Bloqueos en los pendientes 22–24.
-- **No hecho.** Sin código, merge, despliegue ni cuentas.
+- **Avance.**
+  - T-019-01..06 y T-019-16: backend con Edge, alertas y push simulado, consentimiento, reloj, tick y privacidad.
+  - T-019-08: la app del base en `mobile/`, con nuestro identificador, plugin y assets.
+  - Evidencia: backend 327, reglas 7, Edge 56 y Flutter 67 OK; recorrido en vivo 52/52. Nuestras funciones de la app se portan en T-019-09..12.
+- **Siguiente.** T-019-09 (cinco secciones y Alertas). T-019-07 espera el proyecto Firebase (pendiente 24, D-100); P-019-04 (pendiente 26) espera al propietario.
+- **No hecho.** Merge, despliegue, cuentas reales ni pruebas en un teléfono.
 
 ## Estado anterior — spec 017 implementada, 2026-10-27
 
