@@ -17,8 +17,8 @@ from app.core.errors import AppError
 from app.core.firebase import get_db
 from app.models.admin import AdminSubscriptionPage, AdminSubscriptionRow, PlanUpdate
 from app.models.subscription import Plan
+from app.services import edge_cache, plans
 from app.services import patients as patients_service
-from app.services import plans
 from app.services.audit import audit_entry, audit_ref
 from app.services.subscriptions import to_plan
 
@@ -82,6 +82,7 @@ def update_plan(plan_id: str, admin_uid: str, body: PlanUpdate) -> Plan:
         )
 
     patients_service.run_transaction(_apply)
+    edge_cache.forget(everything=True)  # puede cambiar la función de cámaras de muchos nodos
     return to_plan(plan_id, ref.get().to_dict())
 
 

@@ -14,7 +14,7 @@ from app.core.firebase import get_db
 from app.core.permissions import DEFAULT_PERMISSIONS, Permission, Relation
 from app.core.schedule import DEFAULT_TIME_ZONE
 from app.models.patient import Patient, PatientCreate, PatientStatus, PatientUpdate, PlanUsage
-from app.services import plans
+from app.services import edge_cache, plans
 from app.services.audit import audit_entry, audit_ref
 
 PATIENTS = "patients"
@@ -245,6 +245,7 @@ def set_patient_status(patient_id: str, uid: str, new_status: PatientStatus) -> 
         transaction.set(audit_ref(), audit_entry(uid, action, f"patients/{patient_id}"))
 
     run_transaction(_apply)
+    edge_cache.forget(patient_id=patient_id)  # un paciente archivado no se monitorea
     return get_patient(patient_id, uid)
 
 

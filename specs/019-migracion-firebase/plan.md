@@ -93,6 +93,8 @@ Por defecto se adopta la regla del proyecto base; el propietario puede cambiar c
 | 5 | Exportar datos y eliminar cuenta (014) | Implementados | No existen | **Se porta (D-098):** RF-019-25..27. Para eliminar, se reautentica con el `auth_time` del token de Firebase en lugar de la contraseña |
 | 6 | Planes y precios | Planes de PlanesApp | Gratis / Plus $4.990 / Premium $9.990 (prueba) | Base |
 | 7 | Guías de cuidado postural | Endpoint `guides` | No existen | Se sirven desde los assets de la app, sin backend |
+| 8 | Detección y cupo del plan (encontrada en T-019-04) | El paciente debe estar dentro del cupo activo del plan (`capacity_state`) | Al bajar de plan no se elige qué pacientes quedan; solo se bloquean altas | Base: la detección exige cámara en el plan del dueño (solo Premium, que no tiene límite de pacientes), paciente activo y consentimiento. Sin cupo por paciente |
+| 9 | Permisos de detección (T-019-04) | `manage_nodes` (titular) y `detection` | Sin permisos de detección | Nodos: solo el dueño. Observaciones: `alerts.handle`. Teléfono: `care.record`. Estado de la cámara: `patient.view` |
 
 ## Plan de pruebas
 
