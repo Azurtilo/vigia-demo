@@ -1670,3 +1670,105 @@ class HistorialNavegacionTests(BaseUsuariosTestCase):
         panel = self.client.get(reverse("CuidadosApp:panel"))
         self.assertContains(panel, 'class="visual-mode-form" data-replace-history')
         self.assertContains(panel, f'name="next" value="{reverse("CuidadosApp:panel")}"')
+
+
+class TextosCuentaTests(BaseUsuariosTestCase):
+    """Spec 018, RF-018-14/15: account pages speak es-CL and say «tú»."""
+
+    maxDiff = None
+
+    import re as _re
+
+    ENGLISH = _re.compile(
+        r"\b(the|you|your|please|e-?mail address(es)?|e-mail|sign (in|out)|verify|verified|unverified"
+        r"|primary|password|account|forgot|remember me|change|reset|note|remove|confirm|code|token)\b",
+        _re.I,
+    )
+    FORMAL = _re.compile(
+        r"\b(por favor|usted|desea|su contraseña|su correo|su cuenta|su dirección|sus datos|"
+        r"ha olvidado|ingrese|introduzca|verifique|siga el|contáctenos|le hemos|no puede eliminar su|"
+        r"ha confirmado|ha iniciado|ha cerrado|debe escribir|asegúrese|tiene que)\b",
+        _re.I,
+    )
+
+    def visible(self, response):
+        html = response.content.decode()
+        html = self._re.sub(r"(?s)<(script|style|head|svg)\b.*?</\1>", " ", html)
+        html = self._re.sub(r"(?s)<[^>]+>", " ", html)
+        return self._re.sub(r"\s+", " ", html)
+
+    def problems(self, label, response):
+        text = self.visible(response)
+        found = {m.group(0) for m in self.ENGLISH.finditer(text)} | {
+            m.group(0) for m in self.FORMAL.finditer(text)
+        }
+        return [f"{label}: {sorted(found)}"] if found else []
+
+    def pages(self):
+        from allauth.account.forms import default_token_generator
+        from allauth.account.models import EmailConfirmationHMAC
+        from allauth.account.utils import user_pk_to_url_str
+
+        from PrivacidadApp.consent import accept_account
+
+        actor = self.create_actor("textos", position=self.admin_position)
+        actor.email = "textos@example.test"
+        actor.save(update_fields=["email"])
+        address = EmailAddress.objects.create(user=actor, email=actor.email, verified=False, primary=True)
+        accept_account(actor)
+        key = default_token_generator.make_token(actor)
+        anonymous = [
+            reverse("account_login"), reverse("account_signup"), reverse("account_reset_password"),
+            reverse("account_reset_password_done"),
+            reverse("account_reset_password_from_key", args=[user_pk_to_url_str(actor), key]),
+            reverse("account_reset_password_from_key", args=["1", "x-x"]),
+            reverse("account_reset_password_from_key_done"), reverse("account_email_verification_sent"),
+            reverse("account_confirm_email", args=[EmailConfirmationHMAC(address).key]),
+            reverse("account_confirm_email", args=["clave-invalida"]), reverse("account_inactive"),
+            reverse("socialaccount_login_cancelled"), reverse("socialaccount_login_error"),
+            reverse("PrivacidadApp:policy"),
+        ]
+        signed_in = [
+            reverse("account_email"), reverse("account_change_password"), reverse("account_logout"),
+            reverse("account_reauthenticate"), reverse("mfa_index"), reverse("socialaccount_connections"),
+            reverse("Register"), reverse("User"), reverse("UserPasswordReset", args=[actor.pk]),
+        ]
+        return actor, anonymous, signed_in
+
+    def test_paginas_de_cuenta_sin_ingles_ni_usted(self):
+        actor, anonymous, signed_in = self.pages()
+        found = []
+        for url in anonymous:
+            self.client.logout()
+            found += self.problems(url, self.client.get(url, follow=True))
+        self.client.post(reverse("account_login"), {"login": actor.username, "password": PASSWORD})
+        for url in signed_in:
+            found += self.problems(url, self.client.get(url, follow=True))
+        actor.set_unusable_password()
+        actor.save()
+        self.client.force_login(actor)
+        found += self.problems("set_password", self.client.get(reverse("account_set_password"), follow=True))
+        self.assertEqual(found, [], "; ".join(found))
+
+    def test_inicio_de_sesion_muestra_la_ayuda_una_vez(self):
+        self.assertContains(self.client.get(reverse("account_login")), "¿Olvidaste tu contraseña?", count=1)
+        actor = self.create_actor("ayuda_unica", position=self.restricted_position)
+        self.client.force_login(actor)
+        self.assertContains(self.client.get(reverse("account_change_password")), "¿Olvidaste tu contraseña?", count=1)
+
+    def test_mensajes_de_las_acciones_de_cuenta(self):
+        actor, _, _ = self.pages()
+        url = reverse("account_email")
+        found = []
+        found += self.problems("login", self.client.post(
+            reverse("account_login"), {"login": actor.username, "password": PASSWORD}, follow=True))
+        for data in (
+            {"action_send": "", "email": actor.email},
+            {"action_add": "", "email": "otro@example.test"},
+            {"action_primary": "", "email": actor.email},
+            {"action_remove": "", "email": actor.email},
+            {"action_remove": "", "email": "otro@example.test"},
+        ):
+            found += self.problems(str(data), self.client.post(url, data, follow=True))
+        found += self.problems("logout", self.client.post(reverse("account_logout"), follow=True))
+        self.assertEqual(found, [], "; ".join(found))

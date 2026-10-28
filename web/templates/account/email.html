@@ -3,15 +3,15 @@
 {% load allauth i18n %}
 
 {% block head_title %}
-  {% trans 'E-mail Addresses' %}
+  Correos de tu cuenta
 {% endblock %}
 
 {% block content_account %}
 
-  <h1 class="max-w-2xl font-bold tracking-tight text-ink text-2xl mb-4">{% trans 'E-mail Addresses' %}</h1>
+  <h1 class="max-w-2xl font-bold tracking-tight text-ink text-2xl mb-4">Correos de tu cuenta</h1>
 
   {% if emailaddresses %}
-    <p class="max-w-2xl text-ink pt-6 pb-3">Las siguientes direcciones de correo electrónico están asociadas con su cuenta :</p>
+    <p class="max-w-2xl text-ink pt-6 pb-3">Estos son los correos asociados a tu cuenta:</p>
 
     {% url 'account_email' as email_url %}
 
@@ -25,16 +25,16 @@
                 {{ emailaddress.email }}
                     {% if emailaddress.verified %}
                       {% element badge tags='success,email,verified' %}
-                        <span class="verified font-bold">{% translate 'Verified' %}</span>
+                        <span class="verified font-bold">Verificado</span>
                       {% endelement %}
                     {% else %}
                       {% element badge tags='warning,email,unverified' %}
-                        <span class="unverified font-bold">{% translate 'Unverified' %}</span>
+                        <span class="unverified font-bold">Sin verificar</span>
                       {% endelement %}
                     {% endif %}  
                     {% if emailaddress.primary %}
                       {% element badge tags='email,primary' %}
-                        <span class="unverified font-bold">{% translate 'Primary' %}</span>
+                        <span class="unverified font-bold">Principal</span>
                       {% endelement %}
                     {% endif %}
               {% endslot %}
@@ -54,14 +54,14 @@
     {% include 'account/snippets/warn_no_email.html' %}
   {% endif %}
   {% if can_add_email %}
-    <h2 class="max-w-xs text-3xl font-bold tracking-tight text-ink sm:text-2xl mb-4">{% trans 'Add Email Address' %}</h2>
+    <h2 class="max-w-xs text-3xl font-bold tracking-tight text-ink sm:text-2xl mb-4">Agregar un correo</h2>
 
     {% url 'account_email' as action_url %}
 
     <form method="post" action="{{ action_url }}" data-replace-history>
         {% csrf_token %}
         {{ form|crispy }}
-        {% include "components/btn/button.html" with button_name="action_add" button_text="Agregar email" button_type="submit" button_class="" %}
+        {% include "components/btn/button.html" with button_name="action_add" button_text="Agregar correo" button_type="submit" button_class="" %}
     </form>
   {% endif %}
 
@@ -70,7 +70,7 @@
 {% block javascript %}
   <script type="text/javascript">
     (function () {
-      let message= "{% trans 'Do you really want to remove the selected e-mail address?' %}"
+      let message= "¿Quieres eliminar el correo seleccionado?"
       let actions= document.getElementsByName('action_remove')
       if (actions.length) {
         actions[0].addEventListener('click', function (e) {

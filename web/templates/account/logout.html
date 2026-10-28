@@ -1,15 +1,15 @@
 {% extends user.is_authenticated|yesno:'account/Layout/base_account.html,account/Layout/base_simple.html' %}
 {% load allauth i18n %}
 {% block head_title %}
-  {% trans 'Sign Out' %}
+  Cerrar sesión
 {% endblock %}
 
 {% block content_account %}
     {% element h1 %}
-      {% trans 'Sign Out' %}
+      Cerrar sesión
     {% endelement %}
     <p>
-      {% trans 'Are you sure you want to sign out?' %}
+      ¿Quieres cerrar sesión?
     </p>
 
     {% url 'account_logout' as action_url %}
@@ -21,7 +21,7 @@
       {% slot actions %}
         <div class="account-exits">
           {% element button type='submit' %}
-            {% trans 'Sign Out' %}
+            Cerrar sesión
           {% endelement %}
           <a class="button secondary" href="{% url 'Home' %}">Cancelar</a>
         </div>

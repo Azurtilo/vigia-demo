@@ -1,28 +1,19 @@
 {% extends "account/Layout/base_simple.html" %}
-{% load i18n %}
-{% load allauth %}
 
-{% block head_title %}
-    {% trans "Verify Your Email Address" %}
-{% endblock head_title %}
+{% block head_title %}Verifica tu correo{% endblock head_title %}
 
 {% block content_account %}
 
-  <h1>{% trans "Verify Your E-mail Address" %}</h1>
+  <h1>Verifica tu correo</h1>
 
   {% url 'account_email' as email_url %}
 
-  <p>{% blocktrans %}This part of the site requires us to verify that
-  you are who you claim to be. For this purpose, we require that you
-  verify ownership of your e-mail address. {% endblocktrans %}</p>
+  <p>Para entrar a esta parte del portal necesitamos confirmar que el correo es tuyo.</p>
 
-  <p>{% blocktrans %}We have sent an e-mail to you for
-  verification. Please click on the link inside this e-mail. Please
-  contact us if you do not receive it within a few minutes.{% endblocktrans %}</p>
+  <p>Te enviamos un correo con un enlace de verificación. Si no llega en unos minutos, revisa la carpeta de spam o contáctanos.</p>
 
-  <p>{% blocktrans %}<strong>Note:</strong> you can still <a href="{{ email_url }}">change your e-mail address</a>.{% endblocktrans %}</p>
+  <p><strong>Nota:</strong> todavía puedes <a href="{{ email_url }}">cambiar tu correo</a>.</p>
 
   <div class="account-exits"><a class="button" href="{{ email_url }}">Ir a mis correos</a>{% if user.is_authenticated %}<a class="button secondary" href="{% url 'Home' %}">Ir a mi panel</a>{% else %}<a class="button secondary" href="{% url 'account_login' %}">Volver a iniciar sesión</a>{% endif %}</div>
-
 
 {% endblock content_account %}

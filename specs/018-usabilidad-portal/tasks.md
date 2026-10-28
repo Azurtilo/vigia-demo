@@ -1,7 +1,7 @@
 # Tareas — 018 / Usabilidad del portal
 
 Spec: [spec.md](spec.md). Plan: [plan.md](plan.md).
-Estado: T-018-01..05 hechas; T-018-06..07 pendientes. Implementación autorizada: SÍ, T-018-01..07 (2026-10-27), sin despliegue; el merge de la PR requiere autorización aparte.
+Estado: T-018-01..06 hechas; T-018-07 pendiente. Implementación autorizada: SÍ, T-018-01..07 (2026-10-27), sin despliegue; el merge de la PR requiere autorización aparte.
 Rama: `feature/018-usabilidad-portal` desde `develop`, un commit por tarea y PR hacia `develop` (D-059).
 
 - [x] T-018-01 — Documentos y línea base.
@@ -29,7 +29,7 @@ Rama: `feature/018-usabilidad-portal` desde `develop`, un commit por tarea y PR 
   - Depende de: T-018-04 (comparten `email.html`).
   - Archivos previstos: `core/navigation.py`, `core/common_settings.py`, `static/js/historial.js`, `components/Layout/base.html`, plantillas con formularios marcados, `components/visual_mode.html`, `UsuarioApp/views.py`, pruebas en `UsuarioApp/tests.py` y `CuidadosApp`.
   - Hecho cuando: las pruebas del middleware cubren redirección interna con y sin cabecera, redirección externa, GET y formulario con errores; las del modo visual cubren `next` interno, externo y vacío; los formularios de exportación no están marcados.
-- [ ] T-018-06 — Textos en español tuteado.
+- [x] T-018-06 — Textos en español tuteado.
   - RF: RF-018-14, RF-018-15.
   - Depende de: T-018-02, T-018-04 y T-018-05 (tocan las mismas plantillas).
   - Archivos previstos: `templates/account/**`, `templates/account/messages/*.txt`, `templates/mfa/**` si hace falta, plantillas de `UsuarioApp`, `UsuarioApp/account_forms.py` (`LoginForm`), `UsuarioApp/forms.py`, prueba de textos.
@@ -49,3 +49,4 @@ Rama: `feature/018-usabilidad-portal` desde `develop`, un commit por tarea y PR 
 | 2026-10-27 | T-018-03 | Política con secciones, índice, aviso destacado y salidas según la sesión; texto original intacto (comparado párrafo a párrafo). 3 pruebas nuevas |
 | 2026-10-27 | T-018-04 | Menú en correos y cerrar sesión, salidas en las 9 páginas terminales y logo según la sesión. 4 pruebas nuevas. Django 260 OK |
 | 2026-10-27 | T-018-05 | `ReplaceNavigationMiddleware`, `historial.js`, 15 formularios marcados (sin las exportaciones) y `next` validado en el modo visual. 6 pruebas nuevas, 5 mutaciones detectadas. Django 266 OK. JavaScript sin verificar en navegador (T-018-07) |
+| 2026-10-27 | T-018-06 | Textos tuteados en 17 plantillas de cuenta, 12 mensajes de allauth, ayuda «¿Olvidaste tu contraseña?» y `LoginForm` sin ayuda repetida. La prueba de textos recorre 24 páginas y 7 acciones; 5 mutaciones detectadas. Django 269 OK. Las páginas de administración no tenían «usted»: su «su» es de tercera persona |

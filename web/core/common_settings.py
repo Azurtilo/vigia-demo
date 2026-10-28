@@ -131,6 +131,7 @@ ACCOUNT_LOGOUT_REDIRECT_URL = "/accounts/login/"
 ACCOUNT_ADAPTER = "UsuarioApp.adapters.PublicAccountAdapter"
 ACCOUNT_FORMS = {
     "signup": "UsuarioApp.signup_forms.PublicSignupForm",
+    "login": "UsuarioApp.account_forms.LoginForm",
     "change_password": "UsuarioApp.account_forms.ChangePasswordForm",
     "set_password": "UsuarioApp.account_forms.SetPasswordForm",
     "reset_password_from_key": "UsuarioApp.account_forms.ResetPasswordKeyForm",

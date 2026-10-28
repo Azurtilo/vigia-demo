@@ -2,14 +2,14 @@
 {% load allauth %}
 {% load i18n %}
 {% block head_title %}
-  {% trans 'Confirm Access' %}
+  Confirmar acceso
 {% endblock %}
 
 {% block content_account %}
 
   <h1 class="max-w-2xl font-bold tracking-tight text-ink text-2xl mb-4">Confirmar acceso</h1>
   <div class="space-y-6">
-    <p class="max-w-2xl text-ink pt-6">Vuelva a autenticarse para proteger su cuenta</p>
+    <p class="max-w-2xl text-ink pt-6">Vuelve a escribir tu contraseña para proteger tu cuenta.</p>
 
     {% block reauthenticate_content %}{% endblock %}
 
