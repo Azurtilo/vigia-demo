@@ -2,19 +2,23 @@
 {% load i18n %}
 {% load allauth %}
 {% block head_title %}
-    {% trans "Verify Your Email Address" %}
+    Verifica tu correo
 {% endblock head_title %}
 
 {% block content_account %}
 
   <h1 class="max-w-2xl font-bold tracking-tight text-ink text-2xl mb-4">
-      Verifique su dirección de correo electrónico
+      Verifica tu correo
   </h1>
 
   <div class="space-y-6">
       <p class="max-w-2xl text-ink pt-6 z-[60]">
-        Le hemos enviado un correo electrónico para su verificación. Siga el enlace proporcionado para finalizar el proceso de registro. Por favor contáctenos si no lo recibe en unos minutos
+        Te enviamos un correo de verificación. Sigue el enlace para terminar tu registro. Si no llega en unos minutos, revisa la carpeta de spam o contáctanos.
       </p>
+  </div>
+  <div class="account-exits">
+    <a class="button" href="{% url 'PlanesApp:catalogo' %}">Ver planes</a>
+    {% if user.is_authenticated %}<a class="button secondary" href="{% url 'Home' %}">Ir a mi panel</a>{% else %}<a class="button secondary" href="{% url 'account_login' %}">Iniciar sesión</a>{% endif %}
   </div>
 
 {% endblock content_account %}

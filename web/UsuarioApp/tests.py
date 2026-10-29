@@ -1420,3 +1420,355 @@ class ListadoConsultasTests(BaseUsuariosTestCase):
             self.create_actor(f"lista_extra_{n}", position=self.restricted_position)
         many, _ = self.page_queries()
         self.assertEqual(few, many)
+
+
+class IndicadoresContrasenaTests(BaseUsuariosTestCase):
+    """Spec 018, RF-018-01..04: live checklist instead of Django's static list."""
+
+    DJANGO_HELP = "no puede ser una clave utilizada comúnmente"
+
+    def rule_state(self, response, rule):
+        import re
+
+        match = re.search(rf'data-rule="{rule}" data-state="(\w+)"', response.content.decode())
+        return match and match.group(1)
+
+    def signup(self, password, confirm=None):
+        return self.client.post(
+            reverse("account_signup"),
+            {
+                "username": "indicadores",
+                "email": "indicadores@example.test",
+                "password1": password,
+                "password2": password if confirm is None else confirm,
+                "accept_privacy": "on",
+            },
+        )
+
+    def test_las_seis_pantallas_muestran_la_lista_sin_la_ayuda_de_django(self):
+        from allauth.account.forms import default_token_generator
+        from allauth.account.utils import user_pk_to_url_str
+
+        admin = self.create_actor("indicador_admin", position=self.admin_position)
+        target = self.create_actor("indicador_destino", position=self.restricted_position)
+        sin_clave = self.create_actor("indicador_google", position=self.restricted_position)
+        sin_clave.set_unusable_password()
+        sin_clave.save()
+        key = default_token_generator.make_token(target)
+        reset = reverse("account_reset_password_from_key", args=[user_pk_to_url_str(target), key])
+        screens = [
+            (None, reverse("account_signup")),
+            (None, reset),
+            (target, reverse("account_change_password")),
+            (sin_clave, reverse("account_set_password")),
+            (admin, reverse("Register")),
+            (admin, reverse("UserPasswordReset", args=[target.pk])),
+        ]
+        for actor, url in screens:
+            with self.subTest(url=url):
+                self.client.logout()
+                if actor:
+                    self.client.force_login(actor)
+                response = self.client.get(url, follow=True)
+                self.assertContains(response, "data-password-checklist")
+                self.assertContains(response, "Tu contraseña debe cumplir:")
+                self.assertEqual(self.rule_state(response, "length"), "pending")
+                self.assertEqual(self.rule_state(response, "match"), "pending")
+                self.assertNotContains(response, self.DJANGO_HELP)
+
+    @override_settings(AUTH_PASSWORD_VALIDATORS=[{
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {"min_length": 12},
+    }])
+    def test_las_reglas_salen_de_los_validadores_configurados(self):
+        response = self.client.get(reverse("account_signup"))
+        self.assertContains(response, "Al menos 12 caracteres")
+        self.assertContains(response, 'data-min="12"')
+        self.assertIsNone(self.rule_state(response, "numeric"))
+        self.assertIsNone(self.rule_state(response, "server"))
+
+    def test_las_reglas_rechazadas_por_el_servidor_quedan_en_rojo(self):
+        response = self.signup("12345678")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.rule_state(response, "numeric"), "fail")
+        self.assertEqual(self.rule_state(response, "server"), "fail")
+        self.assertEqual(self.rule_state(response, "length"), "pending")
+        self.assertFalse(User.objects.filter(username="indicadores").exists())
+
+    def test_confirmacion_distinta_usa_un_solo_mensaje_tuteado(self):
+        response = self.signup("Vigia-Prueba-2026!", confirm="Vigia-Prueba-2027!")
+        self.assertEqual(self.rule_state(response, "match"), "fail")
+        self.assertContains(response, "Las contraseñas no coinciden.")
+        self.assertNotContains(response, "misma contraseña cada vez")
+        self.assertNotContains(response, "Vigia-Prueba-2026!")
+        self.assertNotContains(response, "Vigia-Prueba-2027!")
+
+    def test_restablecimiento_administrativo_marca_lo_rechazado(self):
+        admin = self.create_actor("indicador_admin2", position=self.admin_position)
+        target = self.create_actor("indicador_destino2", position=self.restricted_position)
+        self.client.force_login(admin)
+        response = self.client.post(
+            reverse("UserPasswordReset", args=[target.pk]),
+            {"admin_password": PASSWORD, "new_password1": "corta", "new_password2": "cortas"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.rule_state(response, "match"), "fail")
+        self.assertContains(response, "Las contraseñas no coinciden.")
+        # Django files validator errors under the confirmation field.
+        response = self.client.post(
+            reverse("UserPasswordReset", args=[target.pk]),
+            {"admin_password": PASSWORD, "new_password1": "corta", "new_password2": "corta"},
+        )
+        self.assertEqual(self.rule_state(response, "length"), "fail")
+        self.assertEqual(self.rule_state(response, "match"), "pending")
+        self.assertTrue(User.objects.get(pk=target.pk).check_password(PASSWORD))
+
+    def test_cambiar_contrasena_compara_con_el_usuario_propio(self):
+        actor = self.create_actor("indicador_propio", position=self.restricted_position)
+        actor.email = "propio.correo@example.test"
+        actor.save(update_fields=["email"])
+        self.client.force_login(actor)
+        response = self.client.get(reverse("account_change_password"))
+        self.assertContains(response, '["indicador_propio", "propio.correo"]')
+
+
+class SalidasCuentaTests(BaseUsuariosTestCase):
+    """Spec 018, RF-018-08..10: no account page leaves the person without a way out."""
+
+    NAV = 'class="desktop-sidebar"'
+
+    def setUp(self):
+        self.actor = self.create_actor("salidas", position=self.restricted_position)
+        self.actor.email = "salidas@example.test"
+        self.actor.save(update_fields=["email"])
+        self.address = EmailAddress.objects.create(
+            user=self.actor, email=self.actor.email, verified=False, primary=True
+        )
+
+    def exits(self, response):
+        import re
+
+        blocks = re.findall(r'(?s)<div class="account-exits">(.*?)</div>', response.content.decode())
+        self.assertTrue(blocks, "sin bloque de salidas")
+        return re.findall(r'href="([^"]+)"', "".join(blocks))
+
+    def test_correos_y_cerrar_sesion_muestran_el_menu_con_sesion(self):
+        self.client.force_login(self.actor)
+        self.assertContains(self.client.get(reverse("account_email")), self.NAV)
+        logout = self.client.get(reverse("account_logout"))
+        self.assertContains(logout, self.NAV)
+        self.assertEqual(self.exits(logout), [reverse("Home")])
+
+    def test_logo_lleva_al_panel_con_sesion_y_a_iniciar_sesion_sin_ella(self):
+        page = reverse("account_email_verification_sent")
+        anonymous = self.client.get(page).content.decode()
+        self.assertIn(f'<a href="{reverse("account_login")}" aria-label="Volver a iniciar sesión">', anonymous)
+        self.client.force_login(self.actor)
+        signed_in = self.client.get(page).content.decode()
+        self.assertIn(f'<a href="{reverse("Home")}" aria-label="Ir a mi panel">', signed_in)
+
+    def test_cada_pagina_terminal_tiene_sus_salidas(self):
+        from allauth.account.models import EmailConfirmationHMAC
+
+        login, home = reverse("account_login"), reverse("Home")
+        valid = reverse("account_confirm_email", args=[EmailConfirmationHMAC(self.address).key])
+        cases = [
+            (False, reverse("account_email_verification_sent"), [reverse("PlanesApp:catalogo"), login]),
+            (True, reverse("account_email_verification_sent"), [reverse("PlanesApp:catalogo"), home]),
+            (False, valid, [login]),
+            (True, valid, [home]),
+            (False, reverse("account_confirm_email", args=["clave-invalida"]), [reverse("account_email"), login]),
+            (False, reverse("account_reset_password_done"), [login]),
+            (False, reverse("account_reset_password_from_key", args=["1", "x-x"]), [reverse("account_reset_password"), login]),
+            (False, reverse("account_reset_password_from_key_done"), [login]),
+            (False, reverse("account_inactive"), [login]),
+        ]
+        for signed_in, url, expected in cases:
+            with self.subTest(url=url, signed_in=signed_in):
+                self.client.logout()
+                if signed_in:
+                    self.client.force_login(self.actor)
+                response = self.client.get(url, follow=True)
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(self.exits(response), expected)
+
+    def test_verificacion_obligatoria_ofrece_correos_y_volver(self):
+        from django.template.loader import render_to_string
+
+        request = RequestFactory().get("/")
+        request.user = self.actor
+        html = render_to_string("account/verified_email_required.html", request=request)
+        self.assertIn(f'<a class="button" href="{reverse("account_email")}">Ir a mis correos</a>', html)
+        self.assertIn(f'href="{reverse("Home")}">Ir a mi panel</a>', html)
+
+
+class HistorialNavegacionTests(BaseUsuariosTestCase):
+    """Spec 018, RF-018-11..13 (D-080): marked forms replace their history entry."""
+
+    REPLACE = {"HTTP_X_VIGIA_NAVIGATION": "replace"}
+
+    def setUp(self):
+        self.actor = self.create_actor("historial", position=self.restricted_position)
+        self.actor.email = "historial@example.test"
+        self.actor.save(update_fields=["email"])
+        EmailAddress.objects.create(user=self.actor, email=self.actor.email, verified=True, primary=True)
+        self.client.force_login(self.actor)
+
+    def test_redireccion_interna_vuelve_como_json_y_conserva_el_mensaje(self):
+        url = reverse("account_email")
+        response = self.client.post(url, {"action_primary": "", "email": self.actor.email}, **self.REPLACE)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"location": url})
+        self.assertEqual(response["Cache-Control"], "no-store")
+        self.assertContains(self.client.get(url), "toast")
+
+    def test_sin_cabecera_get_o_errores_no_cambian(self):
+        url = reverse("account_email")
+        plain = self.client.post(url, {"action_primary": "", "email": self.actor.email})
+        self.assertRedirects(plain, url, fetch_redirect_response=False)
+        self.assertEqual(self.client.get(url, **self.REPLACE).status_code, 200)
+        invalid = self.client.post(url, {"action_add": "", "email": "no-es-correo"}, **self.REPLACE)
+        self.assertEqual(invalid.status_code, 200)
+        self.assertTrue(invalid["Content-Type"].startswith("text/html"))
+
+    def test_redireccion_externa_no_se_convierte(self):
+        from django.http import HttpResponseRedirect
+
+        from core.navigation import ReplaceNavigationMiddleware
+
+        request = RequestFactory().post("/", **self.REPLACE)
+        for target in ("https://evil.example/", "//evil.example/"):
+            with self.subTest(target=target):
+                middleware = ReplaceNavigationMiddleware(lambda _request, t=target: HttpResponseRedirect(t))
+                self.assertEqual(middleware(request).status_code, 302)
+
+    def test_modo_visual_vuelve_a_la_pagina_interna(self):
+        url, page = reverse("VisualMode"), reverse("Profile") + "?tab=1"
+        response = self.client.post(url, {"mode": "dark", "next": page})
+        self.assertRedirects(response, page, fetch_redirect_response=False)
+        replaced = self.client.post(url, {"mode": "light", "next": page}, **self.REPLACE)
+        self.assertEqual(replaced.json(), {"location": page})
+        for bad in ("https://evil.example/", "//evil.example/", "", "javascript:alert(1)"):
+            with self.subTest(next=bad):
+                response = self.client.post(url, {"mode": "dark", "next": bad})
+                self.assertRedirects(response, reverse("Home"), fetch_redirect_response=False)
+
+    def test_las_exportaciones_no_se_marcan(self):
+        import re
+
+        html = self.client.get(reverse("Profile")).content.decode()
+        forms = re.findall(r"<form[^>]*>", html)
+        export = [tag for tag in forms if reverse("PrivacidadApp:export_account") in tag]
+        self.assertEqual(len(export), 1)
+        self.assertNotIn("data-replace-history", export[0])
+        self.assertTrue(any("data-replace-history" in tag and "multipart" in tag for tag in forms))
+
+    def test_el_selector_de_modo_envia_la_pagina_actual(self):
+        from PrivacidadApp.consent import accept_account
+
+        accept_account(self.actor)
+        panel = self.client.get(reverse("CuidadosApp:panel"))
+        self.assertContains(panel, 'class="visual-mode-form" data-replace-history')
+        self.assertContains(panel, f'name="next" value="{reverse("CuidadosApp:panel")}"')
+
+
+class TextosCuentaTests(BaseUsuariosTestCase):
+    """Spec 018, RF-018-14/15: account pages speak es-CL and say «tú»."""
+
+    maxDiff = None
+
+    import re as _re
+
+    ENGLISH = _re.compile(
+        r"\b(the|you|your|please|e-?mail address(es)?|e-mail|sign (in|out)|verify|verified|unverified"
+        r"|primary|password|account|forgot|remember me|change|reset|note|remove|confirm|code|token)\b",
+        _re.I,
+    )
+    FORMAL = _re.compile(
+        r"\b(por favor|usted|desea|su contraseña|su correo|su cuenta|su dirección|sus datos|"
+        r"ha olvidado|ingrese|introduzca|verifique|siga el|contáctenos|le hemos|no puede eliminar su|"
+        r"ha confirmado|ha iniciado|ha cerrado|debe escribir|asegúrese|tiene que)\b",
+        _re.I,
+    )
+
+    def visible(self, response):
+        html = response.content.decode()
+        html = self._re.sub(r"(?s)<(script|style|head|svg)\b.*?</\1>", " ", html)
+        html = self._re.sub(r"(?s)<[^>]+>", " ", html)
+        return self._re.sub(r"\s+", " ", html)
+
+    def problems(self, label, response):
+        text = self.visible(response)
+        found = {m.group(0) for m in self.ENGLISH.finditer(text)} | {
+            m.group(0) for m in self.FORMAL.finditer(text)
+        }
+        return [f"{label}: {sorted(found)}"] if found else []
+
+    def pages(self):
+        from allauth.account.forms import default_token_generator
+        from allauth.account.models import EmailConfirmationHMAC
+        from allauth.account.utils import user_pk_to_url_str
+
+        from PrivacidadApp.consent import accept_account
+
+        actor = self.create_actor("textos", position=self.admin_position)
+        actor.email = "textos@example.test"
+        actor.save(update_fields=["email"])
+        address = EmailAddress.objects.create(user=actor, email=actor.email, verified=False, primary=True)
+        accept_account(actor)
+        key = default_token_generator.make_token(actor)
+        anonymous = [
+            reverse("account_login"), reverse("account_signup"), reverse("account_reset_password"),
+            reverse("account_reset_password_done"),
+            reverse("account_reset_password_from_key", args=[user_pk_to_url_str(actor), key]),
+            reverse("account_reset_password_from_key", args=["1", "x-x"]),
+            reverse("account_reset_password_from_key_done"), reverse("account_email_verification_sent"),
+            reverse("account_confirm_email", args=[EmailConfirmationHMAC(address).key]),
+            reverse("account_confirm_email", args=["clave-invalida"]), reverse("account_inactive"),
+            reverse("socialaccount_login_cancelled"), reverse("socialaccount_login_error"),
+            reverse("PrivacidadApp:policy"),
+        ]
+        signed_in = [
+            reverse("account_email"), reverse("account_change_password"), reverse("account_logout"),
+            reverse("account_reauthenticate"), reverse("mfa_index"), reverse("socialaccount_connections"),
+            reverse("Register"), reverse("User"), reverse("UserPasswordReset", args=[actor.pk]),
+        ]
+        return actor, anonymous, signed_in
+
+    def test_paginas_de_cuenta_sin_ingles_ni_usted(self):
+        actor, anonymous, signed_in = self.pages()
+        found = []
+        for url in anonymous:
+            self.client.logout()
+            found += self.problems(url, self.client.get(url, follow=True))
+        self.client.post(reverse("account_login"), {"login": actor.username, "password": PASSWORD})
+        for url in signed_in:
+            found += self.problems(url, self.client.get(url, follow=True))
+        actor.set_unusable_password()
+        actor.save()
+        self.client.force_login(actor)
+        found += self.problems("set_password", self.client.get(reverse("account_set_password"), follow=True))
+        self.assertEqual(found, [], "; ".join(found))
+
+    def test_inicio_de_sesion_muestra_la_ayuda_una_vez(self):
+        self.assertContains(self.client.get(reverse("account_login")), "¿Olvidaste tu contraseña?", count=1)
+        actor = self.create_actor("ayuda_unica", position=self.restricted_position)
+        self.client.force_login(actor)
+        self.assertContains(self.client.get(reverse("account_change_password")), "¿Olvidaste tu contraseña?", count=1)
+
+    def test_mensajes_de_las_acciones_de_cuenta(self):
+        actor, _, _ = self.pages()
+        url = reverse("account_email")
+        found = []
+        found += self.problems("login", self.client.post(
+            reverse("account_login"), {"login": actor.username, "password": PASSWORD}, follow=True))
+        for data in (
+            {"action_send": "", "email": actor.email},
+            {"action_add": "", "email": "otro@example.test"},
+            {"action_primary": "", "email": actor.email},
+            {"action_remove": "", "email": actor.email},
+            {"action_remove": "", "email": "otro@example.test"},
+        ):
+            found += self.problems(str(data), self.client.post(url, data, follow=True))
+        found += self.problems("logout", self.client.post(reverse("account_logout"), follow=True))
+        self.assertEqual(found, [], "; ".join(found))

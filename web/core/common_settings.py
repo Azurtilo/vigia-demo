@@ -42,6 +42,7 @@ CRISPY_TEMPLATE_PACK = "tailwind"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "core.navigation.ReplaceNavigationMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -128,7 +129,13 @@ ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
 ACCOUNT_LOGOUT_ON_GET = False
 ACCOUNT_LOGOUT_REDIRECT_URL = "/accounts/login/"
 ACCOUNT_ADAPTER = "UsuarioApp.adapters.PublicAccountAdapter"
-ACCOUNT_FORMS = {"signup": "UsuarioApp.signup_forms.PublicSignupForm"}
+ACCOUNT_FORMS = {
+    "signup": "UsuarioApp.signup_forms.PublicSignupForm",
+    "login": "UsuarioApp.account_forms.LoginForm",
+    "change_password": "UsuarioApp.account_forms.ChangePasswordForm",
+    "set_password": "UsuarioApp.account_forms.SetPasswordForm",
+    "reset_password_from_key": "UsuarioApp.account_forms.ResetPasswordKeyForm",
+}
 SOCIALACCOUNT_ADAPTER = "UsuarioApp.adapters.PublicSocialAccountAdapter"
 SOCIALACCOUNT_EMAIL_AUTHENTICATION = False
 SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = False

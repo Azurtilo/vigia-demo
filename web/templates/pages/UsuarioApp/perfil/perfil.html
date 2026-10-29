@@ -3,7 +3,7 @@
 {% block head_title %}Editar perfil{% endblock %}
 {% block content_pages %}
 <h1>Tu perfil</h1><p class="lede">Actualiza tus datos y la imagen de tu cuenta.</p>
-<form method="post" enctype="multipart/form-data">
+<form method="post" enctype="multipart/form-data" data-replace-history>
   {% csrf_token %}
   {% include 'components/input_perfil.html' %}
   {{ profile_form.non_field_errors }}

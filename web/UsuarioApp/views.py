@@ -9,6 +9,7 @@ from django.db.models import Exists, OuterRef, Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.decorators import method_decorator
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters, sensitive_variables
 from django.views.generic import ListView, View
@@ -76,6 +77,12 @@ class VisualModeUpdateView(LoginRequiredMixin, View):
                 },
                 status=500,
             )
+        # Stay on the page where the mode was changed, only if it is ours (spec 018).
+        target = request.POST.get("next", "")
+        if url_has_allowed_host_and_scheme(
+            target, allowed_hosts={request.get_host()}, require_https=request.is_secure()
+        ):
+            return redirect(target)
         return redirect("Home")
 
 

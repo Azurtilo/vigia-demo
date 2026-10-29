@@ -1,6 +1,7 @@
 {% if puede_cambiar_modo %}
-<form action="{% url 'VisualMode' %}" method="post" class="visual-mode-form">
+<form action="{% url 'VisualMode' %}" method="post" class="visual-mode-form" data-replace-history>
   {% csrf_token %}
+  <input type="hidden" name="next" value="{{ request.get_full_path }}">
   {% if modo_visual == 'dark' %}
   <span id="visual-mode-state" class="visual-mode-state">Modo oscuro</span>
   <input type="hidden" name="mode" value="light">

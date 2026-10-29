@@ -352,3 +352,15 @@ RF-015-01: suites Django 235, Edge 22 y Flutter 43 OK y `git diff` sin archivos 
 ### 017 — Evidencia ejecutada, 2026-10-27
 
 Django 246, Edge 56 y Flutter 51 OK (desde 235, 22 y 46). RF-017-01..05: `edge.test_fall` (`BedZoneTests`, `BedFallTests`) y `edge.test_run.BedMonitorTests`. RF-017-06..08: `MonitorStatusTests`, `CameraTests`, `MonitorStateTests`. RF-017-09: `MonitorStateUplinkTests` y `test_mobile.test_node_reports_monitor_state_on_renewal`. RF-017-10: `test_access.CameraStateTests`, `camera_state_test.dart` y `patient_roles_test.dart`. RF-017-11/12: `test_push.NodeAlertTests` y `test_access.test_blind_camera_alert_reaches_every_role` (Firebase simulado). RF-017-13..15: revisión del log y de `edge/README.md`. Doce mutaciones detectadas; sin evidencia en vivo (T-017-13). Detalle en [validation.md](../specs/017-robustez-caidas/validation.md).
+
+## 018 — Usabilidad del portal, 2026-10-27
+
+[Spec](../specs/018-usabilidad-portal/spec.md), [plan](../specs/018-usabilidad-portal/plan.md), [tareas](../specs/018-usabilidad-portal/tasks.md), [validación](../specs/018-usabilidad-portal/validation.md). No cambia el estado de las HU ni de los RT del informe: mejora el portal que usan HU-01, HU-06 y HU-07 y el registro de la spec 007.
+
+| Fuente | RF-018 | Tareas T-018 | Evidencia |
+|---|---|---|---|
+| Prueba del propietario: requisitos de contraseña | 01–04 | 02 | `IndicadoresContrasenaTests`; Chrome headless |
+| Prueba del propietario: política ilegible | 05–07 | 03 | `PolicyReadingTests`; capturas a 360 px |
+| Prueba del propietario: sin salida al verificar el correo | 08–10 | 04 | `SalidasCuentaTests` |
+| Prueba del propietario: «atrás» repite la página | 11–13 | 05 | `HistorialNavegacionTests`; Chrome headless (historial sin crecer) |
+| Revisión de casos similares: inglés y «usted» | 14–15 | 06 | `TextosCuentaTests` (24 páginas, 7 acciones) |
