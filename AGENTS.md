@@ -12,7 +12,7 @@ VIGIA apoya el cuidado domiciliario de personas con dependencia (Proyecto de Tí
 
 ### Rama `feature/019-migracion-firebase` (D-081..D-097)
 
-En esta rama el producto migra a **FastAPI + Firebase** ([spec 019](specs/019-migracion-firebase/spec.md)). `develop` sigue con Django hasta que el propietario autorice la fusión; hasta entonces, las reglas de Django de este archivo siguen vigentes para `web/`, que no se modifica en esta rama.
+En esta rama el producto migra a **FastAPI + Firebase** ([spec 019](specs/019-migracion-firebase/spec.md)). Fusionada en `develop` el 2026-10-29 (D-103); el respaldo solo Django queda en la etiqueta `v-django-respaldo`. Las reglas de Django de este archivo siguen vigentes para `web/`, que la 019 no modifica.
 
 | Carpeta | Componente en esta rama |
 |---|---|

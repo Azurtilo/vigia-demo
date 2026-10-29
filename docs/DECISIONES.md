@@ -323,3 +323,11 @@ Fuente: «puedes agregar alertas y privacidad? y el detector de caidas funciona?
 |---|---|---|
 | D-101 | La política se lee y se acepta **dentro de la app** (`POST /v1/privacy/accept`), en lugar de abrir el portal como en `develop`: el portal React aún no tiene esa pantalla (T-019-13) y el backend ya registra la aceptación con su versión | T-019-12. La sesión pasa por «aceptar la política» antes de Hoy. El texto es el de la política vigente de la 014, ajustado a los datos que guarda el backend nuevo; la revisión legal sigue pendiente (D-067) |
 | D-102 | La exportación JSON se muestra en la app con un botón «Copiar», sin agregar dependencias para guardar archivos. La descarga como archivo queda para el portal (T-019-13) | T-019-12. Si se pide un archivo en el teléfono, se suma `share_plus` o `path_provider` en una tarea aparte |
+
+### Fusión de la 019 en `develop` — 2026-10-29
+
+Fuente: «fusiona 019 a develop» y, ante el aviso de que reemplaza la app móvil de Django y contradice D-081, la opción «Etiquetar y fusionar» (sesión del 2026-10-29).
+
+| ID | Decisión | Efecto |
+|---|---|---|
+| D-103 | La 019 se fusiona en `develop` **antes del punto de control** del 2026-11-04. El respaldo Django queda en la etiqueta `v-django-respaldo` (`2324079`: `develop` con la 018, app móvil sobre Django) | Reemplaza la parte de D-081 que mantenía `develop` con Django. `web/` sigue en `develop` sin cambios, pero `mobile/` pasa a la app de FastAPI + Firebase. Siguen pendientes T-019-07, 10, 11, 13, 14 y 15; si el punto de control falla, se vuelve a la etiqueta |

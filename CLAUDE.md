@@ -13,7 +13,7 @@ VIGIA (Proyecto de Título, INACAP): apoyo al cuidado domiciliario de personas c
 | `edge/` | Nodo Python con MediaPipe Pose Landmarker |
 | `docs/`, `specs/` | Documentación y trazabilidad SDD |
 
-En la rama `feature/019-migracion-firebase` se agregan `backend/` (FastAPI + Firebase), `firebase/` y `portal/` (React). Django en `web/` queda intacto hasta la fusión. Ver la sección de esa rama en [AGENTS.md](AGENTS.md) y la [spec 019](specs/019-migracion-firebase/spec.md).
+En la rama `feature/019-migracion-firebase` se agregan `backend/` (FastAPI + Firebase), `firebase/` y `portal/` (React). Fusionada en `develop` el 2026-10-29 (D-103); Django en `web/` sigue intacto y el respaldo solo Django queda en la etiqueta `v-django-respaldo`. Ver la sección de esa rama en [AGENTS.md](AGENTS.md) y la [spec 019](specs/019-migracion-firebase/spec.md).
 
 Antes de trabajar lee `README.md`, `docs/ESTADO_PROYECTO.md`, `specs/README.md` y la spec relacionada (vigente: `specs/019-migracion-firebase/`).
 

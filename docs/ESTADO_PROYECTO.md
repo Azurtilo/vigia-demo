@@ -48,7 +48,8 @@ Trabajo futuro registrado (no comprometido): invitación por correo (D-050), tra
   - T-019-09 y T-019-12: alertas, política (D-101), consentimientos, descarga (D-102) y eliminación en la app.
   - Evidencia: backend 327, reglas 7, Edge 56 y Flutter 92 OK; recorrido en vivo 52/52; app en el ELI NX9. Faltan Posturas (T-019-10) y el push (T-019-11).
 - **Siguiente.** T-019-10 y T-019-11. T-019-07 espera el proyecto Firebase (pendiente 24, D-100); P-019-04 (pendiente 26) espera al propietario.
-- **No hecho.** Merge, despliegue, cuentas reales ni pruebas en un teléfono.
+- **Fusión.** `develop` recibió la 019 el 2026-10-29 antes del punto de control (D-103); respaldo Django en la etiqueta `v-django-respaldo` (`2324079`). Backend 337 OK con emuladores y Django 269 OK antes de fusionar.
+- **No hecho.** Despliegue ni cuentas reales.
 
 ## Estado anterior — spec 018 implementada, 2026-10-27
 
