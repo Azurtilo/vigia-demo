@@ -4,12 +4,12 @@
 {% load i18n %}
 
 {% block head_title %}
-    {% trans "Confirm Access" %}
+    Confirmar acceso
 {% endblock head_title %}
 
 {% block reauthenticate_content %}
 
-  <p class="max-w-2xl text-ink">{% blocktranslate %}Enter your password:{% endblocktranslate %}</p>
+  <p class="max-w-2xl text-ink">Escribe tu contraseña:</p>
   {% url 'account_reauthenticate' as action_url %}
   {% element form form=form method="post" action=action_url %}
     {% slot body %}

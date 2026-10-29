@@ -26,14 +26,14 @@ Lista única de lo que falta. El detalle vive en cada spec y en DECISIONES. «Pr
 | 16 | Hallazgos de la QA del 2026-10-26 sin abordar: 07 (lock con hashes del Edge), 09 (contraseña demo en `MOVIL_DESARROLLO.md`), 10 (prueba de la API con la puerta de privacidad activa), 11 (logo con poco contraste en modo oscuro), 12 (dependencias de Flutter con versiones mayores), 13 (conteos repetidos en este estado). El 05 (push real y RNF) sigue en los pendientes 3, 4 y 9 | [QA_2026-10-26.md](QA_2026-10-26.md) | Equipo |
 | 17 | ~~Revisión de calidad y correcciones 01–04, 06 y 08~~ PR #10 (informe) y PR #11 (spec 016) fusionadas el 2026-10-26 | spec 016 | Hecho |
 | 18 | ~~Revisar y fusionar la [PR #12](https://github.com/Azurtilo/vigia-demo/pull/12) de la spec 017~~ Fusionada en `develop` el 2026-10-27 (`2bf9c53`) | spec 017 | Hecho |
+| 20 | Probar la spec 018 en el teléfono por wifi: indicadores de contraseña, política, salidas de las páginas de cuenta y «atrás» en correos, ficha del paciente y métodos de pago | spec 018 | Propietario |
+| 21 | Mensajes de validación de Django en «usted» («Introduzca…»): requieren un catálogo de traducción propio | spec 018, validación | Trabajo futuro |
 | 19 | Pruebas en vivo de la 017: calibración con ventana, deslizamiento simulado, tapar o desconectar la cámara, apagar la luz, cortar la red del nodo y recepción de los avisos | T-017-13 | Propietario |
 | 22 | Instalar JDK 21, Node LTS y `firebase-tools` para los emuladores de Firebase: **autorizado con `winget` el 2026-10-28 (D-099)** | T-019-03 | Equipo |
 | 23 | ~~Confirmar las diferencias 4 y 5 del plan 019~~ Se porta la privacidad de la 014 (D-098, T-019-16); las demás diferencias, con su valor por defecto | P-019-02 | Hecho (decisión) |
 | 24 | Crear el proyecto Firebase real (Spark), el servicio en Render y la tarea en cron-job.org, confirmando sus condiciones gratuitas. **Pendiente por decisión del propietario (D-100)**; el punto de control del 2026-11-04 necesita al menos el proyecto Firebase | P-019-03, T-019-07 | Propietario |
 | 25 | Punto de control de la 019 el 2026-11-04: nodo real → caída → push en Android. Si falla, decidir si se entrega con Django | D-081 | Propietario + equipo |
 | 26 | Decidir si el reloj de cambio de posición (HU-04) llega al plan Gratis: hoy, como en el backend base, solo existe en Plus y Premium (`positionChanges`). Llevarlo a todos los planes es un cambio pequeño | P-019-04, diferencia 10 del plan 019 | Propietario (decisión) |
-
-Los números 20 y 21 los usa la rama de la 018, sin fusionar.
 
 Trabajo futuro registrado (no comprometido): invitación por correo (D-050), traspaso de titularidad, papelera de pacientes con «deshacer» (D-067), cifrado en reposo y PostgreSQL (014), registro de lecturas, push inmediato de inmovilidad (D-051). iOS pasó al alcance el 2026-10-26 (D-068, spec 015).
 
@@ -50,7 +50,16 @@ Trabajo futuro registrado (no comprometido): invitación por correo (D-050), tra
 - **Siguiente.** T-019-10 y T-019-11. T-019-07 espera el proyecto Firebase (pendiente 24, D-100); P-019-04 (pendiente 26) espera al propietario.
 - **No hecho.** Merge, despliegue, cuentas reales ni pruebas en un teléfono.
 
-## Estado anterior — spec 017 implementada, 2026-10-27
+## Estado anterior — spec 018 implementada, 2026-10-27
+
+- **Pedido.** Tras probar el portal en el teléfono por wifi, el propietario reportó cuatro problemas (indicadores de contraseña, política ilegible, sin salida al verificar el correo y «atrás» que repite la página), pidió buscar casos similares y autorizó: «fusiona la 13, autorizo para que luego hagas los cambios en el codigo».
+- **Fusión previa.** [PR #13](https://github.com/Azurtilo/vigia-demo/pull/13) (T-017-16) fusionada en `develop` el 2026-10-27 (`73fb6a1`).
+- **Hecho** en `feature/018-usabilidad-portal` ([spec 018](../specs/018-usabilidad-portal/spec.md), [tareas](../specs/018-usabilidad-portal/tasks.md)): lista de contraseña en vivo en seis pantallas, política con secciones e índice, salidas en las páginas de cuenta, historial sin entradas repetidas (`ReplaceNavigationMiddleware` y `historial.js`) y textos de cuenta tuteados. Decisiones D-078..D-080 con las opciones recomendadas, porque el propietario no eligió.
+- **Evidencia.** Django **269** OK, check y `makemigrations --check` sin cambios, 14 mutaciones detectadas, Chrome headless a 360 px con 30/30 comprobaciones ([validación](../specs/018-usabilidad-portal/validation.md)).
+- **No hecho.** Prueba en el teléfono (pendiente 20). Mensajes de validación de Django en «usted» (pendiente 21). Sin despliegue.
+- **Fusión.** [PR #14](https://github.com/Azurtilo/vigia-demo/pull/14) fusionada en `develop` el 2026-10-29 (`2324079`) y `develop` fusionada en `feature/019-migracion-firebase`. Django 269 OK sobre la fusión.
+
+## Antecedente — spec 017 implementada, 2026-10-27
 
 - **Pedido.** Revisar el prototipo `pose_app` (detector de caídas de la cama en Kotlin), redactar la spec 017 con lo que conviene traer a VIGIA y, tras las decisiones D-073..D-077, «Autorizo T-017-01 a T-017-12, sin merge, migración real ni despliegue».
 - **Hecho** en `feature/017-robustez-caidas` ([spec 017](../specs/017-robustez-caidas/spec.md), [tareas](../specs/017-robustez-caidas/tasks.md)):
@@ -61,7 +70,7 @@ Trabajo futuro registrado (no comprometido): invitación por correo (D-050), tra
 - **Evidencia (Windows, sintética).** Django **246**, Edge **56** y Flutter **51** OK; check y `makemigrations --check` sin cambios; `0010` probada en avance y reversión; 12 mutaciones detectadas. Brillo + regla de cama ≈ 0,5 ms por cuadro con video sin personas. Detalle en [validation.md](../specs/017-robustez-caidas/validation.md).
 - **No hecho.** Sin cámara real, `edge.run` en vivo, calibración con ventana ni Firebase real (T-017-13). Sin merge, migración real ni despliegue.
 - **Fusión.** [PR #12](https://github.com/Azurtilo/vigia-demo/pull/12) fusionada en `develop` el 2026-10-27 (`2bf9c53`), con autorización del usuario («haz merge»). Incluye T-017-14/15 (contrato de estados nodo ↔ servidor y avisos de nodo una vez por ejecución). Sin migración real ni despliegue.
-- **Después.** T-017-16 en `feature/017-config-caidas`: `edge/fall.py` usa `edge/options.py` como la cama y el monitoreo, sin cambiar su comportamiento.
+- **Después.** T-017-16: `edge/fall.py` usa `edge/options.py` como la cama y el monitoreo, sin cambiar su comportamiento. Fusionada con la [PR #13](https://github.com/Azurtilo/vigia-demo/pull/13) (`73fb6a1`).
 - **Siguiente paso seguro.** T-017-13 junto con el protocolo ampliado (pendiente 4).
 
 ## Antecedente — spec 016 en implementación, 2026-10-26

@@ -1,2 +1,1 @@
-{% load i18n %}
-{% blocktrans %}Unable to confirm {{email}} because it is already confirmed by a different account.{% endblocktrans %}
+No pudimos confirmar {{ email }} porque otra cuenta ya lo confirmó.

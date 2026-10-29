@@ -269,9 +269,19 @@ Fuente: «estoy de acuerdo con las recomendaciones, sigue con plan.md y tasks.md
 
 Sin autorización de implementación.
 
+## Spec 018 — Usabilidad del portal (2026-10-27)
+
+Fuente: «fusiona la 13, autorizo para que luego hagas los cambios en el codigo» (sesión del 2026-10-27). El propietario autorizó la implementación sin elegir entre las opciones de la [spec 018](../specs/018-usabilidad-portal/spec.md); se aplican las recomendadas. Son reversibles: si el propietario elige otra, se reemplaza la decisión y se conserva su ID.
+
+| ID | Decisión | Efecto |
+|---|---|---|
+| D-078 | **P-018-01 A** — La regla «que no se parezca a tu usuario ni a tu correo» se aproxima en el navegador: rojo si la contraseña contiene el usuario o la parte del correo antes de la @ (desde 3 caracteres); si no, neutra con «se revisa al guardar». El servidor sigue decidiendo | RF-018-02, T-018-02 |
+| D-079 | **P-018-02 A** — La regla «que no sea una contraseña común» queda neutra con «se revisa al guardar». No se incluye la lista en el navegador ni se consulta al servidor mientras se escribe | RF-018-02, T-018-02 |
+| D-080 | **P-018-03 A** — JavaScript propio en los formularios marcados: envío con `fetch`, el servidor responde la redirección interna como JSON (middleware con cabecera propia) y el navegador reemplaza la entrada del historial. Sin JavaScript, el envío de siempre | RF-018-11..13, T-018-05 |
+
 ## Spec 019 — Migración a FastAPI + Firebase (2026-10-28)
 
-Fuente: revisión del proyecto `vigia 26` de otro integrante del equipo (commit `518792263c44`) y respuestas del propietario en la sesión del 2026-10-28: a la lista inicial («1.B, 2,A, 3.B, 4.A, 5.A, 6.A, 7.C, 8.A, 9.A, 10.B, 12.A, 13.A, 14.A, 15.C, 17.C, 18.A, 19.A, 20.B (portal web a futuro), 21.B 22.A, 24.A»); a las recomendaciones posteriores («concuerdo con tus decisiones»), que cambiaron la 2, la 10 y la 12 y resolvieron la 11, la 16, la 23 y la autenticación del nodo; y a «mantén los recordatorios como respaldo, aunque el servidor sea la fuente principal». D-078..D-080 están en la rama de la 018, sin fusionar. Detalle en la [spec 019](../specs/019-migracion-firebase/spec.md).
+Fuente: revisión del proyecto `vigia 26` de otro integrante del equipo (commit `518792263c44`) y respuestas del propietario en la sesión del 2026-10-28: a la lista inicial («1.B, 2,A, 3.B, 4.A, 5.A, 6.A, 7.C, 8.A, 9.A, 10.B, 12.A, 13.A, 14.A, 15.C, 17.C, 18.A, 19.A, 20.B (portal web a futuro), 21.B 22.A, 24.A»); a las recomendaciones posteriores («concuerdo con tus decisiones»), que cambiaron la 2, la 10 y la 12 y resolvieron la 11, la 16, la 23 y la autenticación del nodo; y a «mantén los recordatorios como respaldo, aunque el servidor sea la fuente principal». D-078..D-080 son de la spec 018, fusionada en `develop` después (PR #14). Detalle en la [spec 019](../specs/019-migracion-firebase/spec.md).
 
 | ID | Decisión | Efecto |
 |---|---|---|
