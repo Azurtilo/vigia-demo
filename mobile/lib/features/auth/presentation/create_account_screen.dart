@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -36,7 +38,11 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
       _error = null;
     });
     try {
-      await ref.read(authRepositoryProvider).createAccount(email: _email.text, password: _password.text);
+      final auth = ref.read(authRepositoryProvider);
+      await auth.createAccount(email: _email.text, password: _password.text);
+      // Para unirse a un paciente se necesita el correo verificado (en producción). Si el envío
+      // falla, se puede reenviar desde «Unirme con código».
+      unawaited(auth.sendEmailVerification().catchError((Object _) {}));
     } on AuthFailure catch (e) {
       if (mounted) setState(() => _error = e.message);
     } finally {

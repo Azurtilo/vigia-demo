@@ -98,8 +98,19 @@ class FakePatientsApi implements PatientsApi {
     return Patient.fromJson(_store[id]!);
   }
 
+  /// Si se define, imita al backend en producción: sin correo verificado en el token, 403.
+  bool Function()? tokenEmailVerified;
+
   @override
   Future<Patient> acceptInvitation(String code) async {
+    if (tokenEmailVerified != null && !tokenEmailVerified!()) {
+      throw const ApiException(
+        kind: ApiErrorKind.api,
+        statusCode: 403,
+        code: 'email_not_verified',
+        message: 'Verifica tu correo antes de aceptar invitaciones.',
+      );
+    }
     final key = code.toUpperCase().replaceAll(RegExp(r'[^A-Z0-9]'), '');
     final target = invitations.remove(key);
     if (target == null) {

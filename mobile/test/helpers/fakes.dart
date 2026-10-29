@@ -67,6 +67,26 @@ class FakeAuthRepository implements AuthRepository {
     reauthCalls++;
     if (accounts[current?.email] != password) throw const AuthFailure('Correo o contraseña incorrectos.');
   }
+
+  /// Verificación de correo: [emailVerified] es el estado de la cuenta (la persona abrió el enlace);
+  /// [tokenEmailVerified] es lo que ve el backend, y solo cambia al renovar el token, como en Firebase.
+  int verificationEmails = 0;
+  int refreshCalls = 0;
+  bool emailVerified = false;
+  bool tokenEmailVerified = false;
+
+  @override
+  Future<void> sendEmailVerification() async {
+    if (nextFailure != null) throw nextFailure!;
+    verificationEmails++;
+  }
+
+  @override
+  Future<bool> refreshEmailVerified() async {
+    refreshCalls++;
+    tokenEmailVerified = emailVerified;
+    return emailVerified;
+  }
 }
 
 /// Backend falso para el perfil (GET /me y POST /auth/register).

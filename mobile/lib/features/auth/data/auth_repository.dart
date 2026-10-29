@@ -30,6 +30,13 @@ abstract class AuthRepository {
   /// Vuelve a pedir la contraseña antes de una acción sensible (eliminar la cuenta) y renueva el token,
   /// para que el backend vea un inicio de sesión reciente (`auth_time`).
   Future<void> reauthenticate(String password);
+
+  /// Envía (o reenvía) el enlace para verificar el correo de la cuenta (QA-2026-10-28-01).
+  Future<void> sendEmailVerification();
+
+  /// Recarga la cuenta y renueva el token: el backend lee la verificación desde el token,
+  /// así que sin renovarlo seguiría viendo el correo como no verificado. Devuelve si ya está verificado.
+  Future<bool> refreshEmailVerified();
 }
 
 class FirebaseAuthRepository implements AuthRepository {
@@ -70,6 +77,26 @@ class FirebaseAuthRepository implements AuthRepository {
         await user.reauthenticateWithCredential(EmailAuthProvider.credential(email: user.email!, password: password));
         return user.getIdToken(true);
       });
+
+  @override
+  Future<void> sendEmailVerification() => _guard(() async {
+        await _auth.currentUser?.sendEmailVerification();
+        return null;
+      });
+
+  @override
+  Future<bool> refreshEmailVerified() async {
+    final user = _auth.currentUser;
+    if (user == null) return false;
+    try {
+      await user.reload();
+      final current = _auth.currentUser!;
+      await current.getIdToken(true);
+      return current.emailVerified;
+    } on FirebaseAuthException catch (e) {
+      throw mapFirebaseAuthError(e);
+    }
+  }
 
   Future<void> _guard(Future<Object?> Function() action) async {
     try {
