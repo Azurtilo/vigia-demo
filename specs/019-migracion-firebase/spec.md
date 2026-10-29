@@ -131,3 +131,4 @@ Sin acceso a un paciente se responde 404 (regla del backend base). Una cuenta su
 
 - 2026-10-28: creada con las decisiones D-081..D-097 tras revisar `vigia 26`. Aprobación e implementación autorizadas en la misma sesión.
 - 2026-10-28: «1. autorizo a instalarlos con winget, 2. las privacidad sobre todo, y 3. deja pendiente el crear el proyecto firebase, el servicio en Render y la tarea en cron-job.org. puedes seguir con T-019-04 si lo demas esta listo». Se agregan RF-019-24..27 (D-098), D-099 y D-100.
+- 2026-10-29: prueba del flujo familiar → cuidadora en Android físico. «arregla 1 y 2 siguiendo el sdd, registrando spec 019». Se agregan T-019-19 (aviso de consentimiento en Medicamentos y Cuidados, RF-019-17) y T-019-20 (selector de horas en 24 horas). Sin cambios en el backend ni en los RF.

@@ -7,6 +7,8 @@ import '../../../core/router/app_router.dart';
 import '../../../core/theme/vigia_colors.dart';
 import '../../../core/widgets/async_view.dart';
 import '../../patients/domain/patient.dart';
+import '../../privacy/care_consent_notice.dart';
+import '../../privacy/patient_privacy_screen.dart';
 import '../../today/application/today_providers.dart';
 import '../../today/domain/agenda.dart';
 import '../../today/presentation/record_sheets.dart';
@@ -29,6 +31,10 @@ Future<bool> _confirm(BuildContext context, String title, String message, String
 
 void _snack(BuildContext context, String message) =>
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+
+/// Falta el consentimiento de cuidado. Mientras carga o si la consulta falla no se bloquea: el backend valida igual.
+bool _missingCareConsent(WidgetRef ref, Patient patient) =>
+    !patient.isArchived && consentActive(ref.watch(patientConsentsProvider(patient.id)), 'cuidado') == false;
 
 String _dates(DateTime start, DateTime? end) =>
     end == null ? 'Desde ${formatDate(start)}' : 'Del ${formatDate(start)} al ${formatDate(end)}';
@@ -65,6 +71,7 @@ class MedicationsTab extends ConsumerWidget {
     final meds = ref.watch(medicationsProvider(patient.id));
     final canManage = patient.can('meds.manage') && !patient.isArchived;
     final canAdminister = patient.can('meds.administer') && !patient.isArchived;
+    final missingConsent = _missingCareConsent(ref, patient);
 
     Future<void> setActive(Medication m, bool active) async {
       if (!active &&
@@ -104,10 +111,11 @@ class MedicationsTab extends ConsumerWidget {
         return ListView(
           padding: const EdgeInsets.all(16),
           children: [
+            if (missingConsent) CareConsentNotice(patient: patient),
             if (canManage)
               FilledButton.icon(
                 key: const Key('add-medication'),
-                onPressed: () => context.push(Routes.newMedication(patient.id)),
+                onPressed: missingConsent ? null : () => context.push(Routes.newMedication(patient.id)),
                 icon: const Icon(Icons.add),
                 label: const Text('Agregar medicamento'),
               ),
@@ -191,6 +199,7 @@ class CareTasksTab extends ConsumerWidget {
     final agenda = ref.watch(agendaProvider((patientId: patient.id, day: null))).value;
     final canManage = patient.can('care.manage') && !patient.isArchived;
     final canRecord = patient.can('care.record') && !patient.isArchived;
+    final missingConsent = _missingCareConsent(ref, patient);
 
     Future<void> setActive(CareTask t, bool active) async {
       if (!active &&
@@ -227,10 +236,11 @@ class CareTasksTab extends ConsumerWidget {
         return ListView(
           padding: const EdgeInsets.all(16),
           children: [
+            if (missingConsent) CareConsentNotice(patient: patient),
             if (canManage)
               FilledButton.icon(
                 key: const Key('add-task'),
-                onPressed: () => context.push(Routes.newTask(patient.id)),
+                onPressed: missingConsent ? null : () => context.push(Routes.newTask(patient.id)),
                 icon: const Icon(Icons.add),
                 label: const Text('Agregar tarea'),
               ),

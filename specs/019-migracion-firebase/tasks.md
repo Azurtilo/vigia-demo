@@ -108,6 +108,23 @@ Origen: [QA_2026-10-28.md](../../docs/QA_2026-10-28.md). Autorización: «corrig
   - La regla sigue en el backend: solo producción la exige, así que el flujo local no cambia.
   - Hecho cuando: hay pruebas del envío al crear la cuenta, del aviso, del reenvío y del reintento con el token renovado.
 
+## Correcciones de la prueba en Android físico del 2026-10-29
+
+Origen: recorrido familiar → cuidadora hecho en el teléfono por wifi contra los emuladores. Autorización: «arregla 1 y 2 siguiendo el sdd, registrando spec 019» (2026-10-29).
+
+- [x] T-019-19 — Aviso de consentimiento en Medicamentos y Cuidados.
+  - RF: RF-019-17.
+  - Problema: si falta el consentimiento de cuidado, el botón «Agregar medicamento» se ve igual. El error solo aparece al guardar, después de llenar todo el formulario, y la familiar cree que no tiene permiso.
+  - Cambio: si falta, las pestañas Medicamentos y Cuidados muestran el aviso con «Registrar consentimiento» (solo al responsable) y desactivan «Agregar medicamento» y «Agregar tarea». Mientras la consulta carga o si falla, no se bloquea: el backend sigue validando.
+  - Archivos previstos: `mobile/lib/features/care/presentation/care_tabs.dart`, `mobile/lib/features/patients/presentation/patient_detail_screen.dart` (aviso reutilizado), pruebas.
+  - Hecho cuando: hay pruebas del botón desactivado con el aviso, del botón activo con consentimiento y del botón activo si la consulta falla.
+- [x] T-019-20 — Horas de 24 horas en el selector.
+  - RF: RF-019-12 (es-CL).
+  - Problema: con el teléfono en formato de 12 horas, el modo teclado del selector rechaza «20» con «Ingresa una hora válida». El reloj sí muestra las 24 horas.
+  - Cambio: el selector de horas de medicamentos y tareas usa siempre 24 horas, igual que la agenda.
+  - Archivos previstos: `mobile/lib/features/care/presentation/schedule_editor.dart`, pruebas.
+  - Hecho cuando: una prueba con el teléfono en 12 horas ingresa 20:00 por teclado y queda «20:00».
+
 ## Semana 3 — portal, validación y cierre
 
 - [ ] T-019-13 — Portal mínimo de suscripción.
@@ -151,10 +168,11 @@ Origen: [QA_2026-10-28.md](../../docs/QA_2026-10-28.md). Autorización: «corrig
 | 2026-10-28 | T-019-09 y T-019-12 | Un solo commit, porque ambas tocan el router. `features/alerts` (bandeja, atender, recarga al volver al primer plano) y la barra de 5 secciones con Posturas pendiente (T-019-10). `features/privacy`: política aceptada en la app (D-101, estado de sesión `NeedsPolicy`), consentimientos por finalidad en la ficha, con aviso si falta el de cuidado, descarga JSON con «Copiar» (D-102), eliminación del paciente con su nombre y de la cuenta con la contraseña (reautenticación en Firebase). Las pruebas encontraron un error: una finalidad nunca registrada se mostraba como «Revocado»; ahora se usa `revokedAt`. Flutter **92 OK** (25 nuevas: 9 de alertas y 16 de privacidad) y 7/7 mutaciones detectadas |
 | 2026-10-28 | T-019-17 | `core/body.py` (`read_limited`: `Content-Length` y lectura por partes con tope de 4 KB) en las rutas del nodo y del teléfono; el teléfono revisa el largo antes de parsear; `environment` sin declarar = `production` sin emuladores; secreto del cron de 32 caracteres o más en producción; sin `/docs`, `/redoc` ni `/openapi.json` en producción; `.env.example` actualizado. Backend **337 OK** (10 nuevas) y 7/7 mutaciones detectadas |
 | 2026-10-28 | T-019-18 | `AuthRepository.sendEmailVerification` y `refreshEmailVerified` (recarga la cuenta y renueva el token con `getIdToken(true)`); el correo se envía al crear la cuenta, y si falla, la creación sigue; en «Unirme con código», `email_not_verified` muestra «Verifica tu correo» con «Ya lo verifiqué» (renueva el token y reintenta) y «Reenviar correo». Flutter **98 OK** (6 nuevas en `email_verification_test.dart`, con un token falso que solo cambia al renovarse) y 5/5 mutaciones detectadas |
+| 2026-10-29 | T-019-19 y T-019-20 | `features/privacy/care_consent_notice.dart` (aviso compartido por el resumen y las pestañas); en `care_tabs.dart`, Medicamentos y Cuidados muestran el aviso y desactivan agregar solo si la consulta confirma que falta (cargando o con error no bloquea); `schedule_editor.dart` fuerza 24 horas en el selector. Flutter **103 OK** (5 nuevas), 3/3 mutaciones detectadas; aviso y botón desactivado vistos en el teléfono. [Validación](validation.md) |
 
 ## Reanudación
 
-Última acción: T-019-09 y T-019-12 cerradas (alertas y privacidad en la app). Siguiente: T-019-10 (Posturas: teléfono, reloj y nodo) y T-019-11 (push y avisos locales), o T-019-07 si el proyecto Firebase ya existe (D-100). Correcciones de la QA del 2026-10-28: T-019-17 (backend) y T-019-18 (verificación de correo en la app) hechas. Pendiente del propietario: P-019-04 (reloj solo en Plus y Premium), registrado el 2026-10-28 a su pedido. Para probar, primero levantar los emuladores (ver `docs/ENTORNO_Y_VERIFICACION.md`). Bloqueos: P-019-01 (Java y Node) para la integración; P-019-02 (diferencias 4 y 5) antes de T-019-06; P-019-03 antes de T-019-07.
+Última acción: T-019-09 y T-019-12 cerradas (alertas y privacidad en la app). Siguiente: T-019-10 (Posturas: teléfono, reloj y nodo) y T-019-11 (push y avisos locales), o T-019-07 si el proyecto Firebase ya existe (D-100). Correcciones de la QA del 2026-10-28: T-019-17 (backend) y T-019-18 (verificación de correo en la app) hechas. Correcciones de la prueba en Android del 2026-10-29: T-019-19 y T-019-20 hechas; falta repetir en el teléfono el ingreso de 20:00 por teclado y la pestaña Cuidados. Pendiente del propietario: P-019-04 (reloj solo en Plus y Premium), registrado el 2026-10-28 a su pedido. Para probar, primero levantar los emuladores (ver `docs/ENTORNO_Y_VERIFICACION.md`). Bloqueos: P-019-01 (Java y Node) para la integración; P-019-02 (diferencias 4 y 5) antes de T-019-06; P-019-03 antes de T-019-07.
 
 ## Aceptación del usuario
 

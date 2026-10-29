@@ -24,7 +24,16 @@ class ScheduleEditor extends StatelessWidget {
   static const _dayNames = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
 
   Future<void> _addTime(BuildContext context) async {
-    final picked = await showTimePicker(context: context, initialTime: const TimeOfDay(hour: 8, minute: 0), helpText: 'Agregar hora');
+    // Siempre 24 horas, como la agenda: con el teléfono en 12 horas el modo teclado rechazaba «20» (T-019-20).
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: const TimeOfDay(hour: 8, minute: 0),
+      helpText: 'Agregar hora',
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+        child: child!,
+      ),
+    );
     if (picked == null) return;
     final value = '${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}';
     if (times.contains(value) || times.length >= 12) return;

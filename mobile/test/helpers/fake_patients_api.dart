@@ -133,9 +133,13 @@ class FakePatientsApi implements PatientsApi {
     }
   }
 
+  /// Simula que la consulta de consentimientos falla (sin conexión).
+  bool consentsFail = false;
+
   @override
-  Future<List<PatientConsent>> consents(String id) async =>
-      [for (final scope in consentScopes) PatientConsent.fromJson(_consentsOf(id)[scope] ?? {'scope': scope, 'active': false})];
+  Future<List<PatientConsent>> consents(String id) async => consentsFail
+      ? throw const ApiException(kind: ApiErrorKind.network, message: 'Sin conexión.')
+      : [for (final scope in consentScopes) PatientConsent.fromJson(_consentsOf(id)[scope] ?? {'scope': scope, 'active': false})];
 
   @override
   Future<PatientConsent> registerConsent(String id, String scope, ConsentDraft draft) async {

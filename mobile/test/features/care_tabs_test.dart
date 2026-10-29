@@ -210,4 +210,71 @@ void main() {
     expect(care.sent.single['kind'], 'position_change');
     expect(care.sent.single['title'], 'Cambio de posición'); // nombre sugerido editable
   });
+
+  // T-019-19: sin consentimiento de cuidado, el aviso aparece donde se agregan los registros.
+  FilledButton addButton(WidgetTester tester, String key) => tester.widget<FilledButton>(find.byKey(Key(key)));
+
+  testWidgets('sin consentimiento, Medicamentos y Cuidados avisan y desactivan agregar', (tester) async {
+    patients.consentStore['p1'] = {};
+    await openTab(tester, 'Medicamentos');
+
+    expect(find.byKey(const Key('care-consent-notice')), findsOneWidget);
+    expect(find.text('Registrar consentimiento'), findsOneWidget); // responsable
+    expect(addButton(tester, 'add-medication').onPressed, isNull);
+
+    await tester.tap(find.text('Cuidados'));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('care-consent-notice')), findsOneWidget);
+    expect(addButton(tester, 'add-task').onPressed, isNull);
+  });
+
+  testWidgets('con consentimiento no hay aviso y se puede agregar', (tester) async {
+    await openTab(tester, 'Medicamentos');
+
+    expect(find.byKey(const Key('care-consent-notice')), findsNothing);
+    expect(addButton(tester, 'add-medication').onPressed, isNotNull);
+  });
+
+  testWidgets('si la consulta de consentimientos falla, agregar sigue activo', (tester) async {
+    patients.consentsFail = true;
+    await openTab(tester, 'Medicamentos');
+
+    expect(find.byKey(const Key('care-consent-notice')), findsNothing);
+    expect(addButton(tester, 'add-medication').onPressed, isNotNull);
+  });
+
+  testWidgets('sin consentimiento, quien no es responsable ve el aviso sin el botón para registrarlo', (tester) async {
+    patients.consentStore['p1'] = {};
+    await openTab(tester, 'Medicamentos', relation: 'family');
+
+    expect(find.byKey(const Key('care-consent-notice')), findsOneWidget);
+    expect(find.text('Registrar consentimiento'), findsNothing);
+    expect(addButton(tester, 'add-medication').onPressed, isNull);
+  });
+
+  // T-019-20: con el teléfono en 12 horas, el selector acepta 20:00 escrito con el teclado.
+  testWidgets('el selector de horas usa 24 horas aunque el teléfono use 12', (tester) async {
+    tester.platformDispatcher.alwaysUse24HourFormatTestValue = false;
+    addTearDown(tester.platformDispatcher.clearAlwaysUse24HourTestValue);
+    await openTab(tester, 'Medicamentos');
+    await tester.tap(find.byKey(const Key('add-medication')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const Key('med-name')), 'Paracetamol');
+    await tester.enterText(find.byKey(const Key('med-dose')), '1 comprimido');
+
+    await tester.tap(find.byKey(const Key('add-time')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byIcon(Icons.keyboard_outlined));
+    await tester.pumpAndSettle();
+    final fields = find.descendant(of: find.byType(Dialog), matching: find.byType(TextField));
+    await tester.enterText(fields.first, '20');
+    await tester.enterText(fields.last, '00');
+    await tester.tap(find.descendant(of: find.byType(Dialog), matching: find.byType(TextButton)).last);
+    await tester.pumpAndSettle();
+
+    expect(find.byType(Dialog), findsNothing); // la hora fue aceptada
+    expect(find.text('20:00'), findsOneWidget);
+    await scrollToAndTap(tester, find.byKey(const Key('med-save')));
+    expect(care.sent.single['schedule'], {'times': ['20:00'], 'daysOfWeek': <int>[]});
+  });
 }
