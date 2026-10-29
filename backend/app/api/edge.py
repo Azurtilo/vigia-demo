@@ -9,6 +9,7 @@ from fastapi.responses import JSONResponse
 from starlette.background import BackgroundTask
 from starlette.concurrency import run_in_threadpool
 
+from app.core.body import read_limited
 from app.core.errors import AppError, UTF8JSONResponse
 from app.services import nodes as nodes_service
 
@@ -41,7 +42,7 @@ async def edge_status(request: Request) -> JSONResponse:
 @router.post("/observations")
 async def edge_observation(request: Request) -> JSONResponse:
     """Una observación de postura: exactamente las 7 claves del contrato, hasta 4 KB."""
-    body = await request.body()
+    body = await read_limited(request, nodes_service.MAX_BODY)  # None = más de 4 KB
     return await _respond(
         nodes_service.edge_observation,
         request.headers.get("Authorization", ""),

@@ -265,6 +265,73 @@ def test_body_must_be_json_and_at_most_4_kb(client, node):
     assert (as_text.status_code, too_big.status_code, broken.status_code) == (400, 400, 400)
 
 
+# QA-2026-10-28-02: un cuerpo enorme no se carga en memoria, con o sin credencial.
+FIVE_MB = b"{" + b" " * (5 * 1024 * 1024) + b"}"
+
+
+def _chunks(data: bytes, size: int = 64 * 1024):
+    for i in range(0, len(data), size):
+        yield data[i : i + size]
+
+
+def test_a_huge_body_without_token_is_rejected(client):
+    response = client.post(OBSERVATIONS, content=FIVE_MB, headers={"Content-Type": "application/json"})
+
+    assert response.status_code == 401
+
+
+def test_a_huge_body_is_400_even_without_content_length(client, node):
+    declared = client.post(OBSERVATIONS, content=FIVE_MB, headers={**node["auth"], "Content-Type": "application/json"})
+    chunked = client.post(OBSERVATIONS, content=_chunks(FIVE_MB), headers={**node["auth"], "Content-Type": "application/json"})
+
+    assert (declared.status_code, chunked.status_code) == (400, 400)
+    assert "Content-Length" not in chunked.request.headers  # se envió por partes, sin tamaño declarado
+
+
+def test_a_huge_phone_body_is_400(client, ctx):
+    response = client.post(
+        f"/v1/patients/{ctx['pid']}/phone-observations",
+        content=_chunks(FIVE_MB),
+        headers={**ctx["carer"], "Content-Type": "application/json"},
+    )
+
+    assert response.status_code == 400
+
+
+def test_the_routes_never_load_the_whole_body(monkeypatch, client, ctx, node):
+    # Si una ruta volviera a usar request.body(), cargaría cualquier tamaño en memoria.
+    from starlette.requests import Request
+
+    def forbidden(self):
+        raise AssertionError("request.body() lee el cuerpo completo")
+
+    monkeypatch.setattr(Request, "body", forbidden)
+
+    assert _send(client, node, _obs()).status_code == 201
+    phone = client.post(f"/v1/patients/{ctx['pid']}/phone-observations", json=_phone(), headers=ctx["carer"])
+    assert phone.status_code == 201
+
+
+def test_the_reader_stops_at_the_limit_without_reading_the_rest():
+    import asyncio
+
+    from app.core.body import read_limited
+
+    consumed = []
+
+    class FakeRequest:
+        headers: dict = {}
+
+        async def stream(self):
+            for chunk in _chunks(FIVE_MB, 1024):
+                consumed.append(chunk)
+                yield chunk
+
+    assert asyncio.run(read_limited(FakeRequest(), 4096)) is None
+    assert len(consumed) == 5  # 5 KB leídos de 5 MB
+    assert asyncio.run(read_limited(type("R", (), {"headers": {"content-length": "abc"}})(), 4096)) is None
+
+
 def test_risk_combinations_accepted_like_django(client, node):
     fall = _send(client, node, _obs(posture="indeterminada", risk="fall"))
     immobility = _send(client, node, _obs(posture="lateral-izquierda", risk="immobility"))

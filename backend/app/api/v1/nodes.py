@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, Request, status
 from fastapi.responses import JSONResponse
 from starlette.concurrency import run_in_threadpool
 
+from app.core.body import read_limited
 from app.core.errors import UTF8JSONResponse
 from app.core.security import get_current_user
 from app.models.nodes import CameraState, NodeCreate, NodeCreated, NodeList, ObservationPage
@@ -65,6 +66,6 @@ def phone_status(patient_id: str, user: CurrentUser) -> dict:
 @router.post("/patients/{patient_id}/phone-observations", responses=_errors)
 async def phone_observation(patient_id: str, request: Request, user: CurrentUser) -> JSONResponse:
     """Análisis puntual del teléfono: 7 claves de metadatos, sin imagen ni coordenadas."""
-    body = await request.body()
+    body = await read_limited(request, nodes_service.MAX_BODY)  # None = más de 4 KB
     code, result = await run_in_threadpool(nodes_service.phone_observation, patient_id, user.uid, body)
     return UTF8JSONResponse(result, status_code=code)

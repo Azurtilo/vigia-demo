@@ -22,8 +22,14 @@ from app.core.errors import UTF8JSONResponse, register_error_handlers
 
 settings = get_settings()
 
+# En producción no se publica la documentación de la API (QA-2026-10-28-06).
+_docs = settings.environment != "production"
+
 app = FastAPI(
     title=settings.app_name,
+    docs_url="/docs" if _docs else None,
+    redoc_url="/redoc" if _docs else None,
+    openapi_url="/openapi.json" if _docs else None,
     version="0.2.0",
     description="API REST de VIGIA. Herramienta de apoyo al cuidado; no es un dispositivo médico.",
     default_response_class=UTF8JSONResponse,

@@ -7,11 +7,16 @@ from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
+CRON_SECRET_MIN = 32
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="VIGIA_", env_file=".env", extra="ignore")
 
     app_name: str = "VIGIA API"
-    environment: Literal["development", "test", "production"] = "development"
+    # Sin declarar: "production" con Firebase real y "development" con emuladores (QA-2026-10-28-07).
+    # Así, olvidar VIGIA_ENVIRONMENT en el servidor no desactiva protecciones de producción.
+    environment: Literal["development", "test", "production"] | None = None
     # Se recibe como texto separado por comas para que sea fácil de definir en .env
     cors_origins: str = "http://localhost:5173"
 
@@ -31,6 +36,7 @@ class Settings(BaseSettings):
     privacy_policy_version: str = "2026-10-25"
 
     # Secreto del cron externo para POST /internal/tick (VIGIA_CRON_SECRET). Vacío = tick desactivado.
+    # En producción, si se define, debe tener al menos CRON_SECRET_MIN caracteres (QA-2026-10-28-08).
     cron_secret: str = ""
 
     @property
@@ -43,11 +49,15 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def _check_environment(self) -> "Settings":
+        if self.environment is None:
+            self.environment = "development" if self.uses_emulators else "production"
         # Los emuladores aceptan tokens sin firma: jamás deben usarse en producción.
         if self.environment == "production" and self.uses_emulators:
             raise ValueError("En producción no se permiten emuladores de Firebase.")
         if self.uses_emulators and not self.firebase_project_id.startswith("demo-"):
             raise ValueError("Con emuladores, el proyecto debe llamarse 'demo-*' para no tocar datos reales.")
+        if self.environment == "production" and self.cron_secret and len(self.cron_secret) < CRON_SECRET_MIN:
+            raise ValueError(f"En producción, VIGIA_CRON_SECRET debe tener al menos {CRON_SECRET_MIN} caracteres.")
         return self
 
 

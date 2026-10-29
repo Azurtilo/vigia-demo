@@ -339,13 +339,15 @@ def _store(patient_id: str, doc_id: str, record: dict, alert: tuple[str, dict] |
     return status.HTTP_201_CREATED, {"id": doc_id, "duplicate": False}
 
 
-def edge_observation(header: str, content_type: str, body: bytes) -> tuple[int, dict, Callable[[], None] | None]:
+def edge_observation(
+    header: str, content_type: str, body: bytes | None
+) -> tuple[int, dict, Callable[[], None] | None]:
     """Observación del nodo (`POST /api/v1/edge/observations`): exactamente 7 claves.
 
     Devuelve además, para una caída nueva, el envío del push a ejecutar después de responder.
     """
     entry = authorize(header)
-    if content_type.split(";")[0].strip().lower() != "application/json" or len(body) > MAX_BODY:
+    if content_type.split(";")[0].strip().lower() != "application/json" or body is None or len(body) > MAX_BODY:
         raise _bad("Envía metadatos JSON de hasta 4 KB.")
     d = _parse(body)
     if not isinstance(d, dict) or set(d) != EDGE_KEYS:
@@ -402,13 +404,15 @@ def phone_status(patient_id: str, uid: str) -> dict:
     return {"enabled": True, "mode": "snapshot", "server_time": utcnow().isoformat()}
 
 
-def phone_observation(patient_id: str, uid: str, body: bytes) -> tuple[int, dict]:
+def phone_observation(patient_id: str, uid: str, body: bytes | None) -> tuple[int, dict]:
     """Análisis puntual con la cámara del teléfono: metadatos sin imagen ni riesgo continuo."""
     access = get_access(patient_id, uid, "care.record")
     require_active_patient(access)
     _require_detection(access)
+    if body is None or len(body) > MAX_BODY:  # se revisa antes de parsear (QA-2026-10-28-02)
+        raise _bad("Solo se admiten metadatos de observación, sin imagen ni coordenadas.")
     d = _parse(body)
-    if len(body) > MAX_BODY or not isinstance(d, dict) or set(d) != PHONE_KEYS:
+    if not isinstance(d, dict) or set(d) != PHONE_KEYS:
         raise _bad("Solo se admiten metadatos de observación, sin imagen ni coordenadas.")
     values = _validate(
         d,

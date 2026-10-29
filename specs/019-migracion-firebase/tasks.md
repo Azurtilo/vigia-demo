@@ -88,6 +88,26 @@ Rama: `feature/019-migracion-firebase` desde `origin/develop` (`73fb6a1`), un co
   - Archivos previstos: `services/retention.py`, `services/export.py`, `services/erase.py`, `api/v1/privacy.py`, pruebas; pantallas de exportar y eliminar en la app (T-019-12) y en el portal (T-019-13).
   - Hecho cuando: hay pruebas de cada plazo (justo antes y después del límite), de que la exportación no lleva tokens, hashes ni códigos, del borrado completo del paciente, y del rechazo de la eliminación de cuenta sin inicio de sesión reciente, con autor anónimo en pacientes ajenos.
 
+## Correcciones de la revisión QA del 2026-10-28
+
+Origen: [QA_2026-10-28.md](../../docs/QA_2026-10-28.md). Autorización: «corrige el hallazgo alto y los de backend» (2026-10-28).
+
+- [x] T-019-17 — Correcciones del backend: QA-02, QA-06, QA-07 y QA-08.
+  - **QA-02:**
+    - Las rutas del nodo y del teléfono leen el cuerpo por partes y cortan al pasar de 4 KB, con `Content-Length` revisado antes de leer.
+    - Responden 400, igual que hoy: el nodo descarta el ítem y el contrato Edge no cambia.
+    - El teléfono revisa el largo antes de parsear el JSON.
+  - **QA-06:** sin `/docs`, `/redoc` ni `/openapi.json` en producción.
+  - **QA-07:** si `VIGIA_ENVIRONMENT` no se declara, vale `production` sin emuladores y `development` con emuladores. Así, olvidar la variable en Render no desactiva protecciones.
+  - **QA-08:** en producción, `VIGIA_CRON_SECRET` va vacío (tick desactivado) o tiene 32 caracteres o más.
+  - **QA-09 queda fuera:** cambiar `Message.token` por `fid` también cambia lo que registra la app; se evalúa en T-019-11.
+  - Hecho cuando: hay una prueba por corrección (incluido un cuerpo de 5 MB sin token) y la suite completa pasa.
+- [ ] T-019-18 — Verificación de correo en la app (QA-01).
+  - Al crear la cuenta, la app envía el correo de verificación.
+  - Si unirse responde `email_not_verified`, la app muestra «Verifica tu correo», con «Reenviar correo» y «Ya lo verifiqué». Este último recarga la cuenta, renueva el token y reintenta.
+  - La regla sigue en el backend: solo producción la exige, así que el flujo local no cambia.
+  - Hecho cuando: hay pruebas del envío al crear la cuenta, del aviso, del reenvío y del reintento con el token renovado.
+
 ## Semana 3 — portal, validación y cierre
 
 - [ ] T-019-13 — Portal mínimo de suscripción.
@@ -129,10 +149,11 @@ Rama: `feature/019-migracion-firebase` desde `origin/develop` (`73fb6a1`), un co
 | 2026-10-28 | T-019-16 | `services/erase.py` (paciente con confirmación de nombre; cuenta con inicio de sesión de hace 5 minutos o menos, pacientes propios borrados (D-065), autor anónimo en pacientes ajenos y borrado en Firebase Auth), `services/export.py` (cuenta y paciente, sin tokens, hashes ni códigos), `services/retention.py` (plazos de D-064, una vez al día desde el tick), rutas en `api/v1/privacy.py`; `archivedAt` al archivar; estado de cuenta `deleted`; `auth_time` en la identidad; índices de grupo `observations.observedAt` y `alerts.occurredAt`. Backend **327 OK** (11 nuevas), 11/11 mutaciones detectadas |
 | 2026-10-28 | T-019-08 | `lib/` (50 archivos) y `test/` (14) desde `518792263c44` con `git archive`; `package:vigia/` → `package:vigia_mobile/`; `assets/branding` y `assets/fonts` (Nunito, OFL) junto a `guides` y `models`; `pubspec.yaml` con Riverpod, go_router, dio, `firebase_core` ^5.1.0, `firebase_auth` ^7.0.1 y `firebase_messaging` ^17.0.1 (resuelto por `flutter pub add`), más `camera`, `vigia_pose`, avisos locales, `timezone`, `url_launcher`, `google_sign_in` y `mocktail`; sin `http` ni `flutter_secure_storage`. `flutter analyze` limpio, `flutter test` **67/67**, `flutter build apk --debug` OK con `VigiaPosePlugin` registrado y los assets dentro. Nuestras pantallas se portan en T-019-09..12 |
 | 2026-10-28 | T-019-09 y T-019-12 | Un solo commit, porque ambas tocan el router. `features/alerts` (bandeja, atender, recarga al volver al primer plano) y la barra de 5 secciones con Posturas pendiente (T-019-10). `features/privacy`: política aceptada en la app (D-101, estado de sesión `NeedsPolicy`), consentimientos por finalidad en la ficha, con aviso si falta el de cuidado, descarga JSON con «Copiar» (D-102), eliminación del paciente con su nombre y de la cuenta con la contraseña (reautenticación en Firebase). Las pruebas encontraron un error: una finalidad nunca registrada se mostraba como «Revocado»; ahora se usa `revokedAt`. Flutter **92 OK** (25 nuevas: 9 de alertas y 16 de privacidad) y 7/7 mutaciones detectadas |
+| 2026-10-28 | T-019-17 | `core/body.py` (`read_limited`: `Content-Length` y lectura por partes con tope de 4 KB) en las rutas del nodo y del teléfono; el teléfono revisa el largo antes de parsear; `environment` sin declarar = `production` sin emuladores; secreto del cron de 32 caracteres o más en producción; sin `/docs`, `/redoc` ni `/openapi.json` en producción; `.env.example` actualizado. Backend **337 OK** (10 nuevas) y 7/7 mutaciones detectadas |
 
 ## Reanudación
 
-Última acción: T-019-09 y T-019-12 cerradas (alertas y privacidad en la app). Siguiente: T-019-10 (Posturas: teléfono, reloj y nodo) y T-019-11 (push y avisos locales), o T-019-07 si el proyecto Firebase ya existe (D-100). Pendiente del propietario: P-019-04 (reloj solo en Plus y Premium), registrado el 2026-10-28 a su pedido. Para probar, primero levantar los emuladores (ver `docs/ENTORNO_Y_VERIFICACION.md`). Bloqueos: P-019-01 (Java y Node) para la integración; P-019-02 (diferencias 4 y 5) antes de T-019-06; P-019-03 antes de T-019-07.
+Última acción: T-019-09 y T-019-12 cerradas (alertas y privacidad en la app). Siguiente: T-019-10 (Posturas: teléfono, reloj y nodo) y T-019-11 (push y avisos locales), o T-019-07 si el proyecto Firebase ya existe (D-100). Correcciones de la QA del 2026-10-28: T-019-17 (backend) hecha; T-019-18 (verificación de correo en la app) en curso. Pendiente del propietario: P-019-04 (reloj solo en Plus y Premium), registrado el 2026-10-28 a su pedido. Para probar, primero levantar los emuladores (ver `docs/ENTORNO_Y_VERIFICACION.md`). Bloqueos: P-019-01 (Java y Node) para la integración; P-019-02 (diferencias 4 y 5) antes de T-019-06; P-019-03 antes de T-019-07.
 
 ## Aceptación del usuario
 
