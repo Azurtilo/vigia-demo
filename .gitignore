@@ -180,3 +180,19 @@ mobile/android/app/Users/
 # SDK local de desarrollo y paquetes de entrega regenerables (spec 015)
 .tooling/
 /artifacts/
+
+# Backend FastAPI, portal React y emuladores de Firebase (spec 019)
+.venv-backend/
+.env.*
+!.env.example
+*service-account*.json
+*serviceAccount*.json
+*-firebase-adminsdk-*.json
+.pytest_cache/
+node_modules/
+portal/dist/
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+emulator-data/

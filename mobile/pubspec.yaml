@@ -36,17 +36,22 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
+  # Base de la app (proyecto base, T-019-08)
+  flutter_riverpod: ^3.4.3
+  go_router: ^18.1.1
+  dio: ^5.11.1
+  firebase_core: ^5.1.0
+  firebase_auth: ^7.0.1
+  flutter_svg: ^2.3.0
+  # Funciones de VIGIA que se portan en T-019-09..12
   camera: ^0.12.1
   vigia_pose:
     path: plugins/vigia_pose
   flutter_local_notifications: 22.3.2
   timezone: 0.11.2
-  http: ^1.6.0
-  flutter_secure_storage: ^11.2.0
   url_launcher: ^6.3.3
-  firebase_core: ^4.0.0
-  firebase_messaging: ^16.0.0
   google_sign_in: ^7.2.0
+  firebase_messaging: ^17.0.1
 
 dev_dependencies:
   flutter_test:
@@ -58,6 +63,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
+  mocktail: ^1.0.5
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -70,8 +76,23 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
+    - assets/branding/
     - assets/guides/
     - assets/models/pose_landmarker_lite.task
+
+  # Nunito incluida en la app (licencia SIL OFL, ver assets/fonts/OFL.txt):
+  # funciona sin conexión y no depende de descargas al abrir la app.
+  fonts:
+    - family: Nunito
+      fonts:
+        - asset: assets/fonts/Nunito-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Nunito-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Nunito-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Nunito-ExtraBold.ttf
+          weight: 800
 
   # To add assets to your application, add an assets section, like this:
   # assets:

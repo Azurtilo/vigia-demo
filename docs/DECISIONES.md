@@ -279,3 +279,55 @@ Fuente: «fusiona la 13, autorizo para que luego hagas los cambios en el codigo�
 | D-079 | **P-018-02 A** — La regla «que no sea una contraseña común» queda neutra con «se revisa al guardar». No se incluye la lista en el navegador ni se consulta al servidor mientras se escribe | RF-018-02, T-018-02 |
 | D-080 | **P-018-03 A** — JavaScript propio en los formularios marcados: envío con `fetch`, el servidor responde la redirección interna como JSON (middleware con cabecera propia) y el navegador reemplaza la entrada del historial. Sin JavaScript, el envío de siempre | RF-018-11..13, T-018-05 |
 
+## Spec 019 — Migración a FastAPI + Firebase (2026-10-28)
+
+Fuente: revisión del proyecto `vigia 26` de otro integrante del equipo (commit `518792263c44`) y respuestas del propietario en la sesión del 2026-10-28: a la lista inicial («1.B, 2,A, 3.B, 4.A, 5.A, 6.A, 7.C, 8.A, 9.A, 10.B, 12.A, 13.A, 14.A, 15.C, 17.C, 18.A, 19.A, 20.B (portal web a futuro), 21.B 22.A, 24.A»); a las recomendaciones posteriores («concuerdo con tus decisiones»), que cambiaron la 2, la 10 y la 12 y resolvieron la 11, la 16, la 23 y la autenticación del nodo; y a «mantén los recordatorios como respaldo, aunque el servidor sea la fuente principal». D-078..D-080 son de la spec 018, fusionada en `develop` después (PR #14). Detalle en la [spec 019](../specs/019-migracion-firebase/spec.md).
+
+| ID | Decisión | Efecto |
+|---|---|---|
+| D-081 | **1.B + 3.B** — Se migra a FastAPI + Firebase antes de la entrega (unas 3 semanas), de una vez, en `feature/019-migracion-firebase`. `develop` conserva Django como respaldo. Punto de control el 2026-11-04: nodo real → caída → push en Android | Si el punto de control falla, se recomienda entregar con Django. Sustituye la arquitectura Django de `AGENTS.md` solo en la rama hasta la fusión |
+| D-082 | **2 (revisada) + 4.A** — El backend FastAPI y la app Flutter del proyecto base son la base del código; se les suman las piezas de este repositorio (Edge, detección, alertas, push, recordatorios, consentimiento). Un solo repositorio y una sola `develop`; `vigia 26` queda como antecedente de solo lectura, como D-071 | Reemplaza la elección inicial 2.A |
+| D-083 | **5.A** — `AGENTS.md` y `CLAUDE.md` se actualizan en la rama antes de escribir código | La constitución no cambia: sus principios no mencionan Django |
+| D-084 | **6.A + 12.A** — Firestore como base de datos y Firebase en plan Spark, sin cuenta de facturación. Se excluyen Cloud Run, Cloud Scheduler y Cloud Functions | Cuotas diarias de Spark: ver D-095 |
+| D-085 | **8.A** — Sin migración de datos: se parte de cero | No se trasladan cuentas ni consentimientos de Django |
+| D-086 | **9.A + nodo** — El contrato Edge (`/api/v1/edge/status` y `/api/v1/edge/observations`) no cambia. El nodo se autentica con un token emitido por FastAPI al vincularlo, del que solo se guarda el SHA-256. No se usa una cuenta Firebase por nodo ni la clave de servicio en el nodo | El código del Edge no cambia; solo la URL y el token |
+| D-087 | **7.C + 18.A** — Las reglas del backend base se revisan una por una (P-019-02, con valores por defecto en el plan). Se adoptan sus hojas de registro: a tiempo, con retraso y hora real, no dada con motivo, y corrección | Cambia los estados de toma de la 009/010 |
+| D-088 | **10 (revisada)** — Recordatorios desde el servidor: cron-job.org llama cada minuto a `POST /internal/tick` con un secreto y el backend envía el push | Reemplaza 10.B (Cloud Scheduler), que exigía facturación |
+| D-089 | **Recordatorios de respaldo** — La app conserva los avisos locales programados al sincronizar, con el mismo identificador de toma (`{medId}_{instanteUTC}`), y los cancela al registrar la toma | Los avisos suenan aunque no haya red |
+| D-090 | **15.C** — Pagos simulados; el cobro real queda como trabajo futuro | — |
+| D-091 | **11.C** — FastAPI en Render, plan gratis, con un solo proceso. El cron de cada minuto lo mantiene despierto; el Edge también, al renovar cada 10 s | Sin SLA: la disponibilidad ≥ 99,5 % queda como límite declarado |
+| D-092 | **13.A + 14.A** — Firebase Auth (correo y Google) para personas; portal web en React, mínimo para la HU-07 | Reemplaza allauth y el portal Django en la rama |
+| D-093 | **19.A, 20.B, 21.B, 22.A** — La app adopta la paleta, Nunito y los tamaños mínimos del proyecto base (`docs/diseno-visual.md`) junto con la migración; el portal web, más adelante; el ícono se deriva del logo (iOS y Android adaptativo) | Sustituye los colores de `mobile/lib/shared/vigia_design.dart` |
+| D-094 | **16.A + 17.C** — App con Riverpod y go_router (viene con la base); barra de 5 secciones: Hoy, Pacientes, Alertas, Posturas y Cuenta | — |
+| D-095 | **Supuesto técnico reversible** — Para quedar dentro de la cuota de Spark (50.000 lecturas y 20.000 escrituras al día), el backend guarda en memoria la autorización del nodo hasta 60 s (se invalida al revocar, cambiar el plan o el consentimiento) y escribe la última señal como máximo cada 30 s. La app consulta como máximo cada 5 minutos | Medido en el plan: 1 nodo sin caché ≈ 43.000 lecturas al día |
+| D-096 | **23.B** — El informe presenta FastAPI + Firebase como la arquitectura entregada | Hay que volver a validar las HU, RT y RNF; la evidencia Django no se traslada |
+| D-097 | **24.A** — Revisar `backend/.env` del proyecto base. Comprobado el 2026-10-28 sin abrirlo: está en `.gitignore` y ningún commit lo incluye, pero sí viaja dentro del zip compartido (`vigia 26 - copia.zip`). Si contiene credenciales reales (no solo los emuladores `demo-*`), su autor debe rotarlas | No se lee ni se copia a este repositorio |
+
+Autorización: «concuerdo con tus decisiones, dejamos develop con django y probamos los cambios en una nueva rama, autorizo que cambies codigo pero antes registra todo» (2026-10-28). Autoriza T-019-01..15. No autoriza merge, despliegue, creación de cuentas ni instalación de software.
+
+### Respuestas del propietario sobre la spec 019 — 2026-10-28
+
+Fuente: «1. autorizo a instalarlos con winget, 2. las privacidad sobre todo, y 3. deja pendiente el crear el proyecto firebase, el servicio en Render y la tarea en cron-job.org. puedes seguir con T-019-04 si lo demas esta listo».
+
+| ID | Decisión | Efecto |
+|---|---|---|
+| D-098 | **P-019-02, diferencias 4 y 5** — La privacidad de la 014 se porta al nuevo backend: purga diaria con los plazos de D-064, exportación JSON de cuenta y paciente, eliminación del paciente y de la cuenta (D-065), con reautenticación por `auth_time` reciente de Firebase | RF-019-24..27, T-019-16. Las diferencias 1, 2, 3, 6 y 7 quedan con su valor por defecto |
+| D-099 | **P-019-01** — Se autoriza instalar en este equipo, con `winget`, el JDK 21 y Node LTS, y `firebase-tools` con npm, para los emuladores | T-019-03. Software de desarrollo local; no se usa en producción |
+| D-100 | **P-019-03** — Quedan pendientes el proyecto Firebase real, el servicio en Render y la tarea en cron-job.org | Bloquea T-019-07. El punto de control del 2026-11-04 necesita al menos el proyecto Firebase, porque los emuladores no entregan push a un teléfono |
+
+### Alertas y privacidad en la app de la rama 019 — 2026-10-28
+
+Fuente: «puedes agregar alertas y privacidad? y el detector de caidas funciona?» (2026-10-28). Se ejecutan T-019-09 y T-019-12, ya autorizadas.
+
+| ID | Decisión | Efecto |
+|---|---|---|
+| D-101 | La política se lee y se acepta **dentro de la app** (`POST /v1/privacy/accept`), en lugar de abrir el portal como en `develop`: el portal React aún no tiene esa pantalla (T-019-13) y el backend ya registra la aceptación con su versión | T-019-12. La sesión pasa por «aceptar la política» antes de Hoy. El texto es el de la política vigente de la 014, ajustado a los datos que guarda el backend nuevo; la revisión legal sigue pendiente (D-067) |
+| D-102 | La exportación JSON se muestra en la app con un botón «Copiar», sin agregar dependencias para guardar archivos. La descarga como archivo queda para el portal (T-019-13) | T-019-12. Si se pide un archivo en el teléfono, se suma `share_plus` o `path_provider` en una tarea aparte |
+
+### Fusión de la 019 en `develop` — 2026-10-29
+
+Fuente: «fusiona 019 a develop» y, ante el aviso de que reemplaza la app móvil de Django y contradice D-081, la opción «Etiquetar y fusionar» (sesión del 2026-10-29).
+
+| ID | Decisión | Efecto |
+|---|---|---|
+| D-103 | La 019 se fusiona en `develop` **antes del punto de control** del 2026-11-04. El respaldo Django queda en la etiqueta `v-django-respaldo` (`2324079`: `develop` con la 018, app móvil sobre Django) | Reemplaza la parte de D-081 que mantenía `develop` con Django. `web/` sigue en `develop` sin cambios, pero `mobile/` pasa a la app de FastAPI + Firebase. Siguen pendientes T-019-07, 10, 11, 13, 14 y 15; si el punto de control falla, se vuelve a la etiqueta |
